@@ -1,0 +1,32 @@
+.circle {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  }
+.square {
+    height: 50px;
+    width: 50px;
+}
+.city {
+    border: solid;
+    display: flex;
+}
+.routeBox {
+    display: flex;
+    flex-direction: column;
+}
+.routeNode{
+    height: 60px;
+    width: 60px;
+    border: solid;
+    /* z-index: 5; */
+}
+.board{
+    border: dashed;
+    border-color: aqua;
+}
+.player-area{
+    
+}
+
+/* Everything will need padding, maybe make it global??? */
