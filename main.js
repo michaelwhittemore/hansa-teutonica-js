@@ -1,3 +1,5 @@
+// MAYBE CONVERT TO TYPESCRIPT???
+
 // let's start with a simple initiation of a route between two nodes and then move on to player class
 // after I get that done I will move on to setting up a simple server
 
@@ -6,12 +8,16 @@
 
 // Unlocks will come later
 
+// Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
 
 // in the long term might make sense to draw out the map with a canvas? ugh, I hate css
 
 // Once I can get a player making legal moves and passing control add a second route and then move on to server
 
 // Need top track current player. All commands must be passed to the game controller which will decide what happens
+// View as the board as a graph
+// Have players alternate turns on one board until I implement a server to handle cross window gameplay
+
 const gameController = {
     placeWorkerOnNode(nodeId, playerId, ) {
         // This should use the  boardController methods
@@ -79,9 +85,35 @@ const boardController = {
     }
 }
 
+// Any on click will need to check if it's the player's turn (or they have priority based on a bump)
 const playerUIController = {
     
 }
+
+// Do we need a seperate click handler?????
+
+// I think end game points will be calculated much later
+// Need player fields:
+/**
+ * Piece color
+ * Points (may also need to be tracked by board state)
+ * Bank value (both kinds)
+ * Supply value (both kinds)
+ * Actions used (i.e. as part of the turn)
+ * Actions unlocked
+ * Keys Unlocked
+ * Colors unlocked
+ * Purse value
+ * Move value (the number of units that can be shifted on the board)
+ * Number of tokens (or whatever those little bonus pieces are called) both used and avaible
+ * playerId?
+ * Name?
+ */
+
+class Player {
+    
+}
+
 
 const start = () => {
     boardController.initializeUI();
