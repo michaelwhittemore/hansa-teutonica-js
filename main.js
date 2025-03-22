@@ -58,20 +58,42 @@ const inputHandlers = {
     },
 
     handlePlace(){
-        console.log('clicked handle place')
+        // May want to track state of action input (i.e have we selected an action, a location,
+        // and additonal information as needed)
         if (!inputHandlers.verifyPlayersTurn()){
             return;
         }
+        inputHandlers.selectedAction = 'place' 
         // Need to heighlight the piece to go to
         const actionInfoDiv = document.getElementById('actionInfo');
-        inputHandlers.clearActionInfo();
+        inputHandlers.clearAllActionSelection();
         actionInfoDiv.innerText = "Select a kind of piece to place and a location"
+
+        const squareButton = document.createElement('button');
+        squareButton.innerText = 'Square'
+        squareButton.onclick = () => {
+            inputHandlers.additionalInfo = 'square'
+        }
+        actionInfoDiv.append(squareButton);
+        const circleButton = document.createElement('button');
+        circleButton.innerText = 'Circle'
+        circleButton.onclick = () => {
+            inputHandlers.additionalInfo = 'circle'
+        }
+        actionInfoDiv.append(circleButton);
+
     },
-    clearActionInfo(){
+    clearAllActionSelection(){
+        inputHandlers.selectedAction = undefined;
+        inputHandlers.selectedLocation = undefined;
+        inputHandlers.additionalInfo = undefined;
         document.getElementById('actionInfo').innerHTML= ''
     },
     bindInputHandlers(){
         document.getElementById('place').onclick = this.handlePlace;
+    },
+    routeNodeClickHandler(){
+        // This will do stuff dynamically based on the other turn selection information
     }
 }
 
