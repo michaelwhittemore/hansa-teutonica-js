@@ -18,9 +18,33 @@
 // View as the board as a graph
 // Have players alternate turns on one board until I implement a server to handle cross window gameplay
 
+// CONSTANTS
+const STARTING_BANK = 15; // no clue if this is correct
+const FIRST_PLAYER_SQUARES = 6;
+const TEST_PLAYERS_NAMES = ['ALICE', 'BOB']
+const TEST_PLAYER_COLORS = ['red', 'blue']
+
+
 const gameController = {
-    placeWorkerOnNode(nodeId, playerId, ) {
+    initializeGameState(playerNames, playerColors) {
+        // inputs are arrays
+        // let's just use turn order for IDs
+        this.playerArray = []
+        for (let i = 0; i < playerNames.length; i++){
+            const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i);
+            this.playerArray.push(player)
+        }
+        // NEED AN ADVANCE turn method
+        this.currentTurn = 0;
+        console.log(this.playerArray)
+    },
+    resumeGame(properties) {
+        //TODO
+    },
+    placeWorkerOnNode(nodeId) {
         // This should use the  boardController methods
+        boardController.addPieceToRouteNode(nodeId, 'blue', 'square')
+
     }
 }
 
@@ -64,8 +88,9 @@ const boardController = {
             const nodeId = `${id}-${i}`;
             routeNode.id = nodeId;
             routeNode.onclick = (event) => {
-                console.log('Clicked on node with id', nodeId)
-                this.addPieceToRouteNode(nodeId, 'blue', 'square')
+                // this.addPieceToRouteNode(nodeId, 'blue', 'square')
+                // Maybe pass in a player based on local information??
+                gameController.placeWorkerOnNode(nodeId)
             }
             routeBoxDiv.append(routeNode)
         }
@@ -109,14 +134,31 @@ const playerUIController = {
  * playerId?
  * Name?
  */
+// Should the game controller have a reference to the players? I want to say yes, it should call their methods
 
 class Player {
-    
+    constructor(color, name, startingPieces) {
+        this.color = color;
+        this.name = name;
+        // I don't remember the correct number of starting workers of supply value
+        if (!startingPieces) {
+            startingPieces = 6
+        }
+        this.supplySquares = startingPieces;
+        this.bankedSquares = STARTING_BANK - startingPieces;
+        this.supplyCircles = 1;
+        this.bankedCircles = 0;
+        this.maxActions  = 2; // Not to be confused with available actions
+        this.currentPoints = 0;
+        // Might have some other properties, but can deal with those later
+    }
+
 }
 
 
 const start = () => {
     boardController.initializeUI();
+    gameController.initializeGameState(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
 }
 
 window.onload = start
