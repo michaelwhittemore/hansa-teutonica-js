@@ -1,14 +1,29 @@
+// CURRENT TODO LIST!!!!!!:
+/* 
+    @Add a action calirifcation area below the button bar (i.e. select, square vs circle,
+        warn when trying to take an illegal action, select token via drop down) 
+    @Add some extra routes and cities to play with 
+    @create the click handlers for move and replace
+    @Create a globalized process turn method (checks player actions and legaility) and bumps the action/turn
+    @Handler should include the Player Information updating
+    @Add Button click handlers when initalizing the game
+    @Add Some padding to the components
+    @Update player Bank and supply to use circles and squares
+    @Spin up a simple node server and move these to modules
+    @Make the board and the player information area collapsable
+    @Add the ability tp 
+    @Add a turn timer to the turn tracker
+    @Create a list of stretch goals
+*/
+
 // MAYBE CONVERT TO TYPESCRIPT???
 
-
+// Very long term - add an end game calculator, undo action button, resume game, landimng page,
+// server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
 
 // in the long term might make sense to draw out the map with a canvas? ugh, I hate css
 
-// Once I can get a player making legal moves and passing control add a second route and then move on to server
-
-// Need top track current player. All commands must be passed to the game controller which will decide what happens
-// View as the board as a graph
 // Have players alternate turns on one board until I implement a server to handle cross window gameplay
 
 // CONSTANTS
@@ -16,6 +31,7 @@ const STARTING_BANK = 15; // no clue if this is correct
 const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob']
 const TEST_PLAYER_COLORS = ['red', 'blue']
+const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name', 
@@ -32,6 +48,33 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
     maxMovement: 'Maximum Piece Movement',
 }
 
+// Does this *need* to be an object? Maybe refactor once I do modules (although maybe this
+// would benefit from being able to track other input info in order to construct a full move)
+const inputHandlers = {
+    verifyPlayersTurn(){
+        // if not true will update action info with 'It isn't your turn'
+        // pretend this checks if it's the correct player's turn 
+        return true;
+    },
+
+    handlePlace(){
+        console.log('clicked handle place')
+        if (!inputHandlers.verifyPlayersTurn()){
+            return;
+        }
+        // Need to heighlight the piece to go to
+        const actionInfoDiv = document.getElementById('actionInfo');
+        inputHandlers.clearActionInfo();
+        actionInfoDiv.innerText = "Select a kind of piece to place and a location"
+    },
+    clearActionInfo(){
+        document.getElementById('actionInfo').innerHTML= ''
+    },
+    bindInputHandlers(){
+        document.getElementById('place').onclick = this.handlePlace;
+    }
+}
+
 const gameController = {
     initializeGameState(playerNames, playerColors) {
         // inputs are arrays
@@ -45,6 +88,7 @@ const gameController = {
         this.currentTurn = 0;
         console.log(this.playerArray)
         playerInformationController.initializePlayerUI(this.playerArray)
+        inputHandlers.bindInputHandlers()
     },
     resumeGame(properties) {
         //TODO
