@@ -1,12 +1,5 @@
 // MAYBE CONVERT TO TYPESCRIPT???
 
-// let's start with a simple initiation of a route between two nodes and then move on to player class
-// after I get that done I will move on to setting up a simple server
-
-// will need a global state tracker - tracks which player is in control
-// I think I'll expose an API that the UI can call
-
-// Unlocks will come later
 
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
 
@@ -21,9 +14,23 @@
 // CONSTANTS
 const STARTING_BANK = 15; // no clue if this is correct
 const FIRST_PLAYER_SQUARES = 6;
-const TEST_PLAYERS_NAMES = ['ALICE', 'BOB']
+const TEST_PLAYERS_NAMES = ['Alice', 'Bob']
 const TEST_PLAYER_COLORS = ['red', 'blue']
 
+const PLAYER_FIELDS_TO_TEXT_MAP = {
+    name: 'Name', 
+    color: 'Color', 
+    keys: 'Keys', 
+    unlockedColors: 'Unlocked Colors',
+    supplySquares: 'Workers in Supply', 
+    bankedSquares: 'Workers in Bank',
+    supplyCircles: 'Tradesmen (Circles) in Supply', 
+    bankedCircles: 'Tradesmen (Circles) in Bank',
+    maxActions: 'Max Actions', 
+    currentActions:'Actions Remaining', 
+    currentPoints: 'Current Non-Endgame Points', 
+    maxMovement: 'Maximum Piece Movement',
+}
 
 const gameController = {
     initializeGameState(playerNames, playerColors) {
@@ -37,6 +44,7 @@ const gameController = {
         // NEED AN ADVANCE turn method
         this.currentTurn = 0;
         console.log(this.playerArray)
+        playerInformationController.initializePlayerUI(this.playerArray)
     },
     resumeGame(properties) {
         //TODO
@@ -45,7 +53,8 @@ const gameController = {
         // This should use the  boardController methods
         boardController.addPieceToRouteNode(nodeId, 'blue', 'square')
 
-    }
+    },
+
 }
 
 
@@ -53,7 +62,7 @@ const gameController = {
 const boardController = {
     // Will probably need to load this in from a file, 
     initializeUI() {
-        this.board = document.getElementById('game-board');
+        this.board = document.getElementById('gameBoard');
         console.log(this.board)
         this.board.innerHTML = ''
         this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
@@ -111,9 +120,43 @@ const boardController = {
 }
 
 // Any on click will need to check if it's the player's turn (or they have priority based on a bump)
-const playerUIController = {
-    
+const playerInformationController = {
+    initializePlayerUI(playerArray){
+        const playerAreaDiv = document.getElementById('playerArea');
+        playerAreaDiv.innerHTML = '';
+        const turnTrackerHTML = this.turnTrackerHTMLBuilder(playerArray[0]);
+        const turnTrackerDiv = document.createElement('div');
+        turnTrackerDiv.id = 'turnTracker'
+        turnTrackerDiv.innerHTML = turnTrackerHTML;
+        playerAreaDiv.append(turnTrackerDiv)
+        playerArray.forEach(player => {
+            playerAreaDiv.append(this.createPlayerBox(player));
+        })
+    },
+    turnTrackerHTMLBuilder(player){
+        const { name, color, currentActions } = player
+        return (`It's currently <span style="color:${color}">${name}'s</span> turn. They have ${currentActions} actions remaining.`)
+    },
+    createPlayerBox(player){
+        const playerBoxDiv = document.createElement('div');
+        playerBoxDiv.className = 'playerBox';
+        playerBoxDiv.style.color = player.color;
+        
+        Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
+            const textDiv = document.createElement('div');
+            textDiv.innerHTML = `${PLAYER_FIELDS_TO_TEXT_MAP[field]}: 
+                <span id="${player[field]}">${player[field]}</span>`;
+            playerBoxDiv.append(textDiv)
+        })
+        console.log(playerBoxDiv)
+        return playerBoxDiv
+        // would be nice to evenually represent the bank and supply more visually
+    },
+    updatePlayerBox(player){
+        // TODO
+    }
 }
+// NEED A SERPATE CONTROLLER AREA (with move, resupply, place, upgrade, capture, bump, use token)
 
 // Do we need a seperate click handler?????
 
@@ -140,16 +183,16 @@ class Player {
     constructor(color, name, startingPieces) {
         this.color = color;
         this.name = name;
-        // I don't remember the correct number of starting workers of supply value
-        if (!startingPieces) {
-            startingPieces = 6
-        }
         this.supplySquares = startingPieces;
         this.bankedSquares = STARTING_BANK - startingPieces;
         this.supplyCircles = 1;
         this.bankedCircles = 0;
-        this.maxActions  = 2; // Not to be confused with available actions
+        this.maxActions = 2; // Not to be confused with current actions
+        this.currentActions = this.maxActions;
         this.currentPoints = 0;
+        this.unlockedColors = ['grey' ];// need a refernce map
+        this.maxMovement = 2;
+        this.keys = 1;
         // Might have some other properties, but can deal with those later
     }
 

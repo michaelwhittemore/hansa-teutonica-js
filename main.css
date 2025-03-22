@@ -25,8 +25,19 @@
     border: dashed;
     border-color: aqua;
 }
-.player-area{
-    
+.playerArea{
+    border: solid;
+    border-color: black;
+}
+#turnTracker{
+    font-weight: bold;   
+}
+.playerBox{
+    border: dotted;
+}
+.actionBar{
+    display: flex;
+    padding: 5px;
 }
 
 /* Everything will need padding, maybe make it global??? */
