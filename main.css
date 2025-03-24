@@ -1,11 +1,14 @@
+/* Need a large circle/square and small circle/square */
 .circle {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    margin: 2px;
   }
 .square {
     height: 50px;
     width: 50px;
+    margin: 2px;
 }
 .city {
     border: solid;

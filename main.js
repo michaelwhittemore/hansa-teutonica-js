@@ -1,8 +1,8 @@
 // CURRENT TODO LIST!!!!!!:
 /* 
-    @Add a action calirifcation area below the button bar (i.e. select, square vs circle,
+    XXXXX @Add a action calirifcation area below the button bar (i.e. select, square vs circle,
         warn when trying to take an illegal action, select token via drop down) 
-    @Add some extra routes and cities to play with 
+    XXXX @Add some extra routes and cities to play with 
     @create the click handlers for move and replace
     @Create a globalized process turn method (checks player actions and legaility) and bumps the action/turn
     @Handler should include the Player Information updating
@@ -16,9 +16,12 @@
     @Create a list of stretch goals
 */
 
+// I can probably fix my orientation issue by making the gameboard scrollable and hard coding in coordinates
+
 // MAYBE CONVERT TO TYPESCRIPT???
 
-// Very long term - add an end game calculator, undo action button, resume game, landimng page,
+// Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts
+
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
 
@@ -92,7 +95,19 @@ const inputHandlers = {
     bindInputHandlers(){
         document.getElementById('place').onclick = this.handlePlace;
     },
-    routeNodeClickHandler(){
+    routeNodeClickHandler(nodeId){
+        // Remember that we can use this for place, or move (both slecting FROM and TO), and for bumping
+        console.log('inputHandlers.routeNodeClickHandler at,', nodeId)
+        if (!inputHandlers.selectedAction){
+            console.warn('No selected action at that location')
+        };
+        if (!inputHandlers.additionalInfo) {
+            console.warn()
+        }
+        // WIll need to pass this into game controller once all the validation happens
+        // Maybe the game controller will handle the validation?
+        // If it's not your turn we don't even bother the game controller
+        // gameController.placeWorkerOnNode(nodeId)
         // This will do stuff dynamically based on the other turn selection information
     }
 }
@@ -108,7 +123,6 @@ const gameController = {
         }
         // NEED AN ADVANCE turn method
         this.currentTurn = 0;
-        console.log(this.playerArray)
         playerInformationController.initializePlayerUI(this.playerArray)
         inputHandlers.bindInputHandlers()
     },
@@ -129,10 +143,13 @@ const boardController = {
     // Will probably need to load this in from a file, 
     initializeUI() {
         this.board = document.getElementById('gameBoard');
-        console.log(this.board)
         this.board.innerHTML = ''
         this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
-        this.createRouteBox(3, 'testID')
+        this.createRouteBox(3, 'testID-a')
+        this.createCity('City Two', [['square', 'grey'], ['square', 'grey']]);
+        this.createRouteBox(4, 'testID-b')
+        this.createCity('City Three', [['square', 'grey'], ['circle', 'purple']]);
+
     },
     createCity(name, spotArray, location) {
         // spotArray is a 2d text array with either circle or square and color
@@ -165,7 +182,8 @@ const boardController = {
             routeNode.onclick = (event) => {
                 // this.addPieceToRouteNode(nodeId, 'blue', 'square')
                 // Maybe pass in a player based on local information??
-                gameController.placeWorkerOnNode(nodeId)
+                // gameController.placeWorkerOnNode(nodeId)
+                inputHandlers.routeNodeClickHandler(nodeId)
             }
             routeBoxDiv.append(routeNode)
         }
@@ -214,7 +232,6 @@ const playerInformationController = {
                 <span id="${player[field]}">${player[field]}</span>`;
             playerBoxDiv.append(textDiv)
         })
-        console.log(playerBoxDiv)
         return playerBoxDiv
         // would be nice to evenually represent the bank and supply more visually
     },
