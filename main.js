@@ -41,19 +41,22 @@ const IS_HOTSEAT_MODE = true;
 
 const TEST_BOARD_CONFIG_CITIES = {
     'Alpha City': {
-        spots:
+        name: 'Alpha City',
+        spotArray:
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: ['Beta City', 3],
+        neighborRoutes: [['Beta City', 3]],
         unlock: 'action',
     },
     'Beta City': {
-        spots:
+        name: 'Beta City',
+        spotArray:
             [['square', 'grey'], ['square', 'grey']],
-        neighborRoutes: ['Gamma City', 4],
+        neighborRoutes: [['Gamma City', 4]],
         unlock: 'purse',
     },
     'Gamma City': {
-        spots: [['square', 'grey'], ['circle', 'purple']],
+        name: 'Gamma City',
+        spotArray: [['square', 'grey'], ['circle', 'purple']],
         unlock: 'unlockedColors',
     },
 };
@@ -186,8 +189,24 @@ const gameController = {
         }
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray)
-        this.routeNodeStorageObject = {}
+        this.routeNodeStorageObject = {};
+        this.cityStorageObject = {};
         inputHandlers.bindInputHandlers()
+        // DEV
+        // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
+        boardController.initializeUI();
+
+        Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
+            const city = TEST_BOARD_CONFIG_CITIES[cityKey]
+            boardController.createCity({...city})
+            // update the cityStorageObject
+            if(city.neighborRoutes){
+                const routeId= `${city.name}-${city.neighborRoutes[0][0]}`
+                boardController.createRouteBox(city.neighborRoutes[0][1],routeId)
+            }
+            
+        })
+
     },
     resumeGame(properties) {
         //TODO
@@ -287,24 +306,21 @@ const boardController = {
         this.board = document.getElementById('gameBoard');
         this.board.innerHTML = ''
         // DEV
-        this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
-        this.createRouteBox(3, 'testID-a')
-        this.createCity('City Two', [['square', 'grey'], ['square', 'grey']]);
-        this.createRouteBox(4, 'testID-b')
-        this.createCity('City Three', [['square', 'grey'], ['circle', 'purple']]);
-        // TEST_BOARD_CONFIG.forEach(cityData => {
-        //     const name = cityData[0]
-        //     const routeLink = 
-        // })
+        // this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
+        // this.createRouteBox(3, 'testID-a')
+        // this.createCity('City Two', [['square', 'grey'], ['square', 'grey']]);
+        // this.createRouteBox(4, 'testID-b')
+        // this.createCity('City Three', [['square', 'grey'], ['circle', 'purple']]);
 
     },
-    createCity(name, spotArray, location) {
-        // spotArray is a 2d text array with either circle or square and color
+    createCity(cityInformation) {
+        // debugger;
+        const {name, spotArray, unlock, location} = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifers 
         cityDiv.id = name
-        // the name should be in its own div
+
         cityDiv.innerText = `${name}`
         spotArray.forEach(spotInfo => {
             const citySpotDiv = document.createElement('div');
@@ -315,7 +331,6 @@ const boardController = {
         cityDiv.onclick = () => {
             inputHandlers.cityClickHandler(name)
         }
-        // Eventually will need to add to the gameboard instead of the body
         this.board.append(cityDiv)
     },
     createRouteBox(length, id, location) {
