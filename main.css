@@ -10,6 +10,28 @@
     width: 50px;
     margin: 2px;
 }
+.big-circle {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    margin: 1px;
+  }
+.big-square {
+    height: 60px;
+    width: 60px;
+    margin: 1px;
+}
+.small-circle {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    margin: 1px;
+  }
+.small-square {
+    height: 45px;
+    width: 45px;
+    margin: 1px;
+}
 .city {
     border: solid;
     display: flex;
@@ -22,7 +44,8 @@
     height: 60px;
     width: 60px;
     border: solid;
-    /* z-index: 5; */
+    display: flex;
+    align-items: center;
 }
 .board{
     border: dashed;

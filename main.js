@@ -3,11 +3,13 @@
     XXXXX @Add a action calirifcation area below the button bar (i.e. select, square vs circle,
         warn when trying to take an illegal action, select token via drop down) 
     XXXX @Add some extra routes and cities to play with 
-    @create the click handlers for move and replace
-    @Create a globalized process turn method (checks player actions and legaility) and bumps the action/turn
-    @Handler should include the Player Information updating
-    @Add Button click handlers when initalizing the game
-    @Add Some padding to the components
+    XXX@Create the click handlers for place and capture and resupply
+    XXX@Create a globalized process turn method (checks player actions and legaility) and bumps the action/turn
+    @And onclick buttons to cities and bind them like routes
+    XXX @Handler should include the Player Information updating
+    XXX @Add Button click handlers when initalizing the game
+    XXX @Add Some margins to the components
+    @Capture cities
     @Update player Bank and supply to use circles and squares
     @Spin up a simple node server and move these to modules
     @Make the board and the player information area collapsable
@@ -20,7 +22,7 @@
 // MAYBE CONVERT TO TYPESCRIPT???
 
 // Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
-// mouse over text for player fields
+// mouse over text for player fields, turn log (just some text after resolve turn), make collapsable
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -37,6 +39,27 @@ const TEST_PLAYER_COLORS = ['red', 'blue']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 const IS_HOTSEAT_MODE = true;
 
+const TEST_BOARD_CONFIG_CITIES = {
+    'Alpha City': {
+        spots:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        neighborRoutes: ['Beta City', 3],
+        unlock: 'action',
+    },
+    'Beta City': {
+        spots:
+            [['square', 'grey'], ['square', 'grey']],
+        neighborRoutes: ['Gamma City', 4],
+        unlock: 'purse',
+    },
+    'Gamma City': {
+        spots: [['square', 'grey'], ['circle', 'purple']],
+        unlock: 'unlockedColors',
+    },
+};
+
+
+
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
     color: 'Color',
@@ -50,6 +73,7 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
     currentActions: 'Actions Remaining',
     currentPoints: 'Current Non-Endgame Points',
     maxMovement: 'Maximum Piece Movement',
+    purse: 'Maximum Resupply'
 }
 
 const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
@@ -89,6 +113,23 @@ const inputHandlers = {
         actionInfoDiv.append(circleButton);
 
     },
+    handleBump() {
+        console.warn('Bump is not yet implemented!')
+        // TODO
+    },
+    handleCaptureCity() {
+        console.warn('capture city incoming')
+        // TODO
+    },
+    handleResupply() {
+        console.warn('resupplying')
+        let playerId = undefined
+        if (!IS_HOTSEAT_MODE) {
+            // get the player name from localstorage
+        }
+        gameController.resupply(playerId);
+    },
+
     clearAllActionSelection() {
         inputHandlers.selectedAction = undefined;
         inputHandlers.selectedLocation = undefined;
@@ -97,6 +138,10 @@ const inputHandlers = {
     },
     bindInputHandlers() {
         document.getElementById('place').onclick = this.handlePlace;
+        document.getElementById('bump').onclick = this.handleBump;
+        document.getElementById('resupply').onclick = this.handleResupply;
+        document.getElementById('capture').onclick = this.handleCaptureCity;
+
     },
     warnInvalidAction(warningText) {
         document.getElementById('actionInfo').innerHTML +=
@@ -106,6 +151,10 @@ const inputHandlers = {
         // Remember that we can use this for place, or move (both slecting FROM and TO), and for bumping
         if (!inputHandlers.selectedAction) {
             console.warn('No selected action at that location')
+            console.warn('Defaulting to place square')
+            // WE MAY WANT TO CHANGE DEFAULTS
+            inputHandlers.selectedAction = 'place';
+            inputHandlers.additionalInfo = 'square'
         };
         if (!inputHandlers.additionalInfo) {
             console.warn('NO additionalInfo, (this may be accetable for bump)')
@@ -120,11 +169,10 @@ const inputHandlers = {
             }
             gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo, playerId);
         }
-        // WIll need to pass this into game controller once all the validation happens
-        // Maybe the game controller will handle the validation?
-        // If it's not your turn we don't even bother the game controller
-        // gameController.placeWorkerOnNode(nodeId)
-        // This will do stuff dynamically based on the other turn selection information
+    },
+    cityClickHandler(cityId) {
+        console.log('clicked on city', cityId)
+
     }
 }
 
@@ -163,10 +211,9 @@ const gameController = {
             this.advanceTurn(player);
         }
         playerInformationController.updateTurnTracker(this.getActivePlayer())
-        playerInformationController.updatePlayerBox(this.getActivePlayer())
+        playerInformationController.updateAllPlayersInfo(this.playerArray)
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
-        // DEV
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -197,6 +244,38 @@ const gameController = {
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
         this.resolveAction(player)
     },
+    resupply(playerId) {
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        inputHandlers.clearAllActionSelection();
+        if (player.bankedCircles === 0 && player.bankedSquares === 0) {
+            console.warn('There is nothing in your bank to resupply with.')
+            inputHandlers.warnInvalidAction('There is nothing in your bank to resupply with.')
+            return;
+        }
+        if (player.purse === 'All') {
+            player.supplyCircles += player.bankedCircles;
+            player.bankedCircles = 0;
+            player.supplySquares += player.bankedSquares;
+            player.bankedSquares = 0;
+        } else {
+            let restocks = player.purse;
+            const resuppliedCircles = Math.min(player.bankedCircles, restocks);
+            player.supplyCircles += resuppliedCircles;
+            player.bankedCircles -= resuppliedCircles;
+            restocks -= resuppliedCircles;
+            const resuppliedSquares = Math.min(player.bankedSquares, restocks);
+            player.supplySquares += resuppliedSquares;
+            player.bankedSquares -= resuppliedSquares;
+            console.log(`${player.name} resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`);
+        }
+        this.resolveAction(player)
+        // eventually should chose circles vs squares, right now default to all circles, then square
+    },
 
 }
 
@@ -207,16 +286,21 @@ const boardController = {
     initializeUI() {
         this.board = document.getElementById('gameBoard');
         this.board.innerHTML = ''
+        // DEV
         this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
         this.createRouteBox(3, 'testID-a')
         this.createCity('City Two', [['square', 'grey'], ['square', 'grey']]);
         this.createRouteBox(4, 'testID-b')
         this.createCity('City Three', [['square', 'grey'], ['circle', 'purple']]);
+        // TEST_BOARD_CONFIG.forEach(cityData => {
+        //     const name = cityData[0]
+        //     const routeLink = 
+        // })
 
     },
     createCity(name, spotArray, location) {
         // spotArray is a 2d text array with either circle or square and color
-        const cityDiv = document.createElement('div');
+        const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifers 
         cityDiv.id = name
@@ -224,12 +308,13 @@ const boardController = {
         cityDiv.innerText = `${name}`
         spotArray.forEach(spotInfo => {
             const citySpotDiv = document.createElement('div');
-            citySpotDiv.className = spotInfo[0];
-            // these will eventually need piece spots too
-            // Might make sense to have a color map
+            citySpotDiv.className = `big-${spotInfo[0]}`;
             citySpotDiv.style.backgroundColor = spotInfo[1]
             cityDiv.append(citySpotDiv)
         })
+        cityDiv.onclick = () => {
+            inputHandlers.cityClickHandler(name)
+        }
         // Eventually will need to add to the gameboard instead of the body
         this.board.append(cityDiv)
     },
@@ -256,7 +341,7 @@ const boardController = {
         this.clearPieceFromRouteNode(nodeId);
         routeNode = document.getElementById(nodeId);
         playerPieceDiv = document.createElement('div');
-        playerPieceDiv.className = shape;
+        playerPieceDiv.className = `small-${shape}`;
         playerPieceDiv.style.backgroundColor = playerColor;
         routeNode.append(playerPieceDiv)
     },
@@ -307,6 +392,11 @@ const playerInformationController = {
             const fieldSpan = document.getElementById(`${player.id}-${field}`);
             fieldSpan.innerText = player[field]
         })
+    },
+    updateAllPlayersInfo(players) {
+        players.forEach(player => {
+            this.updatePlayerBox(player)
+        })
     }
 }
 // NEED A SERPATE CONTROLLER AREA (with move, resupply, place, upgrade, capture, bump, use token)
@@ -316,19 +406,9 @@ const playerInformationController = {
 // I think end game points will be calculated much later
 // Need player fields:
 /**
- * Piece color
  * Points (may also need to be tracked by board state)
- * Bank value (both kinds)
- * Supply value (both kinds)
- * Actions used (i.e. as part of the turn)
- * Actions unlocked
- * Keys Unlocked
- * Colors unlocked
- * Purse value
- * Move value (the number of units that can be shifted on the board)
  * Number of tokens (or whatever those little bonus pieces are called) both used and avaible
- * playerId?
- * Name?
+
  */
 // Should the game controller have a reference to the players? I want to say yes, it should call their methods
 
@@ -347,6 +427,7 @@ class Player {
         this.unlockedColors = ['grey'];// need a refernce map
         this.maxMovement = 2;
         this.keys = 1;
+        this.purse = 3;
     }
 
 }
