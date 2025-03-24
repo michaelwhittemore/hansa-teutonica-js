@@ -35,6 +35,7 @@ const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob']
 const TEST_PLAYER_COLORS = ['red', 'blue']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
+const IS_HOTSEAT_MODE = true;
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name', 
@@ -51,6 +52,7 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
     maxMovement: 'Maximum Piece Movement',
 }
 
+const isShape = (inputString) => inputString  === 'square' || inputString === 'circle';
 // Does this *need* to be an object? Maybe refactor once I do modules (although maybe this
 // would benefit from being able to track other input info in order to construct a full move)
 const inputHandlers = {
@@ -61,15 +63,17 @@ const inputHandlers = {
     },
 
     handlePlace(){
+        const actionInfoDiv = document.getElementById('actionInfo');
+        inputHandlers.clearAllActionSelection();
+
         // May want to track state of action input (i.e have we selected an action, a location,
         // and additonal information as needed)
         if (!inputHandlers.verifyPlayersTurn()){
             return;
         }
-        inputHandlers.selectedAction = 'place' 
+        inputHandlers.selectedAction = 'place'
         // Need to heighlight the piece to go to
-        const actionInfoDiv = document.getElementById('actionInfo');
-        inputHandlers.clearAllActionSelection();
+
         actionInfoDiv.innerText = "Select a kind of piece to place and a location"
 
         const squareButton = document.createElement('button');
@@ -95,14 +99,27 @@ const inputHandlers = {
     bindInputHandlers(){
         document.getElementById('place').onclick = this.handlePlace;
     },
+    warnInvalidAction(warningText){
+        document.getElementById('actionInfo').innerHTML += 
+            `<span class="warningText"> ${warningText}</span>`;
+    },
     routeNodeClickHandler(nodeId){
         // Remember that we can use this for place, or move (both slecting FROM and TO), and for bumping
-        console.log('inputHandlers.routeNodeClickHandler at,', nodeId)
         if (!inputHandlers.selectedAction){
             console.warn('No selected action at that location')
         };
         if (!inputHandlers.additionalInfo) {
-            console.warn()
+            console.warn('NO additionalInfo, (this may be accetable for bump)')
+        }
+        // Happy path for place move - leave checking the turn and availble pieces and freeness of the node to the game controller
+        if (inputHandlers.selectedAction === 'place' && isShape(inputHandlers.additionalInfo)){
+            // playerName is currently the selected player for hotseat
+            // in onlinePlay it will be something else
+            let playerId = undefined
+            if (!IS_HOTSEAT_MODE){
+                // get the player name from localstorage
+            }
+            gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo, playerId);
         }
         // WIll need to pass this into game controller once all the validation happens
         // Maybe the game controller will handle the validation?
@@ -124,15 +141,52 @@ const gameController = {
         // NEED AN ADVANCE turn method
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray)
+        this.routeNodeStorageObject = {}
         inputHandlers.bindInputHandlers()
     },
     resumeGame(properties) {
         //TODO
     },
-    placeWorkerOnNode(nodeId) {
-        // This should use the  boardController methods
-        boardController.addPieceToRouteNode(nodeId, 'blue', 'square')
-
+    getActivePlayer(){
+        return this.playerArray[this.currentTurn % this.playerArray.length]
+    },
+    getPlayerById(){
+        // TODO, only used for online play I think
+    },
+    resolveAction(player){
+        // TODO
+        // 1. SUBTRACT PLAYER ACTIONS
+        // 2. IF NEEDED, ADVANCE THE TURN AND MOVE CURRENT PLAYER
+        // 3. UPDATE PLAYER TRACKER FIELD
+        // 4. UPDATE PLAYER INFO
+    },
+    placeWorkerOnNode(nodeId, shape, playerId) {
+        console.log('in placeWorkerOnNode with nodeId', nodeId)
+        // DEV
+        let player;
+        if(IS_HOTSEAT_MODE){
+            player = this.getActivePlayer()
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // Validate that the player has enough supply and that the node is unoccupied
+        const playerShapeKey = shape === 'square' ? 'supplySquares' : 'supplyCircles';
+        if (player[playerShapeKey] < 1){
+            console.warn(`Not enough ${shape}s in your supply`)
+            inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
+            // TODO This won't work as we're clearing the warning area
+            inputHandlers.clearAllActionSelection();
+            return
+        }
+        if (this.routeNodeStorageObject[nodeId].occupied){
+            console.warn('That route node is already occupied!')
+            // TODO This won't work as we're clearing the warning area
+            inputHandlers.warnInvalidAction('That route node is already occupied!')
+            inputHandlers.clearAllActionSelection();
+            return
+        }
+        player[playerShapeKey] -= 1;
+        boardController.addPieceToRouteNode(nodeId, player.color, shape)
     },
 
 }

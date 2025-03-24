@@ -46,5 +46,8 @@
     display: flex;
     height: 20px;
 }
+.warningText{
+    font-style: italic;
+}
 
 /* Everything will need padding, maybe make it global??? */
