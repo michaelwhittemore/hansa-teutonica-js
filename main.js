@@ -11,7 +11,6 @@
     @Update player Bank and supply to use circles and squares
     @Spin up a simple node server and move these to modules
     @Make the board and the player information area collapsable
-    @Add the ability tp 
     @Add a turn timer to the turn tracker
     @Create a list of stretch goals
 */
@@ -20,7 +19,8 @@
 
 // MAYBE CONVERT TO TYPESCRIPT???
 
-// Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts
+// Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
+// mouse over text for player fields
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -38,37 +38,36 @@ const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 't
 const IS_HOTSEAT_MODE = true;
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
-    name: 'Name', 
-    color: 'Color', 
-    keys: 'Keys', 
+    name: 'Name',
+    color: 'Color',
+    keys: 'Keys',
     unlockedColors: 'Unlocked Colors',
-    supplySquares: 'Workers in Supply', 
+    supplySquares: 'Workers in Supply',
     bankedSquares: 'Workers in Bank',
-    supplyCircles: 'Tradesmen (Circles) in Supply', 
+    supplyCircles: 'Tradesmen (Circles) in Supply',
     bankedCircles: 'Tradesmen (Circles) in Bank',
-    maxActions: 'Max Actions', 
-    currentActions:'Actions Remaining', 
-    currentPoints: 'Current Non-Endgame Points', 
+    maxActions: 'Max Actions',
+    currentActions: 'Actions Remaining',
+    currentPoints: 'Current Non-Endgame Points',
     maxMovement: 'Maximum Piece Movement',
 }
 
-const isShape = (inputString) => inputString  === 'square' || inputString === 'circle';
-// Does this *need* to be an object? Maybe refactor once I do modules (although maybe this
-// would benefit from being able to track other input info in order to construct a full move)
+const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
+
 const inputHandlers = {
-    verifyPlayersTurn(){
+    verifyPlayersTurn() {
         // if not true will update action info with 'It isn't your turn'
         // pretend this checks if it's the correct player's turn 
         return true;
     },
 
-    handlePlace(){
+    handlePlace() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
         // May want to track state of action input (i.e have we selected an action, a location,
         // and additonal information as needed)
-        if (!inputHandlers.verifyPlayersTurn()){
+        if (!inputHandlers.verifyPlayersTurn()) {
             return;
         }
         inputHandlers.selectedAction = 'place'
@@ -90,33 +89,33 @@ const inputHandlers = {
         actionInfoDiv.append(circleButton);
 
     },
-    clearAllActionSelection(){
+    clearAllActionSelection() {
         inputHandlers.selectedAction = undefined;
         inputHandlers.selectedLocation = undefined;
         inputHandlers.additionalInfo = undefined;
-        document.getElementById('actionInfo').innerHTML= ''
+        document.getElementById('actionInfo').innerHTML = ''
     },
-    bindInputHandlers(){
+    bindInputHandlers() {
         document.getElementById('place').onclick = this.handlePlace;
     },
-    warnInvalidAction(warningText){
-        document.getElementById('actionInfo').innerHTML += 
+    warnInvalidAction(warningText) {
+        document.getElementById('actionInfo').innerHTML +=
             `<span class="warningText"> ${warningText}</span>`;
     },
-    routeNodeClickHandler(nodeId){
+    routeNodeClickHandler(nodeId) {
         // Remember that we can use this for place, or move (both slecting FROM and TO), and for bumping
-        if (!inputHandlers.selectedAction){
+        if (!inputHandlers.selectedAction) {
             console.warn('No selected action at that location')
         };
         if (!inputHandlers.additionalInfo) {
             console.warn('NO additionalInfo, (this may be accetable for bump)')
         }
         // Happy path for place move - leave checking the turn and availble pieces and freeness of the node to the game controller
-        if (inputHandlers.selectedAction === 'place' && isShape(inputHandlers.additionalInfo)){
+        if (inputHandlers.selectedAction === 'place' && isShape(inputHandlers.additionalInfo)) {
             // playerName is currently the selected player for hotseat
             // in onlinePlay it will be something else
             let playerId = undefined
-            if (!IS_HOTSEAT_MODE){
+            if (!IS_HOTSEAT_MODE) {
                 // get the player name from localstorage
             }
             gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo, playerId);
@@ -131,14 +130,12 @@ const inputHandlers = {
 
 const gameController = {
     initializeGameState(playerNames, playerColors) {
-        // inputs are arrays
         // let's just use turn order for IDs
         this.playerArray = []
-        for (let i = 0; i < playerNames.length; i++){
-            const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i);
+        for (let i = 0; i < playerNames.length; i++) {
+            const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
             this.playerArray.push(player)
         }
-        // NEED AN ADVANCE turn method
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray)
         this.routeNodeStorageObject = {}
@@ -147,45 +144,44 @@ const gameController = {
     resumeGame(properties) {
         //TODO
     },
-    getActivePlayer(){
+    getActivePlayer() {
         return this.playerArray[this.currentTurn % this.playerArray.length]
     },
-    getPlayerById(){
+    getPlayerById() {
         // TODO, only used for online play I think
     },
-    advanceTurn(){
-        console.log('advancing the turn')
-    },
-    resolveAction(player){
-        inputHandlers.clearAllActionSelection();
-        // TODO
-        // 1. SUBTRACT PLAYER ACTIONS
-        player.currentActions -= 1;
-        // 2. IF NEEDED, ADVANCE THE TURN AND MOVE CURRENT PLAYER
-        if (player.currentActions === 0){
-            this.advanceTurn();
-        }
-        // 3. UPDATE PLAYER TRACKER FIELD
+    advanceTurn(lastPlayer) {
+        this.currentTurn++;
         playerInformationController.updateTurnTracker(this.getActivePlayer())
-        // 4. UPDATE PLAYER INFO
+        lastPlayer.currentActions = lastPlayer.maxActions;
+        // the last player's actions aren't being updated on player box
+    },
+    resolveAction(player) {
+        inputHandlers.clearAllActionSelection();
+        player.currentActions -= 1;
+        if (player.currentActions === 0) {
+            this.advanceTurn(player);
+        }
+        playerInformationController.updateTurnTracker(this.getActivePlayer())
+        playerInformationController.updatePlayerBox(this.getActivePlayer())
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         // DEV
         let player;
-        if(IS_HOTSEAT_MODE){
+        if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
         // Validate that the player has enough supply and that the node is unoccupied
         const playerShapeKey = shape === 'square' ? 'supplySquares' : 'supplyCircles';
-        if (player[playerShapeKey] < 1){
+        if (player[playerShapeKey] < 1) {
             console.warn(`Not enough ${shape}s in your supply`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
             return
         }
-        if (this.routeNodeStorageObject[nodeId]?.occupied){
+        if (this.routeNodeStorageObject[nodeId]?.occupied) {
             console.warn('That route node is already occupied!')
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction('That route node is already occupied!')
@@ -193,7 +189,7 @@ const gameController = {
         }
         player[playerShapeKey] -= 1;
         this.routeNodeStorageObject[nodeId] = {
-            occupied : true,
+            occupied: true,
             shape,
             color: player.color,
             playerId,
@@ -272,7 +268,7 @@ const boardController = {
 
 // Any on click will need to check if it's the player's turn (or they have priority based on a bump)
 const playerInformationController = {
-    initializePlayerUI(playerArray){
+    initializePlayerUI(playerArray) {
         const playerAreaDiv = document.getElementById('playerArea');
         playerAreaDiv.innerHTML = '';
         const turnTrackerHTML = this.turnTrackerHTMLBuilder(playerArray[0]);
@@ -287,26 +283,30 @@ const playerInformationController = {
     updateTurnTracker(player) {
         document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
     },
-    turnTrackerHTMLBuilder(player){
+    turnTrackerHTMLBuilder(player) {
         const { name, color, currentActions } = player
         return (`It's currently <span style="color:${color}">${name}'s</span> turn. They have ${currentActions} actions remaining.`)
     },
-    createPlayerBox(player){
+    createPlayerBox(player) {
         const playerBoxDiv = document.createElement('div');
         playerBoxDiv.className = 'playerBox';
         playerBoxDiv.style.color = player.color;
-        
+        playerBoxDiv.id = player.id;
+
         Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
             const textDiv = document.createElement('div');
             textDiv.innerHTML = `${PLAYER_FIELDS_TO_TEXT_MAP[field]}: 
-                <span id="${player[field]}">${player[field]}</span>`;
+                <span id="${player.id}-${field}">${player[field]}</span>`;
             playerBoxDiv.append(textDiv)
         })
         return playerBoxDiv
         // would be nice to evenually represent the bank and supply more visually
     },
-    updatePlayerBox(player){
-        // TODO
+    updatePlayerBox(player) {
+        Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
+            const fieldSpan = document.getElementById(`${player.id}-${field}`);
+            fieldSpan.innerText = player[field]
+        })
     }
 }
 // NEED A SERPATE CONTROLLER AREA (with move, resupply, place, upgrade, capture, bump, use token)
@@ -333,7 +333,8 @@ const playerInformationController = {
 // Should the game controller have a reference to the players? I want to say yes, it should call their methods
 
 class Player {
-    constructor(color, name, startingPieces) {
+    constructor(color, name, startingPieces, id) {
+        this.id = id;
         this.color = color;
         this.name = name;
         this.supplySquares = startingPieces;
@@ -343,10 +344,9 @@ class Player {
         this.maxActions = 2; // Not to be confused with current actions
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
-        this.unlockedColors = ['grey' ];// need a refernce map
+        this.unlockedColors = ['grey'];// need a refernce map
         this.maxMovement = 2;
         this.keys = 1;
-        // Might have some other properties, but can deal with those later
     }
 
 }
