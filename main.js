@@ -153,15 +153,23 @@ const gameController = {
     getPlayerById(){
         // TODO, only used for online play I think
     },
+    advanceTurn(){
+        console.log('advancing the turn')
+    },
     resolveAction(player){
+        inputHandlers.clearAllActionSelection();
         // TODO
         // 1. SUBTRACT PLAYER ACTIONS
+        player.currentActions -= 1;
         // 2. IF NEEDED, ADVANCE THE TURN AND MOVE CURRENT PLAYER
+        if (player.currentActions === 0){
+            this.advanceTurn();
+        }
         // 3. UPDATE PLAYER TRACKER FIELD
+        playerInformationController.updateTurnTracker(this.getActivePlayer())
         // 4. UPDATE PLAYER INFO
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
-        console.log('in placeWorkerOnNode with nodeId', nodeId)
         // DEV
         let player;
         if(IS_HOTSEAT_MODE){
@@ -173,20 +181,25 @@ const gameController = {
         const playerShapeKey = shape === 'square' ? 'supplySquares' : 'supplyCircles';
         if (player[playerShapeKey] < 1){
             console.warn(`Not enough ${shape}s in your supply`)
-            inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
-            // TODO This won't work as we're clearing the warning area
             inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
             return
         }
-        if (this.routeNodeStorageObject[nodeId].occupied){
+        if (this.routeNodeStorageObject[nodeId]?.occupied){
             console.warn('That route node is already occupied!')
-            // TODO This won't work as we're clearing the warning area
-            inputHandlers.warnInvalidAction('That route node is already occupied!')
             inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction('That route node is already occupied!')
             return
         }
         player[playerShapeKey] -= 1;
-        boardController.addPieceToRouteNode(nodeId, player.color, shape)
+        this.routeNodeStorageObject[nodeId] = {
+            occupied : true,
+            shape,
+            color: player.color,
+            playerId,
+        }
+        boardController.addPieceToRouteNode(nodeId, player.color, shape);
+        this.resolveAction(player)
     },
 
 }
@@ -270,6 +283,9 @@ const playerInformationController = {
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
         })
+    },
+    updateTurnTracker(player) {
+        document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
     },
     turnTrackerHTMLBuilder(player){
         const { name, color, currentActions } = player
