@@ -372,57 +372,62 @@ const gameController = {
             // TODO, check that the playerId who made the request is the active player
         }
         inputHandlers.clearAllActionSelection();
-
-        // DEV 
         const city = this.cityStorageObject[cityName]
-        console.log(city)
 
         const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
-        // if (!routeCheckOutcome){
-        //     console.warn('You do not have a completed route')
-        //     inputHandlers.clearAllActionSelection();
-        //     inputHandlers.warnInvalidAction('You do not have a completed route');
-        //     return;
-        // };
-        if (player.currentActions === 0){
+        const { routeId } = routeCheckOutcome
+
+        if (!routeCheckOutcome) {
+            console.warn('You do not have a completed route')
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction('You do not have a completed route');
+            return;
+        };
+        if (player.currentActions === 0) {
             // I don't think we should reach here???
-            console.error('You don\'t have enough actions, how did you even get here? The turn was supposed to advance!')   
+            console.error('You don\'t have enough actions, how did you even get here? The turn was supposed to advance!')
             return;
         }
-        if (city.openSpotIndex === city.spotArray){
+        if (city.openSpotIndex === city.spotArray) {
             console.warn(`The city of ${city.cityName} is already full.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`The city of ${city.cityName} is already full.`);
             return;
         }
         const [targetShape, targetColor] = city.spotArray[city.openSpotIndex]
-        if (!player.unlockedColors.includes(targetColor)){
+        if (!player.unlockedColors.includes(targetColor)) {
             console.warn(`You haven't unlocked ${targetColor}.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You haven't unlocked ${targetColor}.`);
             return
         }
-        if (routeCheckOutcome[targetShape] === 0){
+        if (routeCheckOutcome[targetShape] === 0) {
             console.warn(`You don't have a ${targetShape} in your route.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You don't have a ${targetShape} in your route.`);
             return
         }
-        console.log('Everything looks good, capturing city now.')
         boardController.addPieceToCity(city, player.color)
-        city.occupants.push(playerId);
+        routeCheckOutcome[targetShape]--;
 
-        /* 
-        5. If everything is OK:
-        6. Take one of the player pieces on route and add it to the city
-        6. add the player pieces back to bank
-        6.5 Clear all existing route nodes in that route
-        7. Update city info (including openSpotIndex)
-        8. Update city UI
-        9. Update player bank 
-        10. Points check (optional, maybe later)
-        11. Standard end of action resolution
-        */
+        player.bankedCircles += routeCheckOutcome.circle;
+        player.bankedSquares += routeCheckOutcome.square;
+
+        city.occupants.push(playerId);
+        city.openSpotIndex++;
+
+
+        for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
+            this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
+                occupied: false,
+                shape: undefined,
+                color: undefined,
+                playerId: undefined,
+            };
+            boardController.clearPieceFromRouteNode(nodeToClearId)
+        }
+        // TODO point calculation
+        this.resolveAction(player);
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
         // at some point return BOTH routes
@@ -481,7 +486,7 @@ const boardController = {
         //     citySpotDiv.style.backgroundColor = spotInfo[1]
         //     cityDiv.append(citySpotDiv)
         // })
-        for (let i = 0; i < spotArray.length; i++){
+        for (let i = 0; i < spotArray.length; i++) {
             const spotInfo = spotArray[i]
             const citySpotDiv = document.createElement('div');
             citySpotDiv.className = `big-${spotInfo[0]}`;
@@ -522,11 +527,8 @@ const boardController = {
         routeNode = document.getElementById(nodeId);
         routeNode.innerHTML = ''
     },
-    addPieceToCity(city, playerColor){
-        // dev
-        console.log('addPieceToCity', city)
+    addPieceToCity(city, playerColor) {
         const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
-        console.log(pieceHolder)
         const targetShape = city.spotArray[city.openSpotIndex][0];
         const playerPieceDiv = document.createElement('div')
         playerPieceDiv.className = `small-${targetShape}`
