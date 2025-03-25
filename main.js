@@ -9,10 +9,12 @@
     XXX @Handler should include the Player Information updating
     XXX @Add Button click handlers when initializing the game
     XXX @Add Some margins to the components
-    @Capture cities
-    @Add a city UI update
+    XXX @Capture cities
+    XXX @Add a city UI update
     @Fix the warning text by creating two seperate areas
     XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
+    @ Track points on city capture HERE!!!!!!!!!!!!!!!!!!!
+    @ move method
     @Move some of the gamecontroller copy pasta into it's own methods
     @Update player Bank and supply to use circles and squares
     @Spin up a simple node server and move these to modules
