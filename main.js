@@ -10,6 +10,7 @@
     XXX @Add Button click handlers when initializing the game
     XXX @Add Some margins to the components
     @Capture cities
+    @Fix the warning text by creating two seperate areas
     XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
     @Move some of the gamecontroller copy pasta into it's own methods
     @Update player Bank and supply to use circles and squares
@@ -45,22 +46,22 @@ const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 't
 const IS_HOTSEAT_MODE = true;
 
 const TEST_BOARD_CONFIG_CITIES = {
-    'Alpha City': {
-        name: 'Alpha City',
+    'Alpha': {
+        name: 'Alpha',
         spotArray:
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta City', 3]],
+        neighborRoutes: [['Beta', 3]],
         unlock: 'action',
     },
-    'Beta City': {
-        name: 'Beta City',
+    'Beta': {
+        name: 'Beta',
         spotArray:
-            [['square', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['Gamma City', 4]],
+            [['circle', 'grey'], ['square', 'grey']],
+        neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
     },
-    'Gamma City': {
-        name: 'Gamma City',
+    'Gamma': {
+        name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         unlock: 'unlockedColors',
     },
@@ -168,12 +169,16 @@ const inputHandlers = {
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
 
     },
+    // TODO this doesn't work in all circumstances (like capturing a city)
+    // Let's break action info and warning into two seperate components
     warnInvalidAction(warningText) {
+        // Maybe i should clear the other area???
+        // I think I should be modifying the span not resetting like this
         document.getElementById('actionInfo').innerHTML +=
             `<span class="warningText"> ${warningText}</span>`;
     },
     routeNodeClickHandler(nodeId) {
-        // Remember that we can use this for place, or move (both slecting FROM and TO), and for bumping
+        // Remember that we can use this for place, or move (both selecting FROM and TO), and for bumping
         if (!inputHandlers.selectedAction) {
             console.warn('No selected action at that location')
             console.warn('Defaulting to place square')
@@ -232,11 +237,11 @@ const gameController = {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
             boardController.createCity({ ...city })
             this.cityStorageObject[cityKey] = {
+                cityName: cityKey, //techincally kinda useless
                 occupants: [],
-                openSpot: 0,
+                openSpotIndex: 0,
                 spotArray: city.spotArray,
                 bonusSpot: undefined,
-                routeIds: []
             }
             if (city.neighborRoutes) {
                 const neighborCityName = city.neighborRoutes[0][0]
@@ -369,18 +374,45 @@ const gameController = {
 
         // DEV 
         const city = this.cityStorageObject[cityName]
+        console.log(city)
+
         const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
-        if (!routeCheckOutcome){
-            console.warn('You do not have a completed route')
-            inputHandlers.warnInvalidAction('You do not have a completed route');
+        // if (!routeCheckOutcome){
+        //     console.warn('You do not have a completed route')
+        //     inputHandlers.clearAllActionSelection();
+        //     inputHandlers.warnInvalidAction('You do not have a completed route');
+        //     return;
+        // };
+        if (player.currentActions === 0){
+            // I don't think we should reach here???
+            console.error('You don\'t have enough actions, how did you even get here? The turn was supposed to advance!')   
+            return;
         }
+        if (city.openSpotIndex === city.spotArray){
+            console.warn(`The city of ${city.cityName} is already full.`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`The city of ${city.cityName} is already full.`);
+            return;
+        }
+        const [targetShape, targetColor] = city.spotArray[city.openSpotIndex]
+        if (!player.unlockedColors.includes(targetColor)){
+            console.warn(`You haven't unlocked ${targetColor}.`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`You haven't unlocked ${targetColor}.`);
+            return
+        }
+        if (routeCheckOutcome[targetShape] === 0){
+            console.warn(`You don't have a ${targetShape} in your route.`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`You don't have a ${targetShape} in your route.`);
+            return
+        }
+        console.log('Everything looks good, capturing city now.')
         /* 
-        3. Verify that the player has enough actions
-        4. Verify that there is a spot that is both open and valid (i.e. color and shape match)
         5. If everything is OK:
         6. Take one of the player pieces on route and add it to the city
         6.5 Clear all existing route nodes in that route
-        7. Update city info (including tracker)
+        7. Update city info (including openSpotIndex)
         8. Update city UI
         9. Update player bank 
         10. Points check (optional, maybe later)
@@ -392,15 +424,15 @@ const gameController = {
         for (const routeId in this.routeStorageObject) {
             if (this.routeStorageObject[routeId].cities.includes(cityName)) {
                 let isComplete = true;
-                let squares = 0;
-                let circles = 0;
+                let square = 0;
+                let circle = 0;
                 for (const nodeId in this.routeStorageObject[routeId].routeNodes) {
                     const node = this.routeStorageObject[routeId].routeNodes[nodeId]
                     if (node.playerId === playerId) {
                         if (node.shape === 'square') {
-                            squares++
+                            square++
                         } else if (node.shape === 'circle') {
-                            circles++;
+                            circle++;
                         }
                     } else {
                         isComplete = false;
@@ -410,8 +442,8 @@ const gameController = {
                 if (isComplete) {
                     return {
                         routeId,
-                        squares,
-                        circles,
+                        square,
+                        circle,
                     }
                 }
             }
