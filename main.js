@@ -10,6 +10,7 @@
     XXX @Add Button click handlers when initializing the game
     XXX @Add Some margins to the components
     @Capture cities
+    @Add a city UI update
     @Fix the warning text by creating two seperate areas
     XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
     @Move some of the gamecontroller copy pasta into it's own methods
@@ -18,7 +19,7 @@
     @Make the board and the player information area collapsable
     @Add a turn timer to the turn tracker
     @Add a collapsable game log
-    @Attempt to 
+    @check all todos
     @Create a list of stretch goals
 */
 
@@ -28,7 +29,7 @@
 // _________________------------------------------------
 // Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
 // mouse over text for player fields, turn log (just some text after resolve turn), make collapsable, refactor
-// some methods to be seperate helper functions, convert to TS
+// some methods to be seperate helper functions, convert to TS, add a very stupid single plyer mode, local storage
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -408,9 +409,13 @@ const gameController = {
             return
         }
         console.log('Everything looks good, capturing city now.')
+        boardController.addPieceToCity(city, player.color)
+        city.occupants.push(playerId);
+
         /* 
         5. If everything is OK:
         6. Take one of the player pieces on route and add it to the city
+        6. add the player pieces back to bank
         6.5 Clear all existing route nodes in that route
         7. Update city info (including openSpotIndex)
         8. Update city UI
@@ -470,12 +475,21 @@ const boardController = {
         cityDiv.id = name
 
         cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
-        spotArray.forEach(spotInfo => {
+        // spotArray.forEach(spotInfo => {
+        //     const citySpotDiv = document.createElement('div');
+        //     citySpotDiv.className = `big-${spotInfo[0]}`;
+        //     citySpotDiv.style.backgroundColor = spotInfo[1]
+        //     cityDiv.append(citySpotDiv)
+        // })
+        for (let i = 0; i < spotArray.length; i++){
+            const spotInfo = spotArray[i]
             const citySpotDiv = document.createElement('div');
             citySpotDiv.className = `big-${spotInfo[0]}`;
+            citySpotDiv.classList.add('cityPieceHolder') // make a one liner
+            citySpotDiv.id = `${name}-${i}`
             citySpotDiv.style.backgroundColor = spotInfo[1]
             cityDiv.append(citySpotDiv)
-        })
+        }
         cityDiv.onclick = () => {
             inputHandlers.cityClickHandler(name)
         }
@@ -507,6 +521,17 @@ const boardController = {
     clearPieceFromRouteNode(nodeId) {
         routeNode = document.getElementById(nodeId);
         routeNode.innerHTML = ''
+    },
+    addPieceToCity(city, playerColor){
+        // dev
+        console.log('addPieceToCity', city)
+        const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
+        console.log(pieceHolder)
+        const targetShape = city.spotArray[city.openSpotIndex][0];
+        const playerPieceDiv = document.createElement('div')
+        playerPieceDiv.className = `small-${targetShape}`
+        playerPieceDiv.style.backgroundColor = playerColor;
+        pieceHolder.append(playerPieceDiv)
     }
 }
 
