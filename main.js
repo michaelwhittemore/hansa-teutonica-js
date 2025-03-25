@@ -1,28 +1,33 @@
 // CURRENT TODO LIST!!!!!!:
 /* 
-    XXXXX @Add a action calirifcation area below the button bar (i.e. select, square vs circle,
+    XXXXX @Add a action clarification area below the button bar (i.e. select, square vs circle,
         warn when trying to take an illegal action, select token via drop down) 
     XXXX @Add some extra routes and cities to play with 
     XXX@Create the click handlers for place and capture and resupply
-    XXX@Create a globalized process turn method (checks player actions and legaility) and bumps the action/turn
+    XXX@Create a globalized process turn method (checks player actions and legality) and bumps the action/turn
     @And onclick buttons to cities and bind them like routes
     XXX @Handler should include the Player Information updating
-    XXX @Add Button click handlers when initalizing the game
+    XXX @Add Button click handlers when initializing the game
     XXX @Add Some margins to the components
     @Capture cities
+    XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
+    @Move some of the gamecontroller copy pasta into it's own methods
     @Update player Bank and supply to use circles and squares
     @Spin up a simple node server and move these to modules
     @Make the board and the player information area collapsable
     @Add a turn timer to the turn tracker
+    @Add a collapsable game log
+    @Attempt to 
     @Create a list of stretch goals
 */
 
 // I can probably fix my orientation issue by making the gameboard scrollable and hard coding in coordinates
 
-// MAYBE CONVERT TO TYPESCRIPT???
 
+// _________________------------------------------------
 // Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
-// mouse over text for player fields, turn log (just some text after resolve turn), make collapsable
+// mouse over text for player fields, turn log (just some text after resolve turn), make collapsable, refactor
+// some methods to be seperate helper functions, convert to TS
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -83,12 +88,16 @@ const isShape = (inputString) => inputString === 'square' || inputString === 'ci
 
 const inputHandlers = {
     verifyPlayersTurn() {
+        // NEED TO ADD TO ALL BUTTON HANDLERS
+        // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUTHANDLER SHOULD TELL YOU TO WAIT
+        // IT SHOULDN'T BE THE gameController's responsbility (I think??)
+
         // if not true will update action info with 'It isn't your turn'
         // pretend this checks if it's the correct player's turn 
         return true;
     },
 
-    handlePlace() {
+    handlePlaceButton() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
@@ -98,8 +107,6 @@ const inputHandlers = {
             return;
         }
         inputHandlers.selectedAction = 'place'
-        // Need to heighlight the piece to go to
-
         actionInfoDiv.innerText = "Select a kind of piece to place and a location"
 
         const squareButton = document.createElement('button');
@@ -116,15 +123,30 @@ const inputHandlers = {
         actionInfoDiv.append(circleButton);
 
     },
-    handleBump() {
+    handleBumpButton() {
         console.warn('Bump is not yet implemented!')
         // TODO
     },
-    handleCaptureCity() {
+    handleCaptureCityButton() {
         console.warn('capture city incoming')
+        const actionInfoDiv = document.getElementById('actionInfo');
+        inputHandlers.clearAllActionSelection();
         // TODO
+        // check if we've selected a city
+        inputHandlers.selectedAction = 'capture';
+        if (!inputHandlers.selectedLocation) {
+            console.warn('No location selected')
+            actionInfoDiv.innerText = 'Select a city to capture';
+        } else {
+            let playerId = undefined
+            if (!IS_HOTSEAT_MODE) {
+                // get the player name from localstorage
+            }
+            gameController.captureCity(inputHandlers.selectedLocation, playerId)
+        }
+
     },
-    handleResupply() {
+    handleResupplyButton() {
         console.warn('resupplying')
         let playerId = undefined
         if (!IS_HOTSEAT_MODE) {
@@ -140,10 +162,10 @@ const inputHandlers = {
         document.getElementById('actionInfo').innerHTML = ''
     },
     bindInputHandlers() {
-        document.getElementById('place').onclick = this.handlePlace;
-        document.getElementById('bump').onclick = this.handleBump;
-        document.getElementById('resupply').onclick = this.handleResupply;
-        document.getElementById('capture').onclick = this.handleCaptureCity;
+        document.getElementById('place').onclick = this.handlePlaceButton;
+        document.getElementById('bump').onclick = this.handleBumpButton;
+        document.getElementById('resupply').onclick = this.handleResupplyButton;
+        document.getElementById('capture').onclick = this.handleCaptureCityButton;
 
     },
     warnInvalidAction(warningText) {
@@ -175,6 +197,17 @@ const inputHandlers = {
     },
     cityClickHandler(cityId) {
         console.log('clicked on city', cityId)
+        if (!inputHandlers.selectedAction) {
+            inputHandlers.selectedLocation = cityId;
+            console.warn('No selected action at that location')
+            console.warn('Defaulting to capturing city')
+            // WE MAY WANT TO CHANGE DEFAULTS
+            inputHandlers.selectedAction = 'capture';
+        };
+        if (inputHandlers.selectedAction === 'capture') {
+            // Might need to pass in player ID
+            gameController.captureCity(cityId, undefined)
+        }
 
     }
 }
@@ -189,22 +222,44 @@ const gameController = {
         }
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray)
-        this.routeNodeStorageObject = {};
+        this.routeStorageObject = {}
         this.cityStorageObject = {};
         inputHandlers.bindInputHandlers()
-        // DEV
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI();
 
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
-            boardController.createCity({...city})
-            // update the cityStorageObject
-            if(city.neighborRoutes){
-                const routeId= `${city.name}-${city.neighborRoutes[0][0]}`
-                boardController.createRouteBox(city.neighborRoutes[0][1],routeId)
+            boardController.createCity({ ...city })
+            this.cityStorageObject[cityKey] = {
+                occupants: [],
+                openSpot: 0,
+                spotArray: city.spotArray,
+                bonusSpot: undefined,
+                routeIds: []
             }
-            
+            if (city.neighborRoutes) {
+                const neighborCityName = city.neighborRoutes[0][0]
+                const length = city.neighborRoutes[0][1]
+                const routeId = `${city.name}-${neighborCityName}`
+                boardController.createRouteBox(city.neighborRoutes[0][1], routeId)
+
+                this.routeStorageObject[routeId] = {
+                    cities: [cityKey, neighborCityName],
+                    routeNodes: {},
+                }
+                for (let i = 0; i < length; i++) {
+                    const nodeId = `${routeId}-${i}`
+                    this.routeStorageObject[routeId].routeNodes[nodeId] = {
+                        occupied: false,
+                        shape: undefined,
+                        color: undefined,
+                        playerId: undefined,
+                    }
+
+                }
+            }
+
         })
 
     },
@@ -236,6 +291,7 @@ const gameController = {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
+            playerId = player.id
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
@@ -247,14 +303,16 @@ const gameController = {
             inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
             return
         }
-        if (this.routeNodeStorageObject[nodeId]?.occupied) {
+        // FIX THIS, need route ID
+        const routeId = nodeId.substring(0, nodeId.length - 2);
+        if (this.routeStorageObject[routeId]?.routeNodes[nodeId]?.occupied) {
             console.warn('That route node is already occupied!')
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction('That route node is already occupied!')
             return
         }
         player[playerShapeKey] -= 1;
-        this.routeNodeStorageObject[nodeId] = {
+        this.routeStorageObject[routeId].routeNodes[nodeId] = {
             occupied: true,
             shape,
             color: player.color,
@@ -267,6 +325,7 @@ const gameController = {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
+            playerId = player.id
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
@@ -295,6 +354,70 @@ const gameController = {
         this.resolveAction(player)
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
+    captureCity(cityName, playerId) {
+        console.warn(`${playerId} is trying to capture ${cityName}`)
+        // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
+        // probably use an onclick for a route node. Let's deal with that later
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        inputHandlers.clearAllActionSelection();
+
+        // DEV 
+        const city = this.cityStorageObject[cityName]
+        const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
+        if (!routeCheckOutcome){
+            console.warn('You do not have a completed route')
+            inputHandlers.warnInvalidAction('You do not have a completed route');
+        }
+        /* 
+        3. Verify that the player has enough actions
+        4. Verify that there is a spot that is both open and valid (i.e. color and shape match)
+        5. If everything is OK:
+        6. Take one of the player pieces on route and add it to the city
+        6.5 Clear all existing route nodes in that route
+        7. Update city info (including tracker)
+        8. Update city UI
+        9. Update player bank 
+        10. Points check (optional, maybe later)
+        11. Standard end of action resolution
+        */
+    },
+    checkIfPlayerControlsARoute(playerId, cityName) {
+        // at some point return BOTH routes
+        for (const routeId in this.routeStorageObject) {
+            if (this.routeStorageObject[routeId].cities.includes(cityName)) {
+                let isComplete = true;
+                let squares = 0;
+                let circles = 0;
+                for (const nodeId in this.routeStorageObject[routeId].routeNodes) {
+                    const node = this.routeStorageObject[routeId].routeNodes[nodeId]
+                    if (node.playerId === playerId) {
+                        if (node.shape === 'square') {
+                            squares++
+                        } else if (node.shape === 'circle') {
+                            circles++;
+                        }
+                    } else {
+                        isComplete = false;
+                        break; // don't return, need to check the other routes
+                    }
+                }
+                if (isComplete) {
+                    return {
+                        routeId,
+                        squares,
+                        circles,
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 }
 
@@ -305,23 +428,16 @@ const boardController = {
     initializeUI() {
         this.board = document.getElementById('gameBoard');
         this.board.innerHTML = ''
-        // DEV
-        // this.createCity('City One', [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']]);
-        // this.createRouteBox(3, 'testID-a')
-        // this.createCity('City Two', [['square', 'grey'], ['square', 'grey']]);
-        // this.createRouteBox(4, 'testID-b')
-        // this.createCity('City Three', [['square', 'grey'], ['circle', 'purple']]);
-
+        // The rest of the building is done by the game controller as it loads the board data
     },
     createCity(cityInformation) {
-        // debugger;
-        const {name, spotArray, unlock, location} = cityInformation;
+        const { name, spotArray, unlock, location } = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifers 
         cityDiv.id = name
 
-        cityDiv.innerText = `${name}`
+        cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
         spotArray.forEach(spotInfo => {
             const citySpotDiv = document.createElement('div');
             citySpotDiv.className = `big-${spotInfo[0]}`;
@@ -336,16 +452,12 @@ const boardController = {
     createRouteBox(length, id, location) {
         const routeBoxDiv = document.createElement('div');
         routeBoxDiv.className = 'routeBox';
-        // iterate over the length and create nodes (which need a piece sub section)
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
             const nodeId = `${id}-${i}`;
             routeNode.id = nodeId;
             routeNode.onclick = (event) => {
-                // this.addPieceToRouteNode(nodeId, 'blue', 'square')
-                // Maybe pass in a player based on local information??
-                // gameController.placeWorkerOnNode(nodeId)
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
             routeBoxDiv.append(routeNode)
