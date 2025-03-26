@@ -543,16 +543,17 @@ const boardController = {
         const collapseButton = document.createElement('button');
         collapseButton.innerText = 'Collapse Board';
         collapseButton.className = 'collapseButton';
-        collapseButton.onclick = () => this.toggleBoardView()
+        collapseButton.onclick = () => this.toggleBoardView(collapseButton)
         document.getElementById('boardContainer').append(collapseButton)
         this.isCollapsed = false;
     },
-    toggleBoardView() {
-        console.log('here', this.isCollapsed)
+    toggleBoardView(collapseButton) {
         if(!this.isCollapsed) {
             this.board.classList.add('collapsedContainer')
+            collapseButton.innerText ='Expand Board'
         } else {
             this.board.classList.remove('collapsedContainer')
+            collapseButton.innerText= 'Collapse Board'
         }
 
         this.isCollapsed = !this.isCollapsed
