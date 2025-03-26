@@ -16,7 +16,7 @@
     XXX @ Add a controlled by field to the city (determined by first majority then right-mostness)
     XXX @ Track points on city capture
     XXX @ create nice little first the twenty tracker
-    @ Add token aquistion fun!!!!!!
+    @ Add token aquistion (FUN!!!!!!)
     @ Move this todo list to a text file and clean up some comments
     @ make cities smaller and put name on top (maybe do this after collapse buttons)
     @ implement upgrade methods before move method (remeember that upgrades give free pieces)
@@ -538,6 +538,24 @@ const boardController = {
         this.initializePointTracker(20, playerArray);
         this.pointTrackerInfo = []
         // The rest of the building is done by the game controller as it loads the board data
+
+        // dev
+        const collapseButton = document.createElement('button');
+        collapseButton.innerText = 'Collapse Board';
+        collapseButton.className = 'collapseButton';
+        collapseButton.onclick = () => this.toggleBoardView()
+        document.getElementById('boardContainer').append(collapseButton)
+        this.isCollapsed = false;
+    },
+    toggleBoardView() {
+        console.log('here', this.isCollapsed)
+        if(!this.isCollapsed) {
+            this.board.classList.add('collapsedContainer')
+        } else {
+            this.board.classList.remove('collapsedContainer')
+        }
+
+        this.isCollapsed = !this.isCollapsed
     },
     initializePointTracker(maxPoints, playerArray) {
         const pointTracker = document.getElementById('pointTrackerSection-1');
@@ -554,6 +572,7 @@ const boardController = {
     },
     updatePoints(pointTarget, playerColor) {
         // would be nice to evntually remove the number, but this works for now
+        // TODO I think I can make the number it's own div and make it absolute (maybe need to play with z index)
         document.getElementById(`point-tracker-${playerColor}`)?.remove()
         const pointTrackerPiece = document.createElement('div');
         pointTrackerPiece.className = 'pointTrackerPiece';
@@ -633,7 +652,7 @@ const playerInformationController = {
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
         })
-    },
+    },  
     updateTurnTracker(player) {
         document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
     },
@@ -668,18 +687,6 @@ const playerInformationController = {
         })
     }
 }
-// NEED A SERPATE CONTROLLER AREA (with move, resupply, place, upgrade, capture, bump, use token)
-
-// Do we need a seperate click handler?????
-
-// I think end game points will be calculated much later
-// Need player fields:
-/**
- * Points (may also need to be tracked by board state)
- * Number of tokens (or whatever those little bonus pieces are called) both used and avaible
-
- */
-// Should the game controller have a reference to the players? I want to say yes, it should call their methods
 
 class Player {
     constructor(color, name, startingPieces, id) {
