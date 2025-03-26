@@ -117,6 +117,6 @@
 }
 .gameLog {
     overflow: scroll;
-    height: 100;
+    height: 200px;
     border: solid;
 }

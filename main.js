@@ -680,7 +680,8 @@ const gameLogController = {
     },
     addTextToGameLog(text){
         // TODO timestamp and add to saved history
-        document.getElementById('gameLog').innerHTML += `${text}<br>`
+        const timestamp = (new Date()).toLocaleTimeString('en-US')
+        document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
     }
 }
 
@@ -701,7 +702,6 @@ class Player {
         this.keys = 1;
         this.purse = 3;
     }
-
 }
 
 
