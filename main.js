@@ -13,14 +13,22 @@
     XXX @Add a city UI update
     @Fix the warning text by creating two seperate areas
     XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
+    @ Add a controlled by field to the city (determined by first majority then right-mostness)
     @ Track points on city capture HERE!!!!!!!!!!!!!!!!!!!
+    @ create nice little first the twenty tracker
+    @ make cities smaller and put name on top (maybe do this after collapse buttons)
+    @ implement upgrade methods before move method (remeember that upgrades give free pieces)
+    @ add token holder (don't have to make tokens functional)
     @ move method
+    @ make areas collapseable (specifically the game board and player turn area)
+    @ bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
     @Move some of the gamecontroller copy pasta into it's own methods
     @Update player Bank and supply to use circles and squares
     @Spin up a simple node server and move these to modules
     @Make the board and the player information area collapsable
     @Add a turn timer to the turn tracker
     @Add a collapsable game log
+    @ use the coordinate system on the board
     @check all todos
     @Create a list of stretch goals
 */
@@ -31,7 +39,8 @@
 // _________________------------------------------------
 // Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
 // mouse over text for player fields, turn log (just some text after resolve turn), make collapsable, refactor
-// some methods to be seperate helper functions, convert to TS, add a very stupid single plyer mode, local storage
+// some methods to be seperate helper functions, convert to TS, add a very stupid single plyer mode, local storage,
+// maybe move things like routes and cities to their own classes?
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -132,7 +141,6 @@ const inputHandlers = {
         // TODO
     },
     handleCaptureCityButton() {
-        console.warn('capture city incoming')
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
         // TODO
@@ -244,7 +252,7 @@ const gameController = {
                 occupants: [],
                 openSpotIndex: 0,
                 spotArray: city.spotArray,
-                bonusSpot: undefined,
+                bonusSpotOccupantId: undefined,
             }
             if (city.neighborRoutes) {
                 const neighborCityName = city.neighborRoutes[0][0]
@@ -363,7 +371,6 @@ const gameController = {
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
     captureCity(cityName, playerId) {
-        console.warn(`${playerId} is trying to capture ${cityName}`)
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
         // probably use an onclick for a route node. Let's deal with that later
         let player;
@@ -429,6 +436,11 @@ const gameController = {
             boardController.clearPieceFromRouteNode(nodeToClearId)
         }
         // TODO point calculation
+        // dev
+        this.calculateControllingPlayer(city)
+        // I think we want a routeCompleted function. It will work with either upgrade or city capture
+        // It will also check for tokens (we will need to create a token holder when initalizing routyses)
+        this.routeCompleted(routeId, player);
         this.resolveAction(player);
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
@@ -461,8 +473,44 @@ const gameController = {
             }
         }
         return false;
-    }
+    },
+    calculateControllingPlayer(city) {
+        // first find majority
+        const controlObj = {};
+        // WIll WANT A TEST ARRAY instead
+        this.playerArray.forEach(player => {
+            controlObj[player.id] = 0;
+        })
+        city.occupants.forEach(occupantId => {
+            controlObj[occupantId]++;
+        })
+        // playerId can be zero, so can't just check that it exists
+        if (city.bonusSpotOccupantId !== undefined) {
+            controlObj[city.bonusSpotOccupantId]++;
+        }
+        // TODO extremely niche use case where multiple people are majority but rightmost - isn't the winner
+        // Only possible with a bonus space on a four tile city i.e. [A, B, B, A, C]
+        // in this case A should be the winner but we would get C. 
+        // let max = 0;
+        // let winnerId = undefined;
+        // for (let id in controlObj){
+        //     if (controlObj[id] > max){
+        //         max = controlObj[id];
+        //         winnerId = id;
+        //     } else if (controlObj[id] === max) {
+        //         winnerId = undefined;
+        //     }    
+        // }
+        console.log(controlObj)
+        console.log(city)
+    },
+    routeCompleted(routeId, player) {
 
+        console.log(`${player.name} has completed route ${routeId}`) // HISTORY
+
+        const route = this.routeStorageObject[routeId]
+        console.log('Cities are', route.cities)
+    },
 }
 
 
@@ -627,3 +675,29 @@ const start = () => {
 }
 
 window.onload = start
+
+// TEST VARIABLES 
+
+const testCity = {
+    "cityName": "Test City A",
+    "occupants": [
+        0,
+        0
+    ],
+    "openSpotIndex": 2,
+    "spotArray": [
+        [
+            "square",
+            "grey"
+        ],
+        [
+            "circle",
+            "grey"
+        ],
+        [
+            "square",
+            "orange"
+        ]
+    ]
+}
+
