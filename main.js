@@ -36,11 +36,14 @@
 // I can probably fix my orientation issue by making the gameboard scrollable and hard coding in coordinates
 
 
-// _________________------------------------------------
+// _________________------------------------------------ LONG TERM GOALS::
+/*
 // Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
 // mouse over text for player fields, turn log (just some text after resolve turn), make collapsable, refactor
 // some methods to be seperate helper functions, convert to TS, add a very stupid single plyer mode, local storage,
-// maybe move things like routes and cities to their own classes?
+// maybe move things like routes and cities to their own classes?, 
+// refactor to only pass player unless absolutely necessary - using playerId is a pain in the ass and problematic
+*/
 
 // server to track plays (maybe even move logic there???)
 // Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
@@ -422,6 +425,8 @@ const gameController = {
         player.bankedCircles += routeCheckOutcome.circle;
         player.bankedSquares += routeCheckOutcome.square;
 
+        // We need to do route completion first for point calculation
+        this.routeCompleted(routeId, player);
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
@@ -435,12 +440,6 @@ const gameController = {
             };
             boardController.clearPieceFromRouteNode(nodeToClearId)
         }
-        // TODO point calculation
-        // dev
-        this.calculateControllingPlayer(city)
-        // I think we want a routeCompleted function. It will work with either upgrade or city capture
-        // It will also check for tokens (we will need to create a token holder when initalizing routyses)
-        this.routeCompleted(routeId, player);
         this.resolveAction(player);
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
@@ -475,9 +474,10 @@ const gameController = {
         return false;
     },
     calculateControllingPlayer(city) {
-        // first find majority
-        const controlObj = {};
-        // WIll WANT A TEST ARRAY instead
+        if (city.occupants.length === 0 ){
+            return false
+        }
+        const controlObj = {}
         this.playerArray.forEach(player => {
             controlObj[player.id] = 0;
         })
@@ -488,29 +488,44 @@ const gameController = {
         if (city.bonusSpotOccupantId !== undefined) {
             controlObj[city.bonusSpotOccupantId]++;
         }
-        // TODO extremely niche use case where multiple people are majority but rightmost - isn't the winner
-        // Only possible with a bonus space on a four tile city i.e. [A, B, B, A, C]
-        // in this case A should be the winner but we would get C. 
-        // let max = 0;
-        // let winnerId = undefined;
-        // for (let id in controlObj){
-        //     if (controlObj[id] > max){
-        //         max = controlObj[id];
-        //         winnerId = id;
-        //     } else if (controlObj[id] === max) {
-        //         winnerId = undefined;
-        //     }    
-        // }
-        console.log(controlObj)
-        console.log(city)
+
+        const maxPieces = Math.max(...Object.values(controlObj));
+        const winnerArray = []
+        for (let key in controlObj){
+            if (controlObj[key] === maxPieces){
+                winnerArray.push(parseInt(key, 10))
+            }
+        }
+        for (let i = city.occupants.length - 1; i >= 0; i--){
+            if (winnerArray.includes(city.occupants[i])){
+                return this.playerArray[city.occupants[i]]
+            }
+        }
+        console.error('We should never reach here')
+
     },
     routeCompleted(routeId, player) {
-
-        console.log(`${player.name} has completed route ${routeId}`) // HISTORY
+        // dev
+        // It will also check for tokens (we will need to create a token holder when initalizing routyses)
+        console.log(`${player.name} has completed route ${routeId}`) // add to HISTORY
 
         const route = this.routeStorageObject[routeId]
         console.log('Cities are', route.cities)
-    },
+        route.cities.forEach(cityId => {
+            const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
+            if (controller){
+                console.log('controller is',controller, 'you can delete this log')
+                this.scorePoints(1, controller);
+            }
+        })
+    }, 
+    scorePoints(pointValue, player){
+        const pointScoreText = `Player: ${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
+        console.log(pointScoreText) // add to history
+        // dev
+        player.currentPoints+= pointValue;
+        boardController.updatePoints(pointValue, player)
+    }
 }
 
 
@@ -530,17 +545,11 @@ const boardController = {
         cityDiv.id = name
 
         cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
-        // spotArray.forEach(spotInfo => {
-        //     const citySpotDiv = document.createElement('div');
-        //     citySpotDiv.className = `big-${spotInfo[0]}`;
-        //     citySpotDiv.style.backgroundColor = spotInfo[1]
-        //     cityDiv.append(citySpotDiv)
-        // })
         for (let i = 0; i < spotArray.length; i++) {
             const spotInfo = spotArray[i]
             const citySpotDiv = document.createElement('div');
             citySpotDiv.className = `big-${spotInfo[0]}`;
-            citySpotDiv.classList.add('cityPieceHolder') // make a one liner
+            citySpotDiv.classList.add('cityPieceHolder') // TODO make a one liner
             citySpotDiv.id = `${name}-${i}`
             citySpotDiv.style.backgroundColor = spotInfo[1]
             cityDiv.append(citySpotDiv)
@@ -584,6 +593,9 @@ const boardController = {
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
+    }, 
+    updatePoints(pointValue, player){
+
     }
 }
 
@@ -680,10 +692,7 @@ window.onload = start
 
 const testCity = {
     "cityName": "Test City A",
-    "occupants": [
-        0,
-        0
-    ],
+    "occupants": [1, 0, 1, 1, 0, 1, 0, 0, 3, 3 ,3 ,3, 1, 3 ],
     "openSpotIndex": 2,
     "spotArray": [
         [
@@ -701,3 +710,8 @@ const testCity = {
     ]
 }
 
+const testCity2 = {
+    "cityName": "Test City B",
+    "occupants": [1, 0, 0, 1 ],
+    bonusSpotOccupantId: 1
+}
