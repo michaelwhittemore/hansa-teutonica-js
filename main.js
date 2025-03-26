@@ -539,7 +539,6 @@ const boardController = {
         this.pointTrackerInfo = []
         // The rest of the building is done by the game controller as it loads the board data
 
-        // dev
         const collapseButton = document.createElement('button');
         collapseButton.innerText = 'Collapse Board';
         collapseButton.className = 'collapseButton';
@@ -548,14 +547,13 @@ const boardController = {
         this.isCollapsed = false;
     },
     toggleBoardView(collapseButton) {
-        if(!this.isCollapsed) {
+        if (!this.isCollapsed) {
             this.board.classList.add('collapsedContainer')
-            collapseButton.innerText ='Expand Board'
+            collapseButton.innerText = 'Expand Board'
         } else {
             this.board.classList.remove('collapsedContainer')
-            collapseButton.innerText= 'Collapse Board'
+            collapseButton.innerText = 'Collapse Board'
         }
-
         this.isCollapsed = !this.isCollapsed
     },
     initializePointTracker(maxPoints, playerArray) {
@@ -653,7 +651,24 @@ const playerInformationController = {
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
         })
-    },  
+
+        const collapseButton = document.createElement('button');
+        collapseButton.innerText = 'Collapse Player Information';
+        collapseButton.className = 'collapseButton';
+        collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
+        document.getElementById('playerAreaContainer').append(collapseButton)
+        this.isCollapsed = false;
+    },
+    togglePlayerInfo(collapseButton){
+        if (!this.isCollapsed) {
+            document.getElementById('playerArea').classList.add('collapsedContainer')
+            collapseButton.innerText = 'Expand Player Information'
+        } else {
+            document.getElementById('playerArea').classList.remove('collapsedContainer')
+            collapseButton.innerText = 'Collapse Player Information'
+        }
+        this.isCollapsed = !this.isCollapsed
+    },
     updateTurnTracker(player) {
         document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
     },
