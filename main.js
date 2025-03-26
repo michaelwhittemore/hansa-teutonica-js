@@ -505,7 +505,6 @@ const gameController = {
 
     },
     routeCompleted(routeId, player) {
-        // dev
         // It will also check for tokens (we will need to create a token holder when initalizing routyses)
         console.log(`${player.name} has completed route ${routeId}`) // add to HISTORY
 
@@ -522,7 +521,6 @@ const gameController = {
     scorePoints(pointValue, player){
         const pointScoreText = `Player: ${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
         console.log(pointScoreText) // add to history
-        // dev
         player.currentPoints+= pointValue;
         boardController.updatePoints(pointValue, player)
     }
@@ -535,7 +533,26 @@ const boardController = {
     initializeUI() {
         this.board = document.getElementById('gameBoard');
         this.board.innerHTML = ''
+        this.initializePointTracker(20);
+        this.pointTrackerInfo = []
         // The rest of the building is done by the game controller as it loads the board data
+    },
+    initializePointTracker(maxPoints){
+        // dev 
+        const pointTracker = document.getElementById('pointTrackerSection-1');
+        for (let i = 0; i <= maxPoints; i++){
+            const pointPieceHolderContainer = document.createElement('div');
+            pointPieceHolderContainer.className = 'pointPieceHolderContainer'
+            pointPieceHolderContainer.id = i;
+            pointPieceHolderContainer.innerText = i;
+            pointTracker.append(pointPieceHolderContainer);
+            // need to add four boxes 
+            // the board controller can have it's own state tracker
+            for (let j = 0; j < 4; j++ ){
+                const pointPieceHolder = document.getElementById('div');
+                
+            }
+        }
     },
     createCity(cityInformation) {
         const { name, spotArray, unlock, location } = cityInformation;
@@ -595,7 +612,8 @@ const boardController = {
         pieceHolder.append(playerPieceDiv)
     }, 
     updatePoints(pointValue, player){
-
+        // dev
+        // need to create a new div above the gameboard. let's try for the cutesy color thing
     }
 }
 
@@ -682,7 +700,6 @@ class Player {
 
 
 const start = () => {
-    boardController.initializeUI();
     gameController.initializeGameState(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
 }
 
