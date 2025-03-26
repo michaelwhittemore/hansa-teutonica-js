@@ -67,7 +67,6 @@
 .playerBox {
     border: dotted;
 }
-
 .actionBar {
     display: flex;
     padding: 5px;
@@ -77,18 +76,15 @@
     display: flex;
     height: 20px;
 }
-
 .warningText {
     font-style: italic;
 }
-
 .pointTrackerSection {
     height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .pointPieceContainer {
     height: 33px;
     width: 33px;
@@ -99,27 +95,28 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
-
 .pointTrackerPiece {
     background-color: blueviolet;
     height: 7px;
     width: 7px;
     margin: 1px;
 }
-
 .collapsedContainer {
     display: none;
     overflow: hidden;
     background-color: #f1f1f1;
 }
-
 .collapsibleContainer{
     position: relative;
     min-width: 970px;
 }
-
 .collapseButton {
     position: absolute;
     top: 10px;
     right: 10px;
+}
+.gameLog {
+    overflow: scroll;
+    height: 100;
+    border: solid;
 }

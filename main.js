@@ -5,6 +5,7 @@ const TEST_PLAYERS_NAMES = ['Alice', 'Bob']
 const TEST_PLAYER_COLORS = ['red', 'blue']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 const IS_HOTSEAT_MODE = true;
+const USE_DEFAULT_CLICK_ACTIONS = true;
 
 const TEST_BOARD_CONFIG_CITIES = {
     'Alpha': {
@@ -90,8 +91,7 @@ const inputHandlers = {
     handleCaptureCityButton() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
-        // TODO
-        // check if we've selected a city
+        
         inputHandlers.selectedAction = 'capture';
         if (!inputHandlers.selectedLocation) {
             console.warn('No location selected')
@@ -106,7 +106,6 @@ const inputHandlers = {
 
     },
     handleResupplyButton() {
-        console.warn('resupplying')
         let playerId = undefined
         if (!IS_HOTSEAT_MODE) {
             // get the player name from localstorage
@@ -138,14 +137,22 @@ const inputHandlers = {
     routeNodeClickHandler(nodeId) {
         // Remember that we can use this for place, or move (both selecting FROM and TO), and for bumping
         if (!inputHandlers.selectedAction) {
-            console.warn('No selected action at that location')
-            console.warn('Defaulting to place square')
-            // WE MAY WANT TO CHANGE DEFAULTS
-            inputHandlers.selectedAction = 'place';
-            inputHandlers.additionalInfo = 'square'
+            if (USE_DEFAULT_CLICK_ACTIONS){
+                inputHandlers.selectedAction = 'place';
+                inputHandlers.additionalInfo = 'square'
+            } else {
+                // TODO warn that nothing was selected
+                return;
+            }
+            
         };
         if (!inputHandlers.additionalInfo) {
-            console.warn('NO additionalInfo, (this may be accetable for bump)')
+            if (USE_DEFAULT_CLICK_ACTIONS){
+                inputHandlers.additionalInfo = 'square';
+            } else {
+                // TODO warn that no shape was selected (or maybe dependant on action??)
+                return;
+            }
         }
         // Happy path for place move - leave checking the turn and availble pieces and freeness of the node to the game controller
         if (inputHandlers.selectedAction === 'place' && isShape(inputHandlers.additionalInfo)) {
@@ -159,13 +166,14 @@ const inputHandlers = {
         }
     },
     cityClickHandler(cityId) {
-        console.log('clicked on city', cityId)
         if (!inputHandlers.selectedAction) {
-            inputHandlers.selectedLocation = cityId;
-            console.warn('No selected action at that location')
-            console.warn('Defaulting to capturing city')
-            // WE MAY WANT TO CHANGE DEFAULTS
-            inputHandlers.selectedAction = 'capture';
+            if (USE_DEFAULT_CLICK_ACTIONS){
+                inputHandlers.selectedLocation = cityId;
+                inputHandlers.selectedAction = 'capture';
+            } else {
+                // TODO handle no selected action on city click (presumably warn and clear)
+                return;
+            }
         };
         if (inputHandlers.selectedAction === 'capture') {
             // Might need to pass in player ID
@@ -176,7 +184,7 @@ const inputHandlers = {
 }
 
 const gameController = {
-    initializeGameState(playerNames, playerColors) {
+    initializeGameStateAndUI(playerNames, playerColors) {
         // let's just use turn order for IDs
         this.playerArray = []
         for (let i = 0; i < playerNames.length; i++) {
@@ -184,7 +192,8 @@ const gameController = {
             this.playerArray.push(player)
         }
         this.currentTurn = 0;
-        playerInformationController.initializePlayerUI(this.playerArray)
+        playerInformationController.initializePlayerUI(this.playerArray);
+        gameLogController.initializeGameLog();
         this.routeStorageObject = {}
         this.cityStorageObject = {};
         inputHandlers.bindInputHandlers()
@@ -282,6 +291,7 @@ const gameController = {
             playerId,
         }
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
+        gameLogController.addTextToGameLog(`${player.name} placed a ${shape} on ${nodeId}`)
         this.resolveAction(player)
     },
     resupply(playerId) {
@@ -298,22 +308,27 @@ const gameController = {
             inputHandlers.warnInvalidAction('There is nothing in your bank to resupply with.')
             return;
         }
+        let resuppliedCircles;
+        let resuppliedSquares;
         if (player.purse === 'All') {
             player.supplyCircles += player.bankedCircles;
+            resuppliedCircles = player.bankedCircles;
             player.bankedCircles = 0;
+
             player.supplySquares += player.bankedSquares;
+            resuppliedSquares = player.bankedSquares;
             player.bankedSquares = 0;
         } else {
             let restocks = player.purse;
-            const resuppliedCircles = Math.min(player.bankedCircles, restocks);
+            resuppliedCircles = Math.min(player.bankedCircles, restocks);
             player.supplyCircles += resuppliedCircles;
             player.bankedCircles -= resuppliedCircles;
             restocks -= resuppliedCircles;
-            const resuppliedSquares = Math.min(player.bankedSquares, restocks);
+            resuppliedSquares = Math.min(player.bankedSquares, restocks);
             player.supplySquares += resuppliedSquares;
             player.bankedSquares -= resuppliedSquares;
-            console.log(`${player.name} resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`);
         }
+        gameLogController.addTextToGameLog(`${player.name} resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`);
         this.resolveAction(player)
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
@@ -384,6 +399,7 @@ const gameController = {
             };
             boardController.clearPieceFromRouteNode(nodeToClearId)
         }
+        gameLogController.addTextToGameLog(`${player.name} captured the city of ${cityName}`);
         this.resolveAction(player);
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
@@ -450,21 +466,18 @@ const gameController = {
     },
     routeCompleted(routeId, player) {
         // It will also check for tokens (we will need to create a token holder when initalizing routyses)
-        console.log(`${player.name} has completed route ${routeId}`) // add to HISTORY
-
+        gameLogController.addTextToGameLog(`${player.name} has completed route ${routeId}`)
         const route = this.routeStorageObject[routeId]
-        console.log('Cities are', route.cities)
         route.cities.forEach(cityId => {
             const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
             if (controller) {
-                console.log('controller is', controller, 'you can delete this log')
                 this.scorePoints(1, controller);
             }
         })
     },
     scorePoints(pointValue, player) {
-        const pointScoreText = `Player: ${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
-        console.log(pointScoreText) // add to history
+        const pointScoreText = `${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
+        gameLogController.addTextToGameLog(pointScoreText)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
     }
@@ -646,7 +659,29 @@ const playerInformationController = {
 }
 
 const gameLogController = {
-    // dev
+    initializeGameLog(history){
+        // optionally, we should load in history
+        const collapseButton = document.createElement('button');
+        collapseButton.innerText = 'Collapse Game Log';
+        collapseButton.className = 'collapseButton';
+        collapseButton.onclick = () => this.toggleGameLog(collapseButton)
+        document.getElementById('gameLogContainer').append(collapseButton)
+        this.isCollapsed = false;
+    },
+    toggleGameLog(collapseButton){
+        if (!this.isCollapsed) {
+            document.getElementById('gameLog').classList.add('collapsedContainer')
+            collapseButton.innerText = 'Expand Game Log'
+        } else {
+            document.getElementById('gameLog').classList.remove('collapsedContainer')
+            collapseButton.innerText = 'Collapse Game Log'
+        }
+        this.isCollapsed = !this.isCollapsed
+    },
+    addTextToGameLog(text){
+        // TODO timestamp and add to saved history
+        document.getElementById('gameLog').innerHTML += `${text}<br>`
+    }
 }
 
 class Player {
@@ -671,7 +706,7 @@ class Player {
 
 
 const start = () => {
-    gameController.initializeGameState(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
+    gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
 }
 
 window.onload = start

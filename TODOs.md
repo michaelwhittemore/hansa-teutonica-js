@@ -7,6 +7,8 @@
 * move method (as in your own pieces on the board) - need rules clarification
 * make cities smaller and put name on top (maybe do this after collapse buttons)
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
+* refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
+* testing with default mode turned off
 * Move some of the gamecontroller copy pasta into it's own methods
 * Update player Bank and supply to use circles and squares
 * Spin up a simple node server and move these to modules
@@ -16,8 +18,11 @@
 * Fix turn track to place pieces over numbers using a number component with absolute? position
 * local storage
 * use the coordinate system on the board
+* time stamp to game log
+* create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
 * For landing page - have a list of valid colors (no text on white background nonsense)
+* Fix the collapsible button and container code to involve less copy-pasta
 
 # Done #
 ~~ Add a action clarification area below the button bar (i.e. select, square vs circle, warn when trying to take an illegal action, select token via drop down)~~
@@ -52,3 +57,6 @@
 * undo action button 
 * track game logic server side (only for online non-hotseat modes)
 * unit tests for all internal methods
+* add a favicon
+* add linter
+* reorganize CSS and methods (just the ordering)
