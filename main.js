@@ -5,7 +5,7 @@
     XXXX @Add some extra routes and cities to play with 
     XXX@Create the click handlers for place and capture and resupply
     XXX@Create a globalized process turn method (checks player actions and legality) and bumps the action/turn
-    @And onclick buttons to cities and bind them like routes
+    XXX @And onclick buttons to cities and bind them like routes
     XXX @Handler should include the Player Information updating
     XXX @Add Button click handlers when initializing the game
     XXX @Add Some margins to the components
@@ -13,9 +13,11 @@
     XXX @Add a city UI update
     @Fix the warning text by creating two seperate areas
     XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
-    @ Add a controlled by field to the city (determined by first majority then right-mostness)
-    @ Track points on city capture HERE!!!!!!!!!!!!!!!!!!!
-    @ create nice little first the twenty tracker
+    XXX @ Add a controlled by field to the city (determined by first majority then right-mostness)
+    XXX @ Track points on city capture
+    XXX @ create nice little first the twenty tracker
+    @ Add token aquistion fun!!!!!!
+    @ Move this todo list to a text file and clean up some comments
     @ make cities smaller and put name on top (maybe do this after collapse buttons)
     @ implement upgrade methods before move method (remeember that upgrades give free pieces)
     @ add token holder (don't have to make tokens functional)
@@ -245,7 +247,7 @@ const gameController = {
         this.cityStorageObject = {};
         inputHandlers.bindInputHandlers()
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
-        boardController.initializeUI();
+        boardController.initializeUI(this.playerArray);
 
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
@@ -474,7 +476,7 @@ const gameController = {
         return false;
     },
     calculateControllingPlayer(city) {
-        if (city.occupants.length === 0 ){
+        if (city.occupants.length === 0) {
             return false
         }
         const controlObj = {}
@@ -491,13 +493,13 @@ const gameController = {
 
         const maxPieces = Math.max(...Object.values(controlObj));
         const winnerArray = []
-        for (let key in controlObj){
-            if (controlObj[key] === maxPieces){
+        for (let key in controlObj) {
+            if (controlObj[key] === maxPieces) {
                 winnerArray.push(parseInt(key, 10))
             }
         }
-        for (let i = city.occupants.length - 1; i >= 0; i--){
-            if (winnerArray.includes(city.occupants[i])){
+        for (let i = city.occupants.length - 1; i >= 0; i--) {
+            if (winnerArray.includes(city.occupants[i])) {
                 return this.playerArray[city.occupants[i]]
             }
         }
@@ -512,17 +514,17 @@ const gameController = {
         console.log('Cities are', route.cities)
         route.cities.forEach(cityId => {
             const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
-            if (controller){
-                console.log('controller is',controller, 'you can delete this log')
+            if (controller) {
+                console.log('controller is', controller, 'you can delete this log')
                 this.scorePoints(1, controller);
             }
         })
-    }, 
-    scorePoints(pointValue, player){
+    },
+    scorePoints(pointValue, player) {
         const pointScoreText = `Player: ${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
         console.log(pointScoreText) // add to history
-        player.currentPoints+= pointValue;
-        boardController.updatePoints(pointValue, player)
+        player.currentPoints += pointValue;
+        boardController.updatePoints(player.currentPoints, player.color)
     }
 }
 
@@ -530,29 +532,34 @@ const gameController = {
 // The interface should NOT track state, just renders and creates buttons
 const boardController = {
     // Will probably need to load this in from a file, 
-    initializeUI() {
+    initializeUI(playerArray) {
         this.board = document.getElementById('gameBoard');
         this.board.innerHTML = ''
-        this.initializePointTracker(20);
+        this.initializePointTracker(20, playerArray);
         this.pointTrackerInfo = []
         // The rest of the building is done by the game controller as it loads the board data
     },
-    initializePointTracker(maxPoints){
-        // dev 
+    initializePointTracker(maxPoints, playerArray) {
         const pointTracker = document.getElementById('pointTrackerSection-1');
-        for (let i = 0; i <= maxPoints; i++){
-            const pointPieceHolderContainer = document.createElement('div');
-            pointPieceHolderContainer.className = 'pointPieceHolderContainer'
-            pointPieceHolderContainer.id = i;
-            pointPieceHolderContainer.innerText = i;
-            pointTracker.append(pointPieceHolderContainer);
-            // need to add four boxes 
-            // the board controller can have it's own state tracker
-            for (let j = 0; j < 4; j++ ){
-                const pointPieceHolder = document.getElementById('div');
-                
-            }
+        for (let i = 0; i <= maxPoints; i++) {
+            const pointPieceContainer = document.createElement('div');
+            pointPieceContainer.className = 'pointPieceContainer'
+            pointPieceContainer.id = `points-${i}`;
+            pointPieceContainer.innerText = i;
+            pointTracker.append(pointPieceContainer);
         }
+        playerArray.forEach(player => {
+            this.updatePoints(0, player.color)
+        })
+    },
+    updatePoints(pointTarget, playerColor) {
+        // would be nice to evntually remove the number, but this works for now
+        document.getElementById(`point-tracker-${playerColor}`)?.remove()
+        const pointTrackerPiece = document.createElement('div');
+        pointTrackerPiece.className = 'pointTrackerPiece';
+        pointTrackerPiece.style.backgroundColor = playerColor;
+        pointTrackerPiece.id = `point-tracker-${playerColor}`;
+        document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
     },
     createCity(cityInformation) {
         const { name, spotArray, unlock, location } = cityInformation;
@@ -610,11 +617,7 @@ const boardController = {
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
-    }, 
-    updatePoints(pointValue, player){
-        // dev
-        // need to create a new div above the gameboard. let's try for the cutesy color thing
-    }
+    },
 }
 
 // Any on click will need to check if it's the player's turn (or they have priority based on a bump)
@@ -709,7 +712,7 @@ window.onload = start
 
 const testCity = {
     "cityName": "Test City A",
-    "occupants": [1, 0, 1, 1, 0, 1, 0, 0, 3, 3 ,3 ,3, 1, 3 ],
+    "occupants": [1, 0, 1, 1, 0, 1, 0, 0, 3, 3, 3, 3, 1, 3],
     "openSpotIndex": 2,
     "spotArray": [
         [
@@ -729,6 +732,6 @@ const testCity = {
 
 const testCity2 = {
     "cityName": "Test City B",
-    "occupants": [1, 0, 0, 1 ],
+    "occupants": [1, 0, 0, 1],
     bonusSpotOccupantId: 1
 }
