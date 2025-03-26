@@ -1,59 +1,3 @@
-// CURRENT TODO LIST!!!!!!:
-/* 
-    XXXXX @Add a action clarification area below the button bar (i.e. select, square vs circle,
-        warn when trying to take an illegal action, select token via drop down) 
-    XXXX @Add some extra routes and cities to play with 
-    XXX@Create the click handlers for place and capture and resupply
-    XXX@Create a globalized process turn method (checks player actions and legality) and bumps the action/turn
-    XXX @And onclick buttons to cities and bind them like routes
-    XXX @Handler should include the Player Information updating
-    XXX @Add Button click handlers when initializing the game
-    XXX @Add Some margins to the components
-    XXX @Capture cities
-    XXX @Add a city UI update
-    @Fix the warning text by creating two seperate areas
-    XXXX @NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object
-    XXX @ Add a controlled by field to the city (determined by first majority then right-mostness)
-    XXX @ Track points on city capture
-    XXX @ create nice little first the twenty tracker
-    @ Add token aquistion (FUN!!!!!!)
-    @ Move this todo list to a text file and clean up some comments
-    @ make cities smaller and put name on top (maybe do this after collapse buttons)
-    @ implement upgrade methods before move method (remeember that upgrades give free pieces)
-    @ add token holder (don't have to make tokens functional)
-    @ move method
-    @ make areas collapseable (specifically the game board and player turn area)
-    @ bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
-    @Move some of the gamecontroller copy pasta into it's own methods
-    @Update player Bank and supply to use circles and squares
-    @Spin up a simple node server and move these to modules
-    @Make the board and the player information area collapsable
-    @Add a turn timer to the turn tracker
-    @Add a collapsable game log
-    @ use the coordinate system on the board
-    @check all todos
-    @Create a list of stretch goals
-*/
-
-// I can probably fix my orientation issue by making the gameboard scrollable and hard coding in coordinates
-
-
-// _________________------------------------------------ LONG TERM GOALS::
-/*
-// Very long term - add an end game calculator, undo action button, resume game, landing page, keyboard short cuts,
-// mouse over text for player fields, turn log (just some text after resolve turn), make collapsable, refactor
-// some methods to be seperate helper functions, convert to TS, add a very stupid single plyer mode, local storage,
-// maybe move things like routes and cities to their own classes?, 
-// refactor to only pass player unless absolutely necessary - using playerId is a pain in the ass and problematic
-*/
-
-// server to track plays (maybe even move logic there???)
-// Will eventually need to save state to local storage, maybe have a landing page with a "resume" button
-
-// in the long term might make sense to draw out the map with a canvas? ugh, I hate css
-
-// Have players alternate turns on one board until I implement a server to handle cross window gameplay
-
 // CONSTANTS
 const STARTING_BANK = 15; // no clue if this is correct
 const FIRST_PLAYER_SQUARES = 6;
@@ -83,8 +27,6 @@ const TEST_BOARD_CONFIG_CITIES = {
         unlock: 'unlockedColors',
     },
 };
-
-
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
@@ -528,8 +470,7 @@ const gameController = {
     }
 }
 
-
-// The interface should NOT track state, just renders and creates buttons
+// The interface does NOT track game state, just renders and creates buttons (although it can track its own state)
 const boardController = {
     // Will probably need to load this in from a file, 
     initializeUI(playerArray) {
@@ -702,6 +643,10 @@ const playerInformationController = {
             this.updatePlayerBox(player)
         })
     }
+}
+
+const gameLogController = {
+    // dev
 }
 
 class Player {

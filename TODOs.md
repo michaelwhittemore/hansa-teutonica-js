@@ -1,0 +1,54 @@
+# TODOs #
+* Add token acquisition (FUN!!!!!!)
+* default behavior when place is clicked but shape not selected
+* add a "Use defaults" constant
+* implement upgrade methods before move method (remember that upgrades give free pieces)
+* add token holder (don't have to make tokens functional)
+* move method (as in your own pieces on the board) - need rules clarification
+* make cities smaller and put name on top (maybe do this after collapse buttons)
+* bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
+* Move some of the gamecontroller copy pasta into it's own methods
+* Update player Bank and supply to use circles and squares
+* Spin up a simple node server and move these to modules
+* Add a turn timer to the turn tracker
+* Add a collapsible game log
+* keyboard short cuts for place and selecting shape
+* Fix turn track to place pieces over numbers using a number component with absolute? position
+* local storage
+* use the coordinate system on the board
+* check all TODOs
+* For landing page - have a list of valid colors (no text on white background nonsense)
+
+# Done #
+~~ Add a action clarification area below the button bar (i.e. select, square vs circle, warn when trying to take an illegal action, select token via drop down)~~
+~~Add some extra routes and cities to play with~~
+~~Create the click handlers for place and capture and resupply~~
+~~Create a globalized process turn method (checks player actions and legality) and bumps the action/turn~~
+~~And onclick buttons to cities and bind them like routes~~
+~~Handler should include the Player Information updating~~
+~~Add Button click handlers when initializing the game~~
+~~Add Some margins to the components~~
+~~Capture cities~~
+~~Add a city UI update~~
+~~ NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object~~
+~~ Add a controlled by field to the city (determined by first majority then right-mostness)~~
+~~ Track points on city capture~~
+~~ create nice little first the twenty tracker~~
+~~Move this todo list to a text file and clean up some comments~~
+
+# Stretch Goals (in no particular order) # #
+
+* local storage
+* add an end game calculator
+* resume game,
+* landing page 
+* keyboard short cuts
+* mouse over text for player fields
+* refactor some methods to be separate helper functions 
+* convert to TS
+* add a very stupid single plyer mode 
+* maybe move things like routes and cities to their own classes
+* refactor to only pass player unless absolutely necessary - using playerId is a pain in the ass and problematic
+* undo action button 
+* track game logic server side (only for online non-hotseat modes)
+* unit tests for all internal methods
