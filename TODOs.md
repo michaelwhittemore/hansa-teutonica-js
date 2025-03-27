@@ -1,20 +1,17 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* Add upgrades --> HERE
-* add colors to game log based on player name
-* add a "Use defaults" constant
-* implement upgrade methods before move method (remember that upgrades give free pieces)
+* create indivual player boards with the ability to swipe between them --> 
+    * these boards should roughly mimic the physcial ones, but with added info like points, actions remnaing, supply + bank, (maybe more? should be comporable to what I have now for info)
 * add token holder (don't have to make tokens functional)
 * move method (as in your own pieces on the board) - need rules clarification
 * make cities smaller and put name on top (maybe do this after collapse buttons)
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
-* testing with default mode turned off
+* add chat to game log
 * Move some of the gamecontroller copy pasta into it's own methods
 * Update player Bank and supply to use circles and squares
 * Spin up a simple node server and move these to modules -- **IMPORTANT**
 * Add a turn timer to the turn tracker
-* Add a collapsible game log
 * keyboard short cuts for place and selecting shape
 * Fix turn track to place pieces over numbers using a number component with absolute? position
 * local storage
@@ -26,8 +23,14 @@
 * For landing page - have a list of valid colors (no text on white background nonsense)
 * Fix the collapsible button and container code to involve less copy-pasta
 * Create a player board that looks like the real one, and allow you to swipe to other players
+* write out a game flow document
 
 # Done #
+~~add colors to game log based on player name --> here~~
+~~implement upgrade methods before move method (remember that upgrades give free pieces)~~
+~~add a "Use defaults" constant~~
+~~Add a collapsible game log~~
+~~Add upgrades~~
 ~~ Add a action clarification area below the button bar (i.e. select, square vs circle, warn when trying to take an illegal action, select token via drop down)~~
 ~~Add some extra routes and cities to play with~~
 ~~Create the click handlers for place and capture and resupply~~

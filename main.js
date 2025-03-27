@@ -49,7 +49,6 @@ const isShape = (inputString) => inputString === 'square' || inputString === 'ci
 
 const inputHandlers = {
     verifyPlayersTurn() {
-        // NEED TO ADD TO ALL BUTTON HANDLERS
         // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUTHANDLER SHOULD TELL YOU TO WAIT
         // IT SHOULDN'T BE THE gameController's responsbility (I think??)
 
@@ -303,7 +302,7 @@ const gameController = {
             playerId,
         }
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
-        gameLogController.addTextToGameLog(`${player.name} placed a ${shape} on ${nodeId}`)
+        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
         this.resolveAction(player)
     },
     resupply(playerId) {
@@ -340,7 +339,7 @@ const gameController = {
             player.supplySquares += resuppliedSquares;
             player.bankedSquares -= resuppliedSquares;
         }
-        gameLogController.addTextToGameLog(`${player.name} resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`);
+        gameLogController.addTextToGameLog(`$PLAYER_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
         this.resolveAction(player)
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
@@ -401,7 +400,7 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-        gameLogController.addTextToGameLog(`${player.name} captured the city of ${cityName}`);
+        gameLogController.addTextToGameLog(`$PLAYER_NAME captured the city of ${cityName}`, player);
         this.resolveAction(player);
     },
     upgradeAtCity(cityName, playerId) {
@@ -444,7 +443,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.purse++;
                 player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
-                gameLogController.addTextToGameLog(`${player.name} has upgraded their resupply. They now have ${player.purse}.`)
+                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
                 break;
             case 'action':
                 if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
@@ -455,12 +454,12 @@ const gameController = {
                 player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
                 // We only give the player a free action when they are actually advancing the total
                 // i.e. not going from 3 -> 3 at index 1 ->2
-                let actionUpgradeText = `${player.name} has upgraded their actions per turn. They now have ${player.maxActions}.`
+                let actionUpgradeText = `$PLAYER_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
                 if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
                     player.currentActions++;
                     actionUpgradeText += ' They get a free action as a result'
                 }
-                gameLogController.addTextToGameLog(actionUpgradeText);
+                gameLogController.addTextToGameLog(actionUpgradeText,player);
                 break;
             case 'unlockedColors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
@@ -469,7 +468,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.colors++;
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
-                gameLogController.addTextToGameLog(`${player.name} has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`)
+                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
                 break;
             case 'movement':
                 if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
@@ -478,7 +477,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.maxMovement++;
                 player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
-                gameLogController.addTextToGameLog(`${player.name} has upgraded their maximum movement. They now have ${player.maxMovement}.`)
+                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
                 break;
             case 'keys':
                 if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
@@ -487,16 +486,16 @@ const gameController = {
                 }
                 player.unlockArrayIndex.keys++;
                 player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
-                gameLogController.addTextToGameLog(`${player.name} has upgraded their route multiplier. They now have ${player.keys}.`)
+                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
                 break;
             default:
                 console.error('we should not hit the default')
         }
         if (city.unlock === 'movement'){
-            gameLogController.addTextToGameLog(`${player.name} has unlocked a circle for their supply.`);
+            gameLogController.addTextToGameLog(`$PLAYER_NAME has unlocked a circle for their supply.`, player);
             player.supplyCircles++;
         } else {
-            gameLogController.addTextToGameLog(`${player.name} has unlocked a square for their supply.`)
+            gameLogController.addTextToGameLog(`$PLAYER_NAME has unlocked a square for their supply.`, player)
             player.supplySquares++
         }
         // TODO would make sense to move the bank update to routeCompleted Method
@@ -568,8 +567,8 @@ const gameController = {
 
     },
     routeCompleted(routeId, player) {
-        // It will also check for tokens (we will need to create a token holder when initalizing routyses)
-        gameLogController.addTextToGameLog(`${player.name} has completed route ${routeId}`)
+        // It will also check for tokens (we will need to create a token holder when initializing routes)
+        gameLogController.addTextToGameLog(`$PLAYER_NAME has completed route ${routeId}`, player)
         const route = this.routeStorageObject[routeId]
         route.cities.forEach(cityId => {
             const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
@@ -588,8 +587,8 @@ const gameController = {
         }
     },
     scorePoints(pointValue, player) {
-        const pointScoreText = `${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
-        gameLogController.addTextToGameLog(pointScoreText)
+        const pointScoreText = `$PLAYER_NAME scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
+        gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
     }
@@ -704,8 +703,8 @@ const boardController = {
     },
 }
 
-// Any on click will need to check if it's the player's turn (or they have priority based on a bump)
 const playerInformationController = {
+    // DEV
     initializePlayerUI(playerArray) {
         const playerAreaDiv = document.getElementById('playerArea');
         playerAreaDiv.innerHTML = '';
@@ -790,10 +789,20 @@ const gameLogController = {
         }
         this.isCollapsed = !this.isCollapsed
     },
-    addTextToGameLog(text) {
-        // TODO add to saved history
+    addTextToGameLog(text, player) {
+        // player is an optional parameter
+        // what we want to do is replace every instance of the player name with a span 
+        // that wraps around them and contains their color
+        // I think we can just do a string replace, we have full control over the inputs in this method
         const timestamp = (new Date()).toLocaleTimeString('en-US')
+        if (player) {
+            const playerNameSpan = `<span style="color: ${player.color}">${player.name}</span>`
+            text = text.replaceAll('$PLAYER_NAME',playerNameSpan)
+        }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
+
+        // TODO add to saved history
+
     }
 }
 
