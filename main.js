@@ -450,7 +450,7 @@ const gameController = {
 
         switch (city.unlock) {
             case 'purse':
-                if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1){
+                if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
                     noFurtherUpgrades('resupply capacity');
                     return;
                 }
@@ -459,7 +459,7 @@ const gameController = {
                 gameLogController.addTextToGameLog(`${player.name} has upgraded their resupply. They now have ${player.purse}.`)
                 break;
             case 'action':
-                if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1){
+                if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
                     noFurtherUpgrades('actions');
                     return;
                 }
@@ -468,14 +468,14 @@ const gameController = {
                 // We only give the player a free action when they are actually advancing the total
                 // i.e. not going from 3 -> 3 at index 1 ->2
                 let actionUpgradeText = `${player.name} has upgraded their actions per turn. They now have ${player.maxActions}.`
-                if ([1,3,5].includes(player.unlockArrayIndex.actions)){
+                if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
                     player.currentActions++;
                     actionUpgradeText += ' They get a free action as a result'
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText);
                 break;
             case 'unlockedColors':
-                if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1){
+                if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
                     noFurtherUpgrades('available colors');
                     return;
                 }
@@ -483,19 +483,39 @@ const gameController = {
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
                 gameLogController.addTextToGameLog(`${player.name} has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`)
                 break;
+            case 'movement':
+                if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
+                    noFurtherUpgrades('pieces moved per action');
+                    return;
+                }
+                player.unlockArrayIndex.maxMovement++;
+                player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
+                gameLogController.addTextToGameLog(`${player.name} has upgraded their maximum movement. They now have ${player.maxMovement}.`)
+                break;
+            case 'keys':
+                if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
+                    noFurtherUpgrades('route multiplier');
+                    return;
+                }
+                player.unlockArrayIndex.keys++;
+                player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
+                gameLogController.addTextToGameLog(`${player.name} has upgraded their route multiplier. They now have ${player.keys}.`)
+                break;
             default:
                 console.error('we should not hit the default')
         }
-        // const unlockMovementToValue = [2, 3, 4, 5];
-        // const unlockKeysToValue = [1, 2, 2, 3, 4];
+        if (city.unlock === 'movement'){
+            gameLogController.addTextToGameLog(`${player.name} has unlocked a circle for their supply.`);
+            player.supplyCircles++;
+        } else {
+            gameLogController.addTextToGameLog(`${player.name} has unlocked a square for their supply.`)
+            player.supplySquares++
+        }
+
         /*
         To do!
          _______---------- Switch statements depending on upgrade 
         2. Verify that the player still has that upgrade
-        3. Change the player relevant field (I think this should fix free action)
-        3. May need a colorUnlock order map
-        4. Give the player their free piece
-        4. log that upgrade has occured
         5. Call route complete - believe that should take care of points and clearing route
         6. Update player UI
         7. standard action resolution
@@ -809,7 +829,7 @@ class Player {
         this.unlockArrayIndex = {
             actions: 0,
             purse: 0,
-            movement: 0,
+            maxMovement: 0,
             colors: 0,
             keys: 0,
         }
