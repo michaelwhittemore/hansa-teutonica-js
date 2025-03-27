@@ -1,6 +1,6 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* default behavior when place is clicked but shape not selected
+* Add upgrades --> HERE
 * add a "Use defaults" constant
 * implement upgrade methods before move method (remember that upgrades give free pieces)
 * add token holder (don't have to make tokens functional)
@@ -23,6 +23,7 @@
 * check all TODOs
 * For landing page - have a list of valid colors (no text on white background nonsense)
 * Fix the collapsible button and container code to involve less copy-pasta
+* Create a player board that looks like the real one, and allow you to swipe to other players
 
 # Done #
 ~~ Add a action clarification area below the button bar (i.e. select, square vs circle, warn when trying to take an illegal action, select token via drop down)~~
@@ -36,10 +37,12 @@
 ~~Capture cities~~
 ~~Add a city UI update~~
 ~~ NEED TO COllapse routeNodeStorageObject & routeStorageObject into a single object~~
-~~ Add a controlled by field to the city (determined by first majority then right-mostness)~~
+~~ Add a controlled by field to the city (determined by first majority then right-most)~~
 ~~ Track points on city capture~~
 ~~ create nice little first the twenty tracker~~
 ~~Move this todo list to a text file and clean up some comments~~
+~~default behavior when place is clicked but shape not selected~~
+
 
 # Stretch Goals (in no particular order) # #
 

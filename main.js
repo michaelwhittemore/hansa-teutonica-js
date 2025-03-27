@@ -57,7 +57,14 @@ const inputHandlers = {
         // pretend this checks if it's the correct player's turn 
         return true;
     },
+    handleUpgradeButton(){
+        // dev
+        const actionInfoDiv = document.getElementById('actionInfo');
+        inputHandlers.clearAllActionSelection();
 
+        inputHandlers.selectedAction = 'upgrade'
+        actionInfoDiv.innerText = "Select a city corresponding to an upgrade."
+    },
     handlePlaceButton() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
@@ -124,6 +131,7 @@ const inputHandlers = {
         document.getElementById('bump').onclick = this.handleBumpButton;
         document.getElementById('resupply').onclick = this.handleResupplyButton;
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
+        document.getElementById('upgrade').onclick = this.handleUpgradeButton;
 
     },
     // TODO this doesn't work in all circumstances (like capturing a city)
@@ -179,6 +187,10 @@ const inputHandlers = {
             // Might need to pass in player ID
             gameController.captureCity(cityId, undefined)
         }
+        if (inputHandlers.selectedAction === 'upgrade') {
+            // Might need to pass in player ID
+            gameController.upgradeAtCity(cityId, undefined)
+        }
 
     }
 }
@@ -200,15 +212,17 @@ const gameController = {
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
 
+        // NOTE, IF WE DO SWITCH CITY TO A CLASS, THIS MAY NOT BE ACCURATE
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
             boardController.createCity({ ...city })
             this.cityStorageObject[cityKey] = {
-                cityName: cityKey, //techincally kinda useless
+                cityName: cityKey, // technically kinda useless
                 occupants: [],
                 openSpotIndex: 0,
                 spotArray: city.spotArray,
                 bonusSpotOccupantId: undefined,
+                unlock: city.unlock,
             }
             if (city.neighborRoutes) {
                 const neighborCityName = city.neighborRoutes[0][0]
@@ -401,6 +415,33 @@ const gameController = {
         }
         gameLogController.addTextToGameLog(`${player.name} captured the city of ${cityName}`);
         this.resolveAction(player);
+    },
+    upgradeAtCity(cityName, playerId){
+        // DEV
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        
+        city = this.cityStorageObject[cityName]
+        console.log(city.unlock)
+        /*
+        To do!
+        1. Verify that player has legal route
+         _______---------- Switch statements depending on upgrade 
+        2. Verify that the player still has that upgrade
+        3. Change the player relevant field (I think this should fix free action)
+        3. May need a colorUnlock order map
+        4. Give the player their free piece
+        4. log that upgrade has occured
+        5. Call route complete - believe that should take care of points and clearing route
+        6. Update player UI
+        7. standard action resolution
+        */ 
+
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
         // at some point return BOTH routes
@@ -679,7 +720,7 @@ const gameLogController = {
         this.isCollapsed = !this.isCollapsed
     },
     addTextToGameLog(text){
-        // TODO timestamp and add to saved history
+        // TODO add to saved history
         const timestamp = (new Date()).toLocaleTimeString('en-US')
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
     }
