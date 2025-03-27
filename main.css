@@ -57,7 +57,10 @@
     border: solid;
     border-color: black;
 }
-
+.playerBoardArea{
+    border: solid;
+    border-color: black;
+}
 #turnTracker {
     font-weight: bold;
 }
@@ -113,6 +116,7 @@
 
 .collapsibleContainer {
     position: relative;
+    min-height: 30px;
     min-width: 970px;
 }
 

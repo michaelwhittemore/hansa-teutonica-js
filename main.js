@@ -711,7 +711,25 @@ const playerInformationBoardController = {
     // Will need an update method for the upgrade fields maybe? or is that silly?
     initializePlayerInfoBoards(playerArray) {
         // We will need to do this for each and then only show the selected player
-        this.createInfoBoardForPlayer(playerArray[0])
+        const player0Board = this.createInfoBoardForPlayer(playerArray[0])
+        document.getElementById('playerBoardArea').append(player0Board)
+
+        const collapseButton = document.createElement('button');
+        collapseButton.innerText = 'Collapse Board';
+        collapseButton.className = 'collapseButton';
+        collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
+        document.getElementById('playerInfoBoardContainer').append(collapseButton)
+        this.isCollapsed = false;
+    },
+    togglePlayerInfo(collapseButton) {
+        if (!this.isCollapsed) {
+            document.getElementById('playerBoardArea').classList.add('collapsedContainer')
+            collapseButton.innerText = 'Expand Board'
+        } else {
+            document.getElementById('playerBoardArea').classList.remove('collapsedContainer')
+            collapseButton.innerText = 'Collapse Board'
+        }
+        this.isCollapsed = !this.isCollapsed
     },
     createInfoBoardForPlayer(player) {
         // DEV
@@ -741,7 +759,7 @@ const playerInformationBoardController = {
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
  
-        document.getElementById('playerInfoBoardContainer').append(playerInfoBoard)
+        return playerInfoBoard
     },
     unlockPieceFromBoard(player, index, unlock){
         // TODO add this to all the unlock game logic
@@ -902,14 +920,11 @@ const playerInformationBoardController = {
 }
 
 const playerInformationController = {
+    // THIS IS SLATED FOR REPLACEMENT
     initializePlayerUI(playerArray) {
         const playerAreaDiv = document.getElementById('playerArea');
         playerAreaDiv.innerHTML = '';
-        // const turnTrackerHTML = this.turnTrackerHTMLBuilder(playerArray[0]);
-        const turnTrackerDiv = document.createElement('div');
-        turnTrackerDiv.id = 'turnTracker'
-        // turnTrackerDiv.innerHTML = turnTrackerHTML;
-        playerAreaDiv.append(turnTrackerDiv)
+
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
         })
@@ -931,13 +946,7 @@ const playerInformationController = {
         }
         this.isCollapsed = !this.isCollapsed
     },
-    // updateTurnTracker(player) {
-    //     document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
-    // },
-    // turnTrackerHTMLBuilder(player) {
-    //     const { name, color, currentActions } = player
-    //     return (`It's currently <span style="color:${color}">${name}'s</span> turn. They have ${currentActions} actions remaining.`)
-    // },
+
     createPlayerBox(player) {
         const playerBoxDiv = document.createElement('div');
         playerBoxDiv.className = 'playerBox';
