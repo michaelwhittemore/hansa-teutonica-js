@@ -182,7 +182,7 @@
     border: solid;
 }
 
-.colorTracker{
+.colorTracker {
     height: 120px;
     width: 300px;
     margin: 2px;
@@ -191,14 +191,16 @@
     justify-content: space-between;
     background-color: wheat;
 }
-#colorBanner{
+
+#colorBanner {
     height: 20%;
     text-align: center;
     font-weight: bold;
     width: 100%;
     margin: 2px;
 }
-.colorDiv{
+
+.colorDiv {
     margin: 2px;
     height: 30px;
     width: 30px;

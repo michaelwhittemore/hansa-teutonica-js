@@ -717,6 +717,7 @@ const playerInformationBoardController = {
         // Will need to create the arrows here as well
         console.log(player)
         const playerInfoBoard = document.createElement('div')
+        playerInfoBoard.style.borderColor = player.color
         playerInfoBoard.className = 'playerInfoBoard'
         playerInfoBoard.id = `${player.id}-infoBoard`
         // Key Tracker

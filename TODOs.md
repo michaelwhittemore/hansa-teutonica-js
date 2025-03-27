@@ -2,9 +2,15 @@
 * Add token acquisition (FUN!!!!!!)
 * create indivual player boards with the ability to swipe between them --> 
     * these boards should roughly mimic the physcial ones, but with added info like points, actions remnaing, supply + bank, tokens, (maybe more? should be comporable to what I have now for info)
-    * will eventually need to grab images for these fields
+    * Create "liber sophiae" and purse ---> HERE!!!
+    * create the supply and bank area
+    * create info dump area at bottom on board
+    * add the collapse button back
     * Arrows to move, also a drop down menu
     * Should we center the action on active player??? maybe during hotseat play!
+    * will eventually need to grab images for these fields
+    * add player name banner to the top
+* 
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * add token holder (don't have to make tokens functional)
 * move method (as in your own pieces on the board) - need rules clarification
