@@ -713,6 +713,7 @@ const playerInformationBoardController = {
         this.createInfoBoardForPlayer(playerArray[0])
     },
     createInfoBoardForPlayer(player) {
+        // DEV
         // Will need to create the arrows here as well
         console.log(player)
         const playerInfoBoard = document.createElement('div')
@@ -721,6 +722,8 @@ const playerInformationBoardController = {
         // Key Tracker
         playerInfoBoard.append(this.componentBuilders.createKeyTracker(player))
         playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createActionTracker(player))
+
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
  
@@ -737,12 +740,9 @@ const playerInformationBoardController = {
             const keyTracker = document.createElement('div')
             keyTracker.className = 'keyTracker';
             keyTracker.id = `${player.id}-keyTracker`;
-            // keys will need a little square where the pieces can go and a value
             for (let i = 0; i < unlockKeysToValue.length; i++){
-                // Will want a separate unlockable square component as it's used for everything but sophie libria
                 const keyDiv = document.createElement('div');
                 keyDiv.className = 'keyDiv';
-                keyDiv.id = ``
                 keyDiv.innerText= `Key ${unlockKeysToValue[i]}`
                 keyDiv.append(this.createUnlockableShape({
                     locked: i > 0,
@@ -753,6 +753,29 @@ const playerInformationBoardController = {
                 keyTracker.append(keyDiv)
             }
             return keyTracker
+        },
+        createActionTracker(player){
+            // DEV 2
+            const actionTracker = document.createElement('div')
+            actionTracker.className = 'actionTracker';
+            actionTracker.id = `${player.id}-actionTracker`;
+            for (let i = 0; i < unlockActionsToValue.length; i++){
+                const actionDiv = document.createElement('div');
+                actionDiv.classList.add('actionDiv')
+                // TODO center content better
+                // Might need a innerText utility class
+                // actionDiv.classList.add('actionDiv', 'centeredFlex')
+
+                actionDiv.innerText= `Actiones ${unlockActionsToValue[i]}`
+                actionDiv.append(this.createUnlockableShape({
+                    locked: i > 0,
+                    color: player.color,
+                    componentId: `${player.id}-actionDiv-${i}-shape`,
+                    shape: 'square',
+                }))
+                actionTracker.append(actionDiv)
+            }
+            return actionTracker;
         },
         createUnlockableShape(props){
             const {locked, color, componentId, shape} = props
@@ -777,18 +800,17 @@ const playerInformationBoardController = {
             return unlockableShape
         }, 
         createTokenTracker(player){
-            // just a big ol' circle
-            // eventually add some images for tokens
+            // eventually add some images for tokens (only need the eaten one)
             const tokenTracker = document.createElement('div');
             tokenTracker.className = 'tokenTracker';
-            console.log(tokenTracker)
-
+            // Will eventually need a method to add to token tracker, once consumed
             const tokenHolder = document.createElement('div');
             tokenHolder.className = 'tokenHolder'
             tokenHolder.id = `tokenHolder-${player.id}`;
             tokenTracker.append(tokenHolder);
             return tokenTracker
-        }
+        },
+
     },
 }
 
@@ -922,6 +944,7 @@ class Player {
 
 const unlockToDivName = {
     key: 'keyDiv',
+    action: 'actionDiv'
     // movement: 'maxMovementDiv'
 }
 const unlockActionsToValue = [2, 3, 3, 4, 4, 5];

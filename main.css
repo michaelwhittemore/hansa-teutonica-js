@@ -1,4 +1,3 @@
-
 .big-circle {
     height: 60px;
     width: 60px;
@@ -149,7 +148,21 @@
     width: 35px;
     margin: 2px;
 }
-.tokenTracker{
+
+.actionTracker {
+    display: flex;
+    margin: 10px;
+}
+
+.actionDiv {
+    height: 90px;
+    width: 70px;
+    margin: 2px;
+    background-color: wheat;
+
+}
+
+.tokenTracker {
     border-radius: 50%;
     height: 120px;
     width: 120px;
@@ -159,13 +172,15 @@
     align-items: center;
     justify-content: center;
 }
-.tokenHolder{
+
+.tokenHolder {
     border-radius: 50%;
     height: 80px;
     width: 80px;
     background-color: grey;
     border: solid;
 }
+
 .unlockableShape {
     transform: rotate(45deg);
     height: 20px;
@@ -181,9 +196,16 @@
     width: 15px;
 }
 
-.circle{
+.circle {
     border-radius: 50%;
 
 }
 
 .playerInfoBoardArrowButton {}
+
+/* Utility Classes */
+.centeredFlex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
