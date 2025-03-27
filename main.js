@@ -732,7 +732,7 @@ const playerInformationBoardController = {
     },
     unlockPieceFromBoard(player, index, unlock){
         // TODO add this to all the unlock game logic
-        const divId = `${player.id}-${unlockToDivName[unlock]}-${index}-shape-locked`
+        const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
         console.log(divId)
         document.getElementById(divId).remove();
     },
@@ -778,7 +778,6 @@ const playerInformationBoardController = {
             return actionTracker;
         },
         createColorTracker(player){
-            // Top Half needs to be the "privilegium" banner
             const colorTracker = document.createElement('div')
             colorTracker.className = 'colorTracker';
             colorTracker.id = `${player.id}-colorTracker`;
@@ -790,22 +789,23 @@ const playerInformationBoardController = {
 
             for (let i = 0; i < unlockColorsToValue.length; i++){
                 const colorDiv = document.createElement('div');
-                colorDiv.classList.add('colorDiv')
-                colorDiv.innerText= `${unlockColorsToValue[i]}`
+                colorDiv.classList.add('colorDiv', 'centeredFlex')
+                colorDiv.style.backgroundColor = `${unlockColorsToValue[i]}`
                 colorDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
                     componentId: `${player.id}-colorDiv-${i}-shape`,
                     shape: 'square',
+                    isColors: true,
                 }))
                 colorTracker.append(colorDiv)
             }
             return colorTracker;
         },
         createUnlockableShape(props){
-            const {locked, color, componentId, shape} = props
+            const {locked, color, componentId, shape, isColors} = props
             const unlockableShape = document.createElement('div')
-            unlockableShape.className = 'unlockableShape';
+            unlockableShape.className = isColors ? 'unlockableShapeColors': 'unlockableShape';
             unlockableShape.id = componentId
             if (shape === 'circle'){
                 unlockableShape.classList.add('circle')
@@ -967,11 +967,6 @@ class Player {
     }
 }
 
-const unlockToDivName = {
-    key: 'keyDiv',
-    action: 'actionDiv'
-    // movement: 'maxMovementDiv'
-}
 const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
 const unlockPurseToValue = [3, 5, 7, 'All'];
 const unlockMovementToValue = [2, 3, 4, 5];

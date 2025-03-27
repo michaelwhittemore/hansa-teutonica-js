@@ -188,17 +188,20 @@
     margin: 2px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     background-color: wheat;
 }
 #colorBanner{
-    height: 25%;
+    height: 20%;
     text-align: center;
     font-weight: bold;
     width: 100%;
-
+    margin: 2px;
 }
 .colorDiv{
-
+    margin: 2px;
+    height: 30px;
+    width: 30px;
 }
 
 .unlockableShape {
@@ -206,6 +209,14 @@
     height: 20px;
     width: 20px;
     background-color: aliceblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.unlockableShapeColors {
+    height: 20px;
+    width: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
