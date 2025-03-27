@@ -476,18 +476,17 @@ const gameController = {
                 break;
             case 'unlockedColors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1){
-                    noFurtherUpgrades('resupply capacity');
+                    noFurtherUpgrades('available colors');
                     return;
                 }
                 player.unlockArrayIndex.colors++;
-                player.unlockedColors += unlockColorsToValue[player.unlockArrayIndex.colors];
-                gameLogController.addTextToGameLog(`${player.name} has upgraded their resupply. They now have ${player.purse}.`)
+                player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
+                gameLogController.addTextToGameLog(`${player.name} has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`)
                 break;
             default:
                 console.error('we should not hit the default')
         }
         // const unlockMovementToValue = [2, 3, 4, 5];
-        // const unlockColorsToValue = ['grey', 'orange', 'pink', 'black'];
         // const unlockKeysToValue = [1, 2, 2, 3, 4];
         /*
         To do!
@@ -820,7 +819,7 @@ class Player {
 const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
 const unlockPurseToValue = [3, 5, 7, 'All'];
 const unlockMovementToValue = [2, 3, 4, 5];
-const unlockColorsToValue = ['grey', 'orange', 'pink', 'black'];
+const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
 const unlockKeysToValue = [1, 2, 2, 3, 4];
 
 const start = () => {
