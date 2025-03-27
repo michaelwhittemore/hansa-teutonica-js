@@ -261,7 +261,6 @@ const gameController = {
         this.currentTurn++;
         playerInformationController.updateTurnTracker(this.getActivePlayer())
         lastPlayer.currentActions = lastPlayer.maxActions;
-        // the last player's actions aren't being updated on player box
     },
     resolveAction(player) {
         inputHandlers.clearAllActionSelection();
@@ -402,16 +401,6 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-
-        for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
-            this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
-                occupied: false,
-                shape: undefined,
-                color: undefined,
-                playerId: undefined,
-            };
-            boardController.clearPieceFromRouteNode(nodeToClearId)
-        }
         gameLogController.addTextToGameLog(`${player.name} captured the city of ${cityName}`);
         this.resolveAction(player);
     },
@@ -425,7 +414,6 @@ const gameController = {
         }
 
         city = this.cityStorageObject[cityName]
-        // DEV
 
         const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
         const { routeId } = routeCheckOutcome
@@ -511,21 +499,11 @@ const gameController = {
             gameLogController.addTextToGameLog(`${player.name} has unlocked a square for their supply.`)
             player.supplySquares++
         }
-
-        /*
-        To do!
-         _______---------- Switch statements depending on upgrade 
-        2. Verify that the player still has that upgrade
-        5. Call route complete - believe that should take care of points and clearing route
-        6. Update player UI
-        7. standard action resolution
-        */
-
-        // player.bankedCircles += routeCheckOutcome.circle;
-        // player.bankedSquares += routeCheckOutcome.square;
-        // this.routeCompleted(routeId, player);
-
-
+        // TODO would make sense to move the bank update to routeCompleted Method
+        player.bankedCircles += routeCheckOutcome.circle;
+        player.bankedSquares += routeCheckOutcome.square;
+        this.routeCompleted(routeId, player);
+        this.resolveAction(player);
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
         // at some point return BOTH routes
@@ -599,6 +577,15 @@ const gameController = {
                 this.scorePoints(1, controller);
             }
         })
+        for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
+            this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
+                occupied: false,
+                shape: undefined,
+                color: undefined,
+                playerId: undefined,
+            };
+            boardController.clearPieceFromRouteNode(nodeToClearId)
+        }
     },
     scorePoints(pointValue, player) {
         const pointScoreText = `${player.name} scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
