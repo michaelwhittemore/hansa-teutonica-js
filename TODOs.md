@@ -1,6 +1,7 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
 * Add upgrades --> HERE
+* add colors to game log based on player name
 * add a "Use defaults" constant
 * implement upgrade methods before move method (remember that upgrades give free pieces)
 * add token holder (don't have to make tokens functional)
@@ -11,13 +12,14 @@
 * testing with default mode turned off
 * Move some of the gamecontroller copy pasta into it's own methods
 * Update player Bank and supply to use circles and squares
-* Spin up a simple node server and move these to modules
+* Spin up a simple node server and move these to modules -- **IMPORTANT**
 * Add a turn timer to the turn tracker
 * Add a collapsible game log
 * keyboard short cuts for place and selecting shape
 * Fix turn track to place pieces over numbers using a number component with absolute? position
 * local storage
-* use the coordinate system on the board
+* use the coordinate system on the board -- **IMPORTANT**
+* ^^^^^ once the above is done I can add additional cities for better testing
 * time stamp to game log
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs

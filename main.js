@@ -57,8 +57,7 @@ const inputHandlers = {
         // pretend this checks if it's the correct player's turn 
         return true;
     },
-    handleUpgradeButton(){
-        // dev
+    handleUpgradeButton() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
@@ -98,7 +97,7 @@ const inputHandlers = {
     handleCaptureCityButton() {
         const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
-        
+
         inputHandlers.selectedAction = 'capture';
         if (!inputHandlers.selectedLocation) {
             console.warn('No location selected')
@@ -145,17 +144,17 @@ const inputHandlers = {
     routeNodeClickHandler(nodeId) {
         // Remember that we can use this for place, or move (both selecting FROM and TO), and for bumping
         if (!inputHandlers.selectedAction) {
-            if (USE_DEFAULT_CLICK_ACTIONS){
+            if (USE_DEFAULT_CLICK_ACTIONS) {
                 inputHandlers.selectedAction = 'place';
                 inputHandlers.additionalInfo = 'square'
             } else {
                 // TODO warn that nothing was selected
                 return;
             }
-            
+
         };
         if (!inputHandlers.additionalInfo) {
-            if (USE_DEFAULT_CLICK_ACTIONS){
+            if (USE_DEFAULT_CLICK_ACTIONS) {
                 inputHandlers.additionalInfo = 'square';
             } else {
                 // TODO warn that no shape was selected (or maybe dependant on action??)
@@ -175,7 +174,7 @@ const inputHandlers = {
     },
     cityClickHandler(cityId) {
         if (!inputHandlers.selectedAction) {
-            if (USE_DEFAULT_CLICK_ACTIONS){
+            if (USE_DEFAULT_CLICK_ACTIONS) {
                 inputHandlers.selectedLocation = cityId;
                 inputHandlers.selectedAction = 'capture';
             } else {
@@ -416,8 +415,7 @@ const gameController = {
         gameLogController.addTextToGameLog(`${player.name} captured the city of ${cityName}`);
         this.resolveAction(player);
     },
-    upgradeAtCity(cityName, playerId){
-        // DEV
+    upgradeAtCity(cityName, playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -425,12 +423,74 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        
+
         city = this.cityStorageObject[cityName]
-        console.log(city.unlock)
+        // DEV
+
+        const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
+        const { routeId } = routeCheckOutcome
+        console.log(city)
+        if (!city.unlock) {
+            console.warn(`The city of ${city.name} doesn't have a corresponding unlock.`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`The city of ${city.name} doesn't have a corresponding unlock.`);
+            return;
+        }
+        if (!routeCheckOutcome) {
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction('You can not upgrade without a completed route.');
+            return;
+        };
+
+        const noFurtherUpgrades = (unlockName) => {
+            console.warn(`You can't upgrade your ${unlockName} any further.`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
+        }
+
+        switch (city.unlock) {
+            case 'purse':
+                if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1){
+                    noFurtherUpgrades('resupply capacity');
+                    return;
+                }
+                player.unlockArrayIndex.purse++;
+                player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
+                gameLogController.addTextToGameLog(`${player.name} has upgraded their resupply. They now have ${player.purse}.`)
+                break;
+            case 'action':
+                if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1){
+                    noFurtherUpgrades('actions');
+                    return;
+                }
+                player.unlockArrayIndex.actions++;
+                player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
+                // We only give the player a free action when they are actually advancing the total
+                // i.e. not going from 3 -> 3 at index 1 ->2
+                let actionUpgradeText = `${player.name} has upgraded their actions per turn. They now have ${player.maxActions}.`
+                if ([1,3,5].includes(player.unlockArrayIndex.actions)){
+                    player.currentActions++;
+                    actionUpgradeText += ' They get a free action as a result'
+                }
+                gameLogController.addTextToGameLog(actionUpgradeText);
+                break;
+            case 'unlockedColors':
+                if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1){
+                    noFurtherUpgrades('resupply capacity');
+                    return;
+                }
+                player.unlockArrayIndex.colors++;
+                player.unlockedColors += unlockColorsToValue[player.unlockArrayIndex.colors];
+                gameLogController.addTextToGameLog(`${player.name} has upgraded their resupply. They now have ${player.purse}.`)
+                break;
+            default:
+                console.error('we should not hit the default')
+        }
+        // const unlockMovementToValue = [2, 3, 4, 5];
+        // const unlockColorsToValue = ['grey', 'orange', 'pink', 'black'];
+        // const unlockKeysToValue = [1, 2, 2, 3, 4];
         /*
         To do!
-        1. Verify that player has legal route
          _______---------- Switch statements depending on upgrade 
         2. Verify that the player still has that upgrade
         3. Change the player relevant field (I think this should fix free action)
@@ -440,7 +500,12 @@ const gameController = {
         5. Call route complete - believe that should take care of points and clearing route
         6. Update player UI
         7. standard action resolution
-        */ 
+        */
+
+        // player.bankedCircles += routeCheckOutcome.circle;
+        // player.bankedSquares += routeCheckOutcome.square;
+        // this.routeCompleted(routeId, player);
+
 
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
@@ -654,7 +719,7 @@ const playerInformationController = {
         document.getElementById('playerAreaContainer').append(collapseButton)
         this.isCollapsed = false;
     },
-    togglePlayerInfo(collapseButton){
+    togglePlayerInfo(collapseButton) {
         if (!this.isCollapsed) {
             document.getElementById('playerArea').classList.add('collapsedContainer')
             collapseButton.innerText = 'Expand Player Information'
@@ -700,7 +765,7 @@ const playerInformationController = {
 }
 
 const gameLogController = {
-    initializeGameLog(history){
+    initializeGameLog(history) {
         // optionally, we should load in history
         const collapseButton = document.createElement('button');
         collapseButton.innerText = 'Collapse Game Log';
@@ -709,7 +774,7 @@ const gameLogController = {
         document.getElementById('gameLogContainer').append(collapseButton)
         this.isCollapsed = false;
     },
-    toggleGameLog(collapseButton){
+    toggleGameLog(collapseButton) {
         if (!this.isCollapsed) {
             document.getElementById('gameLog').classList.add('collapsedContainer')
             collapseButton.innerText = 'Expand Game Log'
@@ -719,7 +784,7 @@ const gameLogController = {
         }
         this.isCollapsed = !this.isCollapsed
     },
-    addTextToGameLog(text){
+    addTextToGameLog(text) {
         // TODO add to saved history
         const timestamp = (new Date()).toLocaleTimeString('en-US')
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
@@ -738,13 +803,25 @@ class Player {
         this.maxActions = 2; // Not to be confused with current actions
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
-        this.unlockedColors = ['grey'];// need a refernce map
+        this.unlockedColors = ['grey'];
         this.maxMovement = 2;
         this.keys = 1;
         this.purse = 3;
+        this.unlockArrayIndex = {
+            actions: 0,
+            purse: 0,
+            movement: 0,
+            colors: 0,
+            keys: 0,
+        }
     }
 }
 
+const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
+const unlockPurseToValue = [3, 5, 7, 'All'];
+const unlockMovementToValue = [2, 3, 4, 5];
+const unlockColorsToValue = ['grey', 'orange', 'pink', 'black'];
+const unlockKeysToValue = [1, 2, 2, 3, 4];
 
 const start = () => {
     gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
