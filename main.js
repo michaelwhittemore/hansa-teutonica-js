@@ -723,6 +723,7 @@ const playerInformationBoardController = {
         playerInfoBoard.append(this.componentBuilders.createKeyTracker(player))
         playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
         playerInfoBoard.append(this.componentBuilders.createActionTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
 
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
@@ -755,7 +756,6 @@ const playerInformationBoardController = {
             return keyTracker
         },
         createActionTracker(player){
-            // DEV 2
             const actionTracker = document.createElement('div')
             actionTracker.className = 'actionTracker';
             actionTracker.id = `${player.id}-actionTracker`;
@@ -776,6 +776,31 @@ const playerInformationBoardController = {
                 actionTracker.append(actionDiv)
             }
             return actionTracker;
+        },
+        createColorTracker(player){
+            // Top Half needs to be the "privilegium" banner
+            const colorTracker = document.createElement('div')
+            colorTracker.className = 'colorTracker';
+            colorTracker.id = `${player.id}-colorTracker`;
+
+            const colorBanner = document.createElement('div')
+            colorBanner.id = 'colorBanner';
+            colorBanner.innerText= "Privilegium"
+            colorTracker.append(colorBanner);
+
+            for (let i = 0; i < unlockColorsToValue.length; i++){
+                const colorDiv = document.createElement('div');
+                colorDiv.classList.add('colorDiv')
+                colorDiv.innerText= `${unlockColorsToValue[i]}`
+                colorDiv.append(this.createUnlockableShape({
+                    locked: i > 0,
+                    color: player.color,
+                    componentId: `${player.id}-colorDiv-${i}-shape`,
+                    shape: 'square',
+                }))
+                colorTracker.append(colorDiv)
+            }
+            return colorTracker;
         },
         createUnlockableShape(props){
             const {locked, color, componentId, shape} = props

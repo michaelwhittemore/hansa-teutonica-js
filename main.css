@@ -135,6 +135,7 @@
     height: 400px;
     width: 900px;
     display: flex;
+    flex-wrap: wrap;
     /* will get ride of height and width eventually */
 }
 
@@ -179,6 +180,25 @@
     width: 80px;
     background-color: grey;
     border: solid;
+}
+
+.colorTracker{
+    height: 120px;
+    width: 300px;
+    margin: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: wheat;
+}
+#colorBanner{
+    height: 25%;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+
+}
+.colorDiv{
+
 }
 
 .unlockableShape {
