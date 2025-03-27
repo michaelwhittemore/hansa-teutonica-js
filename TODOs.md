@@ -2,10 +2,13 @@
 * Add token acquisition (FUN!!!!!!)
 * create indivual player boards with the ability to swipe between them --> 
     * these boards should roughly mimic the physcial ones, but with added info like points, actions remnaing, supply + bank, (maybe more? should be comporable to what I have now for info)
+    * will eventually need to grab images for these fields
+* Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * add token holder (don't have to make tokens functional)
 * move method (as in your own pieces on the board) - need rules clarification
-* make cities smaller and put name on top (maybe do this after collapse buttons)
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
+* oragnize css into sections under comments
+* replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
 * add chat to game log
 * Move some of the gamecontroller copy pasta into it's own methods
@@ -17,6 +20,7 @@
 * local storage
 * use the coordinate system on the board -- **IMPORTANT**
 * ^^^^^ once the above is done I can add additional cities for better testing
+* make cities smaller and put name on top (maybe do this as part of refactoring board to use coordinates)
 * time stamp to game log
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs

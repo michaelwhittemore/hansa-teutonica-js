@@ -11,7 +11,8 @@
 
 <body>
     <div class="pointTrackerSection" id="pointTrackerSection-1"></div>
-    <div class='collapsibleContainer' id='boardContainer'>
+    <!-- hidden while under developemnet, remove 'display: none' soon-->
+    <div class='collapsibleContainer' id='boardContainer' style="display: none;">
         <div class="board" id="gameBoard"> Loading Board </div>
     </div>
         <div class="actionBar" id="actionBar">
@@ -24,9 +25,16 @@
             <button id="token">Use Token</button>
         </div>
         <div id="actionInfo"></div>
-        <div class='collapsibleContainer' id='playerAreaContainer'>
+        <!-- DEV -->
+        <div id="TODOtunrnTracker">TODO add me</div>
+        <div class='collapsibleContainer' id='playerInfoBoardContainer'>
+            <!-- each player will be added here programtically-->
+        </div>
+        <!-- Will Need to remove the below when finished -->
+        <div class='collapsibleContainer' id='playerAreaContainer' style="display: none;">
             <div class="playerArea" id="playerArea"> Loading Player Info </div>
         </div>
+        <!--- See above-->
         <div class='collapsibleContainer' id='gameLogContainer'>
             <div class="gameLog" id="gameLog"></div>
         </div>

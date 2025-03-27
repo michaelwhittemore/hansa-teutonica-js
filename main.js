@@ -201,6 +201,8 @@ const gameController = {
             const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
             this.playerArray.push(player)
         }
+        playerInformationBoardController.initializePlayerInfoBoards(this.playerArray)
+
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray);
         gameLogController.initializeGameLog();
@@ -459,7 +461,7 @@ const gameController = {
                     player.currentActions++;
                     actionUpgradeText += ' They get a free action as a result'
                 }
-                gameLogController.addTextToGameLog(actionUpgradeText,player);
+                gameLogController.addTextToGameLog(actionUpgradeText, player);
                 break;
             case 'unlockedColors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
@@ -491,7 +493,7 @@ const gameController = {
             default:
                 console.error('we should not hit the default')
         }
-        if (city.unlock === 'movement'){
+        if (city.unlock === 'movement') {
             gameLogController.addTextToGameLog(`$PLAYER_NAME has unlocked a circle for their supply.`, player);
             player.supplyCircles++;
         } else {
@@ -703,8 +705,94 @@ const boardController = {
     },
 }
 
+const playerInformationBoardController = {
+    // TODO I'd like to divorce the turn tracker from the board
+    // Will need an update method for the upgrade fields maybe? or is that silly?
+    initializePlayerInfoBoards(playerArray) {
+        // We will need to do this for each and then only show the selected player
+        this.createInfoBoardForPlayer(playerArray[0])
+    },
+    createInfoBoardForPlayer(player) {
+        // Will need to create the arrows here as well
+        console.log(player)
+        const playerInfoBoard = document.createElement('div')
+        playerInfoBoard.className = 'playerInfoBoard'
+        playerInfoBoard.id = `${player.id}-infoBoard`
+        // Key Tracker
+        playerInfoBoard.append(this.componentBuilders.createKeyTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
+        // Still need miscelloanus info at the bottom. - including tokens and supply!
+        // can probably cheat out a text area while I wait
+ 
+        document.getElementById('playerInfoBoardContainer').append(playerInfoBoard)
+    },
+    unlockPieceFromBoard(player, index, unlock){
+        // TODO add this to all the unlock game logic
+        const divId = `${player.id}-${unlockToDivName[unlock]}-${index}-shape-locked`
+        console.log(divId)
+        document.getElementById(divId).remove();
+    },
+    componentBuilders: {
+        createKeyTracker(player) {
+            const keyTracker = document.createElement('div')
+            keyTracker.className = 'keyTracker';
+            keyTracker.id = `${player.id}-keyTracker`;
+            // keys will need a little square where the pieces can go and a value
+            for (let i = 0; i < unlockKeysToValue.length; i++){
+                // Will want a separate unlockable square component as it's used for everything but sophie libria
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'keyDiv';
+                keyDiv.id = ``
+                keyDiv.innerText= `Key ${unlockKeysToValue[i]}`
+                keyDiv.append(this.createUnlockableShape({
+                    locked: i > 0,
+                    color: player.color,
+                    componentId: `${player.id}-keyDiv-${i}-shape`,
+                    shape: 'square',
+                }))
+                keyTracker.append(keyDiv)
+            }
+            return keyTracker
+        },
+        createUnlockableShape(props){
+            const {locked, color, componentId, shape} = props
+            const unlockableShape = document.createElement('div')
+            unlockableShape.className = 'unlockableShape';
+            unlockableShape.id = componentId
+            if (shape === 'circle'){
+                unlockableShape.classList.add('circle')
+            }
+            if (locked) {
+                const lockedShape = document.createElement('div')
+                lockedShape.className = 'lockedShape';
+                lockedShape.id = componentId + '-locked'
+                lockedShape.style.backgroundColor = color
+                unlockableShape.append(lockedShape)
+                if (shape === 'circle'){
+                    lockedShape.classList.add('circle')
+                }
+            }
+            // need to add the subcomponnet if it's locked, need an unlockmethod
+            // maybe rename to be shape agnostic
+            return unlockableShape
+        }, 
+        createTokenTracker(player){
+            // just a big ol' circle
+            // eventually add some images for tokens
+            const tokenTracker = document.createElement('div');
+            tokenTracker.className = 'tokenTracker';
+            console.log(tokenTracker)
+
+            const tokenHolder = document.createElement('div');
+            tokenHolder.className = 'tokenHolder'
+            tokenHolder.id = `tokenHolder-${player.id}`;
+            tokenTracker.append(tokenHolder);
+            return tokenTracker
+        }
+    },
+}
+
 const playerInformationController = {
-    // DEV
     initializePlayerUI(playerArray) {
         const playerAreaDiv = document.getElementById('playerArea');
         playerAreaDiv.innerHTML = '';
@@ -797,7 +885,7 @@ const gameLogController = {
         const timestamp = (new Date()).toLocaleTimeString('en-US')
         if (player) {
             const playerNameSpan = `<span style="color: ${player.color}">${player.name}</span>`
-            text = text.replaceAll('$PLAYER_NAME',playerNameSpan)
+            text = text.replaceAll('$PLAYER_NAME', playerNameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
 
@@ -832,6 +920,10 @@ class Player {
     }
 }
 
+const unlockToDivName = {
+    key: 'keyDiv',
+    // movement: 'maxMovementDiv'
+}
 const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
 const unlockPurseToValue = [3, 5, 7, 'All'];
 const unlockMovementToValue = [2, 3, 4, 5];
