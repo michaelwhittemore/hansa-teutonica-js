@@ -720,12 +720,20 @@ const playerInformationBoardController = {
         playerInfoBoard.style.borderColor = player.color
         playerInfoBoard.className = 'playerInfoBoard'
         playerInfoBoard.id = `${player.id}-infoBoard`
-        // Key Tracker
+        
+        const playerBanner = document.createElement('div');
+        playerBanner.className = 'playerInfoBoardBanner'
+        playerBanner.style.color= player.color;
+        playerBanner.innerText = player.name;
+        playerInfoBoard.append(playerBanner)
+
         playerInfoBoard.append(this.componentBuilders.createKeyTracker(player))
         playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
         playerInfoBoard.append(this.componentBuilders.createActionTracker(player))
         playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
-
+        playerInfoBoard.append(this.componentBuilders.createMovesTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createPurseTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
  
@@ -784,7 +792,7 @@ const playerInformationBoardController = {
             colorTracker.id = `${player.id}-colorTracker`;
 
             const colorBanner = document.createElement('div')
-            colorBanner.id = 'colorBanner';
+            colorBanner.id = 'boardComponentBanner';
             colorBanner.innerText= "Privilegium"
             colorTracker.append(colorBanner);
 
@@ -802,6 +810,49 @@ const playerInformationBoardController = {
                 colorTracker.append(colorDiv)
             }
             return colorTracker;
+        },
+        createMovesTracker(player){
+            const movesTracker = document.createElement('div')
+            movesTracker.className = 'movesTracker';
+            movesTracker.id = `${player.id}-movesTracker`;
+
+            const movesBanner = document.createElement('div')
+            movesBanner.id = 'boardComponentBanner';
+            movesBanner.innerText= "Liber Sophiae"
+            movesTracker.append(movesBanner);
+
+            for (let i = 0; i < unlockMovementToValue.length; i++){
+                const movesDiv = document.createElement('div');
+                movesDiv.className = 'movesDiv';
+                movesDiv.innerText= `${unlockMovementToValue[i]}`
+                movesDiv.append(this.createUnlockableShape({
+                    locked: i > 0,
+                    color: player.color,
+                    componentId: `${player.id}-movesDiv-${i}-shape`,
+                    shape: 'circle',
+                }))
+                movesTracker.append(movesDiv)
+            }
+            return movesTracker
+        },
+        createPurseTracker(player){
+            const purseTracker = document.createElement('div')
+            purseTracker.className = 'purseTracker';
+            purseTracker.id = `${player.id}-purseTracker`;
+            for (let i = 0; i < unlockPurseToValue.length; i++){
+                const purseDiv = document.createElement('div');
+                purseDiv.classList.add('purseDiv')
+
+                purseDiv.innerText= `Resupply ${unlockPurseToValue[i]}`
+                purseDiv.append(this.createUnlockableShape({
+                    locked: i > 0,
+                    color: player.color,
+                    componentId: `${player.id}-purseDiv-${i}-shape`,
+                    shape: 'square',
+                }))
+                purseTracker.append(purseDiv)
+            }
+            return purseTracker;
         },
         createUnlockableShape(props){
             const {locked, color, componentId, shape, isColors} = props
@@ -836,7 +887,13 @@ const playerInformationBoardController = {
             tokenTracker.append(tokenHolder);
             return tokenTracker
         },
-
+        createInfoDump(player){
+            const infoDumpArea = document.createElement('div')
+            infoDumpArea.className = 'infoDumpArea';
+            infoDumpArea.id = `infoDumpArea-${player.id}`
+            infoDumpArea.innerText = 'test'
+            return infoDumpArea
+        }
     },
 }
 

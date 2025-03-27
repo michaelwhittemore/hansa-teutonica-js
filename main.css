@@ -132,11 +132,27 @@
 .playerInfoBoard {
     background-color: bisque;
     border: solid;
-    height: 400px;
-    width: 900px;
+    height: 500px;
+    width: 950px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     /* will get ride of height and width eventually */
+}
+.playerInfoBoardBanner{
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    margin: 2px;
+    font-size: 30px;
+}
+
+#boardComponentBanner {
+    height: 20%;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    margin: 2px;
 }
 
 .keyTracker {
@@ -160,7 +176,6 @@
     width: 70px;
     margin: 2px;
     background-color: wheat;
-
 }
 
 .tokenTracker {
@@ -184,7 +199,7 @@
 
 .colorTracker {
     height: 120px;
-    width: 300px;
+    width: 31%;;
     margin: 2px;
     display: flex;
     flex-wrap: wrap;
@@ -192,18 +207,38 @@
     background-color: wheat;
 }
 
-#colorBanner {
-    height: 20%;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
-    margin: 2px;
-}
-
 .colorDiv {
     margin: 2px;
     height: 30px;
     width: 30px;
+}
+
+.movesTracker {
+    display: flex;
+    margin: 10px;
+    width: 31%;;
+    background-color: wheat;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.movesDiv {
+    height: 70px;
+    width: 50px;
+    margin: 2px;
+}
+
+.purseTracker {
+    width: 31%;;
+    display: flex;
+    margin: 10px;
+}
+
+.purseDiv {
+    height: 90px;
+    width: 70px;
+    margin: 2px;
+    background-color: wheat;
 }
 
 .unlockableShape {
@@ -228,10 +263,9 @@
     height: 15px;
     width: 15px;
 }
-
-.circle {
-    border-radius: 50%;
-
+.infoDumpArea{
+    height: 20px;
+    width: 90%
 }
 
 .playerInfoBoardArrowButton {}
@@ -241,4 +275,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.circle {
+    border-radius: 50%;
 }
