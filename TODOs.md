@@ -10,6 +10,7 @@
     * Should we center the action on active player??? maybe during hotseat play!
     * will eventually need to grab images for these fields
     * add player name banner to the top
+    * re-add all the wiring for functionalirty (like taking off pieces when upgrading and updating the supply)
 * 
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * add token holder (don't have to make tokens functional)

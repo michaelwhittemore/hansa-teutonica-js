@@ -202,7 +202,7 @@ const gameController = {
             this.playerArray.push(player)
         }
         playerInformationBoardController.initializePlayerInfoBoards(this.playerArray)
-
+        turnTrackerController.updateTurnTracker(this.playerArray[0])
         this.currentTurn = 0;
         playerInformationController.initializePlayerUI(this.playerArray);
         gameLogController.initializeGameLog();
@@ -260,7 +260,8 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         this.currentTurn++;
-        playerInformationController.updateTurnTracker(this.getActivePlayer())
+        // playerInformationController.updateTurnTracker(this.getActivePlayer()) // DELETE ME
+        turnTrackerController.updateTurnTracker(this.getActivePlayer())
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     resolveAction(player) {
@@ -269,7 +270,7 @@ const gameController = {
         if (player.currentActions === 0) {
             this.advanceTurn(player);
         }
-        playerInformationController.updateTurnTracker(this.getActivePlayer())
+        turnTrackerController.updateTurnTracker(this.getActivePlayer())
         playerInformationController.updateAllPlayersInfo(this.playerArray)
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
@@ -733,6 +734,9 @@ const playerInformationBoardController = {
         playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
         playerInfoBoard.append(this.componentBuilders.createMovesTracker(player))
         playerInfoBoard.append(this.componentBuilders.createPurseTracker(player))
+
+        // Info dump is an other information i.e. tokens, points, supply, bank, stuff like that
+        // as I improve the UI I can move more information out of it
         playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
@@ -901,10 +905,10 @@ const playerInformationController = {
     initializePlayerUI(playerArray) {
         const playerAreaDiv = document.getElementById('playerArea');
         playerAreaDiv.innerHTML = '';
-        const turnTrackerHTML = this.turnTrackerHTMLBuilder(playerArray[0]);
+        // const turnTrackerHTML = this.turnTrackerHTMLBuilder(playerArray[0]);
         const turnTrackerDiv = document.createElement('div');
         turnTrackerDiv.id = 'turnTracker'
-        turnTrackerDiv.innerHTML = turnTrackerHTML;
+        // turnTrackerDiv.innerHTML = turnTrackerHTML;
         playerAreaDiv.append(turnTrackerDiv)
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
@@ -927,13 +931,13 @@ const playerInformationController = {
         }
         this.isCollapsed = !this.isCollapsed
     },
-    updateTurnTracker(player) {
-        document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
-    },
-    turnTrackerHTMLBuilder(player) {
-        const { name, color, currentActions } = player
-        return (`It's currently <span style="color:${color}">${name}'s</span> turn. They have ${currentActions} actions remaining.`)
-    },
+    // updateTurnTracker(player) {
+    //     document.getElementById('turnTracker').innerHTML = this.turnTrackerHTMLBuilder(player)
+    // },
+    // turnTrackerHTMLBuilder(player) {
+    //     const { name, color, currentActions } = player
+    //     return (`It's currently <span style="color:${color}">${name}'s</span> turn. They have ${currentActions} actions remaining.`)
+    // },
     createPlayerBox(player) {
         const playerBoxDiv = document.createElement('div');
         playerBoxDiv.className = 'playerBox';
@@ -959,6 +963,24 @@ const playerInformationController = {
         players.forEach(player => {
             this.updatePlayerBox(player)
         })
+    }
+}
+
+const turnTrackerController = {
+    updateTurnTracker(player){
+        document.getElementById('turnTrackerPlayer').innerText = player.name
+        document.getElementById('turnTrackerPlayerPossessive').style.color = player.color
+        document.getElementById('turnTrackerPlayer').style.color = player.color
+        document.getElementById('turnTrackerActions').innerText = player.currentActions
+
+        this.resetTurnTimer()
+    },
+    turnTrackerAdditionalInformation(props){
+        // TODO
+        // I think we will need an area for things like bumping or placing new tokens 
+    },
+    resetTurnTimer(){
+        // TODO
     }
 }
 
