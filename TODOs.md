@@ -2,14 +2,13 @@
 * Add token acquisition (FUN!!!!!!)
 * create indivual player boards with the ability to swipe between them --> 
     * these boards should roughly mimic the physcial ones, but with added info like points, actions remnaing, supply + bank, tokens, (maybe more? should be comporable to what I have now for info)
-    * Create "liber sophiae" and purse ---> HERE!!!
+    
     * create the supply and bank area
-    * create info dump area at bottom on board
+    * create info dump area at bottom on board ->> here
     * add the collapse button back
     * Arrows to move, also a drop down menu
     * Should we center the action on active player??? maybe during hotseat play!
     * will eventually need to grab images for these fields
-    * add player name banner to the top
     * re-add all the wiring for functionalirty (like taking off pieces when upgrading and updating the supply)
 * 
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
@@ -39,6 +38,8 @@
 * write out a game flow document
 
 # Done #
+~~add player name banner to the top~~
+~~Create "liber sophiae" and purse~~
 ~~add colors to game log based on player name --> here~~
 ~~implement upgrade methods before move method (remember that upgrades give free pieces)~~
 ~~add a "Use defaults" constant~~
@@ -81,3 +82,6 @@
 * add a favicon
 * add linter
 * reorganize CSS and methods (just the ordering)
+
+// collapse all = cmd-k and then cmd-0
+// unfold all - cmd-k and then cmd-j

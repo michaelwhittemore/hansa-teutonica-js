@@ -271,7 +271,8 @@ const gameController = {
             this.advanceTurn(player);
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        playerInformationController.updateAllPlayersInfo(this.playerArray)
+        // playerInformationController.updateAllPlayersInfo(this.playerArray) // delete 
+        playerInformationBoardController.updateInfoDumpOnAll(this.playerArray)
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         let player;
@@ -739,10 +740,10 @@ const playerInformationBoardController = {
         playerInfoBoard.style.borderColor = player.color
         playerInfoBoard.className = 'playerInfoBoard'
         playerInfoBoard.id = `${player.id}-infoBoard`
-        
+
         const playerBanner = document.createElement('div');
         playerBanner.className = 'playerInfoBoardBanner'
-        playerBanner.style.color= player.color;
+        playerBanner.style.color = player.color;
         playerBanner.innerText = player.name;
         playerInfoBoard.append(playerBanner)
 
@@ -758,10 +759,10 @@ const playerInformationBoardController = {
         playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
         // Still need miscelloanus info at the bottom. - including tokens and supply!
         // can probably cheat out a text area while I wait
- 
+
         return playerInfoBoard
     },
-    unlockPieceFromBoard(player, index, unlock){
+    unlockPieceFromBoard(player, index, unlock) {
         // TODO add this to all the unlock game logic
         const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
         console.log(divId)
@@ -772,10 +773,10 @@ const playerInformationBoardController = {
             const keyTracker = document.createElement('div')
             keyTracker.className = 'keyTracker';
             keyTracker.id = `${player.id}-keyTracker`;
-            for (let i = 0; i < unlockKeysToValue.length; i++){
+            for (let i = 0; i < unlockKeysToValue.length; i++) {
                 const keyDiv = document.createElement('div');
                 keyDiv.className = 'keyDiv';
-                keyDiv.innerText= `Key ${unlockKeysToValue[i]}`
+                keyDiv.innerText = `Key ${unlockKeysToValue[i]}`
                 keyDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
@@ -786,18 +787,18 @@ const playerInformationBoardController = {
             }
             return keyTracker
         },
-        createActionTracker(player){
+        createActionTracker(player) {
             const actionTracker = document.createElement('div')
             actionTracker.className = 'actionTracker';
             actionTracker.id = `${player.id}-actionTracker`;
-            for (let i = 0; i < unlockActionsToValue.length; i++){
+            for (let i = 0; i < unlockActionsToValue.length; i++) {
                 const actionDiv = document.createElement('div');
                 actionDiv.classList.add('actionDiv')
                 // TODO center content better
                 // Might need a innerText utility class
                 // actionDiv.classList.add('actionDiv', 'centeredFlex')
 
-                actionDiv.innerText= `Actiones ${unlockActionsToValue[i]}`
+                actionDiv.innerText = `Actiones ${unlockActionsToValue[i]}`
                 actionDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
@@ -808,17 +809,17 @@ const playerInformationBoardController = {
             }
             return actionTracker;
         },
-        createColorTracker(player){
+        createColorTracker(player) {
             const colorTracker = document.createElement('div')
             colorTracker.className = 'colorTracker';
             colorTracker.id = `${player.id}-colorTracker`;
 
             const colorBanner = document.createElement('div')
             colorBanner.id = 'boardComponentBanner';
-            colorBanner.innerText= "Privilegium"
+            colorBanner.innerText = "Privilegium"
             colorTracker.append(colorBanner);
 
-            for (let i = 0; i < unlockColorsToValue.length; i++){
+            for (let i = 0; i < unlockColorsToValue.length; i++) {
                 const colorDiv = document.createElement('div');
                 colorDiv.classList.add('colorDiv', 'centeredFlex')
                 colorDiv.style.backgroundColor = `${unlockColorsToValue[i]}`
@@ -833,20 +834,20 @@ const playerInformationBoardController = {
             }
             return colorTracker;
         },
-        createMovesTracker(player){
+        createMovesTracker(player) {
             const movesTracker = document.createElement('div')
             movesTracker.className = 'movesTracker';
             movesTracker.id = `${player.id}-movesTracker`;
 
             const movesBanner = document.createElement('div')
             movesBanner.id = 'boardComponentBanner';
-            movesBanner.innerText= "Liber Sophiae"
+            movesBanner.innerText = "Liber Sophiae"
             movesTracker.append(movesBanner);
 
-            for (let i = 0; i < unlockMovementToValue.length; i++){
+            for (let i = 0; i < unlockMovementToValue.length; i++) {
                 const movesDiv = document.createElement('div');
                 movesDiv.className = 'movesDiv';
-                movesDiv.innerText= `${unlockMovementToValue[i]}`
+                movesDiv.innerText = `${unlockMovementToValue[i]}`
                 movesDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
@@ -857,15 +858,15 @@ const playerInformationBoardController = {
             }
             return movesTracker
         },
-        createPurseTracker(player){
+        createPurseTracker(player) {
             const purseTracker = document.createElement('div')
             purseTracker.className = 'purseTracker';
             purseTracker.id = `${player.id}-purseTracker`;
-            for (let i = 0; i < unlockPurseToValue.length; i++){
+            for (let i = 0; i < unlockPurseToValue.length; i++) {
                 const purseDiv = document.createElement('div');
                 purseDiv.classList.add('purseDiv')
 
-                purseDiv.innerText= `Resupply ${unlockPurseToValue[i]}`
+                purseDiv.innerText = `Resupply ${unlockPurseToValue[i]}`
                 purseDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
@@ -876,12 +877,12 @@ const playerInformationBoardController = {
             }
             return purseTracker;
         },
-        createUnlockableShape(props){
-            const {locked, color, componentId, shape, isColors} = props
+        createUnlockableShape(props) {
+            const { locked, color, componentId, shape, isColors } = props
             const unlockableShape = document.createElement('div')
-            unlockableShape.className = isColors ? 'unlockableShapeColors': 'unlockableShape';
+            unlockableShape.className = isColors ? 'unlockableShapeColors' : 'unlockableShape';
             unlockableShape.id = componentId
-            if (shape === 'circle'){
+            if (shape === 'circle') {
                 unlockableShape.classList.add('circle')
             }
             if (locked) {
@@ -890,15 +891,15 @@ const playerInformationBoardController = {
                 lockedShape.id = componentId + '-locked'
                 lockedShape.style.backgroundColor = color
                 unlockableShape.append(lockedShape)
-                if (shape === 'circle'){
+                if (shape === 'circle') {
                     lockedShape.classList.add('circle')
                 }
             }
             // need to add the subcomponnet if it's locked, need an unlockmethod
             // maybe rename to be shape agnostic
             return unlockableShape
-        }, 
-        createTokenTracker(player){
+        },
+        createTokenTracker(player) {
             // eventually add some images for tokens (only need the eaten one)
             const tokenTracker = document.createElement('div');
             tokenTracker.className = 'tokenTracker';
@@ -909,12 +910,28 @@ const playerInformationBoardController = {
             tokenTracker.append(tokenHolder);
             return tokenTracker
         },
-        createInfoDump(player){
+        createInfoDump(player) {
             const infoDumpArea = document.createElement('div')
             infoDumpArea.className = 'infoDumpArea';
             infoDumpArea.id = `infoDumpArea-${player.id}`
-            infoDumpArea.innerText = 'test'
+            infoDumpArea.innerText = ''
+            // I'm not gonna map these to plain text as i'm going to delete them later anyway
+            const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'points', 'tokens',];
+            dumpFields.forEach(dumpKey => {
+                infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
+            })
             return infoDumpArea
+        },
+        updateInfoDumpOnAll(playerArray) {
+            playerArray.forEach(player => {
+                const infoDumpArea = document.getElementById(`infoDumpArea-${player.id}`)
+                infoDumpArea.innerText = ''
+                // should be deleted soon don't worry about non-dry code
+                const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'points', 'tokens',];
+                dumpFields.forEach(dumpKey => {
+                    infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
+                })
+            })
         }
     },
 }
@@ -928,23 +945,6 @@ const playerInformationController = {
         playerArray.forEach(player => {
             playerAreaDiv.append(this.createPlayerBox(player));
         })
-
-        const collapseButton = document.createElement('button');
-        collapseButton.innerText = 'Collapse Player Information';
-        collapseButton.className = 'collapseButton';
-        collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
-        document.getElementById('playerAreaContainer').append(collapseButton)
-        this.isCollapsed = false;
-    },
-    togglePlayerInfo(collapseButton) {
-        if (!this.isCollapsed) {
-            document.getElementById('playerArea').classList.add('collapsedContainer')
-            collapseButton.innerText = 'Expand Player Information'
-        } else {
-            document.getElementById('playerArea').classList.remove('collapsedContainer')
-            collapseButton.innerText = 'Collapse Player Information'
-        }
-        this.isCollapsed = !this.isCollapsed
     },
 
     createPlayerBox(player) {
@@ -960,7 +960,7 @@ const playerInformationController = {
             playerBoxDiv.append(textDiv)
         })
         return playerBoxDiv
-        // would be nice to evenually represent the bank and supply more visually
+        // would be nice to eventually represent the bank and supply more visually
     },
     updatePlayerBox(player) {
         Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
@@ -976,7 +976,7 @@ const playerInformationController = {
 }
 
 const turnTrackerController = {
-    updateTurnTracker(player){
+    updateTurnTracker(player) {
         document.getElementById('turnTrackerPlayer').innerText = player.name
         document.getElementById('turnTrackerPlayerPossessive').style.color = player.color
         document.getElementById('turnTrackerPlayer').style.color = player.color
@@ -984,11 +984,11 @@ const turnTrackerController = {
 
         this.resetTurnTimer()
     },
-    turnTrackerAdditionalInformation(props){
+    turnTrackerAdditionalInformation(props) {
         // TODO
         // I think we will need an area for things like bumping or placing new tokens 
     },
-    resetTurnTimer(){
+    resetTurnTimer() {
         // TODO
     }
 }
