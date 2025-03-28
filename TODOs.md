@@ -2,11 +2,16 @@
 * Add token acquisition (FUN!!!!!!)
 * create individual player boards with the ability to swipe between them -->     
     * create the supply and bank area
-    * Arrows to move, also a drop down menu ---> HERE!!
+    * drop down menu ---> HERE!!
     * will eventually need to grab images for these fields
     * re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply) --> IMPORTANT
+* supply area 
+* bank area
 * Delete info dump
+* fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
+I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue)
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
+* ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * move method (as in your own pieces on the board) - need rules clarification
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
@@ -25,7 +30,7 @@
 * ^^^^^ once the above is done I can add additional cities for better testing
 * make cities smaller and put name on top (maybe do this as part of refactoring board to use coordinates)
 * time stamp to game log
-* fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationBoardController.unlockPieceFromBoard is messed up and could be much drier
+* fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationAndBoardController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
 * For landing page - have a list of valid colors (no text on white background nonsense)

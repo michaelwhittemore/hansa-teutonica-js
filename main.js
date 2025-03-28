@@ -68,7 +68,23 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
     purse: 'Maximum Resupply'
 }
 
+// Helper Functions:
 const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
+const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
+    // classNameArray is an array of strings, id is an optional string, styles is an optional object
+    const div = document.createElement('div');
+    div.classList.add(...classNameArray);
+    if (id !== undefined){
+        div.id = id;
+    }
+    if(styles){
+        Object.keys(styles).forEach(style => {
+            div.style[style] = styles[style]
+        });
+    }
+    
+    return div
+}
 
 const inputHandlers = {
     verifyPlayersTurn() {
@@ -224,7 +240,7 @@ const gameController = {
             const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
             this.playerArray.push(player)
         }
-        playerInformationBoardController.initializePlayerInfoBoards(this.playerArray)
+        playerInformationAndBoardController.initializePlayerInfoBoards(this.playerArray)
         turnTrackerController.updateTurnTracker(this.playerArray[0])
         this.currentTurn = 0;
         gameLogController.initializeGameLog();
@@ -285,7 +301,7 @@ const gameController = {
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         if (IS_HOTSEAT_MODE){
-            playerInformationBoardController.focusOnPlayerBoard(this.getActivePlayer())
+            playerInformationAndBoardController.focusOnPlayerBoard(this.getActivePlayer())
         }
         
         lastPlayer.currentActions = lastPlayer.maxActions;
@@ -297,7 +313,7 @@ const gameController = {
             this.advanceTurn(player);
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        playerInformationBoardController.componentBuilders.updateInfoDumpOnAll(this.playerArray)
+        playerInformationAndBoardController.componentBuilders.updateInfoDumpOnAll(this.playerArray)
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         let player;
@@ -473,7 +489,7 @@ const gameController = {
                 player.unlockArrayIndex.purse++;
                 player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
-                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
                 break;
             case 'action':
                 if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
@@ -490,7 +506,7 @@ const gameController = {
                     actionUpgradeText += ' They get a free action as a result'
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText, player);
-                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
                 break;
             case 'unlockedColors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
@@ -500,7 +516,7 @@ const gameController = {
                 player.unlockArrayIndex.colors++;
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
-                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
                 break;
             case 'movement':
                 if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
@@ -510,7 +526,7 @@ const gameController = {
                 player.unlockArrayIndex.maxMovement++;
                 player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
-                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
                 break;
             case 'keys':
                 if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
@@ -520,7 +536,7 @@ const gameController = {
                 player.unlockArrayIndex.keys++;
                 player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
-                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
                 break;
             default:
                 console.error('we should not hit the default')
@@ -738,7 +754,7 @@ const boardController = {
     },
 }
 
-const playerInformationBoardController = {
+const playerInformationAndBoardController = {
     initializePlayerInfoBoards(playerArray) {
         this.playerBoardsObj = {}
         playerArray.forEach(player => {
@@ -746,12 +762,16 @@ const playerInformationBoardController = {
             document.getElementById('playerBoardArea').append(playerInfoBoard)
             this.playerBoardsObj[player.id] = playerInfoBoard;
         })
-        // Let's create an area to hold player boards with arrows and drop down on the sides
+        
         let currentViewingPlayer;
         if (IS_HOTSEAT_MODE){
             currentViewingPlayer = 0
         }
         this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
+        // Need to set the focused player before creating buttons
+        document.getElementById('playerInfoBoardContainer').prepend(this.createArrowButton('left', playerArray))
+        document.getElementById('playerInfoBoardContainer').append(this.createArrowButton('right', playerArray))
+
 
 
         const collapseButton = document.createElement('button');
@@ -774,7 +794,6 @@ const playerInformationBoardController = {
     createInfoBoardForPlayer(player) {
         // DEV
         // Will need to create the arrows here as well
-        console.log(player)
         const playerInfoBoard = document.createElement('div')
         playerInfoBoard.style.borderColor = player.color
         playerInfoBoard.className = 'playerInfoBoard'
@@ -808,6 +827,7 @@ const playerInformationBoardController = {
         document.getElementById(divId).remove();
     },
     focusOnPlayerBoard(player){
+        this.focusedPlayerId = player.id;
         for (let playerId in this.playerBoardsObj){
             // there are some real downsides to using indexes as object keys
             const parsedId = parseInt(playerId, 10)
@@ -817,6 +837,32 @@ const playerInformationBoardController = {
                 this.playerBoardsObj[parsedId].style.display = 'none'
             }
         }
+        for (let arrowButton of document.getElementsByClassName('arrowButton')){
+            const direction = arrowButton.id === ('arrow-left') ? 'left' : 'right'
+            this.updateArrowButton(arrowButton, direction)
+        }
+    },
+    createArrowButton(direction,){
+        // TODO test with more than two players
+        const arrowButton = createDivWithClassAndIdAndStyle(['arrowButton'], `arrow-${direction}`);
+        this.updateArrowButton(arrowButton, direction)
+        return arrowButton
+    },
+    updateArrowButton(arrowButton, direction){
+        const playerArray = gameController.playerArray;
+        let targetPlayerIndex = this.focusedPlayerId + (direction === 'left' ? -1 : 1)
+        if(targetPlayerIndex < 0 ){
+            targetPlayerIndex = playerArray.length - 1
+        } else {
+            targetPlayerIndex = targetPlayerIndex % playerArray.length;
+        }
+        arrowButton.innerText= `Go ${direction} to ${playerArray[targetPlayerIndex].name}'s board.`
+        arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
+
+        arrowButton.onclick = () => {
+            this.focusOnPlayerBoard(playerArray[targetPlayerIndex])
+        }
+
     },
     componentBuilders: {
         createKeysTracker(player) {
