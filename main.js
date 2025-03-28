@@ -91,7 +91,7 @@ const inputHandlers = {
         inputHandlers.clearAllActionSelection();
 
         // May want to track state of action input (i.e have we selected an action, a location,
-        // and additonal information as needed)
+        // and additional information as needed)
         if (!inputHandlers.verifyPlayersTurn()) {
             return;
         }
@@ -740,17 +740,20 @@ const boardController = {
 
 const playerInformationBoardController = {
     initializePlayerInfoBoards(playerArray) {
-        // We will need to do this for each and then only show the selected player
         this.playerBoardsObj = {}
         playerArray.forEach(player => {
             const playerInfoBoard = this.createInfoBoardForPlayer(player)
             document.getElementById('playerBoardArea').append(playerInfoBoard)
             this.playerBoardsObj[player.id] = playerInfoBoard;
         })
-        // Unhide the first player board, this may he different in online
+        // Let's create an area to hold player boards with arrows and drop down on the sides
+        let currentViewingPlayer;
         if (IS_HOTSEAT_MODE){
-            this.focusOnPlayerBoard(playerArray[0])
+            currentViewingPlayer = 0
         }
+        this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
+
+
         const collapseButton = document.createElement('button');
         collapseButton.innerText = 'Collapse Board';
         collapseButton.className = 'collapseButton';
@@ -986,9 +989,8 @@ const playerInformationBoardController = {
 
 const turnTrackerController = {
     updateTurnTracker(player) {
-        document.getElementById('turnTrackerPlayer').innerText = player.name
-        document.getElementById('turnTrackerPlayerPossessive').style.color = player.color
-        document.getElementById('turnTrackerPlayer').style.color = player.color
+        document.getElementById('turnTrackerPlayerName').innerText = player.name
+        document.getElementById('turnTrackerPlayerColor').style.color = player.color
         document.getElementById('turnTrackerActions').innerText = player.currentActions
 
         this.resetTurnTimer()

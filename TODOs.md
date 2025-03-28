@@ -1,9 +1,8 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* create indivual player boards with the ability to swipe between them -->     
+* create individual player boards with the ability to swipe between them -->     
     * create the supply and bank area
-    * Arrows to move, also a drop down menu ---> HERE
-    * Should we center the action on active player??? maybe during hotseat play!
+    * Arrows to move, also a drop down menu ---> HERE!!
     * will eventually need to grab images for these fields
     * re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply) --> IMPORTANT
 * Delete info dump
@@ -33,8 +32,10 @@
 * Fix the collapsible button and container code to involve less copy-pasta
 * Create a player board that looks like the real one, and allow you to swipe to other players
 * write out a game flow document
+* maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~Should we center the action on active player??? maybe during hotseat play!~~
 ~~add the collapse button back~~
 ~~create info dump area at bottom on board~~
 ~~add player name banner to the top~~
