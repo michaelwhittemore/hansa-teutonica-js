@@ -159,12 +159,12 @@
     margin: 2px;
 }
 
-.keyTracker {
+.keysTracker {
     display: flex;
     margin: 10px;
 }
 
-.keyDiv {
+.keysDiv {
     height: 70px;
     width: 35px;
     margin: 2px;

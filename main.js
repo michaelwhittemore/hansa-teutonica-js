@@ -29,6 +29,29 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
 };
 
+const TEST_BOARD_CONFIG_CITIES_ALTERNATE = {
+    'Alpha': {
+        name: 'Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        neighborRoutes: [['Beta', 3]],
+        unlock: 'movement',
+    },
+    'Beta': {
+        name: 'Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        neighborRoutes: [['Gamma', 4]],
+        unlock: 'keys',
+    },
+    'Gamma': {
+        name: 'Gamma',
+        spotArray: [['square', 'grey'], ['circle', 'purple']],
+        unlock: 'unlockedColors',
+    },
+};
+
+
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
     color: 'Color',
@@ -211,7 +234,8 @@ const gameController = {
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
 
-        // NOTE, IF WE DO SWITCH CITY TO A CLASS, THIS MAY NOT BE ACCURATE
+        // NOTE, IF WE DO CHANGE CITY TO A CLASS, THIS MAY NOT BE ACCURATE
+        // TEST_BOARD_CONFIG_CITIES_ALTERNATE instead
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
             boardController.createCity({ ...city })
@@ -759,7 +783,7 @@ const playerInformationBoardController = {
         playerBanner.innerText = player.name;
         playerInfoBoard.append(playerBanner)
 
-        playerInfoBoard.append(this.componentBuilders.createKeyTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createKeysTracker(player))
         playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
         playerInfoBoard.append(this.componentBuilders.createActionTracker(player))
         playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
@@ -792,23 +816,23 @@ const playerInformationBoardController = {
         }
     },
     componentBuilders: {
-        createKeyTracker(player) {
-            const keyTracker = document.createElement('div')
-            keyTracker.className = 'keyTracker';
-            keyTracker.id = `${player.id}-keyTracker`;
+        createKeysTracker(player) {
+            const keysTracker = document.createElement('div')
+            keysTracker.className = 'keysTracker';
+            keysTracker.id = `${player.id}-keysTracker`;
             for (let i = 0; i < unlockKeysToValue.length; i++) {
-                const keyDiv = document.createElement('div');
-                keyDiv.className = 'keyDiv';
-                keyDiv.innerText = `Key ${unlockKeysToValue[i]}`
-                keyDiv.append(this.createUnlockableShape({
+                const keysDiv = document.createElement('div');
+                keysDiv.className = 'keysDiv';
+                keysDiv.innerText = `Key ${unlockKeysToValue[i]}`
+                keysDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
-                    componentId: `${player.id}-keyDiv-${i}-shape`,
+                    componentId: `${player.id}-keysDiv-${i}-shape`,
                     shape: 'square',
                 }))
-                keyTracker.append(keyDiv)
+                keysTracker.append(keysDiv)
             }
-            return keyTracker
+            return keysTracker
         },
         createActionTracker(player) {
             const actionTracker = document.createElement('div')
