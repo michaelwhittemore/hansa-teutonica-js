@@ -1,16 +1,12 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* create indivual player boards with the ability to swipe between them --> 
-    * these boards should roughly mimic the physcial ones, but with added info like points, actions remnaing, supply + bank, tokens, (maybe more? should be comporable to what I have now for info)
-    
+* create indivual player boards with the ability to swipe between them -->     
     * create the supply and bank area
-    * create info dump area at bottom on board ->> here
-    * add the collapse button back
-    * Arrows to move, also a drop down menu
+    * Arrows to move, also a drop down menu ---> HERE
     * Should we center the action on active player??? maybe during hotseat play!
     * will eventually need to grab images for these fields
-    * re-add all the wiring for functionalirty (like taking off pieces when upgrading and updating the supply)
-* 
+    * re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply) --> IMPORTANT
+* Delete info dump
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * add token holder (don't have to make tokens functional)
 * move method (as in your own pieces on the board) - need rules clarification
@@ -19,7 +15,7 @@
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
 * add chat to game log
-* Move some of the gamecontroller copy pasta into it's own methods
+* Move some of the gameController copy pasta into it's own methods
 * Update player Bank and supply to use circles and squares
 * Spin up a simple node server and move these to modules -- **IMPORTANT**
 * Add a turn timer to the turn tracker
@@ -30,6 +26,7 @@
 * ^^^^^ once the above is done I can add additional cities for better testing
 * make cities smaller and put name on top (maybe do this as part of refactoring board to use coordinates)
 * time stamp to game log
+* fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationBoardController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
 * For landing page - have a list of valid colors (no text on white background nonsense)
@@ -38,6 +35,8 @@
 * write out a game flow document
 
 # Done #
+~~add the collapse button back~~
+~~create info dump area at bottom on board~~
 ~~add player name banner to the top~~
 ~~Create "liber sophiae" and purse~~
 ~~add colors to game log based on player name --> here~~
@@ -66,6 +65,7 @@
 # Stretch Goals (in no particular order) # #
 
 * local storage
+* potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator
 * resume game,
 * landing page 

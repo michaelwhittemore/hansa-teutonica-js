@@ -204,7 +204,6 @@ const gameController = {
         playerInformationBoardController.initializePlayerInfoBoards(this.playerArray)
         turnTrackerController.updateTurnTracker(this.playerArray[0])
         this.currentTurn = 0;
-        playerInformationController.initializePlayerUI(this.playerArray);
         gameLogController.initializeGameLog();
         this.routeStorageObject = {}
         this.cityStorageObject = {};
@@ -260,8 +259,11 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         this.currentTurn++;
-        // playerInformationController.updateTurnTracker(this.getActivePlayer()) // DELETE ME
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
+        if (IS_HOTSEAT_MODE){
+            playerInformationBoardController.focusOnPlayerBoard(this.getActivePlayer())
+        }
+        
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     resolveAction(player) {
@@ -271,8 +273,7 @@ const gameController = {
             this.advanceTurn(player);
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        // playerInformationController.updateAllPlayersInfo(this.playerArray) // delete 
-        playerInformationBoardController.updateInfoDumpOnAll(this.playerArray)
+        playerInformationBoardController.componentBuilders.updateInfoDumpOnAll(this.playerArray)
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         let player;
@@ -448,6 +449,7 @@ const gameController = {
                 player.unlockArrayIndex.purse++;
                 player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
+                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
                 break;
             case 'action':
                 if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
@@ -464,6 +466,7 @@ const gameController = {
                     actionUpgradeText += ' They get a free action as a result'
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText, player);
+                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
                 break;
             case 'unlockedColors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
@@ -473,6 +476,7 @@ const gameController = {
                 player.unlockArrayIndex.colors++;
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
+                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
                 break;
             case 'movement':
                 if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
@@ -482,6 +486,7 @@ const gameController = {
                 player.unlockArrayIndex.maxMovement++;
                 player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
+                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
                 break;
             case 'keys':
                 if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
@@ -491,6 +496,7 @@ const gameController = {
                 player.unlockArrayIndex.keys++;
                 player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
                 gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
+                playerInformationBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
                 break;
             default:
                 console.error('we should not hit the default')
@@ -626,6 +632,7 @@ const boardController = {
         this.isCollapsed = !this.isCollapsed
     },
     initializePointTracker(maxPoints, playerArray) {
+        // TODO Perhaps the point tracker should live outside of board controller
         const pointTracker = document.getElementById('pointTrackerSection-1');
         for (let i = 0; i <= maxPoints; i++) {
             const pointPieceContainer = document.createElement('div');
@@ -708,13 +715,18 @@ const boardController = {
 }
 
 const playerInformationBoardController = {
-    // TODO I'd like to divorce the turn tracker from the board
-    // Will need an update method for the upgrade fields maybe? or is that silly?
     initializePlayerInfoBoards(playerArray) {
         // We will need to do this for each and then only show the selected player
-        const player0Board = this.createInfoBoardForPlayer(playerArray[0])
-        document.getElementById('playerBoardArea').append(player0Board)
-
+        this.playerBoardsObj = {}
+        playerArray.forEach(player => {
+            const playerInfoBoard = this.createInfoBoardForPlayer(player)
+            document.getElementById('playerBoardArea').append(playerInfoBoard)
+            this.playerBoardsObj[player.id] = playerInfoBoard;
+        })
+        // Unhide the first player board, this may he different in online
+        if (IS_HOTSEAT_MODE){
+            this.focusOnPlayerBoard(playerArray[0])
+        }
         const collapseButton = document.createElement('button');
         collapseButton.innerText = 'Collapse Board';
         collapseButton.className = 'collapseButton';
@@ -767,6 +779,17 @@ const playerInformationBoardController = {
         const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
         console.log(divId)
         document.getElementById(divId).remove();
+    },
+    focusOnPlayerBoard(player){
+        for (let playerId in this.playerBoardsObj){
+            // there are some real downsides to using indexes as object keys
+            const parsedId = parseInt(playerId, 10)
+            if (player.id === parsedId){
+                this.playerBoardsObj[parsedId].style.display = ''
+            } else {
+                this.playerBoardsObj[parsedId].style.display = 'none'
+            }
+        }
     },
     componentBuilders: {
         createKeyTracker(player) {
@@ -923,6 +946,7 @@ const playerInformationBoardController = {
             return infoDumpArea
         },
         updateInfoDumpOnAll(playerArray) {
+            // this really shouldn't be in the component BUILDER
             playerArray.forEach(player => {
                 const infoDumpArea = document.getElementById(`infoDumpArea-${player.id}`)
                 infoDumpArea.innerText = ''
@@ -934,45 +958,6 @@ const playerInformationBoardController = {
             })
         }
     },
-}
-
-const playerInformationController = {
-    // THIS IS SLATED FOR REPLACEMENT
-    initializePlayerUI(playerArray) {
-        const playerAreaDiv = document.getElementById('playerArea');
-        playerAreaDiv.innerHTML = '';
-
-        playerArray.forEach(player => {
-            playerAreaDiv.append(this.createPlayerBox(player));
-        })
-    },
-
-    createPlayerBox(player) {
-        const playerBoxDiv = document.createElement('div');
-        playerBoxDiv.className = 'playerBox';
-        playerBoxDiv.style.color = player.color;
-        playerBoxDiv.id = player.id;
-
-        Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
-            const textDiv = document.createElement('div');
-            textDiv.innerHTML = `${PLAYER_FIELDS_TO_TEXT_MAP[field]}: 
-                <span id="${player.id}-${field}">${player[field]}</span>`;
-            playerBoxDiv.append(textDiv)
-        })
-        return playerBoxDiv
-        // would be nice to eventually represent the bank and supply more visually
-    },
-    updatePlayerBox(player) {
-        Object.keys(PLAYER_FIELDS_TO_TEXT_MAP).forEach(field => {
-            const fieldSpan = document.getElementById(`${player.id}-${field}`);
-            fieldSpan.innerText = player[field]
-        })
-    },
-    updateAllPlayersInfo(players) {
-        players.forEach(player => {
-            this.updatePlayerBox(player)
-        })
-    }
 }
 
 const turnTrackerController = {
