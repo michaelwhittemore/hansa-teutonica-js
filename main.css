@@ -108,8 +108,8 @@
     margin: 1px;
 }
 
-.collapsedContainer {
-    display: none;
+/* .collapsedContainer {
+    display: none !important;
     overflow: hidden;
     background-color: #f1f1f1;
 }
@@ -118,7 +118,7 @@
     position: relative;
     min-height: 30px;
     min-width: 970px;
-}
+} */
 
 .collapseButton {
     position: absolute;
@@ -150,7 +150,12 @@
     margin: 2px;
     font-size: 30px;
 }
-#playerInfoBoardContainer{
+/* #playerInfoBoardContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+} */
+#playerBoardAreaIncludingButton{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -294,4 +299,16 @@
 
 .circle {
     border-radius: 50%;
+}
+
+.collapsedContainer {
+    display: none !important;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+.collapsibleContainer {
+    position: relative;
+    min-height: 30px;
+    min-width: 970px;
 }

@@ -769,25 +769,26 @@ const playerInformationAndBoardController = {
         }
         this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
         // Need to set the focused player before creating buttons
-        document.getElementById('playerInfoBoardContainer').prepend(this.createArrowButton('left', playerArray))
-        document.getElementById('playerInfoBoardContainer').append(this.createArrowButton('right', playerArray))
+        document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
+        document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))
 
 
 
         const collapseButton = document.createElement('button');
-        collapseButton.innerText = 'Collapse Board';
+        collapseButton.innerText = 'Collapse Player Board';
         collapseButton.className = 'collapseButton';
         collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
         document.getElementById('playerInfoBoardContainer').append(collapseButton)
         this.isCollapsed = false;
     },
     togglePlayerInfo(collapseButton) {
+        // Need to move buttons to append to the playerBoardAreaIncludingButton
         if (!this.isCollapsed) {
-            document.getElementById('playerBoardArea').classList.add('collapsedContainer')
-            collapseButton.innerText = 'Expand Board'
+            document.getElementById('playerBoardAreaIncludingButton').classList.add('collapsedContainer')
+            collapseButton.innerText = 'Expand Player Board'
         } else {
-            document.getElementById('playerBoardArea').classList.remove('collapsedContainer')
-            collapseButton.innerText = 'Collapse Board'
+            document.getElementById('playerBoardAreaIncludingButton').classList.remove('collapsedContainer')
+            collapseButton.innerText = 'Collapse Player Board'
         }
         this.isCollapsed = !this.isCollapsed
     },

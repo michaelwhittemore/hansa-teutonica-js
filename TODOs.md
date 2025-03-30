@@ -3,8 +3,10 @@
 * create individual player boards with the ability to swipe between them -->     
     * create the supply and bank area
     * drop down menu ---> HERE!!
+    * style the arrow buttons better
     * will eventually need to grab images for these fields
     * re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply) --> IMPORTANT
+    * it looks like we need another conatiner to collapse for the buttons
 * supply area 
 * bank area
 * Delete info dump
