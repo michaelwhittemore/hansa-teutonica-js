@@ -314,6 +314,9 @@ const gameController = {
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         playerInformationAndBoardController.componentBuilders.updateInfoDumpOnAll(this.playerArray)
+        this.playerArray.forEach(player => {
+            playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
+        })
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         let player;
@@ -1009,17 +1012,15 @@ const playerInformationAndBoardController = {
         updateSupplyAndBank(player){
             const supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
             const bankTracker = document.getElementById(`bank-pieces-${player.id}`)
-            // dev
-            console.log(player)
-            // for (let i = 0; i< player.supplyCircles; i++){
-            //     supplyTracker.append(this.createSupplyOrBankPiece(true, player.color))
-            // }
+            this.updateSupplyTracker(player, supplyTracker)
+            this.updateBankTracker(player, bankTracker)
         },
         updateSupplyTracker(player, supplyTracker){
             // This feels awful and hacky
             if (!supplyTracker){
                 supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
             }
+            supplyTracker.innerHTML = '';
             for (let i = 0; i< player.supplyCircles; i++){
                 supplyTracker.append(this.createSupplyOrBankPiece(true, player.color))
             }
@@ -1028,10 +1029,10 @@ const playerInformationAndBoardController = {
             }
         },
         updateBankTracker(player, bankTracker){
-            // This feels awful and hacky
             if (!bankTracker){
                 bankTracker = document.getElementById(`bank-pieces-${player.id}`)
             }
+            bankTracker.innerHTML = '';
             for (let i = 0; i< player.bankedCircles; i++){
                 bankTracker.append(this.createSupplyOrBankPiece(true, player.color))
             }
