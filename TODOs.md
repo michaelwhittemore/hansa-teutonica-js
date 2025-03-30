@@ -5,11 +5,10 @@
     * drop down menu ---> HERE!!
     * style the arrow buttons better
     * will eventually need to grab images for these fields
-    * re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply) --> IMPORTANT
-    * it looks like we need another conatiner to collapse for the buttons
-* supply area 
+* supply area ---> HERE
 * bank area
 * Delete info dump
+* add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
 I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue)
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
@@ -42,6 +41,8 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+ ~~re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply)~~
+ ~~it looks like we need another container to collapse for the buttons~~
 ~~Should we center the action on active player??? maybe during hotseat play!~~
 ~~add the collapse button back~~
 ~~create info dump area at bottom on board~~

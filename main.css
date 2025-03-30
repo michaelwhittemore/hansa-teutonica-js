@@ -289,6 +289,32 @@
     height: 20px;
     width: 90%
 }
+.supplyArea{
+    height: 100px;
+    width: 45%;
+    background-color: aquamarine;
+    border: solid;
+}
+
+.bankArea{
+    height: 100px;
+    width: 45%;
+    background-color: peachpuff;
+    border: solid;
+}
+/* pieceTracker is used by both bank and supply */
+.pieceTracker{
+    /* probably just need flex and nothing else
+    might need direction and wrap*/
+    display: flex;
+    flex-direction: row;
+}
+
+.tinyPiece{
+    height: 15px;
+    width: 15px;
+    margin: 2px;
+}
 
 /* Utility Classes */
 .centeredFlex {
@@ -312,3 +338,10 @@
     min-height: 30px;
     min-width: 970px;
 }
+
+.banner{
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+

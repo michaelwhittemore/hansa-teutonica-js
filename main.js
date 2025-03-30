@@ -793,8 +793,6 @@ const playerInformationAndBoardController = {
         this.isCollapsed = !this.isCollapsed
     },
     createInfoBoardForPlayer(player) {
-        // DEV
-        // Will need to create the arrows here as well
         const playerInfoBoard = document.createElement('div')
         playerInfoBoard.style.borderColor = player.color
         playerInfoBoard.className = 'playerInfoBoard'
@@ -812,13 +810,14 @@ const playerInformationAndBoardController = {
         playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
         playerInfoBoard.append(this.componentBuilders.createMovesTracker(player))
         playerInfoBoard.append(this.componentBuilders.createPurseTracker(player))
-
+        playerInfoBoard.append(this.componentBuilders.createSupplyTracker(player))
+        playerInfoBoard.append(this.componentBuilders.createBankTracker(player));
+        // DEV
+        // This will need to wrapped in a general updater that gets called after actions
+        // this.componentBuilders.updateSupplyAndBank(player); REORDER THIS 
         // Info dump is an other information i.e. tokens, points, supply, bank, stuff like that
         // as I improve the UI I can move more information out of it
         playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
-        // Still need miscelloanus info at the bottom. - including tokens and supply!
-        // can probably cheat out a text area while I wait
-
         return playerInfoBoard
     },
     unlockPieceFromBoard(player, index, unlock) {
@@ -1006,6 +1005,72 @@ const playerInformationAndBoardController = {
             tokenHolder.id = `tokenHolder-${player.id}`;
             tokenTracker.append(tokenHolder);
             return tokenTracker
+        },
+        updateSupplyAndBank(player){
+            const supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
+            const bankTracker = document.getElementById(`bank-pieces-${player.id}`)
+            // dev
+            console.log(player)
+            // for (let i = 0; i< player.supplyCircles; i++){
+            //     supplyTracker.append(this.createSupplyOrBankPiece(true, player.color))
+            // }
+        },
+        updateSupplyTracker(player, supplyTracker){
+            // This feels awful and hacky
+            if (!supplyTracker){
+                supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
+            }
+            for (let i = 0; i< player.supplyCircles; i++){
+                supplyTracker.append(this.createSupplyOrBankPiece(true, player.color))
+            }
+            for (let i = 0; i< player.supplySquares; i++){
+                supplyTracker.append(this.createSupplyOrBankPiece(false, player.color))
+            }
+        },
+        updateBankTracker(player, bankTracker){
+            // This feels awful and hacky
+            if (!bankTracker){
+                bankTracker = document.getElementById(`bank-pieces-${player.id}`)
+            }
+            for (let i = 0; i< player.bankedCircles; i++){
+                bankTracker.append(this.createSupplyOrBankPiece(true, player.color))
+            }
+            for (let i = 0; i< player.bankedSquares; i++){
+                bankTracker.append(this.createSupplyOrBankPiece(false, player.color))
+            }
+        },
+        createSupplyTracker(player) {
+            // will need a general update method for each i.e. updateSupplyAndBank(player)
+            // We will use this method where ever we currently use updateInfoDumpOnAll
+            const supplyDiv = createDivWithClassAndIdAndStyle(['supplyArea'], `supply-${player.id}`)
+            const supplyBanner = createDivWithClassAndIdAndStyle(['banner'])
+            supplyBanner.innerText = 'Supply';
+            supplyDiv.append(supplyBanner)
+            const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'],`supply-pieces-${player.id}`)
+            this.updateSupplyTracker(player, supplyPieceTracker);
+            supplyDiv.append(supplyPieceTracker)
+            // Supply contains tokens, bank does not
+            return supplyDiv
+        },
+        createBankTracker(player){
+            // Just copy pasta from createSupplyTracker
+            const bankDiv = createDivWithClassAndIdAndStyle(['bankArea'], `bank-${player.id}`)
+            const bankBanner = createDivWithClassAndIdAndStyle(['banner'])
+            bankBanner.innerText = 'Bank';
+            bankDiv.append(bankBanner)
+            const bankPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'],`bank-pieces-${player.id}`)
+            this.updateBankTracker(player, bankPieceTracker);
+            bankDiv.append(bankPieceTracker)
+
+            return bankDiv
+        },
+        createSupplyOrBankPiece(isCircle, color){
+            const piece = createDivWithClassAndIdAndStyle(['tinyPiece'], '', 
+            {backgroundColor: color})
+            if (isCircle){
+                piece.classList.add('circle')
+            }
+            return piece
         },
         createInfoDump(player) {
             const infoDumpArea = document.createElement('div')
