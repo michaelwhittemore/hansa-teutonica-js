@@ -29,14 +29,20 @@ const TEST_BOARD_CONFIG_CITIES = {
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        neighborRoutes: [['Epsilon', 3]],
+        neighborRoutes: [['Delta', 3]],
         unlock: 'unlockedColors',
         location: [300, 200]
+    },
+    'Delta': {
+        name: 'Delta',
+        spotArray: [['square', 'grey'], ['circle', 'purple']],
+        location: [800, 200],
+        neighborRoutes: [['Epsilon', 3]],
     },
     'Epsilon': {
         name: 'Epsilon',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1200, 200]
+        location: [600, 20]
     },
 };
 
@@ -98,8 +104,14 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 }
 const calculateDistancesBetweenElements = (element1, element2) => {
     // Dev
+    // I'm almost certain the error comes the fact that top/left proerty  is the offset from the edge
+    // It is *NOT* the center of the object
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
+    console.log(element1)
+    console.log(domRect1)
+    console.log(element2)
+    console.log(domRect2)
     let greaterXBoundary = 0;
     let lesserXBoundary = 0;
     let greaterYBoundary = 0;
@@ -114,26 +126,28 @@ const calculateDistancesBetweenElements = (element1, element2) => {
         // Element1 is further to the right
         greaterXBoundary = domRect1.x - (domRect1.width / 2);
         lesserXBoundary = domRect2.x + (domRect2.width / 2);
+    } else if (domRect1.x === domRect2.x){
+        lesserXBoundary = domRect1.x;
+        greaterXBoundary = domRect1.x
     }
     if (domRect2.y > domRect1.y){
         // Element2 is further down 
-        greaterYBoundary = domRect2.y - (domRect2.width / 2);
-        lesserYBoundary = domRect1.y + (domRect1.width / 2);
+        greaterYBoundary = domRect2.y - (domRect2.height / 2);
+        lesserYBoundary = domRect1.y + (domRect1.height / 2);
     } else if (domRect1.y > domRect2.y){
         // Element1 is further to down
-        greaterYBoundary = domRect1.y - (domRect1.width / 2);
-        lesserYBoundary = domRect2.y + (domRect2.width / 2);
+        greaterYBoundary = domRect1.y - (domRect1.height / 2);
+        lesserYBoundary = domRect2.y + (domRect2.height / 2);
+    } else if (domRect1.y === domRect2.y){
+        lesserYBoundary = domRect1.y;
+        greaterYBoundary = domRect1.y;
     }
     xDelta = greaterXBoundary - lesserXBoundary;
     yDelta = greaterYBoundary - lesserYBoundary;
-    minXLocation = Math.min(domRect1.x, domRect2.x)
-    minYLocation = Math.min(domRect1.y, domRect2.y)
-
-    // Will need to determine which one is heigher and which one is further right
-    // Can just pick based on x and y coordinates
-    // should just clown with a spread operatopr
-    // Should return and array of deltas : [xDelta, yDelta]
-    return {xDelta, yDelta, minXLocation, minYLocation}
+    debugger;
+    return {xDelta, yDelta, 
+        startX: lesserXBoundary, 
+        startY: lesserYBoundary}
 }
 
 const inputHandlers = {
@@ -773,7 +787,10 @@ const boardController = {
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifiers 
         cityDiv.id = name
-        cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
+        cityDiv.innerText = name;
+        if (unlock){
+            cityDiv.innerText += `\n Unlocks: ${unlock}`
+        }
         const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
         cityDiv.append(cityPieceAreaDiv)
         for (let i = 0; i < spotArray.length; i++) {
@@ -800,8 +817,18 @@ const boardController = {
     createRouteFromLocations(routeProperties) {
         // DEV!!!
         const {length, id, element1, element2 } = routeProperties
-        const {xDelta, yDelta, minXLocation, minYLocation} = calculateDistancesBetweenElements(element1, element2)
-
+        const {xDelta, yDelta, startX, startY} = calculateDistancesBetweenElements(element1, element2)
+        // I think the issue is that minXBoundary, minYBoundary should be boundaries not centers
+        // Might also encounter an issue with overlap if I'm not doing the spacing and ending properly
+        // i.e. I don't want to set the center of the node to the city's edge
+        // maybe I can fix this my just adding half the node width/height to x/yCoordinate
+        if (xDelta < 0){
+            console.error('xDelta should not be negative', xDelta)
+        }
+        if (yDelta < 0){
+            console.error('yDelta should not be negative', yDelta)
+        }
+        // DELETE THE ERRORS ABOVE ^^^^^^
         const xIncrement = xDelta / length
         const yIncrement = yDelta / length
         for (let i = 0; i < length; i++) {
@@ -812,13 +839,14 @@ const boardController = {
             routeNode.onclick = () => {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
-            const xCoordinate = `${minXLocation + (xIncrement * i)}px`
-            const yCoordinate = `${minYLocation + (yIncrement * i)}px`
+            const xCoordinate = `${startX + (xIncrement * i)}px`
+            const yCoordinate = `${startY + (yIncrement * i)}px`
             routeNode.style.left = xCoordinate;
             routeNode.style.top = yCoordinate;
 
             this.board.append(routeNode)
         }
+        debugger;
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
