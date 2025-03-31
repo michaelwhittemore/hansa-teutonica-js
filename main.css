@@ -345,3 +345,10 @@
     width: 100%;
 }
 
+.testCity{
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    background-color: goldenrod;
+    
+}

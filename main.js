@@ -663,6 +663,8 @@ const boardController = {
         collapseButton.onclick = () => this.toggleBoardView(collapseButton)
         document.getElementById('boardContainer').append(collapseButton)
         this.isCollapsed = false;
+        // DEV
+        
     },
     toggleBoardView(collapseButton) {
         if (!this.isCollapsed) {
@@ -815,11 +817,7 @@ const playerInformationAndBoardController = {
         playerInfoBoard.append(this.componentBuilders.createPurseTracker(player))
         playerInfoBoard.append(this.componentBuilders.createSupplyTracker(player))
         playerInfoBoard.append(this.componentBuilders.createBankTracker(player));
-        // DEV
-        // This will need to wrapped in a general updater that gets called after actions
-        // this.componentBuilders.updateSupplyAndBank(player); REORDER THIS 
-        // Info dump is an other information i.e. tokens, points, supply, bank, stuff like that
-        // as I improve the UI I can move more information out of it
+
         playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
         return playerInfoBoard
     },
@@ -1041,8 +1039,6 @@ const playerInformationAndBoardController = {
             }
         },
         createSupplyTracker(player) {
-            // will need a general update method for each i.e. updateSupplyAndBank(player)
-            // We will use this method where ever we currently use updateInfoDumpOnAll
             const supplyDiv = createDivWithClassAndIdAndStyle(['supplyArea'], `supply-${player.id}`)
             const supplyBanner = createDivWithClassAndIdAndStyle(['banner'])
             supplyBanner.innerText = 'Supply';
@@ -1079,7 +1075,7 @@ const playerInformationAndBoardController = {
             infoDumpArea.id = `infoDumpArea-${player.id}`
             infoDumpArea.innerText = ''
             // I'm not gonna map these to plain text as i'm going to delete them later anyway
-            const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'points', 'tokens',];
+            const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'currentPoints', 'tokens',];
             dumpFields.forEach(dumpKey => {
                 infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
             })
@@ -1091,7 +1087,7 @@ const playerInformationAndBoardController = {
                 const infoDumpArea = document.getElementById(`infoDumpArea-${player.id}`)
                 infoDumpArea.innerText = ''
                 // should be deleted soon don't worry about non-dry code
-                const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'points', 'tokens',];
+                const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'currentPoints', 'tokens',];
                 dumpFields.forEach(dumpKey => {
                     infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
                 })

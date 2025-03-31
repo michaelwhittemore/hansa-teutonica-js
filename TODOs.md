@@ -4,17 +4,25 @@
     * create the supply and bank area
     * drop down menu ---> HERE!!
     * style the arrow buttons better
-    * will eventually need to grab images for these fields
-* supply area ---> HERE
-* bank area
+* 2D-ify the game board
+    * each city needs a coordinates property - this will be loaded in at initation
+    * make the cities slightly smaller and more square - this is not essential but will increase readibility
+    * make sure that the gameboard is scrollable 
+    * I think that we might want position: absolute as we want to inhert from the game board ancestor
+    * let's start with a test div 
+    * once we have the cities we will need to calculate the distnace between the two cities when initalizing - from there we can create the route nodes on an equidistant line between them
+    * once all that is done we can will need to test all clicking works correctly as before
+    * then add in additonal cities before finally adding in token holders
+    * additional cities also open up the option to add additional players
 * Delete info dump
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
-I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue)
+I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
-* move method (as in your own pieces on the board) - need rules clarification
+* re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
+* move method (as in your own pieces on the board) - need rules clarification - can you chose to only move one? 
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
@@ -41,8 +49,10 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
- ~~re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply)~~
- ~~it looks like we need another container to collapse for the buttons~~
+~~supply area~~
+~~bank area~~
+~~re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply)~~
+~~it looks like we need another container to collapse for the buttons~~
 ~~Should we center the action on active player??? maybe during hotseat play!~~
 ~~add the collapse button back~~
 ~~create info dump area at bottom on board~~
@@ -91,6 +101,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * add a favicon
 * add linter
 * reorganize CSS and methods (just the ordering)
+* add for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
