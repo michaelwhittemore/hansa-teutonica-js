@@ -96,6 +96,45 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     
     return div
 }
+const calculateDistancesBetweenElements = (element1, element2) => {
+    // Dev
+    const domRect1 = element1.getBoundingClientRect()
+    const domRect2 = element2.getBoundingClientRect()
+    let greaterXBoundary = 0;
+    let lesserXBoundary = 0;
+    let greaterYBoundary = 0;
+    let lesserYBoundary = 0;
+    let xDelta;
+    let yDelta;
+    if (domRect2.x > domRect1.x){
+        // Element2 is further to the right 
+        greaterXBoundary = domRect2.x - (domRect2.width / 2);
+        lesserXBoundary = domRect1.x + (domRect1.width / 2);
+    } else if (domRect1.x > domRect2.x){
+        // Element1 is further to the right
+        greaterXBoundary = domRect1.x - (domRect1.width / 2);
+        lesserXBoundary = domRect2.x + (domRect2.width / 2);
+    }
+    if (domRect2.y > domRect1.y){
+        // Element2 is further down 
+        greaterYBoundary = domRect2.y - (domRect2.width / 2);
+        lesserYBoundary = domRect1.y + (domRect1.width / 2);
+    } else if (domRect1.y > domRect2.y){
+        // Element1 is further to down
+        greaterYBoundary = domRect1.y - (domRect1.width / 2);
+        lesserYBoundary = domRect2.y + (domRect2.width / 2);
+    }
+    xDelta = greaterXBoundary - lesserXBoundary;
+    yDelta = greaterYBoundary - lesserYBoundary;
+    minXLocation = Math.min(domRect1.x, domRect2.x)
+    minYLocation = Math.min(domRect1.y, domRect2.y)
+
+    // Will need to determine which one is heigher and which one is further right
+    // Can just pick based on x and y coordinates
+    // should just clown with a spread operatopr
+    // Should return and array of deltas : [xDelta, yDelta]
+    return {xDelta, yDelta, minXLocation, minYLocation}
+}
 
 const inputHandlers = {
     verifyPlayersTurn() {
@@ -296,8 +335,7 @@ const gameController = {
                 boardController.createRouteFromLocations({
                     length: city.neighborRoutes[0][1],
                     id: routeId,
-                    location1: city.location,
-                    location2: TEST_BOARD_CONFIG_CITIES[neighborCityName].location,
+
                     element1: this.cityStorageObject[cityKey].ownElement,
                     element2: this.cityStorageObject[neighborCityName].ownElement,
                 })
@@ -761,31 +799,11 @@ const boardController = {
     },
     createRouteFromLocations(routeProperties) {
         // DEV!!!
-        const {length, id, location1, location2, element1, element2 } = routeProperties
-        // maybe instead of locations we use elements? 
-        // Then i will need a helper function that uses DOMRect to calculate the actual bounds
-        // I shouldn't assume anything about orientation i.e. which city uses right bundry and which city
-        // uses it's bottom boundary
-        console.log(routeProperties)
-        console.log(location1, element1.getBoundingClientRect())
-        console.log(location2, element2.getBoundingClientRect())
-
-        // I think we need to include the size of the cities when calculating the deltas
-        // Oooh I think I see the problem, when I subtract the city size I make it negative
-        // Maybe I should use a reducing multiplier instead? or would it be possible to get the actuall
-        // values for the city?? i.e. calculate the location plus the height/ 2 oor width over 2
-        // const xDelta = location2[0] - location1[0] - 200; 
-        // const yDelta = location2[1] - location1[1] - 100; 
-        // Why are we getting a yDelta in the alpha - beta route???
-        console.log(location1, location2)
-        const xDelta = location2[0] - location1[0]; 
-        const yDelta = location2[1] - location1[1]; 
+        const {length, id, element1, element2 } = routeProperties
+        const {xDelta, yDelta, minXLocation, minYLocation} = calculateDistancesBetweenElements(element1, element2)
 
         const xIncrement = xDelta / length
         const yIncrement = yDelta / length
-
-        console.log('xDelta', xDelta, 'xIncrement', xIncrement)
-        console.log('yDelta', yDelta, 'yIncrement', yIncrement)
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
@@ -794,8 +812,8 @@ const boardController = {
             routeNode.onclick = () => {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
-            const xCoordinate = `${location1[0] + (xIncrement * i)}px`
-            const yCoordinate = `${location1[1] + (yIncrement * i)}px`
+            const xCoordinate = `${minXLocation + (xIncrement * i)}px`
+            const yCoordinate = `${minYLocation + (yIncrement * i)}px`
             routeNode.style.left = xCoordinate;
             routeNode.style.top = yCoordinate;
 
