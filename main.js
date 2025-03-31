@@ -177,23 +177,50 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
     let yEdge1;
     let yEdge2;
     if (domRect1.x > domRect2.x){
+        console.log('domRect1.x > domRect2.x')
         // Element 1 is further to the right (away from the origin)
         // Element 1 uses its left edge, and Element 2 uses its right
         xEdge1 = domRect1.x;
         xEdge2 = domRect2.x + domRect2.width;
     }  else if (domRect1.x < domRect2.x){
+        console.log()
         // Element 2 is further to the right (away from the origin)
         // Element 2 uses its left edge, and Element 1 uses its right
-        xEdge2 = domRect1.x;
+        xEdge2 = domRect2.x;
         xEdge1 = domRect1.x + domRect1.width;
     } else if (domRect1.x === domRect2.x){
-        
+        // I think we try and center in this case
+        // Something feels off about the fact we only center in this case,
+        // it might help to draw it out on paper
+        xEdge1 = domRect1.x + (domRect1.width * 0.25);
+        xEdge2 = xEdge1;
+    }
+
+    // _______----------------------------
+    if (domRect1.y > domRect2.y){
+        // Element 1 is further down the page (away from the origin)
+        // Element 1 uses its TOP edge, and Element 2 uses its bottom
+        yEdge1 = domRect1.y;
+        yEdge2 = domRect2.y + domRect2.height;
+    }  else if (domRect1.y < domRect2.y){
+        // Element 2 is further down the page (away from the origin)
+        // Element 2 uses its TOP edge, and Element 1 uses its bottom
+        yEdge2 = domRect2.y;
+        yEdge1 = domRect1.y + domRect1.height;
+    } else if (domRect1.y === domRect2.y){
+        // I think we try and center in this case
+        // Something feels off about the fact we only center in this case,
+        // it might help to draw it out on paper
+        yEdge1 = domRect1.y + (domRect1.height * 0.25);
+        yEdge2 = yEdge1;
     }
     
     const xDelta = xEdge2 - xEdge1;
     const yDelta = yEdge2 - yEdge1;
     // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
     return{
+        xDelta,
+        yDelta,
         startX: xEdge1, 
         startY: yEdge1,
     }
@@ -876,13 +903,7 @@ const boardController = {
         // maybe I can fix this my just adding half the node width/height to x/yCoordinate
         console.log('xDelta', xDelta)
         console.log('yDelta', yDelta)
-        if (xDelta < 0) {
-            console.error('xDelta should not be negative', xDelta)
-        }
-        if (yDelta < 0) {
-            console.error('yDelta should not be negative', yDelta)
-        }
-        // DELETE THE ERRORS ABOVE ^^^^^^
+
         const xIncrement = xDelta / length
         const yIncrement = yDelta / length
         gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
@@ -899,6 +920,8 @@ const boardController = {
             }
             const xCoordinate = `${startX - xOffset + (xIncrement * i)}px`
             const yCoordinate = `${startY - yOffset + (yIncrement * i)}px`
+            // const xCoordinate = `${startX + (xIncrement * i)}px`
+            // const yCoordinate = `${startY + (yIncrement * i)}px`
             routeNode.style.left = xCoordinate;
             routeNode.style.top = yCoordinate;
 
