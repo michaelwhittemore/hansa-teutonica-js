@@ -50,6 +50,7 @@
 .routeNode {
     height: 60px;
     width: 60px;
+    position: absolute;
     border: solid;
     display: flex;
     align-items: center;
@@ -59,7 +60,8 @@
     border: dashed;
     border-color: aqua;
     overflow: scroll;
-    width: 100%
+    width: 1200px;
+    height: 650px;
     /* may need to deal with scrolling issues later*/
 }
 

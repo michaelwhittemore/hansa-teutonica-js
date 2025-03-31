@@ -17,6 +17,7 @@
     * once all that is done we can will need to test all clicking works correctly as before
     * then add in additonal cities before finally adding in token holders
     * additional cities also open up the option to add additional players
+    * try a three-way city connection, verify it works and also a city with multtiple neightbor routes
 * Delete info dump
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,

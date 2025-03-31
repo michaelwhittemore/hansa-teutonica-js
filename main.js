@@ -29,12 +29,12 @@ const TEST_BOARD_CONFIG_CITIES = {
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
+        neighborRoutes: [['Epsilon', 3]],
         unlock: 'unlockedColors',
         location: [300, 200]
     },
     'Epsilon': {
         name: 'Epsilon',
-        neighborRoutes: [['Epsilon', 3]],
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [1200, 200]
     },
@@ -263,9 +263,15 @@ const gameController = {
 
         // NOTE, IF WE DO CHANGE CITY TO A CLASS, THIS MAY NOT BE ACCURATE
         // TEST_BOARD_CONFIG_CITIES_ALTERNATE instead
+
+        // Let's break out the city generation into two loops
+        // THe first one populates the cityStorageObject 
+        // The second one will create the route
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
-            boardController.createCity({ ...city })
+            console.log(city)
+            const cityDiv = boardController.createCity({ ...city })
+            // Let's add the city's element to it's properties
             this.cityStorageObject[cityKey] = {
                 cityName: cityKey, // technically kinda useless
                 occupants: [],
@@ -273,13 +279,28 @@ const gameController = {
                 spotArray: city.spotArray,
                 bonusSpotOccupantId: undefined,
                 unlock: city.unlock,
+                location: city.location,
+                ownElement: cityDiv,
             }
+
+        })
+        Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
+            const city = TEST_BOARD_CONFIG_CITIES[cityKey]
+            
             if (city.neighborRoutes) {
+                // This whole sections assume only a single neighborRoute
+                // TODO change to be iterative
                 const neighborCityName = city.neighborRoutes[0][0]
                 const length = city.neighborRoutes[0][1]
                 const routeId = `${city.name}-${neighborCityName}`
-                boardController.createRouteBox(city.neighborRoutes[0][1], routeId)
-
+                boardController.createRouteFromLocations({
+                    length: city.neighborRoutes[0][1],
+                    id: routeId,
+                    location1: city.location,
+                    location2: TEST_BOARD_CONFIG_CITIES[neighborCityName].location,
+                    element1: this.cityStorageObject[cityKey].ownElement,
+                    element2: this.cityStorageObject[neighborCityName].ownElement,
+                })
                 this.routeStorageObject[routeId] = {
                     cities: [cityKey, neighborCityName],
                     routeNodes: {},
@@ -295,7 +316,6 @@ const gameController = {
 
                 }
             }
-
         })
 
     },
@@ -674,10 +694,6 @@ const boardController = {
         collapseButton.onclick = () => this.toggleBoardView(collapseButton)
         document.getElementById('boardContainer').append(collapseButton)
         this.isCollapsed = false;
-        // DEV
-        // We may need add all this logic into seperate methods, but for now I'm just testing
-
-
     },
     toggleBoardView(collapseButton) {
         if (!this.isCollapsed) {
@@ -717,9 +733,8 @@ const boardController = {
         const { name, spotArray, unlock, location } = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
-        // We assume all cities have unique names as identifers 
+        // We assume all cities have unique names as identifiers 
         cityDiv.id = name
-        // DEV
         cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
         const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
         cityDiv.append(cityPieceAreaDiv)
@@ -742,21 +757,50 @@ const boardController = {
             inputHandlers.cityClickHandler(name)
         }
         this.board.append(cityDiv)
+        return cityDiv
     },
-    createRouteBox(length, id, location) {
-        const routeBoxDiv = document.createElement('div');
-        routeBoxDiv.className = 'routeBox';
+    createRouteFromLocations(routeProperties) {
+        // DEV!!!
+        const {length, id, location1, location2, element1, element2 } = routeProperties
+        // maybe instead of locations we use elements? 
+        // Then i will need a helper function that uses DOMRect to calculate the actual bounds
+        // I shouldn't assume anything about orientation i.e. which city uses right bundry and which city
+        // uses it's bottom boundary
+        console.log(routeProperties)
+        console.log(location1, element1.getBoundingClientRect())
+        console.log(location2, element2.getBoundingClientRect())
+
+        // I think we need to include the size of the cities when calculating the deltas
+        // Oooh I think I see the problem, when I subtract the city size I make it negative
+        // Maybe I should use a reducing multiplier instead? or would it be possible to get the actuall
+        // values for the city?? i.e. calculate the location plus the height/ 2 oor width over 2
+        // const xDelta = location2[0] - location1[0] - 200; 
+        // const yDelta = location2[1] - location1[1] - 100; 
+        // Why are we getting a yDelta in the alpha - beta route???
+        console.log(location1, location2)
+        const xDelta = location2[0] - location1[0]; 
+        const yDelta = location2[1] - location1[1]; 
+
+        const xIncrement = xDelta / length
+        const yIncrement = yDelta / length
+
+        console.log('xDelta', xDelta, 'xIncrement', xIncrement)
+        console.log('yDelta', yDelta, 'yIncrement', yIncrement)
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
             const nodeId = `${id}-${i}`;
             routeNode.id = nodeId;
-            routeNode.onclick = (event) => {
+            routeNode.onclick = () => {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
-            routeBoxDiv.append(routeNode)
+            const xCoordinate = `${location1[0] + (xIncrement * i)}px`
+            const yCoordinate = `${location1[1] + (yIncrement * i)}px`
+            routeNode.style.left = xCoordinate;
+            routeNode.style.top = yCoordinate;
+
+            this.board.append(routeNode)
         }
-        this.board.append(routeBoxDiv)
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
