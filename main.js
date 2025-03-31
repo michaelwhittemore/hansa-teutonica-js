@@ -24,25 +24,25 @@ const TEST_BOARD_CONFIG_CITIES = {
             [['circle', 'grey'], ['square', 'grey']],
         neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
-        location: [400, 20]
+        location: [550, 20]
     },
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         neighborRoutes: [['Delta', 3]],
         unlock: 'unlockedColors',
-        location: [300, 200]
+        location: [300, 500]
     },
     'Delta': {
         name: 'Delta',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [800, 200],
+        location: [800, 300],
         neighborRoutes: [['Epsilon', 3]],
     },
     'Epsilon': {
         name: 'Epsilon',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [600, 20]
+        location: [700, 20]
     },
 };
 
@@ -91,63 +91,112 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     // classNameArray is an array of strings, id is an optional string, styles is an optional object
     const div = document.createElement('div');
     div.classList.add(...classNameArray);
-    if (id !== undefined){
+    if (id !== undefined) {
         div.id = id;
     }
-    if(styles){
+    if (styles) {
         Object.keys(styles).forEach(style => {
             div.style[style] = styles[style]
         });
     }
-    
+
     return div
 }
-const calculateDistancesBetweenElements = (element1, element2) => {
-    // Dev
-    // I'm almost certain the error comes the fact that top/left proerty  is the offset from the edge
-    // It is *NOT* the center of the object
+// const calculateDistancesBetweenElements = (element1, element2) => {
+//     // I'm almost certain the error comes the fact that top/left proerty  is the offset from the edge
+//     // It is *NOT* the center of the object
+
+//     // MIGht also be viewport vs parent element issue. I think the coordinates may be calculated from the view port
+//     // and the top/width I add might be parent object??? Ugh i hate this
+
+//     // Maybe we just use the offset when adding to the route nodes location? like subtract
+//     const domRect1 = element1.getBoundingClientRect()
+//     const domRect2 = element2.getBoundingClientRect()
+//     // console.log(element1)
+//     // console.log(domRect1)
+//     // console.log(element2)
+//     // console.log(domRect2)
+//     let greaterXBoundary = 0;
+//     let lesserXBoundary = 0;
+//     let greaterYBoundary = 0;
+//     let lesserYBoundary = 0;
+//     let xDelta;
+//     let yDelta;
+
+//     // I think we may need a different approach to the conditonals
+//     // Remember that x/y is the top left coordinate
+
+//     // SO THIS isn't right, but it's still important that I find the correct side to go from
+//     // i.e. i'm only ever going from city1 -> city2, but I need to figure out if I'm using upper or
+//     // lower edge
+//     if (domRect2.x > domRect1.x) {
+//         // Element2 is further to the right 
+//         greaterXBoundary = domRect2.x;
+//         lesserXBoundary = domRect1.x + (domRect1.width);
+//     } else if (domRect1.x > domRect2.x) {
+//         // Element1 is further to the right
+//         greaterXBoundary = domRect1.x;
+//         lesserXBoundary = domRect2.x + (domRect2.width);
+//     } else if (domRect1.x === domRect2.x) {
+//         lesserXBoundary = domRect1.x + (domRect1.width / 2);
+//         greaterXBoundary = lesserXBoundary
+//     }
+//     if (domRect2.y > domRect1.y) {
+//         // Element2 is further down 
+//         greaterYBoundary = domRect2.y;
+//         lesserYBoundary = domRect1.y + (domRect1.height);
+//     } else if (domRect1.y > domRect2.y) {
+//         // Element1 is further to down
+//         greaterYBoundary = domRect1.y;
+//         lesserYBoundary = domRect2.y + (domRect2.height);
+//     } else if (domRect1.y === domRect2.y) {
+//         lesserYBoundary = domRect1.y + (domRect1.height / 2);
+//         greaterYBoundary = lesserYBoundary;
+//     }
+//     xDelta = greaterXBoundary - lesserXBoundary;
+//     yDelta = greaterYBoundary - lesserYBoundary;
+//     // debugger;
+//     return {
+//         xDelta, yDelta,
+//         startX: lesserXBoundary,
+//         startY: lesserYBoundary
+//     }
+// }
+const calculateDistancesBetweenElements2 = (element1, element2) => {
+    // DEV
+    // We will always be going from element1 to element2
+    // HOWEVER, we need to identify which edge of which we will be using
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
     console.log(element1)
     console.log(domRect1)
     console.log(element2)
     console.log(domRect2)
-    let greaterXBoundary = 0;
-    let lesserXBoundary = 0;
-    let greaterYBoundary = 0;
-    let lesserYBoundary = 0;
-    let xDelta;
-    let yDelta;
-    if (domRect2.x > domRect1.x){
-        // Element2 is further to the right 
-        greaterXBoundary = domRect2.x - (domRect2.width / 2);
-        lesserXBoundary = domRect1.x + (domRect1.width / 2);
-    } else if (domRect1.x > domRect2.x){
-        // Element1 is further to the right
-        greaterXBoundary = domRect1.x - (domRect1.width / 2);
-        lesserXBoundary = domRect2.x + (domRect2.width / 2);
+    let xEdge1;
+    let xEdge2;
+    let yEdge1;
+    let yEdge2;
+    if (domRect1.x > domRect2.x){
+        // Element 1 is further to the right (away from the origin)
+        // Element 1 uses its left edge, and Element 2 uses its right
+        xEdge1 = domRect1.x;
+        xEdge2 = domRect2.x + domRect2.width;
+    }  else if (domRect1.x < domRect2.x){
+        // Element 2 is further to the right (away from the origin)
+        // Element 2 uses its left edge, and Element 1 uses its right
+        xEdge2 = domRect1.x;
+        xEdge1 = domRect1.x + domRect1.width;
     } else if (domRect1.x === domRect2.x){
-        lesserXBoundary = domRect1.x;
-        greaterXBoundary = domRect1.x
+        
     }
-    if (domRect2.y > domRect1.y){
-        // Element2 is further down 
-        greaterYBoundary = domRect2.y - (domRect2.height / 2);
-        lesserYBoundary = domRect1.y + (domRect1.height / 2);
-    } else if (domRect1.y > domRect2.y){
-        // Element1 is further to down
-        greaterYBoundary = domRect1.y - (domRect1.height / 2);
-        lesserYBoundary = domRect2.y + (domRect2.height / 2);
-    } else if (domRect1.y === domRect2.y){
-        lesserYBoundary = domRect1.y;
-        greaterYBoundary = domRect1.y;
+    
+    const xDelta = xEdge2 - xEdge1;
+    const yDelta = yEdge2 - yEdge1;
+    // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
+    return{
+        startX: xEdge1, 
+        startY: yEdge1,
     }
-    xDelta = greaterXBoundary - lesserXBoundary;
-    yDelta = greaterYBoundary - lesserYBoundary;
-    debugger;
-    return {xDelta, yDelta, 
-        startX: lesserXBoundary, 
-        startY: lesserYBoundary}
 }
 
 const inputHandlers = {
@@ -322,7 +371,6 @@ const gameController = {
         // The second one will create the route
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
-            console.log(city)
             const cityDiv = boardController.createCity({ ...city })
             // Let's add the city's element to it's properties
             this.cityStorageObject[cityKey] = {
@@ -339,7 +387,7 @@ const gameController = {
         })
         Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
             const city = TEST_BOARD_CONFIG_CITIES[cityKey]
-            
+
             if (city.neighborRoutes) {
                 // This whole sections assume only a single neighborRoute
                 // TODO change to be iterative
@@ -383,10 +431,10 @@ const gameController = {
     advanceTurn(lastPlayer) {
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        if (IS_HOTSEAT_MODE){
+        if (IS_HOTSEAT_MODE) {
             playerInformationAndBoardController.focusOnPlayerBoard(this.getActivePlayer())
         }
-        
+
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     resolveAction(player) {
@@ -788,7 +836,7 @@ const boardController = {
         // We assume all cities have unique names as identifiers 
         cityDiv.id = name
         cityDiv.innerText = name;
-        if (unlock){
+        if (unlock) {
             cityDiv.innerText += `\n Unlocks: ${unlock}`
         }
         const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
@@ -816,21 +864,31 @@ const boardController = {
     },
     createRouteFromLocations(routeProperties) {
         // DEV!!!
-        const {length, id, element1, element2 } = routeProperties
-        const {xDelta, yDelta, startX, startY} = calculateDistancesBetweenElements(element1, element2)
+
+        // IMPORTANT!!!!! I"m starting from the lowest of BOTH cities. I should only be starting
+        // from one city, that's why it looks like I'm picking a random point in space
+        console.warn(routeProperties.id)
+        const { length, id, element1, element2 } = routeProperties
+        const { xDelta, yDelta, startX, startY } = calculateDistancesBetweenElements2(element1, element2)
         // I think the issue is that minXBoundary, minYBoundary should be boundaries not centers
         // Might also encounter an issue with overlap if I'm not doing the spacing and ending properly
         // i.e. I don't want to set the center of the node to the city's edge
         // maybe I can fix this my just adding half the node width/height to x/yCoordinate
-        if (xDelta < 0){
+        console.log('xDelta', xDelta)
+        console.log('yDelta', yDelta)
+        if (xDelta < 0) {
             console.error('xDelta should not be negative', xDelta)
         }
-        if (yDelta < 0){
+        if (yDelta < 0) {
             console.error('yDelta should not be negative', yDelta)
         }
         // DELETE THE ERRORS ABOVE ^^^^^^
         const xIncrement = xDelta / length
         const yIncrement = yDelta / length
+        gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
+        const xOffset = gameBoardDomRect.x
+        const yOffset = gameBoardDomRect.y;
+
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
@@ -839,14 +897,14 @@ const boardController = {
             routeNode.onclick = () => {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
-            const xCoordinate = `${startX + (xIncrement * i)}px`
-            const yCoordinate = `${startY + (yIncrement * i)}px`
+            const xCoordinate = `${startX - xOffset + (xIncrement * i)}px`
+            const yCoordinate = `${startY - yOffset + (yIncrement * i)}px`
             routeNode.style.left = xCoordinate;
             routeNode.style.top = yCoordinate;
 
             this.board.append(routeNode)
         }
-        debugger;
+        // debugger;
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -878,9 +936,9 @@ const playerInformationAndBoardController = {
             document.getElementById('playerBoardArea').append(playerInfoBoard)
             this.playerBoardsObj[player.id] = playerInfoBoard;
         })
-        
+
         let currentViewingPlayer;
-        if (IS_HOTSEAT_MODE){
+        if (IS_HOTSEAT_MODE) {
             currentViewingPlayer = 0
         }
         this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
@@ -938,37 +996,37 @@ const playerInformationAndBoardController = {
         console.log(divId)
         document.getElementById(divId).remove();
     },
-    focusOnPlayerBoard(player){
+    focusOnPlayerBoard(player) {
         this.focusedPlayerId = player.id;
-        for (let playerId in this.playerBoardsObj){
+        for (let playerId in this.playerBoardsObj) {
             // there are some real downsides to using indexes as object keys
             const parsedId = parseInt(playerId, 10)
-            if (player.id === parsedId){
+            if (player.id === parsedId) {
                 this.playerBoardsObj[parsedId].style.display = ''
             } else {
                 this.playerBoardsObj[parsedId].style.display = 'none'
             }
         }
-        for (let arrowButton of document.getElementsByClassName('arrowButton')){
+        for (let arrowButton of document.getElementsByClassName('arrowButton')) {
             const direction = arrowButton.id === ('arrow-left') ? 'left' : 'right'
             this.updateArrowButton(arrowButton, direction)
         }
     },
-    createArrowButton(direction,){
+    createArrowButton(direction,) {
         // TODO test with more than two players
         const arrowButton = createDivWithClassAndIdAndStyle(['arrowButton'], `arrow-${direction}`);
         this.updateArrowButton(arrowButton, direction)
         return arrowButton
     },
-    updateArrowButton(arrowButton, direction){
+    updateArrowButton(arrowButton, direction) {
         const playerArray = gameController.playerArray;
         let targetPlayerIndex = this.focusedPlayerId + (direction === 'left' ? -1 : 1)
-        if(targetPlayerIndex < 0 ){
+        if (targetPlayerIndex < 0) {
             targetPlayerIndex = playerArray.length - 1
         } else {
             targetPlayerIndex = targetPlayerIndex % playerArray.length;
         }
-        arrowButton.innerText= `Go ${direction} to ${playerArray[targetPlayerIndex].name}'s board.`
+        arrowButton.innerText = `Go ${direction} to ${playerArray[targetPlayerIndex].name}'s board.`
         arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
 
         arrowButton.onclick = () => {
@@ -1118,34 +1176,34 @@ const playerInformationAndBoardController = {
             tokenTracker.append(tokenHolder);
             return tokenTracker
         },
-        updateSupplyAndBank(player){
+        updateSupplyAndBank(player) {
             const supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
             const bankTracker = document.getElementById(`bank-pieces-${player.id}`)
             this.updateSupplyTracker(player, supplyTracker)
             this.updateBankTracker(player, bankTracker)
         },
-        updateSupplyTracker(player, supplyTracker){
+        updateSupplyTracker(player, supplyTracker) {
             // This feels awful and hacky
-            if (!supplyTracker){
+            if (!supplyTracker) {
                 supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
             }
             supplyTracker.innerHTML = '';
-            for (let i = 0; i< player.supplyCircles; i++){
+            for (let i = 0; i < player.supplyCircles; i++) {
                 supplyTracker.append(this.createSupplyOrBankPiece(true, player.color))
             }
-            for (let i = 0; i< player.supplySquares; i++){
+            for (let i = 0; i < player.supplySquares; i++) {
                 supplyTracker.append(this.createSupplyOrBankPiece(false, player.color))
             }
         },
-        updateBankTracker(player, bankTracker){
-            if (!bankTracker){
+        updateBankTracker(player, bankTracker) {
+            if (!bankTracker) {
                 bankTracker = document.getElementById(`bank-pieces-${player.id}`)
             }
             bankTracker.innerHTML = '';
-            for (let i = 0; i< player.bankedCircles; i++){
+            for (let i = 0; i < player.bankedCircles; i++) {
                 bankTracker.append(this.createSupplyOrBankPiece(true, player.color))
             }
-            for (let i = 0; i< player.bankedSquares; i++){
+            for (let i = 0; i < player.bankedSquares; i++) {
                 bankTracker.append(this.createSupplyOrBankPiece(false, player.color))
             }
         },
@@ -1154,28 +1212,28 @@ const playerInformationAndBoardController = {
             const supplyBanner = createDivWithClassAndIdAndStyle(['banner'])
             supplyBanner.innerText = 'Supply';
             supplyDiv.append(supplyBanner)
-            const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'],`supply-pieces-${player.id}`)
+            const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `supply-pieces-${player.id}`)
             this.updateSupplyTracker(player, supplyPieceTracker);
             supplyDiv.append(supplyPieceTracker)
             // Supply contains tokens, bank does not
             return supplyDiv
         },
-        createBankTracker(player){
+        createBankTracker(player) {
             // Just copy pasta from createSupplyTracker
             const bankDiv = createDivWithClassAndIdAndStyle(['bankArea'], `bank-${player.id}`)
             const bankBanner = createDivWithClassAndIdAndStyle(['banner'])
             bankBanner.innerText = 'Bank';
             bankDiv.append(bankBanner)
-            const bankPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'],`bank-pieces-${player.id}`)
+            const bankPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `bank-pieces-${player.id}`)
             this.updateBankTracker(player, bankPieceTracker);
             bankDiv.append(bankPieceTracker)
 
             return bankDiv
         },
-        createSupplyOrBankPiece(isCircle, color){
-            const piece = createDivWithClassAndIdAndStyle(['tinyPiece'], '', 
-            {backgroundColor: color})
-            if (isCircle){
+        createSupplyOrBankPiece(isCircle, color) {
+            const piece = createDivWithClassAndIdAndStyle(['tinyPiece'], '',
+                { backgroundColor: color })
+            if (isCircle) {
                 piece.classList.add('circle')
             }
             return piece
@@ -1325,4 +1383,17 @@ const testCity2 = {
     "cityName": "Test City B",
     "occupants": [1, 0, 0, 1],
     bonusSpotOccupantId: 1
+}
+
+// TEST, DELETE THIS TODO
+const addPixelAtLocation = (x, y) => {
+    const testElement = document.createElement('div')
+    testElement.className = 'testSinglePixel';
+    testElement.id = 'TEST';
+    testElement.style.left = x + 'px'
+    testElement.style.top = y + 'px'
+    document.getElementById('gameBoard').append(testElement)
+    console.log(testElement.getBoundingClientRect())
+
+    return testElement
 }

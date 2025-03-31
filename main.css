@@ -364,3 +364,10 @@
     background-color: goldenrod;
 
 }
+
+.testSinglePixel{
+    height: 5px;
+    width: 5px;
+    background-color: chartreuse;
+    position: absolute;
+}
