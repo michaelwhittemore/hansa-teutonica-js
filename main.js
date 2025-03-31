@@ -24,102 +24,63 @@ const TEST_BOARD_CONFIG_CITIES = {
             [['circle', 'grey'], ['square', 'grey']],
         neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
-        location: [550, 20]
+        location: [450, 20]
     },
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         neighborRoutes: [['Delta', 3]],
         unlock: 'unlockedColors',
-        location: [700, 500]
+        location: [600, 500]
     },
     'Delta': {
         name: 'Delta',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1200, 300],
+        location: [1000, 300],
         neighborRoutes: [['Epsilon', 3]],
     },
     'Epsilon': {
         name: 'Epsilon',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1100, 20]
+        location: [900, 20]
     },
-    'R-Alpha': {
-        name: 'R-Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        unlock: 'action',
-        location: [20, 400]
-    },
-    'R-Beta': {
-        name: 'R-Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['R-Alpha', 3]],
-        unlock: 'purse',
-        location: [550, 400]
-    },
-
 
 };
-const TEST_BOARD_CONFIG_CITIES2 = {
-    'Alpha': {
-        name: 'Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['R-Alpha', 3]],
-        unlock: 'action',
-        location: [20, 20]
-    },
-    'Beta': {
-        name: 'Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        unlock: 'purse',
-        location: [550, 20]
-    },
-    'R-Alpha': {
-        name: 'R-Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        unlock: 'action',
-        location: [20, 400]
-    },
-    'R-Beta': {
-        name: 'R-Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['Beta', 3]],
+// const TEST_BOARD_CONFIG_CITIES_Straight = {
+//     'Alpha': {
+//         name: 'Alpha',
+//         spotArray:
+//             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+//         neighborRoutes: [['R-Alpha', 3]],
+//         unlock: 'action',
+//         location: [20, 20]
+//     },
+//     'Beta': {
+//         name: 'Beta',
+//         spotArray:
+//             [['circle', 'grey'], ['square', 'grey']],
+//         unlock: 'purse',
+//         location: [550, 20]
+//     },
+//     'R-Alpha': {
+//         name: 'R-Alpha',
+//         spotArray:
+//             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+//         unlock: 'action',
+//         location: [20, 400]
+//     },
+//     'R-Beta': {
+//         name: 'R-Beta',
+//         spotArray:
+//             [['circle', 'grey'], ['square', 'grey']],
+//         neighborRoutes: [['Beta', 3]],
 
-        unlock: 'purse',
-        location: [550, 400]
-    },
-
-
-};
+//         unlock: 'purse',
+//         location: [550, 400]
+//     },
 
 
-const TEST_BOARD_CONFIG_CITIES_ALTERNATE = {
-    'Alpha': {
-        name: 'Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta', 3]],
-        unlock: 'movement',
-    },
-    'Beta': {
-        name: 'Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['Gamma', 4]],
-        unlock: 'keys',
-    },
-    'Gamma': {
-        name: 'Gamma',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        unlock: 'unlockedColors',
-    },
-};
+// };
 
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
@@ -441,7 +402,7 @@ const inputHandlers = {
 }
 
 const gameController = {
-    initializeGameStateAndUI(playerNames, playerColors) {
+    initializeGameStateAndUI(playerNames, playerColors, boardConfig) {
         // let's just use turn order for IDs
         this.playerArray = []
         for (let i = 0; i < playerNames.length; i++) {
@@ -458,14 +419,11 @@ const gameController = {
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
 
-        // NOTE, IF WE DO CHANGE CITY TO A CLASS, THIS MAY NOT BE ACCURATE
-        // TEST_BOARD_CONFIG_CITIES_ALTERNATE instead
-
         // Let's break out the city generation into two loops
         // THe first one populates the cityStorageObject 
         // The second one will create the route
-        Object.keys(TEST_BOARD_CONFIG_CITIES2).forEach(cityKey => {
-            const city = TEST_BOARD_CONFIG_CITIES2[cityKey]
+        Object.keys(boardConfig).forEach(cityKey => {
+            const city = boardConfig[cityKey]
             const cityDiv = boardController.createCity({ ...city })
             // Let's add the city's element to it's properties
             this.cityStorageObject[cityKey] = {
@@ -480,8 +438,8 @@ const gameController = {
             }
 
         })
-        Object.keys(TEST_BOARD_CONFIG_CITIES2).forEach(cityKey => {
-            const city = TEST_BOARD_CONFIG_CITIES2[cityKey]
+        Object.keys(boardConfig).forEach(cityKey => {
+            const city = boardConfig[cityKey]
 
             if (city.neighborRoutes) {
                 // This whole sections assume only a single neighborRoute
@@ -1448,7 +1406,7 @@ const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
 const unlockKeysToValue = [1, 2, 2, 3, 4];
 
 const start = () => {
-    gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS)
+    gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
 }
 
 window.onload = start
