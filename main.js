@@ -60,14 +60,14 @@ const TEST_BOARD_CONFIG_CITIES = {
         location: [550, 400]
     },
 
-    
+
 };
 const TEST_BOARD_CONFIG_CITIES2 = {
     'Alpha': {
         name: 'Alpha',
         spotArray:
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta', 3]],
+        neighborRoutes: [['R-Alpha', 3]],
         unlock: 'action',
         location: [20, 20]
     },
@@ -89,12 +89,13 @@ const TEST_BOARD_CONFIG_CITIES2 = {
         name: 'R-Beta',
         spotArray:
             [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['R-Alpha', 3]],
+        neighborRoutes: [['Beta', 3]],
+
         unlock: 'purse',
         location: [550, 400]
     },
 
-    
+
 };
 
 
@@ -236,56 +237,59 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
 
     // I think the important thing I'm missing is that if it's negative we need an ADDIOTNAl 
     // offset becasue of the width/height of the node. Remember that we don't insert from the center
-    if (domRect1.x > domRect2.x){
+    if (domRect1.x > domRect2.x) {
         console.log('domRect1.x > domRect2.x')
         // Element 1 is further to the right (away from the origin)
         // Element 1 uses its left edge, and Element 2 uses its right
         xEdge1 = domRect1.x;
         xEdge1 -= APPROXIMATE_NODE_OFFSET
         xEdge2 = domRect2.x + domRect2.width;
-    }  else if (domRect1.x < domRect2.x){
+    } else if (domRect1.x < domRect2.x) {
         console.log('domRect1.x < domRect2.x')
         // Element 2 is further to the right (away from the origin)
         // Element 2 uses its left edge, and Element 1 uses its right
         xEdge1 = domRect1.x + domRect1.width;
         xEdge1 += APPROXIMATE_NODE_OFFSET;
         xEdge2 = domRect2.x;
-    } else if (domRect1.x === domRect2.x){
+    } else if (domRect1.x === domRect2.x) {
         // I think we try and center in this case
         // Something feels off about the fact we only center in this case,
         // it might help to draw it out on paper
         xEdge1 = domRect1.x + (domRect1.width * 0.25);
         xEdge2 = xEdge1;
     }
-    console.log('xEdge1', xEdge1)
-    console.log('xEdge2', xEdge2)
 
     // _______----------------------------
-    if (domRect1.y > domRect2.y){
+    if (domRect1.y > domRect2.y) {
         // Element 1 is further down the page (away from the origin)
         // Element 1 uses its TOP edge, and Element 2 uses its bottom
         yEdge1 = domRect1.y;
+        yEdge1 -= APPROXIMATE_NODE_OFFSET;
         yEdge2 = domRect2.y + domRect2.height;
-    }  else if (domRect1.y < domRect2.y){
+    } else if (domRect1.y < domRect2.y) {
         // Element 2 is further down the page (away from the origin)
         // Element 2 uses its TOP edge, and Element 1 uses its bottom
         yEdge2 = domRect2.y;
         yEdge1 = domRect1.y + domRect1.height;
-    } else if (domRect1.y === domRect2.y){
+        yEdge1+= APPROXIMATE_NODE_OFFSET;
+    } else if (domRect1.y === domRect2.y) {
         // I think we try and center in this case
         // Something feels off about the fact we only center in this case,
         // it might help to draw it out on paper
         yEdge1 = domRect1.y + (domRect1.height * 0.25);
         yEdge2 = yEdge1;
     }
-    
+    console.log('yEdge1', yEdge1)
+    console.log('yEdge2', yEdge2)
+
+
     const xDelta = xEdge2 - xEdge1;
     const yDelta = yEdge2 - yEdge1;
     // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
-    return{
+    return {
         xDelta,
         yDelta,
-        startX: xEdge1, 
+        startX: xEdge1,
         startY: yEdge1,
     }
 }
@@ -965,7 +969,7 @@ const boardController = {
         // Might also encounter an issue with overlap if I'm not doing the spacing and ending properly
         // i.e. I don't want to set the center of the node to the city's edge
         // maybe I can fix this my just adding half the node width/height to x/yCoordinate
-        console.log('xDelta', xDelta)
+        // console.log('xDelta', xDelta)
         console.log('yDelta', yDelta)
 
         const xIncrement = xDelta / length
@@ -973,8 +977,11 @@ const boardController = {
         gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
         const xOffset = gameBoardDomRect.x
         const yOffset = gameBoardDomRect.y;
-        if (xIncrement < 0){
-            startX-= APPROXIMATE_NODE_OFFSET*2
+        if (xIncrement < 0) {
+            startX -= APPROXIMATE_NODE_OFFSET * 2
+        }
+        if (yIncrement < 0) {
+            startY -= APPROXIMATE_NODE_OFFSET * 2
         }
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
