@@ -31,20 +31,72 @@ const TEST_BOARD_CONFIG_CITIES = {
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         neighborRoutes: [['Delta', 3]],
         unlock: 'unlockedColors',
-        location: [300, 500]
+        location: [700, 500]
     },
     'Delta': {
         name: 'Delta',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [800, 300],
+        location: [1200, 300],
         neighborRoutes: [['Epsilon', 3]],
     },
     'Epsilon': {
         name: 'Epsilon',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [700, 20]
+        location: [1100, 20]
     },
+    'R-Alpha': {
+        name: 'R-Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        unlock: 'action',
+        location: [20, 400]
+    },
+    'R-Beta': {
+        name: 'R-Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        neighborRoutes: [['R-Alpha', 3]],
+        unlock: 'purse',
+        location: [550, 400]
+    },
+
+    
 };
+const TEST_BOARD_CONFIG_CITIES2 = {
+    'Alpha': {
+        name: 'Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        neighborRoutes: [['Beta', 3]],
+        unlock: 'action',
+        location: [20, 20]
+    },
+    'Beta': {
+        name: 'Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        unlock: 'purse',
+        location: [550, 20]
+    },
+    'R-Alpha': {
+        name: 'R-Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        unlock: 'action',
+        location: [20, 400]
+    },
+    'R-Beta': {
+        name: 'R-Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        neighborRoutes: [['R-Alpha', 3]],
+        unlock: 'purse',
+        location: [550, 400]
+    },
+
+    
+};
+
 
 const TEST_BOARD_CONFIG_CITIES_ALTERNATE = {
     'Alpha': {
@@ -162,6 +214,9 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 //         startY: lesserYBoundary
 //     }
 // }
+
+const APPROXIMATE_NODE_OFFSET = 30;
+
 const calculateDistancesBetweenElements2 = (element1, element2) => {
     // DEV
     // We will always be going from element1 to element2
@@ -176,18 +231,25 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
     let xEdge2;
     let yEdge1;
     let yEdge2;
+    // BETA-GAMMA is the best example of missing stuff by only having the .25 modifier 
+    // in the equals case
+
+    // I think the important thing I'm missing is that if it's negative we need an ADDIOTNAl 
+    // offset becasue of the width/height of the node. Remember that we don't insert from the center
     if (domRect1.x > domRect2.x){
         console.log('domRect1.x > domRect2.x')
         // Element 1 is further to the right (away from the origin)
         // Element 1 uses its left edge, and Element 2 uses its right
         xEdge1 = domRect1.x;
+        xEdge1 -= APPROXIMATE_NODE_OFFSET
         xEdge2 = domRect2.x + domRect2.width;
     }  else if (domRect1.x < domRect2.x){
-        console.log()
+        console.log('domRect1.x < domRect2.x')
         // Element 2 is further to the right (away from the origin)
         // Element 2 uses its left edge, and Element 1 uses its right
-        xEdge2 = domRect2.x;
         xEdge1 = domRect1.x + domRect1.width;
+        xEdge1 += APPROXIMATE_NODE_OFFSET;
+        xEdge2 = domRect2.x;
     } else if (domRect1.x === domRect2.x){
         // I think we try and center in this case
         // Something feels off about the fact we only center in this case,
@@ -195,6 +257,8 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
         xEdge1 = domRect1.x + (domRect1.width * 0.25);
         xEdge2 = xEdge1;
     }
+    console.log('xEdge1', xEdge1)
+    console.log('xEdge2', xEdge2)
 
     // _______----------------------------
     if (domRect1.y > domRect2.y){
@@ -396,8 +460,8 @@ const gameController = {
         // Let's break out the city generation into two loops
         // THe first one populates the cityStorageObject 
         // The second one will create the route
-        Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
-            const city = TEST_BOARD_CONFIG_CITIES[cityKey]
+        Object.keys(TEST_BOARD_CONFIG_CITIES2).forEach(cityKey => {
+            const city = TEST_BOARD_CONFIG_CITIES2[cityKey]
             const cityDiv = boardController.createCity({ ...city })
             // Let's add the city's element to it's properties
             this.cityStorageObject[cityKey] = {
@@ -412,8 +476,8 @@ const gameController = {
             }
 
         })
-        Object.keys(TEST_BOARD_CONFIG_CITIES).forEach(cityKey => {
-            const city = TEST_BOARD_CONFIG_CITIES[cityKey]
+        Object.keys(TEST_BOARD_CONFIG_CITIES2).forEach(cityKey => {
+            const city = TEST_BOARD_CONFIG_CITIES2[cityKey]
 
             if (city.neighborRoutes) {
                 // This whole sections assume only a single neighborRoute
@@ -896,7 +960,7 @@ const boardController = {
         // from one city, that's why it looks like I'm picking a random point in space
         console.warn(routeProperties.id)
         const { length, id, element1, element2 } = routeProperties
-        const { xDelta, yDelta, startX, startY } = calculateDistancesBetweenElements2(element1, element2)
+        let { xDelta, yDelta, startX, startY } = calculateDistancesBetweenElements2(element1, element2)
         // I think the issue is that minXBoundary, minYBoundary should be boundaries not centers
         // Might also encounter an issue with overlap if I'm not doing the spacing and ending properly
         // i.e. I don't want to set the center of the node to the city's edge
@@ -909,7 +973,9 @@ const boardController = {
         gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
         const xOffset = gameBoardDomRect.x
         const yOffset = gameBoardDomRect.y;
-
+        if (xIncrement < 0){
+            startX-= APPROXIMATE_NODE_OFFSET*2
+        }
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
