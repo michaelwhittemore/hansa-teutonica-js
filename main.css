@@ -11,12 +11,6 @@
     margin: 1px;
 }
 
-.cityPieceHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .small-circle {
     height: 45px;
     width: 45px;
@@ -33,6 +27,19 @@
 .city {
     border: solid;
     display: flex;
+    position: absolute;
+    flex-direction: column;
+}
+
+.cityPieceArea {
+    display: flex;
+    flex-direction: row;
+}
+
+.cityPieceHolder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .routeBox {
@@ -51,6 +58,9 @@
 .board {
     border: dashed;
     border-color: aqua;
+    overflow: scroll;
+    width: 100%
+    /* may need to deal with scrolling issues later*/
 }
 
 .playerArea {
@@ -345,10 +355,10 @@
     width: 100%;
 }
 
-.testCity{
+.testCityDiv{
     position: absolute;
     height: 20px;
     width: 20px;
     background-color: goldenrod;
-    
+
 }

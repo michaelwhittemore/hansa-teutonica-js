@@ -6,7 +6,10 @@
     * style the arrow buttons better
 * 2D-ify the game board
     * each city needs a coordinates property - this will be loaded in at initation
-    * make the cities slightly smaller and more square - this is not essential but will increase readibility
+    * IMPORTANT QUESTION --- should we account for the dimensions of the city itself?
+    * need genera estimates of size - let's say 200 X 100 for the moment - node box about 60 X 60
+    * let's say we need abut 250px for a 3 route and 315px for a 4 route - Remember that this does *NOT* account for the size of the city itself
+    * will need to delete the routeBox entirely
     * make sure that the gameboard is scrollable 
     * I think that we might want position: absolute as we want to inhert from the game board ancestor
     * let's start with a test div 
@@ -49,6 +52,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~make the cities slightly smaller and more square - this is not essential but will increase readability~~
 ~~supply area~~
 ~~bank area~~
 ~~re-add all the wiring for functionality (like taking off pieces when upgrading and updating the supply)~~

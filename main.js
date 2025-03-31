@@ -7,6 +7,8 @@ const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 't
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
 
+// location is a coordinates x, y offset from the origin in the top right
+// Need to figure out minimum distance for a route
 const TEST_BOARD_CONFIG_CITIES = {
     'Alpha': {
         name: 'Alpha',
@@ -14,6 +16,7 @@ const TEST_BOARD_CONFIG_CITIES = {
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
         neighborRoutes: [['Beta', 3]],
         unlock: 'action',
+        location: [20, 20]
     },
     'Beta': {
         name: 'Beta',
@@ -21,11 +24,19 @@ const TEST_BOARD_CONFIG_CITIES = {
             [['circle', 'grey'], ['square', 'grey']],
         neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
+        location: [400, 20]
     },
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         unlock: 'unlockedColors',
+        location: [300, 200]
+    },
+    'Epsilon': {
+        name: 'Epsilon',
+        neighborRoutes: [['Epsilon', 3]],
+        spotArray: [['square', 'grey'], ['circle', 'purple']],
+        location: [1200, 200]
     },
 };
 
@@ -664,7 +675,9 @@ const boardController = {
         document.getElementById('boardContainer').append(collapseButton)
         this.isCollapsed = false;
         // DEV
-        
+        // We may need add all this logic into seperate methods, but for now I'm just testing
+
+
     },
     toggleBoardView(collapseButton) {
         if (!this.isCollapsed) {
@@ -706,8 +719,10 @@ const boardController = {
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifers 
         cityDiv.id = name
-
+        // DEV
         cityDiv.innerText = `${name} \n Unlocks ${unlock}`;
+        const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
+        cityDiv.append(cityPieceAreaDiv)
         for (let i = 0; i < spotArray.length; i++) {
             const spotInfo = spotArray[i]
             const citySpotDiv = document.createElement('div');
@@ -715,8 +730,14 @@ const boardController = {
             citySpotDiv.classList.add('cityPieceHolder') // TODO make a one liner
             citySpotDiv.id = `${name}-${i}`
             citySpotDiv.style.backgroundColor = spotInfo[1]
-            cityDiv.append(citySpotDiv)
+            cityPieceAreaDiv.append(citySpotDiv)
         }
+
+        // Adding location, will need to do route calculation seperatley - might want to hard code
+        // some information on sizes to a constant in case I make style changes
+        cityDiv.style.left = `${location[0]}px`
+        cityDiv.style.top = `${location[1]}px`
+
         cityDiv.onclick = () => {
             inputHandlers.cityClickHandler(name)
         }
