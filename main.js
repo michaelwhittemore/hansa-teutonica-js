@@ -182,8 +182,16 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 
 const APPROXIMATE_NODE_OFFSET = 30;
 
+const offSetCoordinatesForGameBoard = (x, y) => {
+    gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
+    return [x - gameBoardDomRect.x, y - gameBoardDomRect.y]
+}
+// IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
+//in the size of the element???)
 const calculateDistancesBetweenElements2 = (element1, element2) => {
     drawLine(element1, element2)
+
+    // LET's draw a red pixel on the edge where we're drawing calculating the deltas
     // DEV
     // We will always be going from element1 to element2
     // HOWEVER, we need to identify which edge of which we will be using
@@ -200,72 +208,93 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
     let xEdge2;
     let yEdge1;
     let yEdge2;
-    // BETA-GAMMA is the best example of missing stuff by only having the .25 modifier 
-    // in the equals case
+
+    // can we determine which way to move to get to the edge based on the same way we do line??
 
     // I think the important thing I'm missing is that if it's negative we need an ADDIOTNAl 
     // offset becasue of the width/height of the node. Remember that we don't insert from the center
-    if (domRect1.x > domRect2.x) {
-        console.log('domRect1.x > domRect2.x')
-        // Element 1 is further to the right (away from the origin)
-        // Element 1 uses its left edge, and Element 2 uses its right
-        xEdge1 = domRect1.x;
-        xEdge1 -= APPROXIMATE_NODE_OFFSET
-        xEdge2 = domRect2.x + domRect2.width;
-    } else if (domRect1.x < domRect2.x) {
-        console.log('domRect1.x < domRect2.x')
-        // Element 2 is further to the right (away from the origin)
-        // Element 2 uses its left edge, and Element 1 uses its right
-        xEdge1 = domRect1.x + domRect1.width;
-        xEdge1 += APPROXIMATE_NODE_OFFSET;
-        xEdge2 = domRect2.x;
-    } else if (domRect1.x === domRect2.x) {
-        // I think we try and center in this case
-        // Something feels off about the fact we only center in this case,
-        // it might help to draw it out on paper
-        xEdge1 = domRect1.x + (domRect1.width * 0.25);
-        xEdge2 = xEdge1;
+    // Let's temporailiy switch to using center
+    // if (domRect1.x > domRect2.x) {
+    //     console.log('domRect1.x > domRect2.x')
+    //     // Element 1 is further to the right (away from the origin)
+    //     // Element 1 uses its left edge, and Element 2 uses its right
+    //     xEdge1 = domRect1.x;
+    //     xEdge1 -= APPROXIMATE_NODE_OFFSET
+    //     xEdge2 = domRect2.x + domRect2.width;
+    // } else if (domRect1.x < domRect2.x) {
+    //     console.log('domRect1.x < domRect2.x')
+    //     // Element 2 is further to the right (away from the origin)
+    //     // Element 2 uses its left edge, and Element 1 uses its right
+    //     xEdge1 = domRect1.x + domRect1.width;
+    //     xEdge1 += APPROXIMATE_NODE_OFFSET;
+    //     xEdge2 = domRect2.x;
+    // } else if (domRect1.x === domRect2.x) {
+    //     // I think we try and center in this case
+    //     // Something feels off about the fact we only center in this case,
+    //     // it might help to draw it out on paper
+    //     xEdge1 = domRect1.x + (domRect1.width * 0.25);
+    //     xEdge2 = xEdge1;
+    // }
+
+    // // _______----------------------------
+    // if (domRect1.y > domRect2.y) {
+    //     // Element 1 is further down the page (away from the origin)
+    //     // Element 1 uses its TOP edge, and Element 2 uses its bottom
+    //     yEdge1 = domRect1.y;
+    //     yEdge1 -= APPROXIMATE_NODE_OFFSET;
+    //     yEdge2 = domRect2.y + domRect2.height;
+    // } else if (domRect1.y < domRect2.y) {
+    //     // Element 2 is further down the page (away from the origin)
+    //     // Element 2 uses its TOP edge, and Element 1 uses its bottom
+    //     yEdge2 = domRect2.y;
+    //     yEdge1 = domRect1.y + domRect1.height;
+    //     yEdge1 += APPROXIMATE_NODE_OFFSET;
+    // } else if (domRect1.y === domRect2.y) {
+    //     // I think we try and center in this case
+    //     // Something feels off about the fact we only center in this case,
+    //     // it might help to draw it out on paper
+    //     yEdge1 = domRect1.y + (domRect1.height * 0.25);
+    //     yEdge2 = yEdge1;
+    // }
+
+
+    // const xDelta = xEdge2 - xEdge1;
+    // const yDelta = yEdge2 - yEdge1;
+
+    // DEV2
+    const xCenter1 = domRect1.x + (0.5 * domRect1.width)
+    const yCenter1 = domRect1.y + (0.5 * domRect1.height)
+    const xCenter2 = domRect2.x + (0.5 * domRect2.width)
+    const yCenter2 = domRect2.y + (0.5 * domRect2.height)
+    const xDelta = xCenter2 - xCenter1;
+    const yDelta = yCenter2 - yCenter1;
+
+    // TODO find Edge target and mark with red
+    // first just do for Alpha-Beta
+    if (xDelta > 0) {
+        xTarget = domRect1.x + domRect1.width;
+        yTarget = domRect1.y + (0.5 * domRect1.height);
+        // Note that y is the same as the center, while xCenter + 0.5 * domRect1.width
+        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget, yTarget);
+        addPixelAtLocation(...offsetCoordinates, true)
     }
 
-    // _______----------------------------
-    if (domRect1.y > domRect2.y) {
-        // Element 1 is further down the page (away from the origin)
-        // Element 1 uses its TOP edge, and Element 2 uses its bottom
-        yEdge1 = domRect1.y;
-        yEdge1 -= APPROXIMATE_NODE_OFFSET;
-        yEdge2 = domRect2.y + domRect2.height;
-    } else if (domRect1.y < domRect2.y) {
-        // Element 2 is further down the page (away from the origin)
-        // Element 2 uses its TOP edge, and Element 1 uses its bottom
-        yEdge2 = domRect2.y;
-        yEdge1 = domRect1.y + domRect1.height;
-        yEdge1 += APPROXIMATE_NODE_OFFSET;
-    } else if (domRect1.y === domRect2.y) {
-        // I think we try and center in this case
-        // Something feels off about the fact we only center in this case,
-        // it might help to draw it out on paper
-        yEdge1 = domRect1.y + (domRect1.height * 0.25);
-        yEdge2 = yEdge1;
-    }
-    console.log('yEdge1', yEdge1)
-    console.log('yEdge2', yEdge2)
+    // IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
+    //in the size of the element???)
 
-
-    const xDelta = xEdge2 - xEdge1;
-    const yDelta = yEdge2 - yEdge1;
+    // maybe the special cases should just be the offests
+    // IDEA: maybe add a processing method to node insertion to ensure we're targetting its center
     // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
     return {
         xDelta,
         yDelta,
-        startX: xEdge1,
-        startY: yEdge1,
+        startX: xCenter1,
+        startY: yCenter1,
     }
 }
+
 const drawLine = (element1, element2) => {
     const LINE_LENGTH = 25
-    // need to find xTarget1 yTarget1 and draw a single pixel though
-    // dev2
-    // let's just go from center to center
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
     const xCenter1 = domRect1.x + (0.5 * domRect1.width)
@@ -478,7 +507,6 @@ const gameController = {
         })
         Object.keys(boardConfig).forEach(cityKey => {
             const city = boardConfig[cityKey]
-            console.warn(city.neighborRoutes)
             if (city.neighborRoutes) {
                 city.neighborRoutes.forEach(routeArray => {
                     const neighborCityName = routeArray[0]
@@ -1481,14 +1509,13 @@ const testCity2 = {
 }
 
 // TEST, DELETE THIS TODO
-const addPixelAtLocation = (x, y) => {
+const addPixelAtLocation = (x, y, isBig = false) => {
     const testElement = document.createElement('div')
-    testElement.className = 'testSinglePixel';
+    testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
     testElement.id = 'TEST';
     testElement.style.left = x + 'px'
     testElement.style.top = y + 'px'
     document.getElementById('gameBoard').append(testElement)
-    console.log(testElement.getBoundingClientRect())
 
     return testElement
 }
