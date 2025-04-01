@@ -29,7 +29,7 @@ const TEST_BOARD_CONFIG_CITIES = {
     'Gamma': {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        neighborRoutes: [['Delta', 3]],
+        neighborRoutes: [['Delta', 3], ['Zeta', 3]],
         unlock: 'unlockedColors',
         location: [600, 500]
     },
@@ -43,6 +43,11 @@ const TEST_BOARD_CONFIG_CITIES = {
         name: 'Epsilon',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [900, 20]
+    },
+    'Zeta': {
+        name: 'Zeta',
+        spotArray: [['square', 'grey'], ['circle', 'purple']],
+        location: [30, 450]
     },
 
 };
@@ -275,8 +280,8 @@ const drawLine = (element1, element2) => {
 
     const xDelta = xCenter2 - xCenter1;
     const yDelta = yCenter2 - yCenter1;
-    for (let i = 0; i < LINE_LENGTH; i++){
-        addPixelAtLocation(xCenter1 - xOffset + i * (xDelta / LINE_LENGTH), 
+    for (let i = 0; i < LINE_LENGTH; i++) {
+        addPixelAtLocation(xCenter1 - xOffset + i * (xDelta / LINE_LENGTH),
             yCenter1 - yOffset + i * (yDelta / LINE_LENGTH))
     }
 
@@ -473,34 +478,33 @@ const gameController = {
         })
         Object.keys(boardConfig).forEach(cityKey => {
             const city = boardConfig[cityKey]
-
+            console.warn(city.neighborRoutes)
             if (city.neighborRoutes) {
-                // This whole sections assume only a single neighborRoute
-                // TODO change to be iterative
-                const neighborCityName = city.neighborRoutes[0][0]
-                const length = city.neighborRoutes[0][1]
-                const routeId = `${city.name}-${neighborCityName}`
-                boardController.createRouteFromLocations({
-                    length: city.neighborRoutes[0][1],
-                    id: routeId,
+                city.neighborRoutes.forEach(routeArray => {
+                    const neighborCityName = routeArray[0]
+                    const length = routeArray[1]
+                    const routeId = `${city.name}-${neighborCityName}`
+                    boardController.createRouteFromLocations({
+                        length: routeArray[1],
+                        id: routeId,
 
-                    element1: this.cityStorageObject[cityKey].ownElement,
-                    element2: this.cityStorageObject[neighborCityName].ownElement,
-                })
-                this.routeStorageObject[routeId] = {
-                    cities: [cityKey, neighborCityName],
-                    routeNodes: {},
-                }
-                for (let i = 0; i < length; i++) {
-                    const nodeId = `${routeId}-${i}`
-                    this.routeStorageObject[routeId].routeNodes[nodeId] = {
-                        occupied: false,
-                        shape: undefined,
-                        color: undefined,
-                        playerId: undefined,
+                        element1: this.cityStorageObject[cityKey].ownElement,
+                        element2: this.cityStorageObject[neighborCityName].ownElement,
+                    })
+                    this.routeStorageObject[routeId] = {
+                        cities: [cityKey, neighborCityName],
+                        routeNodes: {},
                     }
-
-                }
+                    for (let i = 0; i < length; i++) {
+                        const nodeId = `${routeId}-${i}`
+                        this.routeStorageObject[routeId].routeNodes[nodeId] = {
+                            occupied: false,
+                            shape: undefined,
+                            color: undefined,
+                            playerId: undefined,
+                        }
+                    }
+                })
             }
         })
 
