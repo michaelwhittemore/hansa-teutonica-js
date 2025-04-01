@@ -47,7 +47,8 @@ const TEST_BOARD_CONFIG_CITIES = {
     'Zeta': {
         name: 'Zeta',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [30, 450]
+        location: [30, 450],
+        neighborRoutes: [['Alpha', 3]],
     },
 
 };
@@ -272,12 +273,27 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
     // TODO find Edge target and mark with red
     // first just do for Alpha-Beta
     if (xDelta > 0) {
-        xTarget = domRect1.x + domRect1.width;
-        yTarget = domRect1.y + (0.5 * domRect1.height);
+        // REMOVE Y TARGET
+        xTarget1 = domRect1.x + domRect1.width;
+        yTarget1 = domRect1.y + (0.5 * domRect1.height);
         // Note that y is the same as the center, while xCenter + 0.5 * domRect1.width
-        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget, yTarget);
+        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
+        addPixelAtLocation(...offsetCoordinates, true)
+
+        xTarget2 = domRect2.x;
+        yTarget2 = domRect2.y + (0.5 * domRect2.height);
+        // Note that y is the same as the center, while xCenter + 0.5 * domRect2.width
+        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
         addPixelAtLocation(...offsetCoordinates, true)
     }
+    // List of things to do here:
+    // 1. Clean up a lot of the non-functional code and comments
+    // 2. Initalize the (x/y)targets of both city1 & city2 to coorespond to their centers
+    // 3. Follow the above example for x coordinates for city2 and then repeat for the negavtive slope
+    // 4. WRITE OUT (not copy pasta) the same thing for the y coordinates
+    // 5. adjust the delta and starting locations accordingly
+    // 6. TODO figure out how to handle the issue of node offset (i.e. setting from the top left corner)
+    // DEV 1
 
     // IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
     //in the size of the element???)
