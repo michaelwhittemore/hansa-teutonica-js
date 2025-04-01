@@ -46,41 +46,39 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
 
 };
-// const TEST_BOARD_CONFIG_CITIES_Straight = {
-//     'Alpha': {
-//         name: 'Alpha',
-//         spotArray:
-//             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-//         neighborRoutes: [['R-Alpha', 3]],
-//         unlock: 'action',
-//         location: [20, 20]
-//     },
-//     'Beta': {
-//         name: 'Beta',
-//         spotArray:
-//             [['circle', 'grey'], ['square', 'grey']],
-//         unlock: 'purse',
-//         location: [550, 20]
-//     },
-//     'R-Alpha': {
-//         name: 'R-Alpha',
-//         spotArray:
-//             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-//         unlock: 'action',
-//         location: [20, 400]
-//     },
-//     'R-Beta': {
-//         name: 'R-Beta',
-//         spotArray:
-//             [['circle', 'grey'], ['square', 'grey']],
-//         neighborRoutes: [['Beta', 3]],
+const TEST_BOARD_CONFIG_CITIES_Straight = {
+    'Alpha': {
+        name: 'Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        neighborRoutes: [['R-Beta', 4]],
+        unlock: 'action',
+        location: [20, 20]
+    },
+    'Beta': {
+        name: 'Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        neighborRoutes: [['R-Alpha', 4]],
 
-//         unlock: 'purse',
-//         location: [550, 400]
-//     },
-
-
-// };
+        unlock: 'purse',
+        location: [550, 20]
+    },
+    'R-Alpha': {
+        name: 'R-Alpha',
+        spotArray:
+            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
+        unlock: 'action',
+        location: [20, 400]
+    },
+    'R-Beta': {
+        name: 'R-Beta',
+        spotArray:
+            [['circle', 'grey'], ['square', 'grey']],
+        unlock: 'purse',
+        location: [550, 400]
+    },
+};
 
 
 const PLAYER_FIELDS_TO_TEXT_MAP = {
@@ -180,9 +178,13 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 const APPROXIMATE_NODE_OFFSET = 30;
 
 const calculateDistancesBetweenElements2 = (element1, element2) => {
+    drawLine(element1, element2)
     // DEV
     // We will always be going from element1 to element2
     // HOWEVER, we need to identify which edge of which we will be using
+
+    // Maybe try drawing a line? Like, we want to think in starting points, not edges
+    // draw a line between both cities
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
     console.log(element1)
@@ -232,7 +234,7 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
         // Element 2 uses its TOP edge, and Element 1 uses its bottom
         yEdge2 = domRect2.y;
         yEdge1 = domRect1.y + domRect1.height;
-        yEdge1+= APPROXIMATE_NODE_OFFSET;
+        yEdge1 += APPROXIMATE_NODE_OFFSET;
     } else if (domRect1.y === domRect2.y) {
         // I think we try and center in this case
         // Something feels off about the fact we only center in this case,
@@ -253,6 +255,37 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
         startX: xEdge1,
         startY: yEdge1,
     }
+}
+const drawLine = (element1, element2) => {
+    const LINE_LENGTH = 25
+    // need to find xTarget1 yTarget1 and draw a single pixel though
+    // dev2
+    // let's just go from center to center
+    const domRect1 = element1.getBoundingClientRect()
+    const domRect2 = element2.getBoundingClientRect()
+    const xCenter1 = domRect1.x + (0.5 * domRect1.width)
+    const yCenter1 = domRect1.y + (0.5 * domRect1.height)
+    const xCenter2 = domRect2.x + (0.5 * domRect2.width)
+    const yCenter2 = domRect2.y + (0.5 * domRect2.height)
+
+
+    gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
+    const xOffset = gameBoardDomRect.x
+    const yOffset = gameBoardDomRect.y;
+
+    const xDelta = xCenter2 - xCenter1;
+    const yDelta = yCenter2 - yCenter1;
+    for (let i = 0; i < LINE_LENGTH; i++){
+        addPixelAtLocation(xCenter1 - xOffset + i * (xDelta / LINE_LENGTH), 
+            yCenter1 - yOffset + i * (yDelta / LINE_LENGTH))
+    }
+
+    // TODO create a addPixelAtLocationWithOffset method
+    // ^^ but be uncessary
+    addPixelAtLocation(xCenter1 - xOffset, yCenter1 - yOffset)
+    addPixelAtLocation(xCenter2 - xOffset, yCenter2 - yOffset)
+
+
 }
 
 const inputHandlers = {
@@ -1407,7 +1440,11 @@ const unlockKeysToValue = [1, 2, 2, 3, 4];
 
 const start = () => {
     gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
+    // gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, 
+    //     TEST_BOARD_CONFIG_CITIES_Straight)
+
 }
+
 
 window.onload = start
 
