@@ -6,6 +6,7 @@ const TEST_PLAYER_COLORS = ['red', 'blue']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
+const APPROXIMATE_NODE_OFFSET = 30;
 
 // location is a coordinates x, y offset from the origin in the top right
 // Need to figure out minimum distance for a route
@@ -120,68 +121,10 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 
     return div
 }
-// const calculateDistancesBetweenElements = (element1, element2) => {
-//     // I'm almost certain the error comes the fact that top/left proerty  is the offset from the edge
-//     // It is *NOT* the center of the object
 
-//     // MIGht also be viewport vs parent element issue. I think the coordinates may be calculated from the view port
-//     // and the top/width I add might be parent object??? Ugh i hate this
-
-//     // Maybe we just use the offset when adding to the route nodes location? like subtract
-//     const domRect1 = element1.getBoundingClientRect()
-//     const domRect2 = element2.getBoundingClientRect()
-//     // console.log(element1)
-//     // console.log(domRect1)
-//     // console.log(element2)
-//     // console.log(domRect2)
-//     let greaterXBoundary = 0;
-//     let lesserXBoundary = 0;
-//     let greaterYBoundary = 0;
-//     let lesserYBoundary = 0;
-//     let xDelta;
-//     let yDelta;
-
-//     // I think we may need a different approach to the conditonals
-//     // Remember that x/y is the top left coordinate
-
-//     // SO THIS isn't right, but it's still important that I find the correct side to go from
-//     // i.e. i'm only ever going from city1 -> city2, but I need to figure out if I'm using upper or
-//     // lower edge
-//     if (domRect2.x > domRect1.x) {
-//         // Element2 is further to the right 
-//         greaterXBoundary = domRect2.x;
-//         lesserXBoundary = domRect1.x + (domRect1.width);
-//     } else if (domRect1.x > domRect2.x) {
-//         // Element1 is further to the right
-//         greaterXBoundary = domRect1.x;
-//         lesserXBoundary = domRect2.x + (domRect2.width);
-//     } else if (domRect1.x === domRect2.x) {
-//         lesserXBoundary = domRect1.x + (domRect1.width / 2);
-//         greaterXBoundary = lesserXBoundary
-//     }
-//     if (domRect2.y > domRect1.y) {
-//         // Element2 is further down 
-//         greaterYBoundary = domRect2.y;
-//         lesserYBoundary = domRect1.y + (domRect1.height);
-//     } else if (domRect1.y > domRect2.y) {
-//         // Element1 is further to down
-//         greaterYBoundary = domRect1.y;
-//         lesserYBoundary = domRect2.y + (domRect2.height);
-//     } else if (domRect1.y === domRect2.y) {
-//         lesserYBoundary = domRect1.y + (domRect1.height / 2);
-//         greaterYBoundary = lesserYBoundary;
-//     }
-//     xDelta = greaterXBoundary - lesserXBoundary;
-//     yDelta = greaterYBoundary - lesserYBoundary;
-//     // debugger;
-//     return {
-//         xDelta, yDelta,
-//         startX: lesserXBoundary,
-//         startY: lesserYBoundary
-//     }
-// }
-
-const APPROXIMATE_NODE_OFFSET = 30;
+const offSetCoordinatesForSize = (x, y, height = 60, width = 60) => {
+    return ([x - (width / 2), y - (height / 2)]);
+}
 
 const offSetCoordinatesForGameBoard = (x, y) => {
     gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
@@ -189,112 +132,59 @@ const offSetCoordinatesForGameBoard = (x, y) => {
 }
 // IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
 //in the size of the element???)
-const calculateDistancesBetweenElements2 = (element1, element2) => {
+const calculatePathBetweenElements = (element1, element2) => {
     drawLine(element1, element2)
-
-    // LET's draw a red pixel on the edge where we're drawing calculating the deltas
-    // DEV
     // We will always be going from element1 to element2
     // HOWEVER, we need to identify which edge of which we will be using
 
-    // Maybe try drawing a line? Like, we want to think in starting points, not edges
-    // draw a line between both cities
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
-    console.log(element1)
-    console.log(domRect1)
-    console.log(element2)
-    console.log(domRect2)
-    let xEdge1;
-    let xEdge2;
-    let yEdge1;
-    let yEdge2;
-
-    // can we determine which way to move to get to the edge based on the same way we do line??
-
-    // I think the important thing I'm missing is that if it's negative we need an ADDIOTNAl 
-    // offset becasue of the width/height of the node. Remember that we don't insert from the center
-    // Let's temporailiy switch to using center
-    // if (domRect1.x > domRect2.x) {
-    //     console.log('domRect1.x > domRect2.x')
-    //     // Element 1 is further to the right (away from the origin)
-    //     // Element 1 uses its left edge, and Element 2 uses its right
-    //     xEdge1 = domRect1.x;
-    //     xEdge1 -= APPROXIMATE_NODE_OFFSET
-    //     xEdge2 = domRect2.x + domRect2.width;
-    // } else if (domRect1.x < domRect2.x) {
-    //     console.log('domRect1.x < domRect2.x')
-    //     // Element 2 is further to the right (away from the origin)
-    //     // Element 2 uses its left edge, and Element 1 uses its right
-    //     xEdge1 = domRect1.x + domRect1.width;
-    //     xEdge1 += APPROXIMATE_NODE_OFFSET;
-    //     xEdge2 = domRect2.x;
-    // } else if (domRect1.x === domRect2.x) {
-    //     // I think we try and center in this case
-    //     // Something feels off about the fact we only center in this case,
-    //     // it might help to draw it out on paper
-    //     xEdge1 = domRect1.x + (domRect1.width * 0.25);
-    //     xEdge2 = xEdge1;
-    // }
-
-    // // _______----------------------------
-    // if (domRect1.y > domRect2.y) {
-    //     // Element 1 is further down the page (away from the origin)
-    //     // Element 1 uses its TOP edge, and Element 2 uses its bottom
-    //     yEdge1 = domRect1.y;
-    //     yEdge1 -= APPROXIMATE_NODE_OFFSET;
-    //     yEdge2 = domRect2.y + domRect2.height;
-    // } else if (domRect1.y < domRect2.y) {
-    //     // Element 2 is further down the page (away from the origin)
-    //     // Element 2 uses its TOP edge, and Element 1 uses its bottom
-    //     yEdge2 = domRect2.y;
-    //     yEdge1 = domRect1.y + domRect1.height;
-    //     yEdge1 += APPROXIMATE_NODE_OFFSET;
-    // } else if (domRect1.y === domRect2.y) {
-    //     // I think we try and center in this case
-    //     // Something feels off about the fact we only center in this case,
-    //     // it might help to draw it out on paper
-    //     yEdge1 = domRect1.y + (domRect1.height * 0.25);
-    //     yEdge2 = yEdge1;
-    // }
-
-
-    // const xDelta = xEdge2 - xEdge1;
-    // const yDelta = yEdge2 - yEdge1;
 
     // DEV2
     const xCenter1 = domRect1.x + (0.5 * domRect1.width)
     const yCenter1 = domRect1.y + (0.5 * domRect1.height)
     const xCenter2 = domRect2.x + (0.5 * domRect2.width)
     const yCenter2 = domRect2.y + (0.5 * domRect2.height)
-    const xDelta = xCenter2 - xCenter1;
-    const yDelta = yCenter2 - yCenter1;
+    let xDelta = xCenter2 - xCenter1;
+    let yDelta = yCenter2 - yCenter1;
+    let xTarget1 = xCenter1;
+    let xTarget2 = xCenter2;
+    let yTarget1 = yCenter1;
+    let yTarget2 = yCenter2;
 
     // TODO find Edge target and mark with red
-    // first just do for Alpha-Beta
+    // first just do for Alpha --> Beta
     if (xDelta > 0) {
-        // REMOVE Y TARGET
         xTarget1 = domRect1.x + domRect1.width;
-        yTarget1 = domRect1.y + (0.5 * domRect1.height);
-        // Note that y is the same as the center, while xCenter + 0.5 * domRect1.width
-        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
-        addPixelAtLocation(...offsetCoordinates, true)
-
         xTarget2 = domRect2.x;
-        yTarget2 = domRect2.y + (0.5 * domRect2.height);
-        // Note that y is the same as the center, while xCenter + 0.5 * domRect2.width
-        offsetCoordinates = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
-        addPixelAtLocation(...offsetCoordinates, true)
+
+    } else if (xDelta < 0) {
+        xTarget2 = domRect2.x + domRect2.width;
+        xTarget1 = domRect1.x;
     }
+    if (yDelta > 0) {
+        yTarget1 = domRect1.y + domRect1.height;
+        yTarget2 = domRect2.y
+    } else if (yDelta < 0) {
+        yTarget2 = domRect2.y + domRect2.height;
+        yTarget1 = domRect1.y
+    }
+    // DELETE BELOW EVENTIUALLUY, just prints magenta dots
+    const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
+    const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
+    addPixelAtLocation(...offsetCoordinates1, true)
+    addPixelAtLocation(...offsetCoordinates2, true)
     // List of things to do here:
-    // 1. Clean up a lot of the non-functional code and comments
-    // 2. Initalize the (x/y)targets of both city1 & city2 to coorespond to their centers
-    // 3. Follow the above example for x coordinates for city2 and then repeat for the negavtive slope
-    // 4. WRITE OUT (not copy pasta) the same thing for the y coordinates
-    // 5. adjust the delta and starting locations accordingly
+    // 1. X Clean up a lot of the non-functional code and comments
+    // 2. X Initalize the (x/y)targets of both city1 & city2 to coorespond to their centers
+    // 3. X Follow the above example for x coordinates for city2 and then repeat for the negavtive slope
+    // 4. X WRITE OUT (not copy pasta) the same thing for the y coordinates
+    // 5. adjust the delta and starting locations accordingly (keep them for the momement)
     // 6. TODO figure out how to handle the issue of node offset (i.e. setting from the top left corner)
     // DEV 1
-
+    // reevaluate deltas based on targetPoints
+    xDelta = xTarget2 - xTarget1;
+    yDelta = yTarget2 - yTarget1;
     // IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
     //in the size of the element???)
 
@@ -304,8 +194,8 @@ const calculateDistancesBetweenElements2 = (element1, element2) => {
     return {
         xDelta,
         yDelta,
-        startX: xCenter1,
-        startY: yCenter1,
+        startX: xTarget1,
+        startY: yTarget1,
     }
 }
 
@@ -318,7 +208,7 @@ const drawLine = (element1, element2) => {
     const xCenter2 = domRect2.x + (0.5 * domRect2.width)
     const yCenter2 = domRect2.y + (0.5 * domRect2.height)
 
-
+    // TODO use offSetCoordinatesForGameBoard
     gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     const xOffset = gameBoardDomRect.x
     const yOffset = gameBoardDomRect.y;
@@ -329,13 +219,8 @@ const drawLine = (element1, element2) => {
         addPixelAtLocation(xCenter1 - xOffset + i * (xDelta / LINE_LENGTH),
             yCenter1 - yOffset + i * (yDelta / LINE_LENGTH))
     }
-
-    // TODO create a addPixelAtLocationWithOffset method
-    // ^^ but be uncessary
     addPixelAtLocation(xCenter1 - xOffset, yCenter1 - yOffset)
     addPixelAtLocation(xCenter2 - xOffset, yCenter2 - yOffset)
-
-
 }
 
 const inputHandlers = {
@@ -998,30 +883,13 @@ const boardController = {
     },
     createRouteFromLocations(routeProperties) {
         // DEV!!!
-
-        // IMPORTANT!!!!! I"m starting from the lowest of BOTH cities. I should only be starting
-        // from one city, that's why it looks like I'm picking a random point in space
         console.warn(routeProperties.id)
         const { length, id, element1, element2 } = routeProperties
-        let { xDelta, yDelta, startX, startY } = calculateDistancesBetweenElements2(element1, element2)
-        // I think the issue is that minXBoundary, minYBoundary should be boundaries not centers
-        // Might also encounter an issue with overlap if I'm not doing the spacing and ending properly
-        // i.e. I don't want to set the center of the node to the city's edge
-        // maybe I can fix this my just adding half the node width/height to x/yCoordinate
-        // console.log('xDelta', xDelta)
-        console.log('yDelta', yDelta)
+        let { xDelta, yDelta, startX, startY } = calculatePathBetweenElements(element1, element2)
 
         const xIncrement = xDelta / length
         const yIncrement = yDelta / length
-        gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
-        const xOffset = gameBoardDomRect.x
-        const yOffset = gameBoardDomRect.y;
-        if (xIncrement < 0) {
-            startX -= APPROXIMATE_NODE_OFFSET * 2
-        }
-        if (yIncrement < 0) {
-            startY -= APPROXIMATE_NODE_OFFSET * 2
-        }
+
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
@@ -1030,12 +898,24 @@ const boardController = {
             routeNode.onclick = () => {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
-            const xCoordinate = `${startX - xOffset + (xIncrement * i)}px`
-            const yCoordinate = `${startY - yOffset + (yIncrement * i)}px`
-            // const xCoordinate = `${startX + (xIncrement * i)}px`
-            // const yCoordinate = `${startY + (yIncrement * i)}px`
-            routeNode.style.left = xCoordinate;
-            routeNode.style.top = yCoordinate;
+
+            let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * i),
+                startY + (yIncrement * i))
+            if (xIncrement > 0) {
+                xCoordinate += APPROXIMATE_NODE_OFFSET;
+            } else if (xIncrement < 0){
+                xCoordinate -= APPROXIMATE_NODE_OFFSET;
+            }
+            if (yIncrement > 0){
+                yCoordinate += APPROXIMATE_NODE_OFFSET;
+            } else if (yIncrement < 0)
+                yCoordinate -= APPROXIMATE_NODE_OFFSET;
+
+            let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
+            // Final offset magntidue will depend on the delta. maybe we collapse it into APPROXIMATE_NODE_OFFSET
+
+            routeNode.style.left = x + 'px';
+            routeNode.style.top = y + 'px';
 
             this.board.append(routeNode)
         }

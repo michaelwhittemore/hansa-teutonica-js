@@ -19,6 +19,7 @@
     * additional cities also open up the option to add additional players
     * try a three-way city connection, verify it works and also a city with multtiple neightbor routes
 * Delete info dump
+* make the routes originate from the center not the corners
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
 I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
@@ -28,6 +29,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
 * move method (as in your own pieces on the board) - need rules clarification - can you chose to only move one? 
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
+* change the route builder logic to follow the center and NOT the corners (i.e. targets like I currently have it). Maybe still calculate deltas the same way and try to think in terms of a slope - so I'd be adding an off set from each center - but using a slope value
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
@@ -106,7 +108,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * add a favicon
 * add linter
 * reorganize CSS and methods (just the ordering)
-* add for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
+* add images for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
