@@ -6,7 +6,7 @@ const TEST_PLAYER_COLORS = ['red', 'blue']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
-const APPROXIMATE_NODE_OFFSET = 30;
+const APPROXIMATE_NODE_OFFSET = 45 / 2;
 
 // location is a coordinates x, y offset from the origin in the top right
 // Need to figure out minimum distance for a route
@@ -122,7 +122,7 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     return div
 }
 
-const offSetCoordinatesForSize = (x, y, height = 60, width = 60) => {
+const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
     return ([x - (width / 2), y - (height / 2)]);
 }
 
@@ -130,8 +130,14 @@ const offSetCoordinatesForGameBoard = (x, y) => {
     gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     return [x - gameBoardDomRect.x, y - gameBoardDomRect.y]
 }
-// IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
-//in the size of the element???)
+
+const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
+    // We don't need to worry about offsets I *think*? assuming they're applied equally to
+    // both coordinate pairs
+    // This should be correct? It's height over width
+    return (y2 - y1) / (x2 - x1)
+}
+
 const calculatePathBetweenElements = (element1, element2) => {
     drawLine(element1, element2)
     // We will always be going from element1 to element2
@@ -152,44 +158,32 @@ const calculatePathBetweenElements = (element1, element2) => {
     let yTarget1 = yCenter1;
     let yTarget2 = yCenter2;
 
-    // TODO find Edge target and mark with red
-    // first just do for Alpha --> Beta
-    if (xDelta > 0) {
-        xTarget1 = domRect1.x + domRect1.width;
-        xTarget2 = domRect2.x;
+    // if (xDelta > 0) {
+    //     xTarget1 = domRect1.x + domRect1.width;
+    //     xTarget2 = domRect2.x;
 
-    } else if (xDelta < 0) {
-        xTarget2 = domRect2.x + domRect2.width;
-        xTarget1 = domRect1.x;
-    }
-    if (yDelta > 0) {
-        yTarget1 = domRect1.y + domRect1.height;
-        yTarget2 = domRect2.y
-    } else if (yDelta < 0) {
-        yTarget2 = domRect2.y + domRect2.height;
-        yTarget1 = domRect1.y
-    }
-    // DELETE BELOW EVENTIUALLUY, just prints magenta dots
-    const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
-    const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
-    addPixelAtLocation(...offsetCoordinates1, true)
-    addPixelAtLocation(...offsetCoordinates2, true)
-    // List of things to do here:
-    // 1. X Clean up a lot of the non-functional code and comments
-    // 2. X Initalize the (x/y)targets of both city1 & city2 to coorespond to their centers
-    // 3. X Follow the above example for x coordinates for city2 and then repeat for the negavtive slope
-    // 4. X WRITE OUT (not copy pasta) the same thing for the y coordinates
-    // 5. adjust the delta and starting locations accordingly (keep them for the momement)
-    // 6. TODO figure out how to handle the issue of node offset (i.e. setting from the top left corner)
-    // DEV 1
-    // reevaluate deltas based on targetPoints
+    // } else if (xDelta < 0) {
+    //     xTarget2 = domRect2.x + domRect2.width;
+    //     xTarget1 = domRect1.x;
+    // }
+    // if (yDelta > 0) {
+    //     yTarget1 = domRect1.y + domRect1.height;
+    //     yTarget2 = domRect2.y
+    // } else if (yDelta < 0) {
+    //     yTarget2 = domRect2.y + domRect2.height;
+    //     yTarget1 = domRect1.y
+    // }
+    // // DELETE BELOW EVENTIUALLUY, just prints magenta dots
+    // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
+    // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
+    // addPixelAtLocation(...offsetCoordinates1, true)
+    // addPixelAtLocation(...offsetCoordinates2, true)
+
+    // --------------------------------------- Magenta dots at true edges
+
     xDelta = xTarget2 - xTarget1;
     yDelta = yTarget2 - yTarget1;
-    // IMPORTANT - NEED A HELPER FUNCTION TO OFFSET THE NODE SIZE (maybe it takes
-    //in the size of the element???)
 
-    // maybe the special cases should just be the offests
-    // IDEA: maybe add a processing method to node insertion to ensure we're targetting its center
     // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
     return {
         xDelta,
@@ -887,8 +881,8 @@ const boardController = {
         const { length, id, element1, element2 } = routeProperties
         let { xDelta, yDelta, startX, startY } = calculatePathBetweenElements(element1, element2)
 
-        const xIncrement = xDelta / length
-        const yIncrement = yDelta / length
+        const xIncrement = xDelta / (length + 2)
+        const yIncrement = yDelta / (length + 2)
 
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
@@ -899,8 +893,8 @@ const boardController = {
                 inputHandlers.routeNodeClickHandler(nodeId)
             }
 
-            let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * i),
-                startY + (yIncrement * i))
+            let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * (i + 1)),
+                startY + (yIncrement * (i + 1)))
             if (xIncrement > 0) {
                 xCoordinate += APPROXIMATE_NODE_OFFSET;
             } else if (xIncrement < 0){

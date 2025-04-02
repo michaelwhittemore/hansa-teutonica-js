@@ -12,15 +12,15 @@
 }
 
 .small-circle {
-    height: 45px;
-    width: 45px;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     margin: 1px;
 }
 
 .small-square {
-    height: 45px;
-    width: 45px;
+    height: 30px;
+    width: 30px;
     margin: 1px;
 }
 
@@ -48,8 +48,8 @@
 }
 
 .routeNode {
-    height: 60px;
-    width: 60px;
+    height: 45px;
+    width: 45px;
     position: absolute;
     border: solid;
     display: flex;

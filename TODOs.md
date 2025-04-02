@@ -18,6 +18,7 @@
     * then add in additonal cities before finally adding in token holders
     * additional cities also open up the option to add additional players
     * try a three-way city connection, verify it works and also a city with multtiple neightbor routes
+    * THIS IS HUGE! when calcualting route node increment just use length + 2. Then we start with increment  * (i+1) instead of increment * i
 * Delete info dump
 * make the routes originate from the center not the corners
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
