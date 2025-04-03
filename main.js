@@ -127,7 +127,7 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     const xDelta = xCenter2 - xCenter1;
     const yDelta = yCenter2 - yCenter1;
 
-    
+
     console.log(xDelta, yDelta)
     const slope = calculateSlopeFromCoordinatePairs(xCenter1, yCenter1, xCenter2, yCenter2)
 
@@ -204,7 +204,7 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 
     // ADD CENTERS TO THESE SO WE CAN USE IT FOR BOTH CITIES
     const findVerticalIntersection = (verticalEdge, center) => {
-        if (verticalEdge === false){
+        if (verticalEdge === false) {
             console.warn('verticalEdge is false')
         }
         const innerXDelta = verticalEdge - center[0];
@@ -217,7 +217,7 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     }
 
     const findHorizontalIntersection = (horizontalEdge, center) => {
-        if (horizontalEdge === false){
+        if (horizontalEdge === false) {
             console.warn('horizontalEdge is false')
         }
         const inverseSlope = (1 / slope);
@@ -232,27 +232,33 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     }
 
     const findCloserIntersection = (verticalIntersection, horizontalIntersection, center) => {
-        const deltaVertical = Math.abs(xCenter1 - verticalIntersection[0]) + Math.abs(yCenter1 - verticalIntersection[1])
-        const deltaHorizontal = Math.abs(xCenter1 - horizontalIntersection[0]) + Math.abs(yCenter1 - horizontalIntersection[1])
+        const deltaVertical = Math.abs(center[0] - verticalIntersection[0]) + Math.abs(center[1] - verticalIntersection[1])
+        const deltaHorizontal = Math.abs(center[0] - horizontalIntersection[0]) + Math.abs(center[1] - horizontalIntersection[1])
         let coordinates;
-
-        if (deltaVertical === deltaHorizontal) {
-            console.error('I guess this is a corner case? Get it? A literal corner')
+        if (Number.isNaN(deltaVertical)) {
             coordinates = horizontalIntersection
-        } else if (deltaVertical < deltaHorizontal) {
-            console.warn('Using the vertical line intersection')
+        } else if (Number.isNaN(deltaHorizontal)) {
             coordinates = verticalIntersection
-        } else if (deltaVertical > deltaHorizontal){
-            console.warn('Using the horizontal line intersection')
-            coordinates = horizontalIntersection
-        } 
+        } else {
+            if (deltaVertical === deltaHorizontal) {
+                console.error('I guess this is a corner case? Get it? A literal corner')
+                coordinates = horizontalIntersection
+            } else if (deltaVertical < deltaHorizontal) {
+                console.warn('Using the vertical line intersection')
+                coordinates = verticalIntersection
+            } else if (deltaVertical > deltaHorizontal) {
+                console.warn('Using the horizontal line intersection')
+                coordinates = horizontalIntersection
+            }
+        }
+
         const offsetCoordinates3 = offSetCoordinatesForGameBoard(...coordinates);
         addPixelAtLocation(...offsetCoordinates3, true, 'green')
     }
-    
-    findVerticalIntersection(verticalEdge, center1)
-    findHorizontalIntersection(horizontalEdge, center1)
-    // findCloserIntersection()
+
+    const verticalIntersection1 = findVerticalIntersection(verticalEdge, center1)
+    const horizontalIntersection1 = findHorizontalIntersection(horizontalEdge, center1)
+    findCloserIntersection(verticalIntersection1, horizontalIntersection1, center1)
 
     // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
     // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
