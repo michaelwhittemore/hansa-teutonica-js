@@ -131,23 +131,23 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     // Just do all six cases (i.e greater than, less than, and equal)
     let verticalEdge; // Remember this is actually (x, yCenter)
     let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
-    if (xDelta > 0){
+    if (xDelta > 0) {
         // we're moving to the right
         verticalEdge = rect1.x + rect1.width; // edges come in two forms -- (x + width), (y + height) or just x,y
-    } else if (xDelta < 0){
+    } else if (xDelta < 0) {
         // Moving to the left
         verticalEdge = rect1.x;
-    } else if (xDelta === 0){
+    } else if (xDelta === 0) {
         // moving straight down, no chance of a vertical edge
         verticalEdge === false;
     }
-    if (yDelta > 0){
+    if (yDelta > 0) {
         // moving down
         horizontalEdge = rect1.y + rect1.height;
-    } else if (yDelta < 0){
+    } else if (yDelta < 0) {
         // Moving to the up
         horizontalEdge = rect1.y;
-    } else if (yDelta === 0){
+    } else if (yDelta === 0) {
         // moving straight horizontally, no chance of a horizontal edge
         horizontalEdge === false;
     }
@@ -156,35 +156,50 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 
     const findIntersectionBetweenLines = (verticalEdge, horizontalEdge) => {
         // DEV 5
+        // refactor this to just do what it says, not compare
         // figures out where it intersects and which is closer
         // and returns the actual point as a [x,y] value
-        // CAN use inverse slope for y
-    
-        // intersecting the verticalEdge (y = NaN) -- we know the x value, just need to find y value
-        // find the x delta and then do x delta times slope
+
+        // NEED TO ACCOUNT FOR THE NaN case
+
         const innerXDelta = verticalEdge - xCenter1;
-        
+
         const yIntersection = yCenter1 + (slope * innerXDelta)
         const verticalIntersection = [verticalEdge, yIntersection]
         const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
         addPixelAtLocation(...offsetCoordinates1, true)
 
-        const inverseSlope = -1 * (1 / slope);
+        const inverseSlope = (1 / slope);
 
-        const innerYDelta  = horizontalEdge - yCenter1;
+        const innerYDelta = horizontalEdge - yCenter1;
         const xIntersection = xCenter1 + (inverseSlope * innerYDelta)
         const horizontalIntersection = [xIntersection, horizontalEdge]
         const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
         addPixelAtLocation(...offsetCoordinates2, true, 'red')
+        // debugger;
+        // find which is closer (use math absolute)
+        const deltaVertical = Math.abs(xCenter1 - verticalIntersection[0]) + Math.abs(yCenter1 - verticalIntersection[1])
+        const deltaHorizontal = Math.abs(xCenter1 - horizontalIntersection[0]) + Math.abs(yCenter1 - horizontalIntersection[1])
+        let coordinates;
+        // debugger;
+        if (deltaVertical === deltaHorizontal) {
+            console.error('I guess this is a corner case? Get it? A literal corner')
+            coordinates = horizontalIntersection
+        } else if (deltaVertical < deltaHorizontal) {
+            console.warn('Using the vertical line intersection')
+            coordinates = verticalIntersection
+        } else if (deltaVertical > deltaHorizontal){
+            console.warn('Using the horizontal line intersection')
+            coordinates = horizontalIntersection
+        } 
+        const offsetCoordinates3 = offSetCoordinatesForGameBoard(...coordinates);
+        addPixelAtLocation(...offsetCoordinates3, true, 'green')
 
 
-
-        
-        
     }
     const intersectionPoint = findIntersectionBetweenLines(verticalEdge, horizontalEdge,)
 
-    
+
 
     // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
     // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
@@ -964,7 +979,6 @@ const boardController = {
 
             this.board.append(routeNode)
         }
-        // debugger;
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -1087,7 +1101,7 @@ const playerInformationAndBoardController = {
             targetPlayerIndex = targetPlayerIndex % playerArray.length;
         }
         arrowButton.innerText = `Go ${direction} to ${playerArray[targetPlayerIndex].name}'s board.`
-        arrowButton.innerText += direction === 'left' ? '\n <---': '\n --->'
+        arrowButton.innerText += direction === 'left' ? '\n <---' : '\n --->'
         arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
 
         arrowButton.onclick = () => {
@@ -1457,7 +1471,7 @@ const addPixelAtLocation = (x, y, isBig = false, color) => {
     testElement.id = 'TEST';
     testElement.style.left = x + 'px'
     testElement.style.top = y + 'px'
-    if (color){
+    if (color) {
         testElement.style.backgroundColor = color
     }
     document.getElementById('gameBoard').append(testElement)

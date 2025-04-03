@@ -3,6 +3,9 @@
 * drop down menu ---> HERE!!
 * style the arrow buttons better
 * 2D-ify the game board
+* Could I just do away with the origin target stuff entirely? just multiply an offset of the slope??
+* as a work around I could always just use the middle of an edge as the origin - like what I was doing earlier, but with middles instead of corners
+* so much of this would have been easier if I used [x,y] instead of using seperate varaiables for each
     * each city needs a coordinates property - this will be loaded in at initation
     * IMPORTANT QUESTION --- should we account for the dimensions of the city itself?
     * need genera estimates of size - let's say 200 X 100 for the moment - node box about 45 X 45
