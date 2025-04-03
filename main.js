@@ -9,7 +9,6 @@ const USE_DEFAULT_CLICK_ACTIONS = true;
 const APPROXIMATE_NODE_OFFSET = 45 / 2;
 
 // location is a coordinates x, y offset from the origin in the top right
-// Need to figure out minimum distance for a route
 const TEST_BOARD_CONFIG_CITIES = {
     'Alpha': {
         name: 'Alpha',
@@ -89,6 +88,7 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 }
 
 const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
+    // This function will center an object instead of placing it with the top left at (x,y)
     return ([x - (width / 2), y - (height / 2)]);
 }
 
@@ -120,11 +120,11 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     const getEdgesForCity = (rect, xDelta, yDelta, isOppositeDirection = false) => {
         let verticalEdge; // Remember this is actually (x, yCenter)
         let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
-        if (isOppositeDirection){
+        if (isOppositeDirection) {
             xDelta = xDelta * -1
             yDelta = yDelta * -1
         }
-        
+
         if (xDelta > 0) {
             // we're moving to the right
             verticalEdge = rect.x + rect.width; // edges come in two forms -- (x + width), (y + height) or just x,y
@@ -149,7 +149,7 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     }
     const [verticalEdge1, horizontalEdge1] = getEdgesForCity(rect1, xDelta, yDelta);
     const [verticalEdge2, horizontalEdge2] = getEdgesForCity(rect2, xDelta, yDelta, true);
-    
+
     const findVerticalIntersection = (verticalEdge, center) => {
         if (verticalEdge === false) {
             console.warn('verticalEdge is false')
@@ -158,8 +158,8 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 
         const yIntersection = center[1] + (slope * innerXDelta)
         const verticalIntersection = [verticalEdge, yIntersection]
-        const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
-        addPixelAtLocation(...offsetCoordinates1, true)
+        // const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
+        // addPixelAtLocation(...offsetCoordinates1, true)
         return verticalIntersection
     }
 
@@ -172,8 +172,8 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
         const innerYDelta = horizontalEdge - center[1];
         const xIntersection = center[0] + (inverseSlope * innerYDelta)
         const horizontalIntersection = [xIntersection, horizontalEdge]
-        const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
-        addPixelAtLocation(...offsetCoordinates2, true, 'red')
+        // const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
+        // addPixelAtLocation(...offsetCoordinates2, true, 'red')
 
         return horizontalIntersection
     }
@@ -191,81 +191,41 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
                 console.error('I guess this is a corner case? Get it? A literal corner')
                 coordinates = horizontalIntersection
             } else if (deltaVertical < deltaHorizontal) {
-                console.warn('Using the vertical line intersection')
                 coordinates = verticalIntersection
             } else if (deltaVertical > deltaHorizontal) {
-                console.warn('Using the horizontal line intersection')
                 coordinates = horizontalIntersection
             }
         }
-
-        const offsetCoordinates3 = offSetCoordinatesForGameBoard(...coordinates);
-        addPixelAtLocation(...offsetCoordinates3, true, 'green')
+        // const offsetCoordinates = offSetCoordinatesForGameBoard(...coordinates);
+        // addPixelAtLocation(...offsetCoordinates, true, 'green')
+        return coordinates;
     }
 
     const verticalIntersection1 = findVerticalIntersection(verticalEdge1, center1)
     const horizontalIntersection1 = findHorizontalIntersection(horizontalEdge1, center1)
-    findCloserIntersection(verticalIntersection1, horizontalIntersection1, center1)
+    const intersection1 = findCloserIntersection(verticalIntersection1, horizontalIntersection1, center1)
 
     const verticalIntersection2 = findVerticalIntersection(verticalEdge2, center2)
     const horizontalIntersection2 = findHorizontalIntersection(horizontalEdge2, center2)
-    findCloserIntersection(verticalIntersection2, horizontalIntersection2, center2)
+    const intersection2 = findCloserIntersection(verticalIntersection2, horizontalIntersection2, center2)
 
-
-    // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
-    // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
-    // addPixelAtLocation(...offsetCoordinates1, true)
-    // addPixelAtLocation(...offsetCoordinates2, true)
+    return [intersection1, intersection2]
 }
 
 const calculatePathBetweenElements = (element1, element2) => {
-    drawLine(element1, element2)
-    // We will always be going from element1 to element2
-    // HOWEVER, we need to identify which edge of which we will be using
+    drawLine(element1, element2); // Drawline can be removed
 
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
 
-    // DEV2
-    const xCenter1 = domRect1.x + (0.5 * domRect1.width)
-    const yCenter1 = domRect1.y + (0.5 * domRect1.height)
-    const xCenter2 = domRect2.x + (0.5 * domRect2.width)
-    const yCenter2 = domRect2.y + (0.5 * domRect2.height)
-    let xDelta = xCenter2 - xCenter1;
-    let yDelta = yCenter2 - yCenter1;
-    let xTarget1 = xCenter1;
-    let xTarget2 = xCenter2;
-    let yTarget1 = yCenter1;
-    let yTarget2 = yCenter2;
-
-    // if (xDelta > 0) {
-    //     xTarget1 = domRect1.x + domRect1.width;
-    //     xTarget2 = domRect2.x;
-
-    // } else if (xDelta < 0) {
-    //     xTarget2 = domRect2.x + domRect2.width;
-    //     xTarget1 = domRect1.x;
-    // }
-    // if (yDelta > 0) {
-    //     yTarget1 = domRect1.y + domRect1.height;
-    //     yTarget2 = domRect2.y
-    // } else if (yDelta < 0) {
-    //     yTarget2 = domRect2.y + domRect2.height;
-    //     yTarget1 = domRect1.y
-    // }
-
-    // DEV 3
-    findEdgeIntersectionPointFromRects(domRect1, domRect2)
-
-    xDelta = xTarget2 - xTarget1;
-    yDelta = yTarget2 - yTarget1;
+    const [target1, target2] = findEdgeIntersectionPointFromRects(domRect1, domRect2)
 
     // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
     return {
-        xDelta,
-        yDelta,
-        startX: xTarget1,
-        startY: yTarget1,
+        startX: target1[0],
+        startY: target1[1],
+        endX: target2[0],
+        endY: target2[1]
     }
 }
 
@@ -278,7 +238,6 @@ const drawLine = (element1, element2) => {
     const xCenter2 = domRect2.x + (0.5 * domRect2.width)
     const yCenter2 = domRect2.y + (0.5 * domRect2.height)
 
-    // TODO use offSetCoordinatesForGameBoard
     gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     const xOffset = gameBoardDomRect.x
     const yOffset = gameBoardDomRect.y;
@@ -954,12 +913,20 @@ const boardController = {
     createRouteFromLocations(routeProperties) {
         console.warn(routeProperties.id)
         const { length, id, element1, element2 } = routeProperties
-        let { xDelta, yDelta, startX, startY } = calculatePathBetweenElements(element1, element2)
+        let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
-        const xIncrement = xDelta / (length + 2)
-        const yIncrement = yDelta / (length + 2)
+        const xDelta = endX - startX;
+        const yDelta = endY - startY
+        const xIncrement = xDelta / (length + 1)
+        const yIncrement = yDelta / (length + 1)
         // DEV 1
 
+        // I'm ALMOST certain that I'm double dipping on offsets somewhere
+        for (let i = 0; i < length + 2; i++) {
+            let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * (i)),
+                startY + (yIncrement * (i)))
+            addPixelAtLocation(xCoordinate, yCoordinate, true)
+        }
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
@@ -971,18 +938,8 @@ const boardController = {
 
             let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * (i + 1)),
                 startY + (yIncrement * (i + 1)))
-            if (xIncrement > 0) {
-                xCoordinate += APPROXIMATE_NODE_OFFSET;
-            } else if (xIncrement < 0) {
-                xCoordinate -= APPROXIMATE_NODE_OFFSET;
-            }
-            if (yIncrement > 0) {
-                yCoordinate += APPROXIMATE_NODE_OFFSET;
-            } else if (yIncrement < 0)
-                yCoordinate -= APPROXIMATE_NODE_OFFSET;
 
             let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
-            // Final offset magntidue will depend on the delta. maybe we collapse it into APPROXIMATE_NODE_OFFSET
 
             routeNode.style.left = x + 'px';
             routeNode.style.top = y + 'px';
