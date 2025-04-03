@@ -111,98 +111,45 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     const yCenter2 = rect2.y + (0.5 * rect2.height)
     const center1 = [xCenter1, yCenter1];
     const center2 = [xCenter2, yCenter2]
-    // DEV 4
 
-    // Fundamentally, we're just finding the intersection of some lines
-    // In most cases, there are four potentiall intersection with the edges (one for each)
-    // Each edge takes the form x = C + (y * 0) or y = C + (x * 0)
-    // Honestly, this shouldn't be hard at ALL. I'm just so tired
-
-    // Let's start by getting the direction that the rate is going in. I think we compare the x's of
-    // the to centers and the y's of the two centers. This should give us two edges instead of four
-
-    // Just work on city1 for the moment
-    // let's think about x deltas and y delta
-    // NOTE THAT ALL OF THESE ONLY APPLY TO CITY ONE
     const xDelta = xCenter2 - xCenter1;
     const yDelta = yCenter2 - yCenter1;
 
-
-    console.log(xDelta, yDelta)
     const slope = calculateSlopeFromCoordinatePairs(xCenter1, yCenter1, xCenter2, yCenter2)
 
-    // Just do all six cases (i.e greater than, less than, and equal)
-    let verticalEdge; // Remember this is actually (x, yCenter)
-    let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
-    if (xDelta > 0) {
-        // we're moving to the right
-        verticalEdge = rect1.x + rect1.width; // edges come in two forms -- (x + width), (y + height) or just x,y
-    } else if (xDelta < 0) {
-        // Moving to the left
-        verticalEdge = rect1.x;
-    } else if (xDelta === 0) {
-        // moving straight down, no chance of a vertical edge
-        verticalEdge === false;
+    const getEdgesForCity = (rect, xDelta, yDelta, isOppositeDirection = false) => {
+        let verticalEdge; // Remember this is actually (x, yCenter)
+        let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
+        if (isOppositeDirection){
+            xDelta = xDelta * -1
+            yDelta = yDelta * -1
+        }
+        
+        if (xDelta > 0) {
+            // we're moving to the right
+            verticalEdge = rect.x + rect.width; // edges come in two forms -- (x + width), (y + height) or just x,y
+        } else if (xDelta < 0) {
+            // Moving to the left
+            verticalEdge = rect.x;
+        } else if (xDelta === 0) {
+            // moving straight down, no chance of a vertical edge
+            verticalEdge === false;
+        }
+        if (yDelta > 0) {
+            // moving down
+            horizontalEdge = rect.y + rect.height;
+        } else if (yDelta < 0) {
+            // Moving to the up
+            horizontalEdge = rect.y;
+        } else if (yDelta === 0) {
+            // moving straight horizontally, no chance of a horizontal edge
+            horizontalEdge === false;
+        }
+        return [verticalEdge, horizontalEdge]
     }
-    if (yDelta > 0) {
-        // moving down
-        horizontalEdge = rect1.y + rect1.height;
-    } else if (yDelta < 0) {
-        // Moving to the up
-        horizontalEdge = rect1.y;
-    } else if (yDelta === 0) {
-        // moving straight horizontally, no chance of a horizontal edge
-        horizontalEdge === false;
-    }
-    // Once we hve the edges we need to find the intersection points
-    console.log('verticalEdge is', verticalEdge)
-
-
-    // const findIntersectionBetweenLines = (verticalEdge, horizontalEdge) => {
-    //     // DEV 5
-    //     // refactor this to just do what it says, not compare
-    //     // figures out where it intersects and which is closer
-    //     // and returns the actual point as a [x,y] value
-
-    //     // NEED TO ACCOUNT FOR THE NaN case
-
-    //     const innerXDelta = verticalEdge - xCenter1;
-
-    //     const yIntersection = yCenter1 + (slope * innerXDelta)
-    //     const verticalIntersection = [verticalEdge, yIntersection]
-    //     const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
-    //     addPixelAtLocation(...offsetCoordinates1, true)
-
-    //     const inverseSlope = (1 / slope);
-
-    //     const innerYDelta = horizontalEdge - yCenter1;
-    //     const xIntersection = xCenter1 + (inverseSlope * innerYDelta)
-    //     const horizontalIntersection = [xIntersection, horizontalEdge]
-    //     const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
-    //     addPixelAtLocation(...offsetCoordinates2, true, 'red')
-    //     // debugger;
-    //     // find which is closer (use math absolute)
-    //     const deltaVertical = Math.abs(xCenter1 - verticalIntersection[0]) + Math.abs(yCenter1 - verticalIntersection[1])
-    //     const deltaHorizontal = Math.abs(xCenter1 - horizontalIntersection[0]) + Math.abs(yCenter1 - horizontalIntersection[1])
-    //     let coordinates;
-    //     // debugger;
-    //     if (deltaVertical === deltaHorizontal) {
-    //         console.error('I guess this is a corner case? Get it? A literal corner')
-    //         coordinates = horizontalIntersection
-    //     } else if (deltaVertical < deltaHorizontal) {
-    //         console.warn('Using the vertical line intersection')
-    //         coordinates = verticalIntersection
-    //     } else if (deltaVertical > deltaHorizontal){
-    //         console.warn('Using the horizontal line intersection')
-    //         coordinates = horizontalIntersection
-    //     } 
-    //     const offsetCoordinates3 = offSetCoordinatesForGameBoard(...coordinates);
-    //     addPixelAtLocation(...offsetCoordinates3, true, 'green')
-
-
-    // }
-
-    // ADD CENTERS TO THESE SO WE CAN USE IT FOR BOTH CITIES
+    const [verticalEdge1, horizontalEdge1] = getEdgesForCity(rect1, xDelta, yDelta);
+    const [verticalEdge2, horizontalEdge2] = getEdgesForCity(rect2, xDelta, yDelta, true);
+    
     const findVerticalIntersection = (verticalEdge, center) => {
         if (verticalEdge === false) {
             console.warn('verticalEdge is false')
@@ -256,16 +203,20 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
         addPixelAtLocation(...offsetCoordinates3, true, 'green')
     }
 
-    const verticalIntersection1 = findVerticalIntersection(verticalEdge, center1)
-    const horizontalIntersection1 = findHorizontalIntersection(horizontalEdge, center1)
+    const verticalIntersection1 = findVerticalIntersection(verticalEdge1, center1)
+    const horizontalIntersection1 = findHorizontalIntersection(horizontalEdge1, center1)
     findCloserIntersection(verticalIntersection1, horizontalIntersection1, center1)
+
+    const verticalIntersection2 = findVerticalIntersection(verticalEdge2, center2)
+    const horizontalIntersection2 = findHorizontalIntersection(horizontalEdge2, center2)
+    findCloserIntersection(verticalIntersection2, horizontalIntersection2, center2)
+
 
     // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
     // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
     // addPixelAtLocation(...offsetCoordinates1, true)
     // addPixelAtLocation(...offsetCoordinates2, true)
 }
-
 
 const calculatePathBetweenElements = (element1, element2) => {
     drawLine(element1, element2)

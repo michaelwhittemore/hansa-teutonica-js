@@ -1,2 +1,5 @@
 # hansa-teutonica-js
-Implementing hansa teutonica in browser
+Implementing Hansa Teutonica in browser
+
+Everything is done is vanilla JS. 
+Currently only hotseat play is supported, online should be coming soon.
