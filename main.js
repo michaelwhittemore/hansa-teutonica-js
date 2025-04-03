@@ -1,5 +1,5 @@
 // CONSTANTS
-const STARTING_BANK = 15; // no clue if this is correct
+const STARTING_BANK = 15; // no clue if this is correct (GAME RULES)
 const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
 const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
@@ -52,7 +52,7 @@ const TEST_BOARD_CONFIG_CITIES = {
 
 };
 
-
+// The below can be used to fix my name mapping issue, but then deleted I think
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
     color: 'Color',
@@ -98,9 +98,6 @@ const offSetCoordinatesForGameBoard = (x, y) => {
 }
 
 const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
-    // We don't need to worry about offsets I *think*? assuming they're applied equally to
-    // both coordinate pairs
-    // This should be correct? It's height over width
     return (y2 - y1) / (x2 - x1)
 }
 
@@ -118,8 +115,8 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     const slope = calculateSlopeFromCoordinatePairs(xCenter1, yCenter1, xCenter2, yCenter2)
 
     const getEdgesForCity = (rect, xDelta, yDelta, isOppositeDirection = false) => {
-        let verticalEdge; // Remember this is actually (x, yCenter)
-        let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
+        let verticalEdge;
+        let horizontalEdge;
         if (isOppositeDirection) {
             xDelta = xDelta * -1
             yDelta = yDelta * -1
@@ -213,14 +210,12 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 }
 
 const calculatePathBetweenElements = (element1, element2) => {
-    drawLine(element1, element2); // Drawline can be removed
+    // drawLine(element1, element2);
 
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
 
     const [target1, target2] = findEdgeIntersectionPointFromRects(domRect1, domRect2)
-
-    // We will ALWAYS start at xEdge1 and yEdge1. Negative deltas are totally ok!
     return {
         startX: target1[0],
         startY: target1[1],
@@ -492,7 +487,6 @@ const gameController = {
             this.advanceTurn(player);
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        playerInformationAndBoardController.componentBuilders.updateInfoDumpOnAll(this.playerArray)
         this.playerArray.forEach(player => {
             playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
         })
@@ -911,7 +905,6 @@ const boardController = {
         return cityDiv
     },
     createRouteFromLocations(routeProperties) {
-        console.warn(routeProperties.id)
         const { length, id, element1, element2 } = routeProperties
         let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
@@ -919,14 +912,7 @@ const boardController = {
         const yDelta = endY - startY
         const xIncrement = xDelta / (length + 1)
         const yIncrement = yDelta / (length + 1)
-        // DEV 1
 
-        // I'm ALMOST certain that I'm double dipping on offsets somewhere
-        for (let i = 0; i < length + 2; i++) {
-            let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * (i)),
-                startY + (yIncrement * (i)))
-            addPixelAtLocation(xCoordinate, yCoordinate, true)
-        }
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
             routeNode.className = 'routeNode';
@@ -1028,7 +1014,6 @@ const playerInformationAndBoardController = {
         playerInfoBoard.append(this.componentBuilders.createSupplyTracker(player))
         playerInfoBoard.append(this.componentBuilders.createBankTracker(player));
 
-        playerInfoBoard.append(this.componentBuilders.createInfoDump(player))
         return playerInfoBoard
     },
     unlockPieceFromBoard(player, index, unlock) {
@@ -1280,30 +1265,6 @@ const playerInformationAndBoardController = {
             }
             return piece
         },
-        createInfoDump(player) {
-            const infoDumpArea = document.createElement('div')
-            infoDumpArea.className = 'infoDumpArea';
-            infoDumpArea.id = `infoDumpArea-${player.id}`
-            infoDumpArea.innerText = ''
-            // I'm not gonna map these to plain text as i'm going to delete them later anyway
-            const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'currentPoints', 'tokens',];
-            dumpFields.forEach(dumpKey => {
-                infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
-            })
-            return infoDumpArea
-        },
-        updateInfoDumpOnAll(playerArray) {
-            // this really shouldn't be in the component BUILDER
-            playerArray.forEach(player => {
-                const infoDumpArea = document.getElementById(`infoDumpArea-${player.id}`)
-                infoDumpArea.innerText = ''
-                // should be deleted soon don't worry about non-dry code
-                const dumpFields = ['supplySquares', 'bankedSquares', 'supplyCircles', 'bankedCircles', 'currentPoints', 'tokens',];
-                dumpFields.forEach(dumpKey => {
-                    infoDumpArea.innerText += `${dumpKey}: ${player[dumpKey]}, `
-                })
-            })
-        }
     },
 }
 

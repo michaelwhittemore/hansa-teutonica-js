@@ -1,54 +1,26 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* drop down menu ---> HERE!!
-* style the arrow buttons better
-* 2D-ify the game board
-* Could I just do away with the origin target stuff entirely? just multiply an offset of the slope??
-* as a work around I could always just use the middle of an edge as the origin - like what I was doing earlier, but with middles instead of corners
-* so much of this would have been easier if I used [x,y] instead of using seperate varaiables for each
-    * each city needs a coordinates property - this will be loaded in at initation
-    * IMPORTANT QUESTION --- should we account for the dimensions of the city itself?
-    * need genera estimates of size - let's say 200 X 100 for the moment - node box about 45 X 45
-    * let's say we need abut 250px for a 3 route and 315px for a 4 route - Remember that this does *NOT* account for the size of the city itself
-    * will need to delete the routeBox entirely
-    * make sure that the gameboard is scrollable 
-    * I think that we might want position: absolute as we want to inhert from the game board ancestor
-    * let's start with a test div 
-    * once we have the cities we will need to calculate the distnace between the two cities when initalizing - from there we can create the route nodes on an equidistant line between them
-    * once all that is done we can will need to test all clicking works correctly as before
-    * then add in additonal cities before finally adding in token holders
-    * additional cities also open up the option to add additional players
-    * try a three-way city connection, verify it works and also a city with multtiple neightbor routes
-    * THIS IS HUGE! when calcualting route node increment just use length + 2. Then we start with increment  * (i+1) instead of increment * i
-* Delete info dump
-* make the routes originate from the center not the corners
-* AT SOME POINT I SHOULD TAKE A BREAK FROM THE 2-D STUFF AND JUST GO BACK TO FUNCTIONALITY
-* add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
+* Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
+* place collapse buttons at the actual edges. Might do some calulations when creating them
+* add the move ability  - will have some issues with both this and the bump ability in that we need to select additional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
 I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
-* Add a third player
-* Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
-* move method (as in your own pieces on the board) - need rules clarification - can you chose to only move one? 
+* move method (as in your own pieces on the board) - need rules clarification - can you chose to only move one? --> **NEXT!!!!!!!**
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
-* change the route builder logic to follow the center and NOT the corners (i.e. targets like I currently have it). Maybe still calculate deltas the same way and try to think in terms of a slope - so I'd be adding an off set from each center - but using a slope value
+* make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
 * autoscroll to game log
 * add chat to game log
 * Move some of the gameController copy pasta into it's own methods
-* Update player Bank and supply to use circles and squares
-* Spin up a simple node server and move these to modules -- **IMPORTANT**
 * Add a turn timer to the turn tracker
 * keyboard short cuts for place and selecting shape
 * Fix turn track to place pieces over numbers using a number component with absolute? position
 * local storage
-* use the coordinate system on the board -- **IMPORTANT**
-* ^^^^^ once the above is done I can add additional cities for better testing
-* make cities smaller and put name on top (maybe do this as part of refactoring board to use coordinates)
 * time stamp to game log
 * fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationAndBoardController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
@@ -60,6 +32,10 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~Update player Bank and supply to use circles and squares~~
+~~2D-ify the game board~~
+~~Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()~~
+~~style the arrow buttons better~~
 ~~create individual player boards with the ability to swipe between them~~
 ~~create the supply and bank area~~
 ~~make the cities slightly smaller and more square - this is not essential but will increase readability~~
