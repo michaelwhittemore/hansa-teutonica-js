@@ -1,0 +1,23 @@
+{
+  "name": "hansa-teutonica",
+  "version": "1.0.0",
+  "description": "Hansa Teutonica with vanilla js",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelwhittemore/hansa-teutonica-js.git"
+  },
+  "author": "Michael Whittemore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michaelwhittemore/hansa-teutonica-js/issues"
+  },
+  "homepage": "https://github.com/michaelwhittemore/hansa-teutonica-js#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
