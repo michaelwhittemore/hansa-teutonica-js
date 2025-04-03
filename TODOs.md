@@ -1,13 +1,11 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
-* create individual player boards with the ability to swipe between them -->     
-    * create the supply and bank area
-    * drop down menu ---> HERE!!
-    * style the arrow buttons better
+* drop down menu ---> HERE!!
+* style the arrow buttons better
 * 2D-ify the game board
     * each city needs a coordinates property - this will be loaded in at initation
     * IMPORTANT QUESTION --- should we account for the dimensions of the city itself?
-    * need genera estimates of size - let's say 200 X 100 for the moment - node box about 60 X 60
+    * need genera estimates of size - let's say 200 X 100 for the moment - node box about 45 X 45
     * let's say we need abut 250px for a 3 route and 315px for a 4 route - Remember that this does *NOT* account for the size of the city itself
     * will need to delete the routeBox entirely
     * make sure that the gameboard is scrollable 
@@ -21,9 +19,11 @@
     * THIS IS HUGE! when calcualting route node increment just use length + 2. Then we start with increment  * (i+1) instead of increment * i
 * Delete info dump
 * make the routes originate from the center not the corners
+* AT SOME POINT I SHOULD TAKE A BREAK FROM THE 2-D STUFF AND JUST GO BACK TO FUNCTIONALITY
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select addttional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
 I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
+* Add a third player
 * Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
@@ -34,6 +34,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
+* autoscroll to game log
 * add chat to game log
 * Move some of the gameController copy pasta into it's own methods
 * Update player Bank and supply to use circles and squares
@@ -56,6 +57,8 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~create individual player boards with the ability to swipe between them~~
+~~create the supply and bank area~~
 ~~make the cities slightly smaller and more square - this is not essential but will increase readability~~
 ~~supply area~~
 ~~bank area~~

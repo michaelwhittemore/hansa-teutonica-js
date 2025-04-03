@@ -175,8 +175,8 @@
 .arrowButton{
     text-align: center;
     font-weight: bold;
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     margin: 2px;
     border-style: solid;
 }

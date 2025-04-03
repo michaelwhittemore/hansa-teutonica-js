@@ -1,8 +1,8 @@
 // CONSTANTS
 const STARTING_BANK = 15; // no clue if this is correct
 const FIRST_PLAYER_SQUARES = 6;
-const TEST_PLAYERS_NAMES = ['Alice', 'Bob']
-const TEST_PLAYER_COLORS = ['red', 'blue']
+const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
+const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
 const BUTTON_LIST = ['place', 'move', 'bump, resupply', 'capture', 'upgrade', 'token'];
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
@@ -15,7 +15,7 @@ const TEST_BOARD_CONFIG_CITIES = {
         name: 'Alpha',
         spotArray:
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta', 3]],
+        neighborRoutes: [['Beta', 3], ['Zeta', 3]],
         unlock: 'action',
         location: [20, 20]
     },
@@ -49,42 +49,8 @@ const TEST_BOARD_CONFIG_CITIES = {
         name: 'Zeta',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [30, 450],
-        neighborRoutes: [['Alpha', 3]],
     },
 
-};
-const TEST_BOARD_CONFIG_CITIES_Straight = {
-    'Alpha': {
-        name: 'Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['R-Beta', 4]],
-        unlock: 'action',
-        location: [20, 20]
-    },
-    'Beta': {
-        name: 'Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['R-Alpha', 4]],
-
-        unlock: 'purse',
-        location: [550, 20]
-    },
-    'R-Alpha': {
-        name: 'R-Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        unlock: 'action',
-        location: [20, 400]
-    },
-    'R-Beta': {
-        name: 'R-Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        unlock: 'purse',
-        location: [550, 400]
-    },
 };
 
 
@@ -138,6 +104,95 @@ const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
     return (y2 - y1) / (x2 - x1)
 }
 
+const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
+    const xCenter1 = rect1.x + (0.5 * rect1.width)
+    const yCenter1 = rect1.y + (0.5 * rect1.height)
+    const xCenter2 = rect2.x + (0.5 * rect2.width)
+    const yCenter2 = rect2.y + (0.5 * rect2.height)
+
+    // DEV 4
+
+    // Fundamentally, we're just finding the intersection of some lines
+    // In most cases, there are four potentiall intersection with the edges (one for each)
+    // Each edge takes the form x = C + (y * 0) or y = C + (x * 0)
+    // Honestly, this shouldn't be hard at ALL. I'm just so tired
+
+    // Let's start by getting the direction that the rate is going in. I think we compare the x's of
+    // the to centers and the y's of the two centers. This should give us two edges instead of four
+
+    // Just work on city1 for the moment
+    // let's think about x deltas and y delta
+    // NOTE THAT ALL OF THESE ONLY APPLY TO CITY ONE
+    const xDelta = xCenter2 - xCenter1;
+    const yDelta = yCenter2 - yCenter1;
+    console.log(xDelta, yDelta)
+    const slope = calculateSlopeFromCoordinatePairs(xCenter1, yCenter1, xCenter2, yCenter2)
+
+    // Just do all six cases (i.e greater than, less than, and equal)
+    let verticalEdge; // Remember this is actually (x, yCenter)
+    let horizontalEdge; // We pick if the x or y edge is closer eventually once we'ev narrowed it down to two
+    if (xDelta > 0){
+        // we're moving to the right
+        verticalEdge = rect1.x + rect1.width; // edges come in two forms -- (x + width), (y + height) or just x,y
+    } else if (xDelta < 0){
+        // Moving to the left
+        verticalEdge = rect1.x;
+    } else if (xDelta === 0){
+        // moving straight down, no chance of a vertical edge
+        verticalEdge === false;
+    }
+    if (yDelta > 0){
+        // moving down
+        horizontalEdge = rect1.y + rect1.height;
+    } else if (yDelta < 0){
+        // Moving to the up
+        horizontalEdge = rect1.y;
+    } else if (yDelta === 0){
+        // moving straight horizontally, no chance of a horizontal edge
+        horizontalEdge === false;
+    }
+    // Once we hve the edges we need to find the intersection points
+    console.log('verticalEdge is', verticalEdge)
+
+    const findIntersectionBetweenLines = (verticalEdge, horizontalEdge) => {
+        // DEV 5
+        // figures out where it intersects and which is closer
+        // and returns the actual point as a [x,y] value
+        // CAN use inverse slope for y
+    
+        // intersecting the verticalEdge (y = NaN) -- we know the x value, just need to find y value
+        // find the x delta and then do x delta times slope
+        const innerXDelta = verticalEdge - xCenter1;
+        
+        const yIntersection = yCenter1 + (slope * innerXDelta)
+        const verticalIntersection = [verticalEdge, yIntersection]
+        const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
+        addPixelAtLocation(...offsetCoordinates1, true)
+
+        const inverseSlope = -1 * (1 / slope);
+
+        const innerYDelta  = horizontalEdge - yCenter1;
+        const xIntersection = xCenter1 + (inverseSlope * innerYDelta)
+        const horizontalIntersection = [xIntersection, horizontalEdge]
+        const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
+        addPixelAtLocation(...offsetCoordinates2, true, 'red')
+
+
+
+        
+        
+    }
+    const intersectionPoint = findIntersectionBetweenLines(verticalEdge, horizontalEdge,)
+
+    
+
+    // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
+    // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
+    // addPixelAtLocation(...offsetCoordinates1, true)
+    // addPixelAtLocation(...offsetCoordinates2, true)
+}
+
+
 const calculatePathBetweenElements = (element1, element2) => {
     drawLine(element1, element2)
     // We will always be going from element1 to element2
@@ -173,13 +228,9 @@ const calculatePathBetweenElements = (element1, element2) => {
     //     yTarget2 = domRect2.y + domRect2.height;
     //     yTarget1 = domRect1.y
     // }
-    // // DELETE BELOW EVENTIUALLUY, just prints magenta dots
-    // const offsetCoordinates1 = offSetCoordinatesForGameBoard(xTarget1, yTarget1);
-    // const offsetCoordinates2 = offSetCoordinatesForGameBoard(xTarget2, yTarget2);
-    // addPixelAtLocation(...offsetCoordinates1, true)
-    // addPixelAtLocation(...offsetCoordinates2, true)
 
-    // --------------------------------------- Magenta dots at true edges
+    // DEV 3
+    findEdgeIntersectionPointFromRects(domRect1, domRect2)
 
     xDelta = xTarget2 - xTarget1;
     yDelta = yTarget2 - yTarget1;
@@ -876,13 +927,13 @@ const boardController = {
         return cityDiv
     },
     createRouteFromLocations(routeProperties) {
-        // DEV!!!
         console.warn(routeProperties.id)
         const { length, id, element1, element2 } = routeProperties
         let { xDelta, yDelta, startX, startY } = calculatePathBetweenElements(element1, element2)
 
         const xIncrement = xDelta / (length + 2)
         const yIncrement = yDelta / (length + 2)
+        // DEV 1
 
         for (let i = 0; i < length; i++) {
             const routeNode = document.createElement('button');
@@ -897,10 +948,10 @@ const boardController = {
                 startY + (yIncrement * (i + 1)))
             if (xIncrement > 0) {
                 xCoordinate += APPROXIMATE_NODE_OFFSET;
-            } else if (xIncrement < 0){
+            } else if (xIncrement < 0) {
                 xCoordinate -= APPROXIMATE_NODE_OFFSET;
             }
-            if (yIncrement > 0){
+            if (yIncrement > 0) {
                 yCoordinate += APPROXIMATE_NODE_OFFSET;
             } else if (yIncrement < 0)
                 yCoordinate -= APPROXIMATE_NODE_OFFSET;
@@ -1036,6 +1087,7 @@ const playerInformationAndBoardController = {
             targetPlayerIndex = targetPlayerIndex % playerArray.length;
         }
         arrowButton.innerText = `Go ${direction} to ${playerArray[targetPlayerIndex].name}'s board.`
+        arrowButton.innerText += direction === 'left' ? '\n <---': '\n --->'
         arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
 
         arrowButton.onclick = () => {
@@ -1399,12 +1451,15 @@ const testCity2 = {
 }
 
 // TEST, DELETE THIS TODO
-const addPixelAtLocation = (x, y, isBig = false) => {
+const addPixelAtLocation = (x, y, isBig = false, color) => {
     const testElement = document.createElement('div')
     testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
     testElement.id = 'TEST';
     testElement.style.left = x + 'px'
     testElement.style.top = y + 'px'
+    if (color){
+        testElement.style.backgroundColor = color
+    }
     document.getElementById('gameBoard').append(testElement)
 
     return testElement
