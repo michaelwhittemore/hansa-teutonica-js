@@ -1,6 +1,13 @@
 # TODOs #
 * Add token acquisition (FUN!!!!!!)
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
+    * move things into modules
+    * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
+* **MOVE ACTION**
+    * May want to organize actionInfoDiv into its own controller - we already have actionInfo clear and warn methods
+    * We're going to need to store the number of moves availble - maybe just use the player? We can give them a new field that only is meaningful when taking this action
+* replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
+* make sure all unlocks are on the board, might do the name clean up at the same time
 * place collapse buttons at the actual edges. Might do some calulations when creating them
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select additional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
@@ -72,7 +79,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 
 
 # Stretch Goals (in no particular order) # #
-
+* when doing online play we will likely need some sort of player validator. We don't want to update actionInfoDiv.innerText for example when its not the player's turn.
 * local storage
 * potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator

@@ -60,7 +60,7 @@
     border: dashed;
     border-color: aqua;
     overflow: scroll;
-    width: 1200px;
+    width: 100%;
     height: 650px;
     /* may need to deal with scrolling issues later*/
 }
@@ -88,7 +88,7 @@
 
 #actionInfo {
     display: flex;
-    height: 20px;
+    min-height: 20px;
 }
 
 .warningText {

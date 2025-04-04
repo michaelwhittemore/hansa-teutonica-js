@@ -86,7 +86,9 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 
     return div
 }
-
+const getRouteIdFromNodeId = (nodeId) => {
+    return nodeId.slice(0, nodeId.lastIndexOf('-'));
+}
 const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
     // This function will center an object instead of placing it with the top left at (x,y)
     return ([x - (width / 2), y - (height / 2)]);
@@ -257,29 +259,27 @@ const inputHandlers = {
         return true;
     },
     handleUpgradeButton() {
-        const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
         inputHandlers.selectedAction = 'upgrade'
-        actionInfoDiv.innerText = "Select a city corresponding to an upgrade."
+        inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
     },
     handlePlaceButton() {
-        const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
-        // May want to track state of action input (i.e have we selected an action, a location,
-        // and additional information as needed)
         if (!inputHandlers.verifyPlayersTurn()) {
             return;
         }
         inputHandlers.selectedAction = 'place'
-        actionInfoDiv.innerText = "Select a kind of piece to place and a location"
+        inputHandlers.updateActionInfoText("Select a kind of piece to place and a location")
 
         const squareButton = document.createElement('button');
         squareButton.innerText = 'Square'
         squareButton.onclick = () => {
             inputHandlers.additionalInfo = 'square'
         }
+        // TODO - create a button method for actionInfo instead of doing it here
+        const actionInfoDiv = document.getElementById('actionInfo')
         actionInfoDiv.append(squareButton);
         const circleButton = document.createElement('button');
         circleButton.innerText = 'Circle'
@@ -293,14 +293,45 @@ const inputHandlers = {
         console.warn('Bump is not yet implemented!')
         // TODO
     },
+    handleMoveButton() {
+        // DEV
+        // TODO (if we already have MOVE selected we have to end or cancel the actions)
+        if (inputHandlers.selectedAction === 'move'){
+            console.warn('Ending the move action, still need to implement this further')
+            document.getElementById('move').innerText = 'Move Pieces'
+            inputHandlers.clearAllActionSelection();
+            return;
+        }
+        // Maybe I should break this out into two methods? Ending move and initaiting move?
+        inputHandlers.clearAllActionSelection();
+
+        document.getElementById('move').innerText = 'End Move Action';
+
+        inputHandlers.selectedAction = 'move'
+        inputHandlers.additionalInfo = 'selectPieceToMove'
+
+        inputHandlers.updateActionInfoText('Select one of your own pieces to move.')
+        // Most of the logic will be taken care of by routeNodeClickHandler and the gameController
+        // gameController method TBD
+    
+        // If the player has moved their final piece we will also need to end the action
+        // ^^^ This might happen in the game controller
+
+        // There will be two kinds of actions - selectPiece & selectTarget
+        // We also need to see if a move has already occured - if so this can become an 'End Move'
+        // Perhaps even even change the text of this button?
+        // If we end with zero pieces moved we should not take an action - no action resolved, 
+        // just reset button text and selection
+
+        // Need to inform the player that they've selected move
+    },
     handleCaptureCityButton() {
-        const actionInfoDiv = document.getElementById('actionInfo');
         inputHandlers.clearAllActionSelection();
 
         inputHandlers.selectedAction = 'capture';
         if (!inputHandlers.selectedLocation) {
             console.warn('No location selected')
-            actionInfoDiv.innerText = 'Select a city to capture';
+            inputHandlers.updateActionInfoText('Select a city to capture', true);
         } else {
             let playerId = undefined
             if (!IS_HOTSEAT_MODE) {
@@ -319,26 +350,41 @@ const inputHandlers = {
     },
 
     clearAllActionSelection() {
+        // NOTE: I should *NOT* be using this just to clear action info
         inputHandlers.selectedAction = undefined;
         inputHandlers.selectedLocation = undefined;
         inputHandlers.additionalInfo = undefined;
         document.getElementById('actionInfo').innerHTML = ''
+        document.getElementById('warningText').innerHTML = ''
     },
     bindInputHandlers() {
         document.getElementById('place').onclick = this.handlePlaceButton;
+        document.getElementById('move').onclick = this.handleMoveButton;
         document.getElementById('bump').onclick = this.handleBumpButton;
         document.getElementById('resupply').onclick = this.handleResupplyButton;
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
         document.getElementById('upgrade').onclick = this.handleUpgradeButton;
 
     },
+    updateActionInfoText(text, overWrite = true){
+        // Eventually we might want action info to have its own controller object?
+        // Especially given that we add buttons to it
+        const actionInfoDiv = document.getElementById('actionInfo');
+        if (overWrite){
+            actionInfoDiv.innerHTML = '';
+        }
+        actionInfoDiv.innerText += text;
+    },
     // TODO this doesn't work in all circumstances (like capturing a city)
     // Let's break action info and warning into two seperate components
     warnInvalidAction(warningText) {
+
+        // I think innerText and innhtml don't play nicetogether
+
         // Maybe i should clear the other area???
         // I think I should be modifying the span not resetting like this
-        document.getElementById('actionInfo').innerHTML +=
-            `<span class="warningText"> ${warningText}</span>`;
+        document.getElementById('warningText').innerHTML = '';
+        document.getElementById('warningText').innerText = warningText
     },
     routeNodeClickHandler(nodeId) {
         // Remember that we can use this for place, or move (both selecting FROM and TO), and for bumping
@@ -358,6 +404,16 @@ const inputHandlers = {
             } else {
                 // TODO warn that no shape was selected (or maybe dependant on action??)
                 return;
+            }
+        }
+        // DEV 2
+        if (inputHandlers.selectedAction === 'move'){
+            console.log(`trying to take a move action at ${nodeId}`)
+            if(inputHandlers.additionalInfo === 'selectPieceToMove'){
+                gameController.selectPieceToMove(nodeId)
+            } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo'){
+                console.warn(`trying to move a piece to ${nodeId}`);
+                gameController.movePieceToLocation(nodeId);
             }
         }
         // Happy path for place move - leave checking the turn and availble pieces and freeness of the node to the game controller
@@ -407,6 +463,7 @@ const gameController = {
         gameLogController.initializeGameLog();
         this.routeStorageObject = {}
         this.cityStorageObject = {};
+        this.moveInformation = {};
         inputHandlers.bindInputHandlers()
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
@@ -451,6 +508,7 @@ const gameController = {
                     for (let i = 0; i < length; i++) {
                         const nodeId = `${routeId}-${i}`
                         this.routeStorageObject[routeId].routeNodes[nodeId] = {
+                            nodeId,
                             occupied: false,
                             shape: undefined,
                             color: undefined,
@@ -507,7 +565,7 @@ const gameController = {
             inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
             return
         }
-        // FIX THIS, need route ID
+        // FIX THIS, need route ID TODO use getNodeFromID helper function
         const routeId = nodeId.substring(0, nodeId.length - 2);
         if (this.routeStorageObject[routeId]?.routeNodes[nodeId]?.occupied) {
             console.warn('That route node is already occupied!')
@@ -516,15 +574,84 @@ const gameController = {
             return
         }
         player[playerShapeKey] -= 1;
-        this.routeStorageObject[routeId].routeNodes[nodeId] = {
+        const updatedProps = {
+            occupied: true,
+            shape,
+            color: player.color,
+            playerId,
+        };
+        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps )
+        boardController.addPieceToRouteNode(nodeId, player.color, shape);
+        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
+        this.resolveAction(player)
+    },
+    selectPieceToMove(nodeId, playerId){
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        if (gameController.moveInformation.movesLeft === undefined){
+            gameController.moveInformation.movesLeft = gameController.playerArray[playerId].maxMovement
+        }
+        // DEV
+        const routeId = getRouteIdFromNodeId(nodeId)
+        const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+
+        if(!node.occupied || node.playerId !== playerId){
+            console.warn('You do not have a piece on this route node.')
+            inputHandlers.warnInvalidAction('You do not have a piece on this route node.');
+        } else {
+            inputHandlers.additionalInfo = 'selectLocationToMoveTo'
+            inputHandlers.updateActionInfoText(`You have a selected a ${node.shape}. Select an unoccupied route node to move there.`)
+            // The below field will need to be cleaned up during action resolution
+            gameController.moveInformation.originNode = node;
+        }
+    },
+    movePieceToLocation(nodeId, playerId){
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // DEV 
+        const routeId = getRouteIdFromNodeId(nodeId)
+        const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+        
+        
+        const originNode = gameController.moveInformation.originNode;
+        const shape = originNode.shape
+        if (targetNode.occupied){
+            console.warn('This route node is already occupied.')
+            inputHandlers.warnInvalidAction('This route node is already occupied.');
+            return;
+        } 
+        const updatedProps = {
             occupied: true,
             shape,
             color: player.color,
             playerId,
         }
+        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps )
+
+        console.log(originNode)
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
-        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
-        this.resolveAction(player)
+        gameLogController.addTextToGameLog(
+            `$PLAYER_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
+        // 5. Need to clear the origin location
+        // 6. Make sure no bank or supply are being updated
+        // 7. Subtract moves from the addtional info field and update the text if it's non-zero
+        // 7. If the player has moves left I think we just siwtch the sub action (inputHandler.additonalInfo)
+        // 8. If the player has no moves yet we will need an endMoveAction method - this can be called from
+        // either here or when the player willingly terminates there move. - this will depend on if the player
+        // took a move action or not
+        // 9. endMoveAction will need to call our action resolution cleanup (which should reset the 
+        // gameController.aditionalInfo to an empty object)
+        // 10. Will also need to gameLog actions 
     },
     resupply(playerId) {
         let player;
