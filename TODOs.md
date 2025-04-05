@@ -3,6 +3,8 @@
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
+* cheating out an additonal place after a move action is still possile due to defautl action (I think)
+- actually it looks like I'm just not unlocking the buttons? 
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make sure all unlocks are on the board, might do the name clean up at the same time

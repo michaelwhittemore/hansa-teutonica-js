@@ -278,7 +278,6 @@ const inputHandlers = {
     },
     handleBumpButton() {
         console.warn('Bump is not yet implemented!')
-        // TODO
         // DEV 1
 
         // NOTE this plan is *non-exhaustive* we don't take into account any clean up or UI updates
@@ -305,9 +304,8 @@ const inputHandlers = {
 
         inputHandlers.clearAllActionSelection();
         inputHandlers.selectedAction = 'selectPieceToBump'
-        // Need to follow the example of handlePlacePiece in terms of piece selection
-        // ^^^ move this to a new function to avoid copypasta
-        // Let's double check the rulebook on this
+        inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
+        inputHandlers.addShapeSelectionToActionInfo()
     },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
@@ -400,45 +398,6 @@ const inputHandlers = {
         document.getElementById('warningText').innerHTML = '';
         document.getElementById('warningText').innerText = warningText
     },
-    routeNodeClickHandler(nodeId) {
-        // Remember that we can use this for place, or move (both selecting FROM and TO), and for bumping
-        if (!inputHandlers.selectedAction) {
-            if (USE_DEFAULT_CLICK_ACTIONS) {
-                inputHandlers.selectedAction = 'place';
-                inputHandlers.additionalInfo = 'square'
-            } else {
-                // TODO warn that nothing was selected
-                return;
-            }
-
-        };
-        if (!inputHandlers.additionalInfo) {
-            if (USE_DEFAULT_CLICK_ACTIONS) {
-                inputHandlers.additionalInfo = 'square';
-            } else {
-                // TODO warn that no shape was selected (or maybe dependant on action??)
-                return;
-            }
-        }
-        if (inputHandlers.selectedAction === 'move') {
-            console.log(`trying to take a move action at ${nodeId}`)
-            if (inputHandlers.additionalInfo === 'selectPieceToMove') {
-                gameController.selectPieceToMove(nodeId)
-            } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
-                gameController.movePieceToLocation(nodeId);
-            }
-        }
-        // Happy path for place move
-        if (inputHandlers.selectedAction === 'place' && isShape(inputHandlers.additionalInfo)) {
-            // playerName is currently the selected player for hotseat
-            // in onlinePlay it will be something else
-            let playerId = undefined
-            if (!IS_HOTSEAT_MODE) {
-                // get the player name from localstorage
-            }
-            gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo, playerId);
-        }
-    },
     cityClickHandler(cityId) {
         if (!inputHandlers.selectedAction) {
             if (USE_DEFAULT_CLICK_ACTIONS) {
@@ -458,6 +417,47 @@ const inputHandlers = {
             gameController.upgradeAtCity(cityId, undefined)
         }
 
+    },
+    routeNodeClickHandler(nodeId) {
+        switch (inputHandlers.selectedAction) {
+            case 'move':
+                this.nodeActions.move(nodeId)
+            break;
+            case 'place':
+                this.nodeActions.place(nodeId)
+                break;
+            default:
+                if (inputHandlers.selectedAction) {
+                    console.error('We should noy be hitting default with a selected action')
+                }
+                if (USE_DEFAULT_CLICK_ACTIONS) {
+                    inputHandlers.additionalInfo = 'square'
+                    this.nodeActions.place(nodeId)
+                } else {
+                    console.warn('Nothing selected and no default')
+                }
+        }
+
+    },
+    nodeActions: {
+        place(nodeId) {
+            if (!isShape(inputHandlers?.additionalInfo)) {
+                if (USE_DEFAULT_CLICK_ACTIONS) {
+                    inputHandlers.additionalInfo = 'square'
+                } else {
+                    console.warn('No shape selected')
+                    return;
+                }
+            }
+            gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo);
+        },
+        move(nodeId){
+            if (inputHandlers.additionalInfo === 'selectPieceToMove') {
+                gameController.selectPieceToMove(nodeId)
+            } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
+                gameController.movePieceToLocation(nodeId);
+            }
+        },
     }
 }
 
@@ -553,6 +553,9 @@ const gameController = {
     resolveAction(player) {
         gameController.moveInformation = {}
         inputHandlers.clearAllActionSelection();
+        // TODO The below inputHandlers.toggleNonMoveButtons maybe shoulkd just be tied to cleanup of
+        // the input handlers? Like clearAllActionSelection?
+        inputHandlers.toggleNonMoveButtons(false)
         player.currentActions -= 1;
         if (player.currentActions === 0) {
             this.advanceTurn(player);
