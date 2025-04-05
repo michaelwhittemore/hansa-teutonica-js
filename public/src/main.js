@@ -41,11 +41,13 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
     'Epsilon': {
         name: 'Epsilon',
+        unlock: 'keys',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [900, 20]
     },
     'Zeta': {
         name: 'Zeta',
+        unlock: 'movement',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [30, 450],
     },
@@ -1452,7 +1454,6 @@ const gameLogController = {
             text = text.replaceAll('$PLAYER_NAME', playerNameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
-
         // TODO add to saved history
 
     }
@@ -1492,9 +1493,6 @@ const unlockKeysToValue = [1, 2, 2, 3, 4];
 
 const start = () => {
     gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
-    // gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, 
-    //     TEST_BOARD_CONFIG_CITIES_Straight)
-
 }
 
 
@@ -1502,31 +1500,6 @@ window.onload = start
 
 // TEST VARIABLES 
 
-const testCity = {
-    "cityName": "Test City A",
-    "occupants": [1, 0, 1, 1, 0, 1, 0, 0, 3, 3, 3, 3, 1, 3],
-    "openSpotIndex": 2,
-    "spotArray": [
-        [
-            "square",
-            "grey"
-        ],
-        [
-            "circle",
-            "grey"
-        ],
-        [
-            "square",
-            "orange"
-        ]
-    ]
-}
-
-const testCity2 = {
-    "cityName": "Test City B",
-    "occupants": [1, 0, 0, 1],
-    bonusSpotOccupantId: 1
-}
 
 // TEST, DELETE THIS TODO
 const addPixelAtLocation = (x, y, isBig = false, color) => {

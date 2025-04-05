@@ -3,10 +3,6 @@
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
-* **MOVE ACTION**
-    * May want to organize actionInfoDiv into its own controller - we already have actionInfo clear and warn methods
-    * We're going to need to store the number of moves availble - maybe just use the player? We can give them a new field that only is meaningful when taking this action
-* BUG!! If you are mid piece move and select a new button i.e. place piece or capture city you can skip resolving the move action, thus cheating out another turn. Let's grey all the other buttons out when mid move
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make sure all unlocks are on the board, might do the name clean up at the same time
@@ -17,8 +13,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
-* move method (as in your own pieces on the board) - need rules clarification - can you chose to only move one? --> **NEXT!!!!!!!**
-* bump method, will require some way to track player who needs to take an action, but doesn't have the turn 
+* bump method, will require some way to track player who needs to take an action, but doesn't have the turn  -- **Next**
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
@@ -41,6 +36,8 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~Move action~~
+~~BUG!! If you are mid piece move and select a new button i.e. place piece or capture city you can skip resolving the move action, thus cheating out another turn. Let's grey all the other buttons out when mid move~~
 ~~Update player Bank and supply to use circles and squares~~
 ~~2D-ify the game board~~
 ~~Need to add a helper to replace document.create element that should take in id and classArray. Like createDiv()~~
