@@ -426,6 +426,9 @@ const inputHandlers = {
             case 'place':
                 this.nodeActions.place(nodeId)
                 break;
+            case 'selectPieceToBump':
+                this.nodeActions.selectPieceToBump(nodeId)
+                break
             default:
                 if (inputHandlers.selectedAction) {
                     console.error('We should noy be hitting default with a selected action')
@@ -440,6 +443,19 @@ const inputHandlers = {
 
     },
     nodeActions: {
+        selectPieceToBump(nodeId){
+            // Need to call a game controller method here
+            // pass in the selected shape, other wise use default
+            if (!isShape(inputHandlers?.additionalInfo)) {
+                if (USE_DEFAULT_CLICK_ACTIONS) {
+                    inputHandlers.additionalInfo = 'square'
+                } else {
+                    console.warn('No shape selected')
+                    return;
+                }
+            }
+            gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
+        },
         place(nodeId) {
             if (!isShape(inputHandlers?.additionalInfo)) {
                 if (USE_DEFAULT_CLICK_ACTIONS) {
@@ -731,6 +747,27 @@ const gameController = {
         gameLogController.addTextToGameLog(`$PLAYER_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
         this.resolveAction(player)
         // eventually should chose circles vs squares, right now default to all circles, then square
+    },
+    bumpPieceFromNode(nodeId, shape, playerId){
+        // DEV 2
+        // ** HERE!!**
+
+        // 1. First verify that another player controls this location.
+        // 2. If not warn and end
+        // 3. If so need to calculate number of piece to be return to bank (include the piece being placed)
+        // 4. Check that the player has sufficient supply - if not warn and end
+        // 5. If they do, move the tax from supply to bank
+        // 6. Remove opponent piece (make sure it store it in the bump information property)
+        // 7. Speaking of, we need to create the bump information property on the gameController
+        // 8. Then we place the active player piece and update the nodeStorage object
+        // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
+        // 10. We will need a new method an subarea for this part of the action player
+        // 11. This should be delete as part of the cleanup
+        // 12. Then update inputHandler.selectedAction
+        // 13. We will need to store how many moves and pieces they have and show it 
+        // 14. Rememember that they get bonus pieces from the bank, and they might not have enough
+        // 15. We will need an adjenctRoute helper method. This will validate that they can't move randomly
+        // 16. This will take a lot of work and should probably be tested
     },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
