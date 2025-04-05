@@ -295,14 +295,13 @@ const inputHandlers = {
     },
     handleMoveButton() {
         // DEV
-        // TODO (if we already have MOVE selected we have to end or cancel the actions)
-        if (inputHandlers.selectedAction === 'move'){
+        if (inputHandlers.selectedAction === 'move') {
             console.warn('Ending the move action, still need to implement this further')
             document.getElementById('move').innerText = 'Move Pieces'
             inputHandlers.clearAllActionSelection();
+            gameController.endMoveAction();
             return;
         }
-        // Maybe I should break this out into two methods? Ending move and initaiting move?
         inputHandlers.clearAllActionSelection();
 
         document.getElementById('move').innerText = 'End Move Action';
@@ -311,19 +310,6 @@ const inputHandlers = {
         inputHandlers.additionalInfo = 'selectPieceToMove'
 
         inputHandlers.updateActionInfoText('Select one of your own pieces to move.')
-        // Most of the logic will be taken care of by routeNodeClickHandler and the gameController
-        // gameController method TBD
-    
-        // If the player has moved their final piece we will also need to end the action
-        // ^^^ This might happen in the game controller
-
-        // There will be two kinds of actions - selectPiece & selectTarget
-        // We also need to see if a move has already occured - if so this can become an 'End Move'
-        // Perhaps even even change the text of this button?
-        // If we end with zero pieces moved we should not take an action - no action resolved, 
-        // just reset button text and selection
-
-        // Need to inform the player that they've selected move
     },
     handleCaptureCityButton() {
         inputHandlers.clearAllActionSelection();
@@ -351,9 +337,11 @@ const inputHandlers = {
 
     clearAllActionSelection() {
         // NOTE: I should *NOT* be using this just to clear action info
+        document.getElementById('move').innerText = 'Move Pieces'
         inputHandlers.selectedAction = undefined;
         inputHandlers.selectedLocation = undefined;
         inputHandlers.additionalInfo = undefined;
+
         document.getElementById('actionInfo').innerHTML = ''
         document.getElementById('warningText').innerHTML = ''
     },
@@ -366,11 +354,11 @@ const inputHandlers = {
         document.getElementById('upgrade').onclick = this.handleUpgradeButton;
 
     },
-    updateActionInfoText(text, overWrite = true){
+    updateActionInfoText(text, overWrite = true) {
         // Eventually we might want action info to have its own controller object?
         // Especially given that we add buttons to it
         const actionInfoDiv = document.getElementById('actionInfo');
-        if (overWrite){
+        if (overWrite) {
             actionInfoDiv.innerHTML = '';
         }
         actionInfoDiv.innerText += text;
@@ -407,11 +395,11 @@ const inputHandlers = {
             }
         }
         // DEV 2
-        if (inputHandlers.selectedAction === 'move'){
+        if (inputHandlers.selectedAction === 'move') {
             console.log(`trying to take a move action at ${nodeId}`)
-            if(inputHandlers.additionalInfo === 'selectPieceToMove'){
+            if (inputHandlers.additionalInfo === 'selectPieceToMove') {
                 gameController.selectPieceToMove(nodeId)
-            } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo'){
+            } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
                 console.warn(`trying to move a piece to ${nodeId}`);
                 gameController.movePieceToLocation(nodeId);
             }
@@ -539,6 +527,7 @@ const gameController = {
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     resolveAction(player) {
+        gameController.moveInformation = {}
         inputHandlers.clearAllActionSelection();
         player.currentActions -= 1;
         if (player.currentActions === 0) {
@@ -548,6 +537,7 @@ const gameController = {
         this.playerArray.forEach(player => {
             playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
         })
+
     },
     placeWorkerOnNode(nodeId, shape, playerId) {
         let player;
@@ -580,12 +570,12 @@ const gameController = {
             color: player.color,
             playerId,
         };
-        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps )
+        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps)
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
         gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
         this.resolveAction(player)
     },
-    selectPieceToMove(nodeId, playerId){
+    selectPieceToMove(nodeId, playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -593,24 +583,28 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        if (gameController.moveInformation.movesLeft === undefined){
-            gameController.moveInformation.movesLeft = gameController.playerArray[playerId].maxMovement
-        }
+
         // DEV
         const routeId = getRouteIdFromNodeId(nodeId)
         const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
 
-        if(!node.occupied || node.playerId !== playerId){
+        if (!node.occupied || node.playerId !== playerId) {
             console.warn('You do not have a piece on this route node.')
             inputHandlers.warnInvalidAction('You do not have a piece on this route node.');
         } else {
+            console.log('here')
+            console.log(gameController.moveInformation)
+            if (gameController.moveInformation.movesUsed === undefined) {
+                gameController.moveInformation.movesUsed = 0;
+            }
+
             inputHandlers.additionalInfo = 'selectLocationToMoveTo'
             inputHandlers.updateActionInfoText(`You have a selected a ${node.shape}. Select an unoccupied route node to move there.`)
             // The below field will need to be cleaned up during action resolution
             gameController.moveInformation.originNode = node;
         }
     },
-    movePieceToLocation(nodeId, playerId){
+    movePieceToLocation(nodeId, playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -619,39 +613,75 @@ const gameController = {
             // TODO, check that the playerId who made the request is the active player
         }
         // DEV 
+        // It seems like we're getting back here even if we moved and didn't select a sqaure
         const routeId = getRouteIdFromNodeId(nodeId)
         const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-        
-        
+
         const originNode = gameController.moveInformation.originNode;
         const shape = originNode.shape
-        if (targetNode.occupied){
+        if (targetNode.occupied) {
             console.warn('This route node is already occupied.')
             inputHandlers.warnInvalidAction('This route node is already occupied.');
             return;
-        } 
+        }
         const updatedProps = {
             occupied: true,
             shape,
             color: player.color,
             playerId,
         }
-        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps )
+        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps)
 
         console.log(originNode)
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
         gameLogController.addTextToGameLog(
             `$PLAYER_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
-        // 5. Need to clear the origin location
-        // 6. Make sure no bank or supply are being updated
-        // 7. Subtract moves from the addtional info field and update the text if it's non-zero
-        // 7. If the player has moves left I think we just siwtch the sub action (inputHandler.additonalInfo)
-        // 8. If the player has no moves yet we will need an endMoveAction method - this can be called from
-        // either here or when the player willingly terminates there move. - this will depend on if the player
-        // took a move action or not
+        const clearedProps = {
+            occupied: false,
+            shape: undefined,
+            color: undefined,
+            playerId: undefined,
+        };
+        // TODO create a method to update a node on the routeStorageObject using just nodeId
+        // I think just doing an assign here works as originNode is just a reference to the one on the object
+        Object.assign(originNode, clearedProps);
+        boardController.clearPieceFromRouteNode(originNode.nodeId)
+        gameController.moveInformation.movesUsed++;
+        if (gameController.moveInformation.movesUsed === player.maxMovement) {
+            console.warn('used up all move actions')
+            this.endMoveAction(playerId)
+            return;
+        }
+        inputHandlers.updateActionInfoText(
+            `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed } left.`)
+        inputHandlers.additionalInfo = 'selectPieceToMove';
+        // HERE!!!!@
         // 9. endMoveAction will need to call our action resolution cleanup (which should reset the 
         // gameController.aditionalInfo to an empty object)
         // 10. Will also need to gameLog actions 
+        // 11. We will need to add endMoveAction to the button click handler regardless of movesUsed
+        // The function will determine the course of action based on the movesUSed it stores but
+        // the input handler isn't in charge of that decision
+    },
+    endMoveAction(playerId){
+
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // Works for zero or undefined
+        if (!gameController.moveInformation.movesUsed){
+            // The player never actually took an action
+            inputHandlers.clearAllActionSelection()
+            return;
+        } else {
+            gameLogController.addTextToGameLog(
+                `$PLAYER_NAME moved ${this.moveInformation.movesUsed} pieces.`, player)
+            this.resolveAction(player)
+        }
     },
     resupply(playerId) {
         let player;
@@ -931,6 +961,7 @@ const gameController = {
         })
         for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
             this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
+                nodeId: nodeToClearId,
                 occupied: false,
                 shape: undefined,
                 color: undefined,

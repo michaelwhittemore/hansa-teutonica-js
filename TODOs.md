@@ -7,6 +7,7 @@
     * May want to organize actionInfoDiv into its own controller - we already have actionInfo clear and warn methods
     * We're going to need to store the number of moves availble - maybe just use the player? We can give them a new field that only is meaningful when taking this action
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
+* add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make sure all unlocks are on the board, might do the name clean up at the same time
 * place collapse buttons at the actual edges. Might do some calulations when creating them
 * add the move ability  - will have some issues with both this and the bump ability in that we need to select additional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
@@ -83,6 +84,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * local storage
 * potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator
+* eventually, using 'this' is going to be preferable to referencing the gameController object as there may be more than one - will need a lot of clean up
 * resume game,
 * landing page 
 * keyboard short cuts
