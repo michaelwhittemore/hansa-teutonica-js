@@ -1,5 +1,5 @@
 // CONSTANTS
-const STARTING_BANK = 15; // no clue if this is correct (GAME RULES)
+const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
 const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
 const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
@@ -60,10 +60,10 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
     color: 'Color',
     keys: 'Keys',
     unlockedColors: 'Unlocked Colors',
-    supplySquares: 'Workers in Supply',
-    bankedSquares: 'Workers in Bank',
-    supplyCircles: 'Tradesmen (Circles) in Supply',
-    bankedCircles: 'Tradesmen (Circles) in Bank',
+    supplySquares: 'Traders (Squares) in Supply',
+    bankedSquares: 'Traders (Squares) in Bank',
+    supplyCircles: 'Merchants (Circles) in Supply',
+    bankedCircles: 'Merchants (Circles) in Bank',
     maxActions: 'Max Actions',
     currentActions: 'Actions Remaining',
     currentPoints: 'Current Non-Endgame Points',
@@ -274,29 +274,19 @@ const inputHandlers = {
         }
         inputHandlers.selectedAction = 'place'
         inputHandlers.updateActionInfoText("Select a kind of piece to place and a location")
-
-        const squareButton = document.createElement('button');
-        squareButton.innerText = 'Square'
-        squareButton.onclick = () => {
-            inputHandlers.additionalInfo = 'square'
-        }
-        // TODO - create a button method for actionInfo instead of doing it here
-        const actionInfoDiv = document.getElementById('actionInfo')
-        actionInfoDiv.append(squareButton);
-        const circleButton = document.createElement('button');
-        circleButton.innerText = 'Circle'
-        circleButton.onclick = () => {
-            inputHandlers.additionalInfo = 'circle'
-        }
-        actionInfoDiv.append(circleButton);
-
+        inputHandlers.addShapeSelectionToActionInfo()
     },
     handleBumpButton() {
         console.warn('Bump is not yet implemented!')
         // TODO
         // DEV 1
+
+        // NOTE this plan is *non-exhaustive* we don't take into account any clean up or UI updates
+        // or necessary refactoring
+
         // There's two parts - the first is pretty easy
-        // Use our standard flow to have the player select which oposing peice they want to bump and with what
+        // Use our standard flow to have the player select which oposing piece they want to bump and with what
+        // We need to verify the player can pay the correct amount from their stock (rulebook page 4)
         // Once that's done we will need to pause our normal input flow to take care of the piece owner selecting where to place
 
         // Remember that behavior changes when it's a circle
@@ -306,10 +296,18 @@ const inputHandlers = {
         // name TBD, but we want some special name for the player to distinguish them from the player
         // whose turn it currently is)
 
+        // We also need some computational logic to figure out how far the 
+
         // We will need to add TWO addtional sections to the nodeClickHandler. At this point it might make
         // sense to break out the nodeClickHandler into a lot of functions based on the inputHandlers.selectedAction
         // field
         // speaking of which, we will need to add two kinds of  new 'selectedAction's
+
+        inputHandlers.clearAllActionSelection();
+        inputHandlers.selectedAction = 'selectPieceToBump'
+        // Need to follow the example of handlePlacePiece in terms of piece selection
+        // ^^^ move this to a new function to avoid copypasta
+        // Let's double check the rulebook on this
     },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
@@ -333,7 +331,6 @@ const inputHandlers = {
 
         inputHandlers.selectedAction = 'capture';
         if (!inputHandlers.selectedLocation) {
-            console.warn('No location selected')
             inputHandlers.updateActionInfoText('Select a city to capture', true);
         } else {
             let playerId = undefined
@@ -370,7 +367,7 @@ const inputHandlers = {
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
         document.getElementById('upgrade').onclick = this.handleUpgradeButton;
     },
-    toggleNonMoveButtons(disabled){
+    toggleNonMoveButtons(disabled) {
         NON_MOVE_BUTTON_LIST.forEach(buttonName => {
             document.getElementById(buttonName).disabled = disabled;
         })
@@ -383,6 +380,21 @@ const inputHandlers = {
             actionInfoDiv.innerHTML = '';
         }
         actionInfoDiv.innerText += text;
+    },
+    addShapeSelectionToActionInfo() {
+        const squareButton = document.createElement('button');
+        squareButton.innerText = 'Square'
+        squareButton.onclick = () => {
+            inputHandlers.additionalInfo = 'square'
+        }
+        const actionInfoDiv = document.getElementById('actionInfo')
+        actionInfoDiv.append(squareButton);
+        const circleButton = document.createElement('button');
+        circleButton.innerText = 'Circle'
+        circleButton.onclick = () => {
+            inputHandlers.additionalInfo = 'circle'
+        }
+        actionInfoDiv.append(circleButton);
     },
     warnInvalidAction(warningText) {
         document.getElementById('warningText').innerHTML = '';
@@ -657,10 +669,10 @@ const gameController = {
             return;
         }
         inputHandlers.updateActionInfoText(
-            `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed } left.`)
+            `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
         inputHandlers.additionalInfo = 'selectPieceToMove';
     },
-    endMoveAction(playerId){
+    endMoveAction(playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -670,7 +682,7 @@ const gameController = {
         }
         inputHandlers.toggleNonMoveButtons(false)
         // The player never actually took an action, works for zero or undefined
-        if (!gameController.moveInformation.movesUsed){
+        if (!gameController.moveInformation.movesUsed) {
             inputHandlers.clearAllActionSelection()
             return;
         } else {

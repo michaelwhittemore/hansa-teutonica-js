@@ -13,6 +13,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
+* technically, it's legal to swap circles and squares as part of a move action (for two moves)
 * bump method, will require some way to track player who needs to take an action, but doesn't have the turn  -- **Next**
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
