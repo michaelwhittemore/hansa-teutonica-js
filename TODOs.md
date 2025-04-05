@@ -6,6 +6,7 @@
 * **MOVE ACTION**
     * May want to organize actionInfoDiv into its own controller - we already have actionInfo clear and warn methods
     * We're going to need to store the number of moves availble - maybe just use the player? We can give them a new field that only is meaningful when taking this action
+* BUG!! If you are mid piece move and select a new button i.e. place piece or capture city you can skip resolving the move action, thus cheating out another turn. Let's grey all the other buttons out when mid move
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make sure all unlocks are on the board, might do the name clean up at the same time
