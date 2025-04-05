@@ -277,7 +277,6 @@ const inputHandlers = {
         inputHandlers.addShapeSelectionToActionInfo()
     },
     handleBumpButton() {
-        console.warn('Bump is not yet implemented!')
         // DEV 1
 
         // NOTE this plan is *non-exhaustive* we don't take into account any clean up or UI updates
@@ -633,6 +632,7 @@ const gameController = {
         if (!node.occupied || node.playerId !== playerId) {
             console.warn('You do not have a piece on this route node.')
             inputHandlers.warnInvalidAction('You do not have a piece on this route node.');
+            return;
         } else {
             if (gameController.moveInformation.movesUsed === undefined) {
                 gameController.moveInformation.movesUsed = 0;
@@ -752,14 +752,52 @@ const gameController = {
         // DEV 2
         // ** HERE!!**
 
-        // 1. First verify that another player controls this location.
-        // 2. If not warn and end
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+
+        // 1. First verify that another player controls this location - if not warn and return
+        const routeId = getRouteIdFromNodeId(nodeId)
+        const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+        console.log(node)
+        if (!node.occupied || node.playerId === playerId){
+            console.warn('The route node needs to be occupied by a rival player.')
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction('The route node needs to be occupied by a rival player.')
+            return
+        }
         // 3. If so need to calculate number of piece to be return to bank (include the piece being placed)
+        const bumpedPlayerId = node.playerId;
+        const bumpedShape = node.shape;
+        let squareCost = 1;
+        let circleCost = 0;
+        if (bumpedShape === 'circle'){
+            squareCost++;
+        };
+        // Update the cost to include the piece being placed
+        if (shape === 'square'){
+            squareCost++;
+        } else {
+            circleCost++;
+        }
         // 4. Check that the player has sufficient supply - if not warn and end
+        if (player.supplySquares < squareCost || player.supplyCircles < circleCost){
+            console.warn(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`)
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.warnInvalidAction(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`);
+            return 
+        }
         // 5. If they do, move the tax from supply to bank
+        player.supplySquares -= squareCost;
+        player.bankedSquares += squareCost;
         // 6. Remove opponent piece (make sure it store it in the bump information property)
         // 7. Speaking of, we need to create the bump information property on the gameController
         // 8. Then we place the active player piece and update the nodeStorage object
+        // 8. might also want to move some of the placePiece logic out from the placeWorkerOnNode method
         // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
         // 10. We will need a new method an subarea for this part of the action player
         // 11. This should be delete as part of the cleanup
@@ -768,6 +806,8 @@ const gameController = {
         // 14. Rememember that they get bonus pieces from the bank, and they might not have enough
         // 15. We will need an adjenctRoute helper method. This will validate that they can't move randomly
         // 16. This will take a lot of work and should probably be tested
+        // 17. All of that will need to be part of a TBD name game controller method
+        // 18. Also include gameLogging
     },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
