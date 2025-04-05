@@ -294,6 +294,22 @@ const inputHandlers = {
     handleBumpButton() {
         console.warn('Bump is not yet implemented!')
         // TODO
+        // DEV 1
+        // There's two parts - the first is pretty easy
+        // Use our standard flow to have the player select which oposing peice they want to bump and with what
+        // Once that's done we will need to pause our normal input flow to take care of the piece owner selecting where to place
+
+        // Remember that behavior changes when it's a circle
+        // I think we first need to figure out how to pass the turn (the turn stays the same
+        // -but we want to add some addttional information to the turn tracker)
+        // The game controller will need a sperate field to figure  out who is the active player
+        // name TBD, but we want some special name for the player to distinguish them from the player
+        // whose turn it currently is)
+
+        // We will need to add TWO addtional sections to the nodeClickHandler. At this point it might make
+        // sense to break out the nodeClickHandler into a lot of functions based on the inputHandlers.selectedAction
+        // field
+        // speaking of which, we will need to add two kinds of  new 'selectedAction's
     },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
