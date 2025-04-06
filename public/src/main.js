@@ -464,7 +464,7 @@ const inputHandlers = {
                     return;
                 }
             }
-            gameController.placeWorkerOnNode(nodeId, inputHandlers.additionalInfo);
+            gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
         },
         move(nodeId){
             if (inputHandlers.additionalInfo === 'selectPieceToMove') {
@@ -491,6 +491,7 @@ const gameController = {
         this.routeStorageObject = {}
         this.cityStorageObject = {};
         this.moveInformation = {};
+        this.bumpInformation = {};
         inputHandlers.bindInputHandlers()
         // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
@@ -566,7 +567,8 @@ const gameController = {
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     resolveAction(player) {
-        gameController.moveInformation = {}
+        gameController.moveInformation = {};
+        gameController.bumpInformation = {};
         inputHandlers.clearAllActionSelection();
         // TODO The below inputHandlers.toggleNonMoveButtons maybe shoulkd just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
@@ -581,7 +583,7 @@ const gameController = {
         })
 
     },
-    placeWorkerOnNode(nodeId, shape, playerId) {
+    placeWorkerOnNodeAction(nodeId, shape, playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -597,25 +599,34 @@ const gameController = {
             inputHandlers.warnInvalidAction(`Not enough ${shape}s in your supply!`)
             return
         }
-        // FIX THIS, need route ID TODO use getNodeFromID helper function
-        const routeId = nodeId.substring(0, nodeId.length - 2);
+        const routeId = getRouteIdFromNodeId(nodeId);
         if (this.routeStorageObject[routeId]?.routeNodes[nodeId]?.occupied) {
             console.warn('That route node is already occupied!')
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction('That route node is already occupied!')
             return
         }
+
         player[playerShapeKey] -= 1;
+        this.placePieceOnNode(nodeId, shape, player);
+        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
+        this.resolveAction(player)
+    },
+    placePieceOnNode(nodeId, shape, player){
+        // This just updates the storage node and the game map. It doesn't subtract from player supply
+        // It also assumes the target node is empty
+        // TODO - have the movePieceToLocation method use this methood
+        // dev 3
+        const routeId = getRouteIdFromNodeId(nodeId);
         const updatedProps = {
             occupied: true,
             shape,
             color: player.color,
-            playerId,
+            playerId: player.id,
         };
         Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps)
         boardController.addPieceToRouteNode(nodeId, player.color, shape);
-        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
-        this.resolveAction(player)
+
     },
     selectPieceToMove(nodeId, playerId) {
         let player;
@@ -661,16 +672,8 @@ const gameController = {
             inputHandlers.warnInvalidAction('This route node is already occupied.');
             return;
         }
-        const updatedProps = {
-            occupied: true,
-            shape,
-            color: player.color,
-            playerId,
-        }
-        Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps)
+        this.placePieceOnNode(nodeId, shape, player);
 
-        console.log(originNode)
-        boardController.addPieceToRouteNode(nodeId, player.color, shape);
         gameLogController.addTextToGameLog(
             `$PLAYER_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
         const clearedProps = {
@@ -791,13 +794,29 @@ const gameController = {
             inputHandlers.warnInvalidAction(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`);
             return 
         }
-        // 5. If they do, move the tax from supply to bank
+        // 5. If they do, move the tax from supply to bank (also account for the piece being moved)
         player.supplySquares -= squareCost;
         player.bankedSquares += squareCost;
+        player.supplyCircles -= circleCost;
+        player.bankedCircles -= circleCost;
+        if (shape === 'square'){
+            player.bankedSquares--;
+        } else {
+            player.bankedCircles++;
+        }
         // 6. Remove opponent piece (make sure it store it in the bump information property)
-        // 7. Speaking of, we need to create the bump information property on the gameController
+        const clearedProps = {
+            occupied: false,
+            shape: undefined,
+            color: undefined,
+            playerId: undefined,
+        };
+        Object.assign(node, clearedProps);
+        boardController.clearPieceFromRouteNode(nodeId)
+        this.bumpInformation.bumpedShape = bumpedShape;
+        // this.bumpInformation.squaresLeft = 
         // 8. Then we place the active player piece and update the nodeStorage object
-        // 8. might also want to move some of the placePiece logic out from the placeWorkerOnNode method
+        this.placePieceOnNode(nodeId, shape, player);
         // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
         // 10. We will need a new method an subarea for this part of the action player
         // 11. This should be delete as part of the cleanup
