@@ -296,7 +296,7 @@ const inputHandlers = {
 
         // We also need some computational logic to figure out how far the 
 
-        // We will need to add TWO addtional sections to the nodeClickHandler. At this point it might make
+        // We will need to add TWO Additional sections to the nodeClickHandler. At this point it might make
         // sense to break out the nodeClickHandler into a lot of functions based on the inputHandlers.selectedAction
         // field
         // speaking of which, we will need to add two kinds of  new 'selectedAction's
@@ -615,8 +615,6 @@ const gameController = {
     placePieceOnNode(nodeId, shape, player){
         // This just updates the storage node and the game map. It doesn't subtract from player supply
         // It also assumes the target node is empty
-        // TODO - have the movePieceToLocation method use this methood
-        // dev 3
         const routeId = getRouteIdFromNodeId(nodeId);
         const updatedProps = {
             occupied: true,
@@ -752,9 +750,6 @@ const gameController = {
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
     bumpPieceFromNode(nodeId, shape, playerId){
-        // DEV 2
-        // ** HERE!!**
-
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -778,8 +773,13 @@ const gameController = {
         const bumpedShape = node.shape;
         let squareCost = 1;
         let circleCost = 0;
+        let circlesToPlace = 0; // This is only used for the turnTrackerAdditionalInformation UI
+        let squaresToPlace = 2; // Note that is this always two assuming a full bank
+        // IMPORTANT -- Looks like rules may not be as cut and dry as I thought, see page four
+        // in the top right corner- can take out personal supply if bank isn't available
         if (bumpedShape === 'circle'){
             squareCost++;
+            circlesToPlace++;
         };
         // Update the cost to include the piece being placed
         if (shape === 'square'){
@@ -814,15 +814,27 @@ const gameController = {
         Object.assign(node, clearedProps);
         boardController.clearPieceFromRouteNode(nodeId)
         this.bumpInformation.bumpedShape = bumpedShape;
-        // this.bumpInformation.squaresLeft = 
+        // May need additional bumpInformation
+
         // 8. Then we place the active player piece and update the nodeStorage object
         this.placePieceOnNode(nodeId, shape, player);
+
+
+        // DEV 2
         // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
+        // We already have turnTrackerAdditionalInformation
+        turnTrackerController.updateTurnTrackerWithBumpInfo({
+            bumpingPlayer: player,
+            bumpedPlayer: this.playerArray[bumpedPlayerId],
+            circlesToPlace,
+            squaresToPlace
+        })
         // 10. We will need a new method an subarea for this part of the action player
         // 11. This should be delete as part of the cleanup
         // 12. Then update inputHandler.selectedAction
         // 13. We will need to store how many moves and pieces they have and show it 
         // 14. Rememember that they get bonus pieces from the bank, and they might not have enough
+        // But the piece they had on the board is free
         // 15. We will need an adjenctRoute helper method. This will validate that they can't move randomly
         // 16. This will take a lot of work and should probably be tested
         // 17. All of that will need to be part of a TBD name game controller method
@@ -1538,12 +1550,31 @@ const turnTrackerController = {
         document.getElementById('turnTrackerPlayerName').innerText = player.name
         document.getElementById('turnTrackerPlayerColor').style.color = player.color
         document.getElementById('turnTrackerActions').innerText = player.currentActions
-
+        // clear the turnTrackerAdditionalInformation as well
+        document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         this.resetTurnTimer()
     },
-    turnTrackerAdditionalInformation(props) {
-        // TODO
-        // I think we will need an area for things like bumping or placing new tokens 
+    updateTurnTrackerWithBumpInfo(props) {
+        document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
+        const {bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace} = props
+ 
+        // Dev 3
+        const bumpInfoDiv = createDivWithClassAndIdAndStyle(['bumpInfo'])
+        let bumpInfoHTML = `<span style="color: ${bumpingPlayer.color}">${bumpingPlayer.name}</span> `
+        bumpInfoHTML += `has displaced <span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span>. `
+        bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has ${squaresToPlace}`
+        if (squaresToPlace){
+            bumpInfoHTML += ` square${squaresToPlace > 1 ? 's' : ''} ${circlesToPlace ? 'and' : ''}`
+        }
+        if (circlesToPlace) {
+            bumpInfoHTML+= ' 1 circle '
+        }
+        bumpInfoHTML+= 'left to place on adjacent routes.'
+        
+
+        bumpInfoDiv.innerHTML = bumpInfoHTML;
+        console.log(bumpInfoHTML)
+        document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
     },
     resetTurnTimer() {
         // TODO
