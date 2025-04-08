@@ -306,23 +306,23 @@ const inputHandlers = {
         inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
         inputHandlers.addShapeSelectionToActionInfo()
     },
-    setUpBumpActionInfo(nodeId, isCircle){
+    setUpBumpActionInfo(nodeId, isCircle) {
         console.log('setUpBumpActionInfo')
         // DEV 4
         // 1. Toggle off all buttons
         this.toggleInputButtons(true)
         // 2. Add some player info to the action info box
-        this.updateActionInfoText(`Your ${isCircle ? 'circle': 'square'} has been displaced from ${nodeId}. `)
-        this.updateActionInfoText(` You may place 2 squares${isCircle? ' and 1 circle' : ''}.`, false)
+        this.updateActionInfoText(`Your ${isCircle ? 'circle' : 'square'} has been displaced from ${nodeId}. `)
+        this.updateActionInfoText(` You may place 2 squares${isCircle ? ' and 1 circle' : ''}.`, false)
         // 3. If the player has both shapes left add a button. - 
-        if (isCircle){
+        if (isCircle) {
             this.addShapeSelectionToActionInfo()
-        } 
+        }
         this.additionalInfo = 'square'; // This isn't purely a default. 
         // Otherwise we set inputHandlers.selectedSHape(I think that's the field) - might just be additionalInfo
         // to whatever they have left
     },
-    updateBumpActionInfo(){
+    updateBumpActionInfo() {
         // DEV 5
     },
     handleMoveButton() {
@@ -385,7 +385,7 @@ const inputHandlers = {
     },
     toggleInputButtons(disabled, buttonToExclude = false) {
         BUTTON_LIST.forEach(buttonName => {
-            if (buttonName !== buttonToExclude){
+            if (buttonName !== buttonToExclude) {
                 document.getElementById(buttonName).disabled = disabled;
             }
         })
@@ -442,7 +442,7 @@ const inputHandlers = {
         switch (inputHandlers.selectedAction) {
             case 'move':
                 this.nodeActions.move(nodeId)
-            break;
+                break;
             case 'place':
                 this.nodeActions.place(nodeId)
                 break;
@@ -466,7 +466,7 @@ const inputHandlers = {
 
     },
     nodeActions: {
-        selectPieceToBump(nodeId){
+        selectPieceToBump(nodeId) {
             // Need to call a game controller method here
             // pass in the selected shape, other wise use default
             if (!isShape(inputHandlers?.additionalInfo)) {
@@ -479,7 +479,7 @@ const inputHandlers = {
             }
             gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
         },
-        placeSelectedBumpPieceOnNode(nodeId){
+        placeSelectedBumpPieceOnNode(nodeId) {
             if (!isShape(inputHandlers?.additionalInfo)) {
                 console.error('Trying to do place a bumped piece without a shape.')
             }
@@ -497,7 +497,7 @@ const inputHandlers = {
             }
             gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
         },
-        move(nodeId){
+        move(nodeId) {
             if (inputHandlers.additionalInfo === 'selectPieceToMove') {
                 gameController.selectPieceToMove(nodeId)
             } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
@@ -640,10 +640,10 @@ const gameController = {
 
         player[playerShapeKey] -= 1;
         this.placePieceOnNode(nodeId, shape, player);
-        gameLogController.addTextToGameLog(`$PLAYER_NAME placed a ${shape} on ${nodeId}`, player)
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
         this.resolveAction(player)
     },
-    placePieceOnNode(nodeId, shape, player){
+    placePieceOnNode(nodeId, shape, player) {
         // This just updates the storage node and the game map. It doesn't subtract from player supply
         // It also assumes the target node is empty
         const routeId = getRouteIdFromNodeId(nodeId);
@@ -704,7 +704,7 @@ const gameController = {
         this.placePieceOnNode(nodeId, shape, player);
 
         gameLogController.addTextToGameLog(
-            `$PLAYER_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
+            `$PLAYER1_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
         const clearedProps = {
             occupied: false,
             shape: undefined,
@@ -738,7 +738,7 @@ const gameController = {
             return;
         } else {
             gameLogController.addTextToGameLog(
-                `$PLAYER_NAME moved ${this.moveInformation.movesUsed} pieces.`, player)
+                `$PLAYER1_NAME moved ${this.moveInformation.movesUsed} pieces.`, player)
             this.resolveAction(player)
         }
     },
@@ -776,11 +776,11 @@ const gameController = {
             player.supplySquares += resuppliedSquares;
             player.bankedSquares -= resuppliedSquares;
         }
-        gameLogController.addTextToGameLog(`$PLAYER_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
         this.resolveAction(player)
         // eventually should chose circles vs squares, right now default to all circles, then square
     },
-    bumpPieceFromNode(nodeId, shape, playerId){
+    bumpPieceFromNode(nodeId, shape, playerId) {
         let player;
         if (IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
@@ -793,7 +793,7 @@ const gameController = {
         const routeId = getRouteIdFromNodeId(nodeId)
         const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
         console.log(node)
-        if (!node.occupied || node.playerId === playerId){
+        if (!node.occupied || node.playerId === playerId) {
             console.warn('The route node needs to be occupied by a rival player.')
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction('The route node needs to be occupied by a rival player.')
@@ -808,29 +808,29 @@ const gameController = {
         let squaresToPlace = 2; // Note that is this always two assuming a full bank
         // IMPORTANT -- Looks like rules may not be as cut and dry as I thought, see page four
         // in the top right corner- can take out personal supply if bank isn't available
-        if (bumpedShape === 'circle'){
+        if (bumpedShape === 'circle') {
             squareCost++;
             circlesToPlace++;
         };
         // Update the cost to include the piece being placed
-        if (shape === 'square'){
+        if (shape === 'square') {
             squareCost++;
         } else {
             circleCost++;
         }
         // 4. Check that the player has sufficient supply - if not warn and end
-        if (player.supplySquares < squareCost || player.supplyCircles < circleCost){
+        if (player.supplySquares < squareCost || player.supplyCircles < circleCost) {
             console.warn(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`);
-            return 
+            return
         }
         // 5. If they do, move the tax from supply to bank (also account for the piece being moved)
         player.supplySquares -= squareCost;
         player.bankedSquares += squareCost;
         player.supplyCircles -= circleCost;
         player.bankedCircles -= circleCost;
-        if (shape === 'square'){
+        if (shape === 'square') {
             player.bankedSquares--;
         } else {
             player.bankedCircles++;
@@ -845,8 +845,11 @@ const gameController = {
         Object.assign(node, clearedProps);
         boardController.clearPieceFromRouteNode(nodeId)
         this.bumpInformation.bumpedShape = bumpedShape;
+        this.bumpInformation.bumpingPlayer = player;
         this.bumpInformation.bumpedPlayer = this.playerArray[bumpedPlayerId];
-        // May need additional bumpInformation
+        this.bumpInformation.freePiece = true;
+        this.bumpInformation.circlesToPlace = circlesToPlace;
+        this.bumpInformation.squaresToPlace = squaresToPlace;
 
         // 8. Then we place the active player piece and update the nodeStorage object
         this.placePieceOnNode(nodeId, shape, player);
@@ -866,12 +869,12 @@ const gameController = {
 
         inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape === 'circle');
 
-        // 15. We will need an adjenctRoute helper method. This will validate that they can't move randomly
+        // 15. We will need an adjacentRoute helper method. This will validate that they can't move randomly
         // 16. This will take a lot of work and should probably be tested
         // 17. All of that will need to be part of a TBD name game controller method
         // 18. Also include gameLogging
     },
-    placeBumpedPieceOnNode(nodeId, shape, playerId){
+    placeBumpedPieceOnNode(nodeId, shape, playerId) {
         console.log('trying to place bumped piece')
         let player;
         if (IS_HOTSEAT_MODE) {
@@ -895,16 +898,68 @@ const gameController = {
         // belongs to an adjacent route - I think I'll do this later
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
-        console.warn(this.bumpInformation)
+        if (shape === 'circle' && this.bumpInformation.circlesToPlace === 0) {
+            console.warn('You can not place another circle.')
+            inputHandlers.warnInvalidAction('You can not place another circle.');
+            return;
+        }
+        if (shape === 'square' && this.bumpInformation.squaresToPlace === 0) {
+            console.warn('You can not place another square.')
+            inputHandlers.warnInvalidAction('You can not place another square.');
+            return;
+        }
+        console.log(this.bumpInformation)
+        // dev
         // 3. Check if the player has used their free shape - if so clear it
-        // 4. If not first check their bank then supply - (not going to mess with relocation options)
-        // 5. Once all validation has occured, we must remove the piece from either the bank or supply
+        let source; // free, supply, bank
+        if (this.bumpInformation.freePiece && shape === this.bumpInformation.bumpedShape) {
+            // NOT CORRECT!!!! Needs to be for when the shapes line up
+            source = 'free';
+            this.bumpInformation.freePiece = false;
+        } else {
+            // We should never be using the supply/bank for circles I think
+            if (shape === 'circle') {
+                console.error('Trying to place an un-free circle')
+            }
+            if (player.bankedSquares === 0) {
+                if (player.supplySquares === 0) {
+                    // We shouldn't reach here - this is a softlock
+                    // TODO eventually ad a relocation option
+                    console.error('You have no squares in your bank or supply.')
+                    inputHandlers.warnInvalidAction('You have no squares in your bank or supply.');
+                    return;
+                } else {
+                    player.supplySquares--;
+                    source = 'supply';
+                }
+            } else {
+                player.bankedSquares--;
+                source = 'bank';
+            }
+
+        }
         // 6. Use the place method I created on the gameController for move to place the piece
+        this.placePieceOnNode(nodeId, shape, player);
         // 7. Bump place resolution:
         // 8. Update gameController.bumpInfo
-        // 9. If the player has no more bumpMoves left we do gameLogging and action resolution
+        if (shape === 'circle') {
+            this.bumpInformation.circlesToPlace--;
+        } else if (shape === 'square') {
+            this.bumpInformation.squaresToPlace--;
+        }
+        // Two sitauations trigger bump end - out of moves or out of availble pieces
+        const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
+        const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
+        console.log('outOfMoves', outOfMoves)
+        console.log('outOfPieces', outOfPieces)
+        if(outOfMoves || outOfPieces){
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`, 
+                this.bumpInformation.bumpingPlayer, player)
+            this.resolveAction(this.bumpInformation.bumpingPlayer)
+        }
         // 10. If they still have any moves left we update the turnTracker and the BumpActionInfo on
         // the inputHandler
+        // HERE!!!!
         // 11. We also should update the player area to show their current bank and supply
         // 11. I don't think we need to change the selectedAction in  that case?
 
@@ -966,7 +1021,7 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-        gameLogController.addTextToGameLog(`$PLAYER_NAME captured the city of ${cityName}`, player);
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}`, player);
         this.resolveAction(player);
     },
     upgradeAtCity(cityName, playerId) {
@@ -999,6 +1054,7 @@ const gameController = {
             console.warn(`You can't upgrade your ${unlockName} any further.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
+            return;
         }
 
         switch (city.unlock) {
@@ -1009,7 +1065,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.purse++;
                 player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
-                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
+                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
                 break;
             case 'action':
@@ -1021,7 +1077,7 @@ const gameController = {
                 player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
                 // We only give the player a free action when they are actually advancing the total
                 // i.e. not going from 3 -> 3 at index 1 ->2
-                let actionUpgradeText = `$PLAYER_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
+                let actionUpgradeText = `$PLAYER1_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
                 if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
                     player.currentActions++;
                     actionUpgradeText += ' They get a free action as a result'
@@ -1036,7 +1092,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.colors++;
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
-                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
+                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
                 break;
             case 'movement':
@@ -1046,7 +1102,7 @@ const gameController = {
                 }
                 player.unlockArrayIndex.maxMovement++;
                 player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
-                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
+                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
                 break;
             case 'keys':
@@ -1056,17 +1112,17 @@ const gameController = {
                 }
                 player.unlockArrayIndex.keys++;
                 player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
-                gameLogController.addTextToGameLog(`$PLAYER_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
+                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
                 break;
             default:
                 console.error('we should not hit the default')
         }
         if (city.unlock === 'movement') {
-            gameLogController.addTextToGameLog(`$PLAYER_NAME has unlocked a circle for their supply.`, player);
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
             player.supplyCircles++;
         } else {
-            gameLogController.addTextToGameLog(`$PLAYER_NAME has unlocked a square for their supply.`, player)
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
             player.supplySquares++
         }
         // TODO would make sense to move the bank update to routeCompleted Method
@@ -1139,7 +1195,7 @@ const gameController = {
     },
     routeCompleted(routeId, player) {
         // It will also check for tokens (we will need to create a token holder when initializing routes)
-        gameLogController.addTextToGameLog(`$PLAYER_NAME has completed route ${routeId}`, player)
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
         const route = this.routeStorageObject[routeId]
         route.cities.forEach(cityId => {
             const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
@@ -1159,7 +1215,7 @@ const gameController = {
         }
     },
     scorePoints(pointValue, player) {
-        const pointScoreText = `$PLAYER_NAME scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
+        const pointScoreText = `$PLAYER1_NAME scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
         gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
@@ -1625,20 +1681,20 @@ const turnTrackerController = {
     },
     updateTurnTrackerWithBumpInfo(props) {
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
-        const {bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace} = props
+        const { bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace } = props
         const bumpInfoDiv = createDivWithClassAndIdAndStyle(['bumpInfo'])
         // Building out the html
         let bumpInfoHTML = `<span style="color: ${bumpingPlayer.color}">${bumpingPlayer.name}</span> `
         bumpInfoHTML += `has displaced <span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span>. `
         bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has ${squaresToPlace}`
-        if (squaresToPlace){
+        if (squaresToPlace) {
             bumpInfoHTML += ` square${squaresToPlace > 1 ? 's' : ''} ${circlesToPlace ? 'and' : ''}`
         }
         if (circlesToPlace) {
-            bumpInfoHTML+= ' 1 circle '
+            bumpInfoHTML += ' 1 circle '
         }
-        bumpInfoHTML+= 'left to place on adjacent routes.'
-        
+        bumpInfoHTML += 'left to place on adjacent routes.'
+
         bumpInfoDiv.innerHTML = bumpInfoHTML;
         document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
     },
@@ -1667,15 +1723,19 @@ const gameLogController = {
         }
         this.isCollapsed = !this.isCollapsed
     },
-    addTextToGameLog(text, player) {
+    addTextToGameLog(text, player1, player2) {
         // player is an optional parameter
         // what we want to do is replace every instance of the player name with a span 
         // that wraps around them and contains their color
         // I think we can just do a string replace, we have full control over the inputs in this method
         const timestamp = (new Date()).toLocaleTimeString('en-US')
-        if (player) {
-            const playerNameSpan = `<span style="color: ${player.color}">${player.name}</span>`
-            text = text.replaceAll('$PLAYER_NAME', playerNameSpan)
+        if (player1) {
+            const player1NameSpan = `<span style="color: ${player1.color}">${player1.name}</span>`
+            text = text.replaceAll('$PLAYER1_NAME', player1NameSpan)
+        }
+        if (player2) {
+            const player2NameSpan = `<span style="color: ${player2.color}">${player2.name}</span>`
+            text = text.replaceAll('$PLAYER2_NAME', player2NameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
         // TODO add to saved history
