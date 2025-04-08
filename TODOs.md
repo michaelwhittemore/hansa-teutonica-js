@@ -102,6 +102,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * add linter
 * reorganize CSS and methods (just the ordering)
 * add images for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
+* corner case of empty bank and supply when being bumped - techincally the player can move their placed pieces
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j

@@ -3,7 +3,7 @@ const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https
 const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
 const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
-const NON_MOVE_BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token'];
+const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
 const APPROXIMATE_NODE_OFFSET = 45 / 2;
@@ -306,6 +306,25 @@ const inputHandlers = {
         inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
         inputHandlers.addShapeSelectionToActionInfo()
     },
+    setUpBumpActionInfo(nodeId, isCircle){
+        console.log('setUpBumpActionInfo')
+        // DEV 4
+        // 1. Toggle off all buttons
+        this.toggleInputButtons(true)
+        // 2. Add some player info to the action info box
+        this.updateActionInfoText(`Your ${isCircle ? 'circle': 'square'} has been displaced from ${nodeId}. `)
+        this.updateActionInfoText(` You may place 2 squares${isCircle? ' and 1 circle' : ''}.`, false)
+        // 3. If the player has both shapes left add a button. - 
+        if (isCircle){
+            this.addShapeSelectionToActionInfo()
+        } 
+        this.additionalInfo = 'square'; // This isn't purely a default. 
+        // Otherwise we set inputHandlers.selectedSHape(I think that's the field) - might just be additionalInfo
+        // to whatever they have left
+    },
+    updateBumpActionInfo(){
+        // DEV 5
+    },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
             document.getElementById('move').innerText = 'Move Pieces'
@@ -314,7 +333,8 @@ const inputHandlers = {
             return;
         }
         inputHandlers.clearAllActionSelection();
-        inputHandlers.toggleNonMoveButtons(true)
+        // Turn off all non-'move' buttons
+        inputHandlers.toggleInputButtons(true, 'move')
 
         document.getElementById('move').innerText = 'End Move Action';
 
@@ -345,7 +365,6 @@ const inputHandlers = {
         }
         gameController.resupply(playerId);
     },
-
     clearAllActionSelection() {
         // NOTE: I should *NOT* be using this just to clear action info
         document.getElementById('move').innerText = 'Move Pieces'
@@ -364,9 +383,11 @@ const inputHandlers = {
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
         document.getElementById('upgrade').onclick = this.handleUpgradeButton;
     },
-    toggleNonMoveButtons(disabled) {
-        NON_MOVE_BUTTON_LIST.forEach(buttonName => {
-            document.getElementById(buttonName).disabled = disabled;
+    toggleInputButtons(disabled, buttonToExclude = false) {
+        BUTTON_LIST.forEach(buttonName => {
+            if (buttonName !== buttonToExclude){
+                document.getElementById(buttonName).disabled = disabled;
+            }
         })
     },
     updateActionInfoText(text, overWrite = true) {
@@ -428,9 +449,12 @@ const inputHandlers = {
             case 'selectPieceToBump':
                 this.nodeActions.selectPieceToBump(nodeId)
                 break
+            case 'placeBumpedPiece':
+                this.nodeActions.placeSelectedBumpPieceOnNode(nodeId)
+                break
             default:
                 if (inputHandlers.selectedAction) {
-                    console.error('We should noy be hitting default with a selected action')
+                    console.error('We should not be hitting default with a selected action')
                 }
                 if (USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
@@ -454,6 +478,13 @@ const inputHandlers = {
                 }
             }
             gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
+        },
+        placeSelectedBumpPieceOnNode(nodeId){
+            if (!isShape(inputHandlers?.additionalInfo)) {
+                console.error('Trying to do place a bumped piece without a shape.')
+            }
+            // dev 6
+            gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.additionalInfo)
         },
         place(nodeId) {
             if (!isShape(inputHandlers?.additionalInfo)) {
@@ -570,9 +601,9 @@ const gameController = {
         gameController.moveInformation = {};
         gameController.bumpInformation = {};
         inputHandlers.clearAllActionSelection();
-        // TODO The below inputHandlers.toggleNonMoveButtons maybe shoulkd just be tied to cleanup of
+        // TODO The below inputHandlers.toggleInputButtons maybe shoulkd just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
-        inputHandlers.toggleNonMoveButtons(false)
+        inputHandlers.toggleInputButtons(false)
         player.currentActions -= 1;
         if (player.currentActions === 0) {
             this.advanceTurn(player);
@@ -700,7 +731,7 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        inputHandlers.toggleNonMoveButtons(false)
+        inputHandlers.toggleInputButtons(false)
         // The player never actually took an action, works for zero or undefined
         if (!gameController.moveInformation.movesUsed) {
             inputHandlers.clearAllActionSelection()
@@ -814,11 +845,11 @@ const gameController = {
         Object.assign(node, clearedProps);
         boardController.clearPieceFromRouteNode(nodeId)
         this.bumpInformation.bumpedShape = bumpedShape;
+        this.bumpInformation.bumpedPlayer = this.playerArray[bumpedPlayerId];
         // May need additional bumpInformation
 
         // 8. Then we place the active player piece and update the nodeStorage object
         this.placePieceOnNode(nodeId, shape, player);
-
 
         // DEV 2
         // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
@@ -829,16 +860,54 @@ const gameController = {
             circlesToPlace,
             squaresToPlace
         })
-        // 10. We will need a new method an subarea for this part of the action player
-        // 11. This should be delete as part of the cleanup
         // 12. Then update inputHandler.selectedAction
-        // 13. We will need to store how many moves and pieces they have and show it 
-        // 14. Rememember that they get bonus pieces from the bank, and they might not have enough
-        // But the piece they had on the board is free
+        inputHandlers.clearAllActionSelection();
+        inputHandlers.selectedAction = 'placeBumpedPiece';
+
+        inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape === 'circle');
+
         // 15. We will need an adjenctRoute helper method. This will validate that they can't move randomly
         // 16. This will take a lot of work and should probably be tested
         // 17. All of that will need to be part of a TBD name game controller method
         // 18. Also include gameLogging
+    },
+    placeBumpedPieceOnNode(nodeId, shape, playerId){
+        console.log('trying to place bumped piece')
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            // NOTE: this is different from the standard copy pasta as we aren't using the active player
+            player = this.bumpInformation.bumpedPlayer
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // DEV 3
+        // We can think of validation in three parts location, number of earned moves, and supply
+        // 1. Check that the target node is empty. If not warn
+        const routeId = getRouteIdFromNodeId(nodeId)
+        const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+        if (node.occupied) {
+            console.warn('This route node is already occupied.')
+            inputHandlers.warnInvalidAction('This route node is already occupied.');
+            return;
+        }
+        // 2. TODO IMPORTANT! - need to create a helper to see if the location 
+        // belongs to an adjacent route - I think I'll do this later
+        // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
+        // once all validation has occurred
+        console.warn(this.bumpInformation)
+        // 3. Check if the player has used their free shape - if so clear it
+        // 4. If not first check their bank then supply - (not going to mess with relocation options)
+        // 5. Once all validation has occured, we must remove the piece from either the bank or supply
+        // 6. Use the place method I created on the gameController for move to place the piece
+        // 7. Bump place resolution:
+        // 8. Update gameController.bumpInfo
+        // 9. If the player has no more bumpMoves left we do gameLogging and action resolution
+        // 10. If they still have any moves left we update the turnTracker and the BumpActionInfo on
+        // the inputHandler
+        // 11. We also should update the player area to show their current bank and supply
+        // 11. I don't think we need to change the selectedAction in  that case?
+
     },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
@@ -1557,9 +1626,8 @@ const turnTrackerController = {
     updateTurnTrackerWithBumpInfo(props) {
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         const {bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace} = props
- 
-        // Dev 3
         const bumpInfoDiv = createDivWithClassAndIdAndStyle(['bumpInfo'])
+        // Building out the html
         let bumpInfoHTML = `<span style="color: ${bumpingPlayer.color}">${bumpingPlayer.name}</span> `
         bumpInfoHTML += `has displaced <span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span>. `
         bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has ${squaresToPlace}`
@@ -1571,9 +1639,7 @@ const turnTrackerController = {
         }
         bumpInfoHTML+= 'left to place on adjacent routes.'
         
-
         bumpInfoDiv.innerHTML = bumpInfoHTML;
-        console.log(bumpInfoHTML)
         document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
     },
     resetTurnTimer() {
