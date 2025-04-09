@@ -903,6 +903,7 @@ const gameController = {
             return;
         }
         // 2. TODO IMPORTANT! - need to create a helper to see if the location 
+        // HERE!!
         // belongs to an adjacent route - I think I'll do this later
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
@@ -921,7 +922,6 @@ const gameController = {
         // 3. Check if the player has used their free shape - if so clear it
         let source; // free, supply, bank
         if (this.bumpInformation.freePiece && shape === this.bumpInformation.bumpedShape) {
-            // NOT CORRECT!!!! Needs to be for when the shapes line up
             source = 'free';
             this.bumpInformation.freePiece = false;
         } else {
@@ -977,10 +977,8 @@ const gameController = {
             circlesToPlace: this.bumpInformation.circlesToPlace,
             squaresToPlace: this.bumpInformation.squaresToPlace,
         })
-        // HERE!!!!
         // 11. We also should update the player area to show their current bank and supply
-        // 11. I don't think we need to change the selectedAction in  that case?
-
+        playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
     },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
