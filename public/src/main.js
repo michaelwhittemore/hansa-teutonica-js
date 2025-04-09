@@ -73,6 +73,9 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
 
 // Helper Functions:
 const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
+const pluralifyText = (item, number) => {
+    return `${number} ${item}${number > 1 ? 's' : ''}`
+}
 const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     // classNameArray is an array of strings, id is an optional string, styles is an optional object
     const div = document.createElement('div');
@@ -306,16 +309,18 @@ const inputHandlers = {
         inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
         inputHandlers.addShapeSelectionToActionInfo()
     },
-    setUpBumpActionInfo(nodeId, isCircle) {
+    setUpBumpActionInfo(nodeId, shape, squares, circles) {
         console.log('setUpBumpActionInfo')
         // DEV 4
         // 1. Toggle off all buttons
         this.toggleInputButtons(true)
         // 2. Add some player info to the action info box
-        this.updateActionInfoText(`Your ${isCircle ? 'circle' : 'square'} has been displaced from ${nodeId}. `)
-        this.updateActionInfoText(` You may place 2 squares${isCircle ? ' and 1 circle' : ''}.`, false)
+        this.updateActionInfoText(`Your ${shape} has been displaced from ${nodeId}. `)
+        // Would like a helper to deal with plurals
+        // takes in a number and a shape. Creates a string with the text and an optional s
+        // this.updateActionInfoText(` You may place 2 squares${isCircle ? ' and 1 circle' : ''}.`, false)
         // 3. If the player has both shapes left add a button. - 
-        if (isCircle) {
+        if (shape === 'circle') {
             this.addShapeSelectionToActionInfo()
         }
         this.additionalInfo = 'square'; // This isn't purely a default. 
@@ -324,6 +329,7 @@ const inputHandlers = {
     },
     updateBumpActionInfo() {
         // DEV 5
+        // Either this is necessary or we need to make the other method more robust
     },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
@@ -399,20 +405,25 @@ const inputHandlers = {
         }
         actionInfoDiv.innerText += text;
     },
-    addShapeSelectionToActionInfo() {
-        const squareButton = document.createElement('button');
-        squareButton.innerText = 'Square'
-        squareButton.onclick = () => {
-            inputHandlers.additionalInfo = 'square'
-        }
+    addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
+        // dev
         const actionInfoDiv = document.getElementById('actionInfo')
-        actionInfoDiv.append(squareButton);
-        const circleButton = document.createElement('button');
-        circleButton.innerText = 'Circle'
-        circleButton.onclick = () => {
-            inputHandlers.additionalInfo = 'circle'
+        if(useSquare){
+            const squareButton = document.createElement('button');
+            squareButton.innerText = 'Square'
+            squareButton.onclick = () => {
+                inputHandlers.additionalInfo = 'square'
+            }
+            actionInfoDiv.append(squareButton);
         }
-        actionInfoDiv.append(circleButton);
+        if(useCircle){
+            const circleButton = document.createElement('button');
+            circleButton.innerText = 'Circle'
+            circleButton.onclick = () => {
+                inputHandlers.additionalInfo = 'circle'
+            }
+            actionInfoDiv.append(circleButton);
+        }
     },
     warnInvalidAction(warningText) {
         document.getElementById('warningText').innerHTML = '';
@@ -867,7 +878,7 @@ const gameController = {
         inputHandlers.clearAllActionSelection();
         inputHandlers.selectedAction = 'placeBumpedPiece';
 
-        inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape === 'circle');
+        inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
 
         // 15. We will need an adjacentRoute helper method. This will validate that they can't move randomly
         // 16. This will take a lot of work and should probably be tested
@@ -899,13 +910,13 @@ const gameController = {
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
         if (shape === 'circle' && this.bumpInformation.circlesToPlace === 0) {
-            console.warn('You can not place another circle.')
-            inputHandlers.warnInvalidAction('You can not place another circle.');
+            console.warn('You cannot place another circle.')
+            inputHandlers.warnInvalidAction('You cannot place another circle.');
             return;
         }
         if (shape === 'square' && this.bumpInformation.squaresToPlace === 0) {
-            console.warn('You can not place another square.')
-            inputHandlers.warnInvalidAction('You can not place another square.');
+            console.warn('You cannot place another square.')
+            inputHandlers.warnInvalidAction('You cannot place another square.');
             return;
         }
         console.log(this.bumpInformation)
@@ -947,7 +958,7 @@ const gameController = {
         } else if (shape === 'square') {
             this.bumpInformation.squaresToPlace--;
         }
-        // Two sitauations trigger bump end - out of moves or out of availble pieces
+        // Two situations trigger bump end - out of moves or out of available pieces
         const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
         const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
         console.log('outOfMoves', outOfMoves)
@@ -1046,7 +1057,7 @@ const gameController = {
         }
         if (!routeCheckOutcome) {
             inputHandlers.clearAllActionSelection();
-            inputHandlers.warnInvalidAction('You can not upgrade without a completed route.');
+            inputHandlers.warnInvalidAction('You cannot upgrade without a completed route.');
             return;
         };
 
@@ -1215,7 +1226,7 @@ const gameController = {
         }
     },
     scorePoints(pointValue, player) {
-        const pointScoreText = `$PLAYER1_NAME scored ${pointValue} point${pointValue === 1 ? '' : 's'}!`
+        const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
         gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
@@ -1674,7 +1685,7 @@ const turnTrackerController = {
     updateTurnTracker(player) {
         document.getElementById('turnTrackerPlayerName').innerText = player.name
         document.getElementById('turnTrackerPlayerColor').style.color = player.color
-        document.getElementById('turnTrackerActions').innerText = player.currentActions
+        document.getElementById('turnTrackerActions').innerText = pluralifyText('action', player.currentActions)
         // clear the turnTrackerAdditionalInformation as well
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         this.resetTurnTimer()
@@ -1686,9 +1697,9 @@ const turnTrackerController = {
         // Building out the html
         let bumpInfoHTML = `<span style="color: ${bumpingPlayer.color}">${bumpingPlayer.name}</span> `
         bumpInfoHTML += `has displaced <span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span>. `
-        bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has ${squaresToPlace}`
+        bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has `
         if (squaresToPlace) {
-            bumpInfoHTML += ` square${squaresToPlace > 1 ? 's' : ''} ${circlesToPlace ? 'and' : ''}`
+            bumpInfoHTML += ` ${pluralifyText('square',squaresToPlace)} ${circlesToPlace ? 'and' : ''}`
         }
         if (circlesToPlace) {
             bumpInfoHTML += ' 1 circle '

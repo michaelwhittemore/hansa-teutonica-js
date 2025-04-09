@@ -6,6 +6,7 @@
 * cheating out an additonal place after a move action is still possile due to defautl action (I think)
 - actually it looks like I'm just not unlocking the buttons? 
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
+* Pace pluralifyText where we use awkward ternary operators in text
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make sure all unlocks are on the board, might do the name clean up at the same time
 * place collapse buttons at the actual edges. Might do some calulations when creating them
