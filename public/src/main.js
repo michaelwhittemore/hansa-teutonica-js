@@ -987,12 +987,11 @@ const gameController = {
         playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
     },
     checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
-        // Maybe we eventually move this out of the boardcontroller and pass in the map instead? TODO
-        // DEV DEV
-        console.log(gameController.routeStorageObject)
-        console.log(gameController.cityStorageObject)
+        // TODO Maybe we eventually move this out of the boardcontroller and pass in the map instead? TODO
 
-        // HERE!
+        // We are starting from the displaced node and radiating outward, check each un-checked route for 
+        // either a matching routeId or a route with an unoccupied node (without finding a match on
+        // that iteration number)
         const hasAnUnoccupiedNode = (route) => {
             console.log('why error??', route)
             let unoccupied = false;
@@ -1012,15 +1011,9 @@ const gameController = {
         let routesToChecksNext = [startingRouteId];
 
         let failSafe = 0;
-        // 1. I think all of this should be wrapped in a while loop with a failsafe to ensure we break
-        // if we've gone like 20 times without seeing anything (and throw an error)
         while (true) {
             routesToChecks = routesToChecksNext;
             routesToChecksNext = [];
-            console.warn('iteration number', failSafe)
-            console.log('alreadyVisitedRoutes', alreadyVisitedRoutes)
-            console.log('routesToChecks', routesToChecks)
-            console.log('routesToChecksNext', routesToChecksNext)
             if (failSafe > 15) {
                 console.error('Infinite loop in checkThatLocationIsAdjacent, breaking out')
                 return;
@@ -1061,24 +1054,6 @@ const gameController = {
             }
             failSafe++;
         }
-    // 2. for each city in the route we get its routes. 
-    // 3. We add all the routes to a routesToCheck array
-    // 4. We interate over the routesToChecks array
-    // 5. We add all neighbors to routesToChecksNext
-    // 5. If any route has already been visted we skip over it
-    // 6. Otherwise we check if it's targetRouteId and return true
-    // 7. need a method to check if a route has a free space 
-    // 7. We Store a hasEmptyRoute flag on each while loop - set it to true if any route isn't complete
-    // 8. if we reach the end of routesToChecks and have the hasEmptyRoute we return false
-    // 9. Else we set routesToChecks to be routesToChecksNext and set routesToChecksNext to empty
-    // 10. increment the failsafe
-    // Should return a boolean
-    // Let's create an array of already visted routes.
-    // For each route that is completed we step outward to all adjectent routes
-    // for each of those steps we check that the tagetNodeId is present (if so return true)
-    // if at least one outward spoke is not fully occupied (create a helper to check) return false
-    // I think we're primarly going to be dealing in routes, not nodes
-
 },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
