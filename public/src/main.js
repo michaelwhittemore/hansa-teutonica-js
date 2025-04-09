@@ -321,12 +321,12 @@ const inputHandlers = {
         // 3. If the player has both shapes left add a button. Otherwise set shape defaults
         if (squares && circles) {
             this.addShapeSelectionToActionInfo()
-            if (USE_DEFAULT_CLICK_ACTIONS){
+            if (USE_DEFAULT_CLICK_ACTIONS) {
                 this.additionalInfo = 'square';
             }
-        } else if (squares && !circles){
+        } else if (squares && !circles) {
             this.additionalInfo = 'square';
-        } else if (!squares && circles){
+        } else if (!squares && circles) {
             this.additionalInfo = 'circle'
         }
     },
@@ -406,7 +406,7 @@ const inputHandlers = {
     },
     addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
         const actionInfoDiv = document.getElementById('actionInfo')
-        if(useSquare){
+        if (useSquare) {
             const squareButton = document.createElement('button');
             squareButton.innerText = 'Square'
             squareButton.onclick = () => {
@@ -414,7 +414,7 @@ const inputHandlers = {
             }
             actionInfoDiv.append(squareButton);
         }
-        if(useCircle){
+        if (useCircle) {
             const circleButton = document.createElement('button');
             circleButton.innerText = 'Circle'
             circleButton.onclick = () => {
@@ -551,6 +551,7 @@ const gameController = {
                 unlock: city.unlock,
                 location: city.location,
                 ownElement: cityDiv,
+                routes: [],
             }
 
         })
@@ -572,6 +573,15 @@ const gameController = {
                         cities: [cityKey, neighborCityName],
                         routeNodes: {},
                     }
+                    // Cities should track which routes they are a part of
+                    const addRoutesToCity = (cityName) => {
+                        const cityToModify = this.cityStorageObject[cityName]
+                        if (!cityToModify.routes.includes(routeId)) {
+                            cityToModify.routes.push(routeId)
+                        }
+                    }
+                    addRoutesToCity(cityKey)
+                    addRoutesToCity(neighborCityName)
                     for (let i = 0; i < length; i++) {
                         const nodeId = `${routeId}-${i}`
                         this.routeStorageObject[routeId].routeNodes[nodeId] = {
@@ -898,11 +908,9 @@ const gameController = {
             inputHandlers.warnInvalidAction('This route node is already occupied.');
             return;
         }
-        // 2. TODO IMPORTANT! - need to create a helper to see if the location 
-        // HERE!!
-        // Let's follow the example of checkIfPlayerControlsARoute (not exactly the same)
-        // We will need to take in both the bumpedLocation and the target location
-        this.checkThatLocationIsAdjacent(this.bumpInformation.bumpedLocation, nodeId)
+
+        const isValidNode = this.checkThatLocationIsAdjacent(this.bumpInformation.bumpedLocation, nodeId)
+        console.warn('isValidNode', isValidNode)
         // belongs to an adjacent route - I think I'll do this later
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
@@ -958,8 +966,8 @@ const gameController = {
         const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
         const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
 
-        if(outOfMoves || outOfPieces){
-            gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`, 
+        if (outOfMoves || outOfPieces) {
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`,
                 this.bumpInformation.bumpingPlayer, player)
             this.resolveAction(this.bumpInformation.bumpingPlayer)
             // TODO should we consider all nodeIds/shapes and logging them as well
@@ -967,7 +975,7 @@ const gameController = {
         }
         // 10. If they still have any moves left we update the turnTracker and the BumpActionInfo on
         // the inputHandler
-        inputHandlers.setUpBumpActionInfo(nodeId, this.bumpInformation.bumpedShape, 
+        inputHandlers.setUpBumpActionInfo(nodeId, this.bumpInformation.bumpedShape,
             this.bumpInformation.squaresToPlace, this.bumpInformation.circlesToPlace);
         turnTrackerController.updateTurnTrackerWithBumpInfo({
             bumpingPlayer: this.bumpInformation.bumpingPlayer,
@@ -978,46 +986,100 @@ const gameController = {
         // 11. We also should update the player area to show their current bank and supply
         playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
     },
-    checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId){
+    checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
         // Maybe we eventually move this out of the boardcontroller and pass in the map instead? TODO
         // DEV DEV
         console.log(gameController.routeStorageObject)
-        // perhaps we should consider ensuring that routeIds are always alphabetized? we want to be 
-        // able to create them from either direction regardless 
-        // It might also make sense to create a graph when initializing game
-        // As an alternative, maybe each city can store it's respective routes
-        // here!
-        const alreadyVisitedRoutes = [];
-        let routesToChecks = [];
-        let routesToChecksNext = [];
+        console.log(gameController.cityStorageObject)
+
+        // HERE!
+        const hasAnUnoccupiedNode = (route) => {
+            console.log('why error??', route)
+            let unoccupied = false;
+            console.log(route.routeNodes)
+            for (let nodeId in route.routeNodes){
+                if (!route.routeNodes[nodeId].occupied){
+                    unoccupied = true;
+                }
+            }
+            return unoccupied;
+        }
         const startingRouteId = getRouteIdFromNodeId(bumpedNodeId);
         const targetRouteId = getRouteIdFromNodeId(targetNodeId);
-        if(startingRouteId === targetRouteId){
-            console.warn('That was a bad play and you should feel bad');
-            return true;
-        }
-        // 1. create a property on each city to store its routes 
+
+        const alreadyVisitedRoutes = [];
+        let routesToChecks = [];
+        let routesToChecksNext = [startingRouteId];
+
+        let failSafe = 0;
         // 1. I think all of this should be wrapped in a while loop with a failsafe to ensure we break
         // if we've gone like 20 times without seeing anything (and throw an error)
-        // 1. We store the first route (startingRoute in the alreadyVisitedRoutes array)
-        // 2. for each city in the route we get its routes. 
-        // 3. We add all the routes to a routesToCheck array
-        // 4. We interate over the routesToChecks array
-        // 5. We add all neighbors to routesToChecksNext
-        // 5. If any route has already been visted we skip over it
-        // 6. Otherwise we check if it's targetRouteId and return true
-        // 7. We Store a hasEmptyRoute flag on each while loop - set it to true if any route isn't complete
-        // 8. if we reach the end of routesToChecks and have the hasEmptyRoute we return false
-        // 9. Else we set routesToChecks to be routesToChecksNext and set routesToChecksNext to empty
-        // 10. increment the failsafe
-        // Should return a boolean
-        // Let's create an array of already visted routes.
-        // For each route that is completed we step outward to all adjectent routes
-        // for each of those steps we check that the tagetNodeId is present (if so return true)
-        // if at least one outward spoke is not fully occupied (create a helper to check) return false
-        // I think we're primarly going to be dealing in routes, not nodes
+        while (true) {
+            routesToChecks = routesToChecksNext;
+            routesToChecksNext = [];
+            console.warn('iteration number', failSafe)
+            console.log('alreadyVisitedRoutes', alreadyVisitedRoutes)
+            console.log('routesToChecks', routesToChecks)
+            console.log('routesToChecksNext', routesToChecksNext)
+            if (failSafe > 15) {
+                console.error('Infinite loop in checkThatLocationIsAdjacent, breaking out')
+                return;
+            }
+            // I'm not using forEach because then 'return' wouldn't break us out of the while loop
+            let hadAnUnoccupiedNode = false;
+            for (let routeId of routesToChecks) {
+                if (!alreadyVisitedRoutes.includes(routeId)){
+                    alreadyVisitedRoutes.push(routeId)
+                } else {
+                    // We've already visited this route we don't need to check again
+                    continue;
+                }
+                if (routeId === targetRouteId) {
+                    console.warn(`Found a match after ${failSafe} completed loops`)
+                    return true
+                }
+                const route = gameController.routeStorageObject[routeId];
+                // Need to get neighboring routes by using the route's city
+                // From there we add the route's city's routes to routes to visit 
+                route.cities.forEach(cityName => {
+                    const city = gameController.cityStorageObject[cityName]
+                    city.routes.forEach(innerRouteId => {
+                        if (!routesToChecksNext.includes(innerRouteId) && innerRouteId !== routeId){
+                            routesToChecksNext.push(innerRouteId);
+                        }
+                    })
+                });
+                if (hasAnUnoccupiedNode(route)){
+                    hadAnUnoccupiedNode = true;
+                    console.warn(`${routeId} had an unoccupied node`)
+                }
 
-    },
+            }
+            if (hadAnUnoccupiedNode){
+                console.warn(`Found a hadAnUnoccupiedNode after ${failSafe} completed loops`)
+                return false
+            }
+            failSafe++;
+        }
+    // 2. for each city in the route we get its routes. 
+    // 3. We add all the routes to a routesToCheck array
+    // 4. We interate over the routesToChecks array
+    // 5. We add all neighbors to routesToChecksNext
+    // 5. If any route has already been visted we skip over it
+    // 6. Otherwise we check if it's targetRouteId and return true
+    // 7. need a method to check if a route has a free space 
+    // 7. We Store a hasEmptyRoute flag on each while loop - set it to true if any route isn't complete
+    // 8. if we reach the end of routesToChecks and have the hasEmptyRoute we return false
+    // 9. Else we set routesToChecks to be routesToChecksNext and set routesToChecksNext to empty
+    // 10. increment the failsafe
+    // Should return a boolean
+    // Let's create an array of already visted routes.
+    // For each route that is completed we step outward to all adjectent routes
+    // for each of those steps we check that the tagetNodeId is present (if so return true)
+    // if at least one outward spoke is not fully occupied (create a helper to check) return false
+    // I think we're primarly going to be dealing in routes, not nodes
+
+},
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
         // probably use an onclick for a route node. Let's deal with that later
@@ -1078,202 +1140,202 @@ const gameController = {
         gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}`, player);
         this.resolveAction(player);
     },
-    upgradeAtCity(cityName, playerId) {
-        let player;
-        if (IS_HOTSEAT_MODE) {
-            player = this.getActivePlayer()
-            playerId = player.id
-        } else {
-            // TODO, check that the playerId who made the request is the active player
-        }
-
-        city = this.cityStorageObject[cityName]
-
-        const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
-        const { routeId } = routeCheckOutcome
-        console.log(city)
-        if (!city.unlock) {
-            console.warn(`The city of ${city.name} doesn't have a corresponding unlock.`)
-            inputHandlers.clearAllActionSelection();
-            inputHandlers.warnInvalidAction(`The city of ${city.name} doesn't have a corresponding unlock.`);
-            return;
-        }
-        if (!routeCheckOutcome) {
-            inputHandlers.clearAllActionSelection();
-            inputHandlers.warnInvalidAction('You cannot upgrade without a completed route.');
-            return;
-        };
-
-        const noFurtherUpgrades = (unlockName) => {
-            console.warn(`You can't upgrade your ${unlockName} any further.`)
-            inputHandlers.clearAllActionSelection();
-            inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
-            return;
-        }
-
-        switch (city.unlock) {
-            case 'purse':
-                if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
-                    noFurtherUpgrades('resupply capacity');
-                    return;
-                }
-                player.unlockArrayIndex.purse++;
-                player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
-                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
-                break;
-            case 'action':
-                if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
-                    noFurtherUpgrades('actions');
-                    return;
-                }
-                player.unlockArrayIndex.actions++;
-                player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
-                // We only give the player a free action when they are actually advancing the total
-                // i.e. not going from 3 -> 3 at index 1 ->2
-                let actionUpgradeText = `$PLAYER1_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
-                if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
-                    player.currentActions++;
-                    actionUpgradeText += ' They get a free action as a result'
-                }
-                gameLogController.addTextToGameLog(actionUpgradeText, player);
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
-                break;
-            case 'unlockedColors':
-                if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
-                    noFurtherUpgrades('available colors');
-                    return;
-                }
-                player.unlockArrayIndex.colors++;
-                player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
-                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
-                break;
-            case 'movement':
-                if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
-                    noFurtherUpgrades('pieces moved per action');
-                    return;
-                }
-                player.unlockArrayIndex.maxMovement++;
-                player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
-                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
-                break;
-            case 'keys':
-                if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
-                    noFurtherUpgrades('route multiplier');
-                    return;
-                }
-                player.unlockArrayIndex.keys++;
-                player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
-                gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
-                break;
-            default:
-                console.error('we should not hit the default')
-        }
-        if (city.unlock === 'movement') {
-            gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
-            player.supplyCircles++;
-        } else {
-            gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
-            player.supplySquares++
-        }
-        // TODO would make sense to move the bank update to routeCompleted Method
-        player.bankedCircles += routeCheckOutcome.circle;
-        player.bankedSquares += routeCheckOutcome.square;
-        this.routeCompleted(routeId, player);
-        this.resolveAction(player);
-    },
-    checkIfPlayerControlsARoute(playerId, cityName) {
-        // at some point return BOTH routes
-        for (const routeId in this.routeStorageObject) {
-            if (this.routeStorageObject[routeId].cities.includes(cityName)) {
-                let isComplete = true;
-                let square = 0;
-                let circle = 0;
-                for (const nodeId in this.routeStorageObject[routeId].routeNodes) {
-                    const node = this.routeStorageObject[routeId].routeNodes[nodeId]
-                    if (node.playerId === playerId) {
-                        if (node.shape === 'square') {
-                            square++
-                        } else if (node.shape === 'circle') {
-                            circle++;
-                        }
-                    } else {
-                        isComplete = false;
-                        break; // don't return, need to check the other routes
-                    }
-                }
-                if (isComplete) {
-                    return {
-                        routeId,
-                        square,
-                        circle,
-                    }
-                }
-            }
-        }
-        return false;
-    },
-    calculateControllingPlayer(city) {
-        if (city.occupants.length === 0) {
-            return false
-        }
-        const controlObj = {}
-        this.playerArray.forEach(player => {
-            controlObj[player.id] = 0;
-        })
-        city.occupants.forEach(occupantId => {
-            controlObj[occupantId]++;
-        })
-        // playerId can be zero, so can't just check that it exists
-        if (city.bonusSpotOccupantId !== undefined) {
-            controlObj[city.bonusSpotOccupantId]++;
-        }
-
-        const maxPieces = Math.max(...Object.values(controlObj));
-        const winnerArray = []
-        for (let key in controlObj) {
-            if (controlObj[key] === maxPieces) {
-                winnerArray.push(parseInt(key, 10))
-            }
-        }
-        for (let i = city.occupants.length - 1; i >= 0; i--) {
-            if (winnerArray.includes(city.occupants[i])) {
-                return this.playerArray[city.occupants[i]]
-            }
-        }
-        console.error('We should never reach here')
-
-    },
-    routeCompleted(routeId, player) {
-        // It will also check for tokens (we will need to create a token holder when initializing routes)
-        gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
-        const route = this.routeStorageObject[routeId]
-        route.cities.forEach(cityId => {
-            const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
-            if (controller) {
-                this.scorePoints(1, controller);
-            }
-        })
-        for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
-            this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
-                nodeId: nodeToClearId,
-                occupied: false,
-                shape: undefined,
-                color: undefined,
-                playerId: undefined,
-            };
-            boardController.clearPieceFromRouteNode(nodeToClearId)
-        }
-    },
-    scorePoints(pointValue, player) {
-        const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
-        gameLogController.addTextToGameLog(pointScoreText, player)
-        player.currentPoints += pointValue;
-        boardController.updatePoints(player.currentPoints, player.color)
+        upgradeAtCity(cityName, playerId) {
+    let player;
+    if (IS_HOTSEAT_MODE) {
+        player = this.getActivePlayer()
+        playerId = player.id
+    } else {
+        // TODO, check that the playerId who made the request is the active player
     }
+
+    city = this.cityStorageObject[cityName]
+
+    const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
+    const { routeId } = routeCheckOutcome
+    console.log(city)
+    if (!city.unlock) {
+        console.warn(`The city of ${city.name} doesn't have a corresponding unlock.`)
+        inputHandlers.clearAllActionSelection();
+        inputHandlers.warnInvalidAction(`The city of ${city.name} doesn't have a corresponding unlock.`);
+        return;
+    }
+    if (!routeCheckOutcome) {
+        inputHandlers.clearAllActionSelection();
+        inputHandlers.warnInvalidAction('You cannot upgrade without a completed route.');
+        return;
+    };
+
+    const noFurtherUpgrades = (unlockName) => {
+        console.warn(`You can't upgrade your ${unlockName} any further.`)
+        inputHandlers.clearAllActionSelection();
+        inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
+        return;
+    }
+
+    switch (city.unlock) {
+        case 'purse':
+            if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
+                noFurtherUpgrades('resupply capacity');
+                return;
+            }
+            player.unlockArrayIndex.purse++;
+            player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
+            playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
+            break;
+        case 'action':
+            if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
+                noFurtherUpgrades('actions');
+                return;
+            }
+            player.unlockArrayIndex.actions++;
+            player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
+            // We only give the player a free action when they are actually advancing the total
+            // i.e. not going from 3 -> 3 at index 1 ->2
+            let actionUpgradeText = `$PLAYER1_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
+            if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
+                player.currentActions++;
+                actionUpgradeText += ' They get a free action as a result'
+            }
+            gameLogController.addTextToGameLog(actionUpgradeText, player);
+            playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
+            break;
+        case 'unlockedColors':
+            if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
+                noFurtherUpgrades('available colors');
+                return;
+            }
+            player.unlockArrayIndex.colors++;
+            player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
+            playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
+            break;
+        case 'movement':
+            if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
+                noFurtherUpgrades('pieces moved per action');
+                return;
+            }
+            player.unlockArrayIndex.maxMovement++;
+            player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
+            playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
+            break;
+        case 'keys':
+            if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
+                noFurtherUpgrades('route multiplier');
+                return;
+            }
+            player.unlockArrayIndex.keys++;
+            player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
+            playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
+            break;
+        default:
+            console.error('we should not hit the default')
+    }
+    if (city.unlock === 'movement') {
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
+        player.supplyCircles++;
+    } else {
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
+        player.supplySquares++
+    }
+    // TODO would make sense to move the bank update to routeCompleted Method
+    player.bankedCircles += routeCheckOutcome.circle;
+    player.bankedSquares += routeCheckOutcome.square;
+    this.routeCompleted(routeId, player);
+    this.resolveAction(player);
+},
+checkIfPlayerControlsARoute(playerId, cityName) {
+    // at some point return BOTH routes
+    for (const routeId in this.routeStorageObject) {
+        if (this.routeStorageObject[routeId].cities.includes(cityName)) {
+            let isComplete = true;
+            let square = 0;
+            let circle = 0;
+            for (const nodeId in this.routeStorageObject[routeId].routeNodes) {
+                const node = this.routeStorageObject[routeId].routeNodes[nodeId]
+                if (node.playerId === playerId) {
+                    if (node.shape === 'square') {
+                        square++
+                    } else if (node.shape === 'circle') {
+                        circle++;
+                    }
+                } else {
+                    isComplete = false;
+                    break; // don't return, need to check the other routes
+                }
+            }
+            if (isComplete) {
+                return {
+                    routeId,
+                    square,
+                    circle,
+                }
+            }
+        }
+    }
+    return false;
+},
+calculateControllingPlayer(city) {
+    if (city.occupants.length === 0) {
+        return false
+    }
+    const controlObj = {}
+    this.playerArray.forEach(player => {
+        controlObj[player.id] = 0;
+    })
+    city.occupants.forEach(occupantId => {
+        controlObj[occupantId]++;
+    })
+    // playerId can be zero, so can't just check that it exists
+    if (city.bonusSpotOccupantId !== undefined) {
+        controlObj[city.bonusSpotOccupantId]++;
+    }
+
+    const maxPieces = Math.max(...Object.values(controlObj));
+    const winnerArray = []
+    for (let key in controlObj) {
+        if (controlObj[key] === maxPieces) {
+            winnerArray.push(parseInt(key, 10))
+        }
+    }
+    for (let i = city.occupants.length - 1; i >= 0; i--) {
+        if (winnerArray.includes(city.occupants[i])) {
+            return this.playerArray[city.occupants[i]]
+        }
+    }
+    console.error('We should never reach here')
+
+},
+routeCompleted(routeId, player) {
+    // It will also check for tokens (we will need to create a token holder when initializing routes)
+    gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
+    const route = this.routeStorageObject[routeId]
+    route.cities.forEach(cityId => {
+        const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
+        if (controller) {
+            this.scorePoints(1, controller);
+        }
+    })
+    for (const nodeToClearId in this.routeStorageObject[routeId].routeNodes) {
+        this.routeStorageObject[routeId].routeNodes[nodeToClearId] = {
+            nodeId: nodeToClearId,
+            occupied: false,
+            shape: undefined,
+            color: undefined,
+            playerId: undefined,
+        };
+        boardController.clearPieceFromRouteNode(nodeToClearId)
+    }
+},
+scorePoints(pointValue, player) {
+    const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
+    gameLogController.addTextToGameLog(pointScoreText, player)
+    player.currentPoints += pointValue;
+    boardController.updatePoints(player.currentPoints, player.color)
+}
 }
 
 // The interface does NOT track game state, just renders and creates buttons (although it can track its own state)
@@ -1741,7 +1803,7 @@ const turnTrackerController = {
         bumpInfoHTML += `has displaced <span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span>. `
         bumpInfoHTML += `<span style="color: ${bumpedPlayer.color}">${bumpedPlayer.name}</span> has `
         if (squaresToPlace) {
-            bumpInfoHTML += ` ${pluralifyText('square',squaresToPlace)} ${circlesToPlace ? 'and' : ''}`
+            bumpInfoHTML += ` ${pluralifyText('square', squaresToPlace)} ${circlesToPlace ? 'and' : ''}`
         }
         if (circlesToPlace) {
             bumpInfoHTML += ' 1 circle '
