@@ -74,7 +74,7 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
 // Helper Functions:
 const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
 const pluralifyText = (item, number) => {
-    return `${number} ${item}${number > 1 ? 's' : ''}`
+    return `${number} ${item}${number !== 1 ? 's' : ''}`
 }
 const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     // classNameArray is an array of strings, id is an optional string, styles is an optional object
@@ -310,7 +310,6 @@ const inputHandlers = {
         inputHandlers.addShapeSelectionToActionInfo()
     },
     setUpBumpActionInfo(nodeId, shape, squares, circles) {
-        console.log('setUpBumpActionInfo')
         // DEV 4
         // 1. Toggle off all buttons
         this.toggleInputButtons(true)
@@ -318,18 +317,18 @@ const inputHandlers = {
         this.updateActionInfoText(`Your ${shape} has been displaced from ${nodeId}. `)
         // Would like a helper to deal with plurals
         // takes in a number and a shape. Creates a string with the text and an optional s
-        // this.updateActionInfoText(` You may place 2 squares${isCircle ? ' and 1 circle' : ''}.`, false)
-        // 3. If the player has both shapes left add a button. - 
-        if (shape === 'circle') {
+        this.updateActionInfoText(` You may place ${pluralifyText('square', squares)} and ${pluralifyText('circle', circles)}.\n`, false)
+        // 3. If the player has both shapes left add a button. Otherwise set shape defaults
+        if (squares && circles) {
             this.addShapeSelectionToActionInfo()
+            if (USE_DEFAULT_CLICK_ACTIONS){
+                this.additionalInfo = 'square';
+            }
+        } else if (squares && !circles){
+            this.additionalInfo = 'square';
+        } else if (!squares && circles){
+            this.additionalInfo = 'circle'
         }
-        this.additionalInfo = 'square'; // This isn't purely a default. 
-        // Otherwise we set inputHandlers.selectedSHape(I think that's the field) - might just be additionalInfo
-        // to whatever they have left
-    },
-    updateBumpActionInfo() {
-        // DEV 5
-        // Either this is necessary or we need to make the other method more robust
     },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
@@ -406,7 +405,6 @@ const inputHandlers = {
         actionInfoDiv.innerText += text;
     },
     addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
-        // dev
         const actionInfoDiv = document.getElementById('actionInfo')
         if(useSquare){
             const squareButton = document.createElement('button');
@@ -494,7 +492,6 @@ const inputHandlers = {
             if (!isShape(inputHandlers?.additionalInfo)) {
                 console.error('Trying to do place a bumped piece without a shape.')
             }
-            // dev 6
             gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.additionalInfo)
         },
         place(nodeId) {
@@ -967,9 +964,19 @@ const gameController = {
             gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`, 
                 this.bumpInformation.bumpingPlayer, player)
             this.resolveAction(this.bumpInformation.bumpingPlayer)
+            // TODO should we consider all nodeIds/shapes and logging them as well
+            return;
         }
         // 10. If they still have any moves left we update the turnTracker and the BumpActionInfo on
         // the inputHandler
+        inputHandlers.setUpBumpActionInfo(nodeId, this.bumpInformation.bumpedShape, 
+            this.bumpInformation.squaresToPlace, this.bumpInformation.circlesToPlace);
+        turnTrackerController.updateTurnTrackerWithBumpInfo({
+            bumpingPlayer: this.bumpInformation.bumpingPlayer,
+            bumpedPlayer: player,
+            circlesToPlace: this.bumpInformation.circlesToPlace,
+            squaresToPlace: this.bumpInformation.squaresToPlace,
+        })
         // HERE!!!!
         // 11. We also should update the player area to show their current bank and supply
         // 11. I don't think we need to change the selectedAction in  that case?
@@ -1686,7 +1693,6 @@ const turnTrackerController = {
         document.getElementById('turnTrackerPlayerName').innerText = player.name
         document.getElementById('turnTrackerPlayerColor').style.color = player.color
         document.getElementById('turnTrackerActions').innerText = pluralifyText('action', player.currentActions)
-        // clear the turnTrackerAdditionalInformation as well
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         this.resetTurnTimer()
     },
