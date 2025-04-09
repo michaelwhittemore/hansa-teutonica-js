@@ -829,7 +829,7 @@ const gameController = {
         // 4. Check that the player has sufficient supply - if not warn and end
         if (player.supplySquares < squareCost || player.supplyCircles < circleCost) {
             console.warn(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`)
-            inputHandlers.clearAllActionSelection();
+            // inputHandlers.clearAllActionSelection(); // TODO this is wrong, don't clear the selection
             inputHandlers.warnInvalidAction(`You need at least ${squareCost} squares and ${circleCost} circles in your supply`);
             return
         }
@@ -853,6 +853,7 @@ const gameController = {
         Object.assign(node, clearedProps);
         boardController.clearPieceFromRouteNode(nodeId)
         this.bumpInformation.bumpedShape = bumpedShape;
+        this.bumpInformation.bumpedLocation = nodeId;
         this.bumpInformation.bumpingPlayer = player;
         this.bumpInformation.bumpedPlayer = this.playerArray[bumpedPlayerId];
         this.bumpInformation.freePiece = true;
@@ -876,11 +877,6 @@ const gameController = {
         inputHandlers.selectedAction = 'placeBumpedPiece';
 
         inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
-
-        // 15. We will need an adjacentRoute helper method. This will validate that they can't move randomly
-        // 16. This will take a lot of work and should probably be tested
-        // 17. All of that will need to be part of a TBD name game controller method
-        // 18. Also include gameLogging
     },
     placeBumpedPieceOnNode(nodeId, shape, playerId) {
         console.log('trying to place bumped piece')
@@ -904,6 +900,9 @@ const gameController = {
         }
         // 2. TODO IMPORTANT! - need to create a helper to see if the location 
         // HERE!!
+        // Let's follow the example of checkIfPlayerControlsARoute (not exactly the same)
+        // We will need to take in both the bumpedLocation and the target location
+        this.checkThatLocationIsAdjacent(this.bumpInformation.bumpedLocation, nodeId)
         // belongs to an adjacent route - I think I'll do this later
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
@@ -958,8 +957,7 @@ const gameController = {
         // Two situations trigger bump end - out of moves or out of available pieces
         const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
         const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
-        console.log('outOfMoves', outOfMoves)
-        console.log('outOfPieces', outOfPieces)
+
         if(outOfMoves || outOfPieces){
             gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`, 
                 this.bumpInformation.bumpingPlayer, player)
@@ -979,6 +977,46 @@ const gameController = {
         })
         // 11. We also should update the player area to show their current bank and supply
         playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
+    },
+    checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId){
+        // Maybe we eventually move this out of the boardcontroller and pass in the map instead? TODO
+        // DEV DEV
+        console.log(gameController.routeStorageObject)
+        // perhaps we should consider ensuring that routeIds are always alphabetized? we want to be 
+        // able to create them from either direction regardless 
+        // It might also make sense to create a graph when initializing game
+        // As an alternative, maybe each city can store it's respective routes
+        // here!
+        const alreadyVisitedRoutes = [];
+        let routesToChecks = [];
+        let routesToChecksNext = [];
+        const startingRouteId = getRouteIdFromNodeId(bumpedNodeId);
+        const targetRouteId = getRouteIdFromNodeId(targetNodeId);
+        if(startingRouteId === targetRouteId){
+            console.warn('That was a bad play and you should feel bad');
+            return true;
+        }
+        // 1. create a property on each city to store its routes 
+        // 1. I think all of this should be wrapped in a while loop with a failsafe to ensure we break
+        // if we've gone like 20 times without seeing anything (and throw an error)
+        // 1. We store the first route (startingRoute in the alreadyVisitedRoutes array)
+        // 2. for each city in the route we get its routes. 
+        // 3. We add all the routes to a routesToCheck array
+        // 4. We interate over the routesToChecks array
+        // 5. We add all neighbors to routesToChecksNext
+        // 5. If any route has already been visted we skip over it
+        // 6. Otherwise we check if it's targetRouteId and return true
+        // 7. We Store a hasEmptyRoute flag on each while loop - set it to true if any route isn't complete
+        // 8. if we reach the end of routesToChecks and have the hasEmptyRoute we return false
+        // 9. Else we set routesToChecks to be routesToChecksNext and set routesToChecksNext to empty
+        // 10. increment the failsafe
+        // Should return a boolean
+        // Let's create an array of already visted routes.
+        // For each route that is completed we step outward to all adjectent routes
+        // for each of those steps we check that the tagetNodeId is present (if so return true)
+        // if at least one outward spoke is not fully occupied (create a helper to check) return false
+        // I think we're primarly going to be dealing in routes, not nodes
+
     },
     captureCity(cityName, playerId) {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
