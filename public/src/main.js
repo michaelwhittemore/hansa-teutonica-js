@@ -111,7 +111,10 @@ const getRandomArrayElementAndModify = (array) => {
         console.error('calling getRandomArrayElementAndModify with a 0 length array')
         return
     }
-    const index = Math.floor(Math.random() * (array.length - 1))
+    const index = Math.floor(Math.random() * (array.length))
+    if (index === array.length){
+        console.error('index === array.length, did not think this could happen')
+    }
     const element = array[index]
     array.splice(index,1)
     return element
@@ -534,8 +537,6 @@ const gameController = {
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
-        // We will randomly select a valid index and add. Then we remove that element
-        // THIS will need a helper function to randomize selection (dev, TODO)
         const startingTokensArray = STARTING_TOKENS;
 
         // Let's break out the city generation into two loops
@@ -569,7 +570,6 @@ const gameController = {
                     let tokenValue = false;
                     if (!!TOKEN_CONFIG_BY_ROUTES[routeId][2]){
                         tokenValue = getRandomArrayElementAndModify(startingTokensArray)
-                        console.log(startingTokensArray)
                     }
                     boardController.createRouteAndTokenFromLocations({
                         length: routeArray[1],
@@ -582,10 +582,11 @@ const gameController = {
                         isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
                         tokenValue,
                     })
+                    
                     this.routeStorageObject[routeId] = {
                         cities: [cityKey, neighborCityName],
                         routeNodes: {},
-                        token: false,
+                        token: tokenValue,
                     }
                     // Cities should track which routes they are a part of
                     const addRoutesToCity = (cityName) => {
@@ -1296,6 +1297,8 @@ const gameController = {
 
     },
     routeCompleted(routeId, player) {
+        // HERE!! DEV
+        // Need to add token capturing logic
         // It will also check for tokens (we will need to create a token holder when initializing routes)
         gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
         const route = this.routeStorageObject[routeId]
@@ -1467,7 +1470,6 @@ const boardController = {
         // These should *NOT* need a click handler
         // I think this should be called by createRouteAndTokenFromLocations
         const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
-        // HERE!
         const [x,y] = offSetCoordinatesForSize(location[0]+ (direction[0] * TOKEN_DISTANCE), 
             location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
         tokenDiv.style.left = x + 'px';

@@ -19,6 +19,10 @@
         * Need to place the tokens on the board
         * I think we will start with some dummy values i.e. A,B,C,D
         * Remember that boardController handles UI and gameController handles state
+        * Need to have a readable text map for tokens if I'm not using images
+        * need to add the tokens to the route so the gameController knows what's happning
+        * need to make the tokens a little larger I think. While I'm at it, maybe I make cities smaller?
+        * need to make tokens capture when completeing a route - routeCompleted **here**
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
 * add all the game logs to bump - just update a list on bumpInformation
