@@ -3,19 +3,19 @@
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
-
+* Module system **HERE**
+* add all the game logs to bump - just update a list on bumpInformation
+* add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
-* make sure all unlocks are on the board, might do the name clean up at the same time
+* make nodes hoverable text with their ids as text - tooltip?
 * place collapse buttons at the actual edges. Might do some calulations when creating them
-* add the move ability  - will have some issues with both this and the bump ability in that we need to select additional pieces after the move has been initiated. To the click handlers we will need to add a new action type - select piece and select target location will also need to display moves left
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
 I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
 * technically, it's legal to swap circles and squares as part of a move action (for two moves)
-* bump method, will require some way to track player who needs to take an action, but doesn't have the turn  -- **Next**
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
@@ -25,9 +25,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * Move some of the gameController copy pasta into it's own methods
 * Add a turn timer to the turn tracker
 * keyboard short cuts for place and selecting shape
-* Fix turn track to place pieces over numbers using a number component with absolute? position
 * local storage
-* time stamp to game log
 * fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationAndBoardController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
@@ -38,6 +36,8 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~time stamp to game log~~
+~~Bump method~~
 ~~Place pluralifyText where we use awkward ternary operators in text~~
 ~~Move action~~
 ~~BUG!! If you are mid piece move and select a new button i.e. place piece or capture city you can skip resolving the move action, thus cheating out another turn. Let's grey all the other buttons out when mid move~~

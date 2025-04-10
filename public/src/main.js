@@ -280,37 +280,12 @@ const inputHandlers = {
         inputHandlers.addShapeSelectionToActionInfo()
     },
     handleBumpButton() {
-        // DEV 1
-
-        // NOTE this plan is *non-exhaustive* we don't take into account any clean up or UI updates
-        // or necessary refactoring
-
-        // There's two parts - the first is pretty easy
-        // Use our standard flow to have the player select which oposing piece they want to bump and with what
-        // We need to verify the player can pay the correct amount from their stock (rulebook page 4)
-        // Once that's done we will need to pause our normal input flow to take care of the piece owner selecting where to place
-
-        // Remember that behavior changes when it's a circle
-        // I think we first need to figure out how to pass the turn (the turn stays the same
-        // -but we want to add some addttional information to the turn tracker)
-        // The game controller will need a sperate field to figure  out who is the active player
-        // name TBD, but we want some special name for the player to distinguish them from the player
-        // whose turn it currently is)
-
-        // We also need some computational logic to figure out how far the 
-
-        // We will need to add TWO Additional sections to the nodeClickHandler. At this point it might make
-        // sense to break out the nodeClickHandler into a lot of functions based on the inputHandlers.selectedAction
-        // field
-        // speaking of which, we will need to add two kinds of  new 'selectedAction's
-
         inputHandlers.clearAllActionSelection();
         inputHandlers.selectedAction = 'selectPieceToBump'
         inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
         inputHandlers.addShapeSelectionToActionInfo()
     },
     setUpBumpActionInfo(nodeId, shape, squares, circles) {
-        // DEV 4
         // 1. Toggle off all buttons
         this.toggleInputButtons(true)
         // 2. Add some player info to the action info box
@@ -873,7 +848,6 @@ const gameController = {
         // 8. Then we place the active player piece and update the nodeStorage object
         this.placePieceOnNode(nodeId, shape, player);
 
-        // DEV 2
         // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
         // We already have turnTrackerAdditionalInformation
         turnTrackerController.updateTurnTrackerWithBumpInfo({
@@ -898,7 +872,6 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        // DEV 3
         // We can think of validation in three parts location, number of earned moves, and supply
         // 1. Check that the target node is empty. If not warn
         const routeId = getRouteIdFromNodeId(nodeId)
@@ -910,8 +883,11 @@ const gameController = {
         }
 
         const isValidNode = this.checkThatLocationIsAdjacent(this.bumpInformation.bumpedLocation, nodeId)
-        console.warn('isValidNode', isValidNode)
-        // belongs to an adjacent route - I think I'll do this later
+        if (!isValidNode){
+            console.warn('Selected node must be part of an adjacent route')
+            inputHandlers.warnInvalidAction('Selected node must be part of an adjacent route');
+            return;
+        }
         // 3. check that the shape is valid (will need bumpInformation) which will need to be updated
         // once all validation has occurred
         if (shape === 'circle' && this.bumpInformation.circlesToPlace === 0) {
@@ -993,9 +969,7 @@ const gameController = {
         // either a matching routeId or a route with an unoccupied node (without finding a match on
         // that iteration number)
         const hasAnUnoccupiedNode = (route) => {
-            console.log('why error??', route)
             let unoccupied = false;
-            console.log(route.routeNodes)
             for (let nodeId in route.routeNodes){
                 if (!route.routeNodes[nodeId].occupied){
                     unoccupied = true;
