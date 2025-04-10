@@ -338,7 +338,8 @@
     height: 40px;
     width: 40px;
     position: absolute;
-    background-color: goldenrod;
+    background-color: silver;
+    display: none;
 }
 
 /* Utility Classes */

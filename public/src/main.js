@@ -61,9 +61,9 @@ const STARTING_TOKENS = ['extraPost', 'moveThree', 'switchPost']
 // They start off hidden unless they're starting
 // array has xdirection, ydirection, isStarting
 const TOKEN_CONFIG_BY_ROUTES = {
-        'Alpha-Beta': [0, .6],
-        'Alpha-Zeta': [.6, 0],
-        'Beta-Gamma': [.5, -.5],
+        'Alpha-Beta': [0, .6, true],
+        'Alpha-Zeta': [.6, 0, true],
+        'Beta-Gamma': [.5, -.5, true],
         'Gamma-Delta':[-.6, -.6],
         'Gamma-Zeta': [0, -.6],
         'Delta-Epsilon': [-.7, .1],
@@ -105,6 +105,16 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     }
 
     return div
+}
+const getRandomArrayElementAndModify = (array) => {
+    if (array.length === 0){
+        console.error('calling getRandomArrayElementAndModify with a 0 length array')
+        return
+    }
+    const index = Math.floor(Math.random() * (array.length - 1))
+    const element = array[index]
+    array.splice(index,1)
+    return element
 }
 const getRouteIdFromNodeId = (nodeId) => {
     return nodeId.slice(0, nodeId.lastIndexOf('-'));
@@ -555,14 +565,22 @@ const gameController = {
                     const neighborCityName = routeArray[0]
                     const length = routeArray[1]
                     const routeId = `${city.name}-${neighborCityName}`
+
+                    let tokenValue = false;
+                    if (!!TOKEN_CONFIG_BY_ROUTES[routeId][2]){
+                        tokenValue = getRandomArrayElementAndModify(startingTokensArray)
+                        console.log(startingTokensArray)
+                    }
                     boardController.createRouteAndTokenFromLocations({
                         length: routeArray[1],
                         id: routeId,
 
                         element1: this.cityStorageObject[cityKey].ownElement,
                         element2: this.cityStorageObject[neighborCityName].ownElement,
-                        tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId]
-                        // dev
+                        // DEV
+                        tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
+                        isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
+                        tokenValue,
                     })
                     this.routeStorageObject[routeId] = {
                         cities: [cityKey, neighborCityName],
@@ -578,8 +596,6 @@ const gameController = {
                     }
                     addRoutesToCity(cityKey)
                     addRoutesToCity(neighborCityName)
-                    // DEV - given that tokens are tied to routes, it might make sense to create them here
-                    // Will need to update the route information on createRouteAndTokenFromLocations
                     for (let i = 0; i < length; i++) {
                         const nodeId = `${routeId}-${i}`
                         this.routeStorageObject[routeId].routeNodes[nodeId] = {
@@ -1393,7 +1409,7 @@ const boardController = {
         return cityDiv
     },
     createRouteAndTokenFromLocations(routeProperties) {
-        const { length, id, element1, element2, tokenDirection } = routeProperties
+        const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
         let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
         const xDelta = endX - startX;
@@ -1420,12 +1436,9 @@ const boardController = {
 
             this.board.append(routeNode)
         }
-        // DEV!!! 
-        // Let's calculate the mid point and use that for the token holder
-
         let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta/ 2),
                 startY + (yDelta / 2));
-        this.createTokenHolder([xToken, yToken], id, tokenDirection)
+        this.createTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -1447,20 +1460,23 @@ const boardController = {
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
     },
-    createTokenHolder(location, routeId, direction, isStartingLocation = false){
+    createTokenHolder(location, routeId, direction, isStartingToken, tokenValue){
         // DEV
         const TOKEN_DISTANCE = 120
         const TOKEN_SIZE = 40
         // These should *NOT* need a click handler
         // I think this should be called by createRouteAndTokenFromLocations
-        console.log(location, routeId)
         const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
         // HERE!
         const [x,y] = offSetCoordinatesForSize(location[0]+ (direction[0] * TOKEN_DISTANCE), 
             location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
         tokenDiv.style.left = x + 'px';
         tokenDiv.style.top = y + 'px';
-
+        if (isStartingToken){
+            tokenDiv.style.display = 'flex'
+            tokenDiv.style.backgroundColor = 'goldenrod'
+            tokenDiv.innerText = tokenValue
+        }
         this.board.append(tokenDiv)
         // I'm gonna be super hacky and just use an offset map. 
         // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
