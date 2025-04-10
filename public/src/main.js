@@ -54,6 +54,21 @@ const TEST_BOARD_CONFIG_CITIES = {
 
 };
 
+const STARTING_TOKENS = ['extraPost', 'moveThree', 'switchPost']
+
+// I don't think it makes sense to tie these to cities
+// Each indicates which direction we're going and if one is a starting location
+// They start off hidden unless they're starting
+// array has xdirection, ydirection, isStarting
+const TOKEN_CONFIG_BY_ROUTES = {
+        'Alpha-Beta': [0, .6],
+        'Alpha-Zeta': [.6, 0],
+        'Beta-Gamma': [.5, -.5],
+        'Gamma-Delta':[-.6, -.6],
+        'Gamma-Zeta': [0, -.6],
+        'Delta-Epsilon': [-.7, .1],
+}
+
 // The below can be used to fix my name mapping issue, but then deleted I think
 const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
@@ -507,8 +522,11 @@ const gameController = {
         this.moveInformation = {};
         this.bumpInformation = {};
         inputHandlers.bindInputHandlers()
-        // This make certain assumptions about the ordering cities, when we get location based this won't be an issue
         boardController.initializeUI(this.playerArray);
+
+        // We will randomly select a valid index and add. Then we remove that element
+        // THIS will need a helper function to randomize selection (dev, TODO)
+        const startingTokensArray = STARTING_TOKENS;
 
         // Let's break out the city generation into two loops
         // THe first one populates the cityStorageObject 
@@ -537,16 +555,19 @@ const gameController = {
                     const neighborCityName = routeArray[0]
                     const length = routeArray[1]
                     const routeId = `${city.name}-${neighborCityName}`
-                    boardController.createRouteFromLocations({
+                    boardController.createRouteAndTokenFromLocations({
                         length: routeArray[1],
                         id: routeId,
 
                         element1: this.cityStorageObject[cityKey].ownElement,
                         element2: this.cityStorageObject[neighborCityName].ownElement,
+                        tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId]
+                        // dev
                     })
                     this.routeStorageObject[routeId] = {
                         cities: [cityKey, neighborCityName],
                         routeNodes: {},
+                        token: false,
                     }
                     // Cities should track which routes they are a part of
                     const addRoutesToCity = (cityName) => {
@@ -557,6 +578,8 @@ const gameController = {
                     }
                     addRoutesToCity(cityKey)
                     addRoutesToCity(neighborCityName)
+                    // DEV - given that tokens are tied to routes, it might make sense to create them here
+                    // Will need to update the route information on createRouteAndTokenFromLocations
                     for (let i = 0; i < length; i++) {
                         const nodeId = `${routeId}-${i}`
                         this.routeStorageObject[routeId].routeNodes[nodeId] = {
@@ -900,8 +923,6 @@ const gameController = {
             inputHandlers.warnInvalidAction('You cannot place another square.');
             return;
         }
-        console.log(this.bumpInformation)
-        // dev
         // 3. Check if the player has used their free shape - if so clear it
         let source; // free, supply, bank
         if (this.bumpInformation.freePiece && shape === this.bumpInformation.bumpedShape) {
@@ -1371,8 +1392,8 @@ const boardController = {
         this.board.append(cityDiv)
         return cityDiv
     },
-    createRouteFromLocations(routeProperties) {
-        const { length, id, element1, element2 } = routeProperties
+    createRouteAndTokenFromLocations(routeProperties) {
+        const { length, id, element1, element2, tokenDirection } = routeProperties
         let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
         const xDelta = endX - startX;
@@ -1399,6 +1420,12 @@ const boardController = {
 
             this.board.append(routeNode)
         }
+        // DEV!!! 
+        // Let's calculate the mid point and use that for the token holder
+
+        let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta/ 2),
+                startY + (yDelta / 2));
+        this.createTokenHolder([xToken, yToken], id, tokenDirection)
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -1419,6 +1446,28 @@ const boardController = {
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
+    },
+    createTokenHolder(location, routeId, direction, isStartingLocation = false){
+        // DEV
+        const TOKEN_DISTANCE = 120
+        const TOKEN_SIZE = 40
+        // These should *NOT* need a click handler
+        // I think this should be called by createRouteAndTokenFromLocations
+        console.log(location, routeId)
+        const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
+        // HERE!
+        const [x,y] = offSetCoordinatesForSize(location[0]+ (direction[0] * TOKEN_DISTANCE), 
+            location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
+        tokenDiv.style.left = x + 'px';
+        tokenDiv.style.top = y + 'px';
+
+        this.board.append(tokenDiv)
+        // I'm gonna be super hacky and just use an offset map. 
+        // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
+    },
+    updateTokenHolder(){
+        // TODO
+        // I assume we can either empty a space or add to a space
     },
 }
 
@@ -1850,10 +1899,14 @@ window.onload = start
 
 
 // TEST, DELETE THIS TODO
-const addPixelAtLocation = (x, y, isBig = false, color) => {
+const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
     testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
+    
     testElement.id = 'TEST';
+    if (id){
+        testElement.id = id
+    }
     testElement.style.left = x + 'px'
     testElement.style.top = y + 'px'
     if (color) {

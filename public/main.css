@@ -69,10 +69,12 @@
     border: solid;
     border-color: black;
 }
-.playerBoardArea{
+
+.playerBoardArea {
     border: solid;
     border-color: black;
 }
+
 #turnTracker {
     font-weight: bold;
 }
@@ -155,24 +157,27 @@
     justify-content: space-between;
     /* will get ride of height and width eventually */
 }
-.playerInfoBoardBanner{
+
+.playerInfoBoardBanner {
     text-align: center;
     font-weight: bold;
     width: 100%;
     margin: 2px;
     font-size: 30px;
 }
+
 /* #playerInfoBoardContainer{
     display: flex;
     flex-direction: row;
     align-items: center;
 } */
-#playerBoardAreaIncludingButton{
+#playerBoardAreaIncludingButton {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-.arrowButton{
+
+.arrowButton {
     text-align: center;
     font-weight: bold;
     width: 100px;
@@ -233,7 +238,8 @@
 
 .colorTracker {
     height: 120px;
-    width: 31%;;
+    width: 31%;
+    ;
     margin: 2px;
     display: flex;
     flex-wrap: wrap;
@@ -250,7 +256,8 @@
 .movesTracker {
     display: flex;
     margin: 10px;
-    width: 31%;;
+    width: 31%;
+    ;
     background-color: wheat;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -263,7 +270,8 @@
 }
 
 .purseTracker {
-    width: 31%;;
+    width: 31%;
+    ;
     display: flex;
     margin: 10px;
 }
@@ -298,31 +306,39 @@
     width: 15px;
 }
 
-.supplyArea{
+.supplyArea {
     height: 100px;
     width: 45%;
     background-color: aquamarine;
     border: solid;
 }
 
-.bankArea{
+.bankArea {
     height: 100px;
     width: 45%;
     background-color: peachpuff;
     border: solid;
 }
+
 /* pieceTracker is used by both bank and supply */
-.pieceTracker{
+.pieceTracker {
     /* probably just need flex and nothing else
     might need direction and wrap*/
     display: flex;
     flex-direction: row;
 }
 
-.tinyPiece{
+.tinyPiece {
     height: 15px;
     width: 15px;
     margin: 2px;
+}
+
+.onBoardToken {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    background-color: goldenrod;
 }
 
 /* Utility Classes */
@@ -348,13 +364,13 @@
     min-width: 970px;
 }
 
-.banner{
+.banner {
     text-align: center;
     font-weight: bold;
     width: 100%;
 }
 
-.testCityDiv{
+.testCityDiv {
     position: absolute;
     height: 20px;
     width: 20px;
@@ -362,7 +378,7 @@
 
 }
 
-.testSinglePixel{
+.testSinglePixel {
     height: 5px;
     width: 5px;
     background-color: chartreuse;
@@ -370,7 +386,7 @@
     z-index: 10;
 }
 
-.testBigPixel{
+.testBigPixel {
     height: 10px;
     width: 10px;
     background-color: magenta;

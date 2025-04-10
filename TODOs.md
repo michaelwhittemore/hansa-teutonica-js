@@ -7,19 +7,22 @@
     * acquisition - we need to update the route complete handler
     * will need to have an area within the player supply or bank to track tokens
     * will need to have something to place the token in the "food" area in the center of the player supply
+    * Let's do faceup tokens in supply (remember can't use the turn we acquire them)
+    * Facedown tokens in the bank (only used for scoring)
     * Let's break this into three rough parts acquisition, replacement, usage
     * ***Acquisition***
         * Can further break this down into UI and actual game play
-        * There's only three starting spots - double check with rules
+        * There's only three starting spots - double check with rules, yep it's three
         * Maybe I should hard-code the starting spots 
+        * I think I will manually determine which of the directions we will go, otherwise do it programatically
         * generate a list of golden (as in starting) tokens that are randomly places at the taverns
         * Need to place the tokens on the board
         * I think we will start with some dummy values i.e. A,B,C,D
-        * 
-        
+        * Remember that boardController handles UI and gameController handles state
+* I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
 * add all the game logs to bump - just update a list on bumpInformation
-* add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode
+* add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode - also perhaps a collapsable rules doc? token explination at the very least
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make nodes hoverable text with their ids as text - tooltip?
