@@ -3,6 +3,20 @@
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
+* **Tokens**
+    * acquisition - we need to update the route complete handler
+    * will need to have an area within the player supply or bank to track tokens
+    * will need to have something to place the token in the "food" area in the center of the player supply
+    * Let's break this into three rough parts acquisition, replacement, usage
+    * ***Acquisition***
+        * Can further break this down into UI and actual game play
+        * There's only three starting spots - double check with rules
+        * Maybe I should hard-code the starting spots 
+        * generate a list of golden (as in starting) tokens that are randomly places at the taverns
+        * Need to place the tokens on the board
+        * I think we will start with some dummy values i.e. A,B,C,D
+        * 
+        
 * Module system **HERE**
 * add all the game logs to bump - just update a list on bumpInformation
 * add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode
@@ -103,6 +117,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * reorganize CSS and methods (just the ordering)
 * add images for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
 * corner case of empty bank and supply when being bumped - techincally the player can move their placed pieces
+* use a bundler like web pack
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
