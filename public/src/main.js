@@ -56,6 +56,15 @@ const TEST_BOARD_CONFIG_CITIES = {
 };
 
 const STARTING_TOKENS = ['extraPost', 'moveThree', 'switchPost']
+// RULES TODO, verify that the blow values do *NOT* include the gold starters
+const REGULAR_TOKENS_NUMBER_MAP = {
+    'extraPost': 4,
+    'switchPost': 3,
+    'moveThree': 2,
+    'freeUpgrade': 2,
+    'threeActions': 2,
+    'fourActions': 2,
+}
 
 // I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
@@ -535,11 +544,19 @@ const gameController = {
         this.cityStorageObject = {};
         this.moveInformation = {};
         this.bumpInformation = {};
+        this.tokenInformation = {};
         this.tokensCapturedThisTurn = [];
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
         const startingTokensArray = STARTING_TOKENS;
+        const regularTokensArray = [];
+        Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
+            for (let i = 0; i < REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
+                regularTokensArray.push(key)
+            }
+        })
+        this.regularTokensArray = regularTokensArray
 
         // Let's break out the city generation into two loops
         // THe first one populates the cityStorageObject 
@@ -579,7 +596,6 @@ const gameController = {
 
                         element1: this.cityStorageObject[cityKey].ownElement,
                         element2: this.cityStorageObject[neighborCityName].ownElement,
-                        // DEV
                         tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
                         isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
                         tokenValue,
@@ -638,6 +654,7 @@ const gameController = {
             console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
             return // We then re-excute this.advanceTurn(lastPlayer) once all the tokens have been placed
         }
+        this.tokenInformation = {}
         this.tokensCapturedThisTurn = []; // DELETE and do this as part of the method? WIll also need to clear the 'eat' area
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
@@ -647,25 +664,31 @@ const gameController = {
 
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
-    replaceTokens(){
-        // DEV HERE
+    replaceTokens() {
+        // DEV HERE!!
         // There's a lot to do here
         // We will likely need a method to replace each 
         // 0.5 create a stack of all legal tokens. This will be a constant and reassigned during
         // game initialization the same way I do for gold tokens
         // 2. "Shuffle and Deal" the token stack
+        const currentReplacement = getRandomArrayElementAndModify(this.regularTokensArray)
+        this.tokenInformation.currentReplacement = currentReplacement;
         // 3. Update both turn tracker and the action info area with the piece that is going to be replaces
+        // let's follow the example of the bump action - specifically setUpBumpActionInfo
+        
         // 4. Un-hide all the token locations on the map (may need to switch from display to visible)
         // 5. Set the selectedAction type to something like 'replacingToken'
         // 6. disable all the action buttons
+        // 7. add all the tokensCapturedThisTurn to the player's bank and clear the field
 
         // 35. Need to call advanceTurn(lastPlayer) to actually end the turn (probably after
         // the final replaceTokenAtLocation)
     },
-    replaceTokenAtLocation(){
+    replaceTokenAtLocation() {
         // DEV 
         // this should be triggered by clicking on a token holder when the input selectedAction is correct
-    
+
+        // If the token stack is zero we call endGame (which doesn't acually do anything yet)
         // once we're done we need to clear all information and UI and re-call advanceTurn
         // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
         // of cleanup on its own
@@ -673,6 +696,7 @@ const gameController = {
     resolveAction(player) {
         gameController.moveInformation = {};
         gameController.bumpInformation = {};
+        gameController.tokenInformation = {}
         inputHandlers.clearAllActionSelection();
         // TODO The below inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
@@ -1376,7 +1400,11 @@ const gameController = {
         gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
-    }
+    },
+    endGame() {
+        // TODO
+        console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
+    },
 }
 
 // The interface does NOT track game state, just renders and creates buttons (although it can track its own state)
@@ -1831,7 +1859,6 @@ const playerInformationAndBoardController = {
             }
         },
         updateTokensInSupplyAndBank(player) {
-            // dev add numbers to the circles
             const tokenInSupplyDiv = document.getElementById(`supply-tokens-${player.id}`)
             const tokenInSupplyTooltip = document.getElementById(`supply-tokens-tooltip-${player.id}`)
             const currentTokenArray = player.currentTokens;
