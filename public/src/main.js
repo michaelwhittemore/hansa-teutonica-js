@@ -631,6 +631,7 @@ const gameController = {
         if (this.tokensCapturedThisTurn > 0) {
             // psudeocode -> this.claimToken which should include a lot of things
             // We will need to re-reveal all possible token holders (just display: flex)
+            // will need to clear updateTokenTracker
 
 
             console.warn('Player has captured some tokens. We need to give them the oppurtunity to re-add them')
@@ -1332,6 +1333,7 @@ const gameController = {
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
             player.currentTokens.push(tokenKind);
             playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
+            playerInformationAndBoardController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn)
             // Clear after adding the token otherwise we lose the reference
             boardController.clearTokenFromRoute(routeId)
             this.routeStorageObject[routeId].token = false;
@@ -1478,7 +1480,7 @@ const boardController = {
         }
         let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta / 2),
             startY + (yDelta / 2));
-        this.createTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
+        this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
     },
     clearTokenFromRoute(routeId) {
         tokenDiv = document.getElementById(`token-${routeId}`);
@@ -1507,7 +1509,7 @@ const boardController = {
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
     },
-    createTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
+    createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
         // DEV
         const TOKEN_DISTANCE = 120
         const TOKEN_SIZE = 40
@@ -1528,10 +1530,6 @@ const boardController = {
         // I'm gonna be super hacky and just use an offset map. 
         // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
     },
-    updateTokenHolder() {
-        // TODO
-        // I assume we can either empty a space or add to a space
-    },
 }
 
 const playerInformationAndBoardController = {
@@ -1551,7 +1549,6 @@ const playerInformationAndBoardController = {
         // Need to set the focused player before creating buttons
         document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
         document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))
-
 
 
         const collapseButton = document.createElement('button');
@@ -1775,12 +1772,20 @@ const playerInformationAndBoardController = {
             // eventually add some images for tokens (only need the eaten one)
             const tokenTracker = document.createElement('div');
             tokenTracker.className = 'tokenTracker';
-            // Will eventually need a method to add to token tracker, once consumed
-            const tokenHolder = document.createElement('div');
-            tokenHolder.className = 'tokenHolder'
-            tokenHolder.id = `tokenHolder-${player.id}`;
+            const tokenHolder = createDivWithClassAndIdAndStyle(['tokenHolder', 'centeredFlex'],
+                `tokenHolder-${player.id}`)
             tokenTracker.append(tokenHolder);
             return tokenTracker
+        },
+        updateTokenTracker(player, numberOfTokens) {
+            const tokenHolderDiv = document.getElementById(`tokenHolder-${player.id}`)
+            if (numberOfTokens === 0) {
+                tokenHolderDiv.style.backgroundColor = '';
+                tokenHolderDiv.innerText = ''
+            } else {
+                tokenHolderDiv.style.backgroundColor = 'silver';
+                tokenHolderDiv.innerText = numberOfTokens;
+            }
         },
         updateSupplyAndBank(player) {
             const supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
