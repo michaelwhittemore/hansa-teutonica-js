@@ -535,7 +535,7 @@ const gameController = {
         this.cityStorageObject = {};
         this.moveInformation = {};
         this.bumpInformation = {};
-        this.tokensCapturedThisTurn = 0;
+        this.tokensCapturedThisTurn = [];
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
@@ -625,18 +625,20 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         // DEV 
-        // need to see if there's at least one token that has been claimed
-        // We're gonna change this to an array not an int as we want to log them and let the players
-        // see which have already been used
-        if (this.tokensCapturedThisTurn > 0) {
+        if (this.tokensCapturedThisTurn.length > 0) {
             // psudeocode -> this.claimToken which should include a lot of things
             // We will need to re-reveal all possible token holders (just display: flex)
             // will need to clear updateTokenTracker
-
-
-            console.warn('Player has captured some tokens. We need to give them the oppurtunity to re-add them')
+            // We will need to create a click handler for the token areas on the board
+            // Will need to verify that the route location is valid
+            // We will need to set the turn tracker with a message that player is placing tokens
+            // Once all of this is down there will be a bit of cleanup including reseting gameCOntroller
+            // fields, hiding all unused token locations, clearing the players
+            this.replaceTokens()
+            console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
+            return // We then re-excute this.advanceTurn(lastPlayer) once all the tokens have been placed
         }
-        this.tokensCapturedThisTurn = 0;
+        this.tokensCapturedThisTurn = []; // DELETE and do this as part of the method? WIll also need to clear the 'eat' area
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         if (IS_HOTSEAT_MODE) {
@@ -644,6 +646,29 @@ const gameController = {
         }
 
         lastPlayer.currentActions = lastPlayer.maxActions;
+    },
+    replaceTokens(){
+        // DEV HERE
+        // There's a lot to do here
+        // We will likely need a method to replace each 
+        // 0.5 create a stack of all legal tokens. This will be a constant and reassigned during
+        // game initialization the same way I do for gold tokens
+        // 2. "Shuffle and Deal" the token stack
+        // 3. Update both turn tracker and the action info area with the piece that is going to be replaces
+        // 4. Un-hide all the token locations on the map (may need to switch from display to visible)
+        // 5. Set the selectedAction type to something like 'replacingToken'
+        // 6. disable all the action buttons
+
+        // 35. Need to call advanceTurn(lastPlayer) to actually end the turn (probably after
+        // the final replaceTokenAtLocation)
+    },
+    replaceTokenAtLocation(){
+        // DEV 
+        // this should be triggered by clicking on a token holder when the input selectedAction is correct
+    
+        // once we're done we need to clear all information and UI and re-call advanceTurn
+        // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
+        // of cleanup on its own
     },
     resolveAction(player) {
         gameController.moveInformation = {};
@@ -1317,27 +1342,15 @@ const gameController = {
 
         // ______________
         if (route.token) {
-            // HERE!! DEV
-            // 1. @ Clear the token from the route UI
-            // 2. @ Clear token from route at the route storage level
-            // 2. Add a token to the player's token holder (no clue what to call it)
-            // 3. @ Add an array of availble tokens to the playerObject
-            // 4. @ Add a used token value to the playerObject
-            // 3. @ Add the token to the player object (just storage, no UI)
-            // 4. @ set the flag that new tokens will need to be added at EoT
-            // 5. Add a token to the player's "token eat area" (where the face down
-            // tokens go to be placed EOT)
-
             const tokenKind = route.token
-            this.tokensCapturedThisTurn++;
+            this.tokensCapturedThisTurn.push(tokenKind);
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
             player.currentTokens.push(tokenKind);
             playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
-            playerInformationAndBoardController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn)
+            playerInformationAndBoardController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn.length)
             // Clear after adding the token otherwise we lose the reference
             boardController.clearTokenFromRoute(routeId)
             this.routeStorageObject[routeId].token = false;
-
         }
         // ________
         route.cities.forEach(cityId => {
@@ -1510,10 +1523,9 @@ const boardController = {
         pieceHolder.append(playerPieceDiv)
     },
     createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
-        // DEV
         const TOKEN_DISTANCE = 120
         const TOKEN_SIZE = 40
-        // These should *NOT* need a click handler
+        // These should *NOT* need a click handler - actually will need one when re-adding tokens
         // I think this should be called by createRouteAndTokenFromLocations
         const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
         const [x, y] = offSetCoordinatesForSize(location[0] + (direction[0] * TOKEN_DISTANCE),
