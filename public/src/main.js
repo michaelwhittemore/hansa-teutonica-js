@@ -1824,13 +1824,12 @@ const playerInformationAndBoardController = {
             // Supply contains tokens, bank contains used tokens.
             // The token container will be hidden by default untill the player owns at least one
             // It will need it's own updater that takes a type and takes add/or delete. It can track
-            // If it should be hidden by itself
-            const tokenInSupplyDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenInSupplyTracker',
+            // If it should be hidden by defautl
+            const tokenInSupplyDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenDropdownHolder',
                 'centeredFlex', 'tooltip'], `supply-tokens-${player.id}`)
-            tokenInSupplyDiv.innerText = "Hover to view tokens"
-            const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'], 
-            `supply-tokens-tooltip-${player.id}`)
-            tokenInSupplyTooltip.innerText ='asdasdsadasd'
+            tokenInSupplyDiv.innerText = "View available tokens"
+            const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
+                `supply-tokens-tooltip-${player.id}`)
             tokenInSupplyDiv.append(tokenInSupplyTooltip)
             // In update we should add how many tokens
             // and also update the number in the tooltipText list
@@ -1839,6 +1838,41 @@ const playerInformationAndBoardController = {
             // I think it should provide an expanding list of tokens on click
             supplyDiv.append(tokenInSupplyDiv)
             return supplyDiv
+        },
+        updateTokenInSupplyAndBank(player) {
+            const tokenInSupplyDiv = document.getElementById(`supply-tokens-${player.id}`)
+            const tokenInSupplyTooltip = document.getElementById(`supply-tokens-tooltip-${player.id}`)
+            const currentTokenArray = player.currentTokens;
+            if (currentTokenArray.length === 0) {
+                tokenInSupplyDiv.style.visibility = 'hidden'
+            } else {
+                tokenInSupplyDiv.style.visibility = 'visible'
+            }
+            let innerSupplyTextString = ''
+            currentTokenArray.forEach(token => {
+                innerSupplyTextString += token + '\n'
+            })
+            tokenInSupplyTooltip.innerText = innerSupplyTextString
+
+            const tokenInBankDiv = document.getElementById(`bank-tokens-${player.id}`)
+            const tokenInBankTooltip = document.getElementById(`bank-tokens-tooltip-${player.id}`)
+            const usedTokenArray = player.usedTokens;
+            if (usedTokenArray.length === 0) {
+                tokenInBankDiv.style.visibility = 'hidden'
+            } else {
+                tokenInBankDiv.style.visibility = 'visible'
+            }
+            let innerBankTextString = ''
+            usedTokenArray.forEach(token => {
+                innerBankTextString += token + '\n'
+
+            })
+            tokenInBankTooltip.innerText = innerBankTextString
+            /* 
+            gameController.playerArray[0].currentTokens = ['1as','2sadsadsad', '3s3dasda'];
+playerInformationAndBoardController.componentBuilders.updateTokenInSupplyAndBank(gameController.playerArray[0])
+            **/
+
         },
         createBankTracker(player) {
             // Just copy pasta from createSupplyTracker
@@ -1849,6 +1883,14 @@ const playerInformationAndBoardController = {
             const bankPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `bank-pieces-${player.id}`)
             this.updateBankTracker(player, bankPieceTracker);
             bankDiv.append(bankPieceTracker)
+
+            const tokenInBankDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenDropdownHolder',
+                'centeredFlex', 'tooltip'], `bank-tokens-${player.id}`)
+            tokenInBankDiv.innerText = "View available tokens"
+            const tokenInBankTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
+                `bank-tokens-tooltip-${player.id}`)
+            tokenInBankDiv.append(tokenInBankTooltip)
+            bankDiv.append(tokenInBankDiv)
 
             return bankDiv
         },
