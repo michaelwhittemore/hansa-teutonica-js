@@ -626,6 +626,8 @@ const gameController = {
     advanceTurn(lastPlayer) {
         // DEV 
         // need to see if there's at least one token that has been claimed
+        // We're gonna change this to an array not an int as we want to log them and let the players
+        // see which have already been used
         if (this.tokensCapturedThisTurn > 0) {
             // psudeocode -> this.claimToken which should include a lot of things
             // We will need to re-reveal all possible token holders (just display: flex)
@@ -1325,11 +1327,11 @@ const gameController = {
             // 5. Add a token to the player's "token eat area" (where the face down
             // tokens go to be placed EOT)
 
-
             const tokenKind = route.token
             this.tokensCapturedThisTurn++;
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
             player.currentTokens.push(tokenKind);
+            playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
             // Clear after adding the token otherwise we lose the reference
             boardController.clearTokenFromRoute(routeId)
             this.routeStorageObject[routeId].token = false;
@@ -1811,38 +1813,13 @@ const playerInformationAndBoardController = {
                 bankTracker.append(this.createSupplyOrBankPiece(false, player.color))
             }
         },
-        createSupplyTracker(player) {
-            const supplyDiv = createDivWithClassAndIdAndStyle(['supplyArea'], `supply-${player.id}`)
-            const supplyBanner = createDivWithClassAndIdAndStyle(['banner'])
-            supplyBanner.innerText = 'Supply';
-            supplyDiv.append(supplyBanner)
-            const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `supply-pieces-${player.id}`)
-            this.updateSupplyTracker(player, supplyPieceTracker);
-            supplyDiv.append(supplyPieceTracker)
-            // DEV 
-            // Let's just create a list for now. Maybe a drop down. It will have it's own updater
-            // Supply contains tokens, bank contains used tokens.
-            // The token container will be hidden by default untill the player owns at least one
-            // It will need it's own updater that takes a type and takes add/or delete. It can track
-            // If it should be hidden by defautl
-            const tokenInSupplyDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenDropdownHolder',
-                'centeredFlex', 'tooltip'], `supply-tokens-${player.id}`)
-            tokenInSupplyDiv.innerText = "View available tokens"
-            const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
-                `supply-tokens-tooltip-${player.id}`)
-            tokenInSupplyDiv.append(tokenInSupplyTooltip)
-            // In update we should add how many tokens
-            // and also update the number in the tooltipText list
-            // I think update will just pass in the player.currentTokens and use that length 
-            // HERE!
-            // I think it should provide an expanding list of tokens on click
-            supplyDiv.append(tokenInSupplyDiv)
-            return supplyDiv
-        },
-        updateTokenInSupplyAndBank(player) {
+        updateTokensInSupplyAndBank(player) {
+            // dev add numbers to the circles
             const tokenInSupplyDiv = document.getElementById(`supply-tokens-${player.id}`)
             const tokenInSupplyTooltip = document.getElementById(`supply-tokens-tooltip-${player.id}`)
             const currentTokenArray = player.currentTokens;
+            document.getElementById(`supply-tokens-text-${player.id}`).innerText = `View ${pluralifyText('available token', currentTokenArray.length)}`
+
             if (currentTokenArray.length === 0) {
                 tokenInSupplyDiv.style.visibility = 'hidden'
             } else {
@@ -1857,6 +1834,9 @@ const playerInformationAndBoardController = {
             const tokenInBankDiv = document.getElementById(`bank-tokens-${player.id}`)
             const tokenInBankTooltip = document.getElementById(`bank-tokens-tooltip-${player.id}`)
             const usedTokenArray = player.usedTokens;
+            document.getElementById(`bank-tokens-text-${player.id}`).innerText = `View ${pluralifyText('used token', usedTokenArray.length)}`
+
+
             if (usedTokenArray.length === 0) {
                 tokenInBankDiv.style.visibility = 'hidden'
             } else {
@@ -1868,11 +1848,26 @@ const playerInformationAndBoardController = {
 
             })
             tokenInBankTooltip.innerText = innerBankTextString
-            /* 
-            gameController.playerArray[0].currentTokens = ['1as','2sadsadsad', '3s3dasda'];
-playerInformationAndBoardController.componentBuilders.updateTokenInSupplyAndBank(gameController.playerArray[0])
-            **/
+        },
+        createSupplyTracker(player) {
+            const supplyDiv = createDivWithClassAndIdAndStyle(['supplyArea'], `supply-${player.id}`)
+            const supplyBanner = createDivWithClassAndIdAndStyle(['banner'])
+            supplyBanner.innerText = 'Supply';
+            supplyDiv.append(supplyBanner)
+            const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `supply-pieces-${player.id}`)
+            this.updateSupplyTracker(player, supplyPieceTracker);
+            supplyDiv.append(supplyPieceTracker)
 
+            const tokenInSupplyDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenDropdownHolder',
+                'centeredFlex', 'tooltip'], `supply-tokens-${player.id}`)
+            const tokenInSupplyDivText = createDivWithClassAndIdAndStyle(['textNode'],
+                `supply-tokens-text-${player.id}`)
+            tokenInSupplyDiv.append(tokenInSupplyDivText)
+            const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
+                `supply-tokens-tooltip-${player.id}`)
+            tokenInSupplyDiv.append(tokenInSupplyTooltip)
+            supplyDiv.append(tokenInSupplyDiv)
+            return supplyDiv
         },
         createBankTracker(player) {
             // Just copy pasta from createSupplyTracker
@@ -1886,12 +1881,13 @@ playerInformationAndBoardController.componentBuilders.updateTokenInSupplyAndBank
 
             const tokenInBankDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenDropdownHolder',
                 'centeredFlex', 'tooltip'], `bank-tokens-${player.id}`)
-            tokenInBankDiv.innerText = "View available tokens"
+            const tokenInBankDivText = createDivWithClassAndIdAndStyle(['textNode'],
+                `bank-tokens-text-${player.id}`)
+            tokenInBankDiv.append(tokenInBankDivText)
             const tokenInBankTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
                 `bank-tokens-tooltip-${player.id}`)
             tokenInBankDiv.append(tokenInBankTooltip)
             bankDiv.append(tokenInBankDiv)
-
             return bankDiv
         },
         createSupplyOrBankPiece(isCircle, color) {
