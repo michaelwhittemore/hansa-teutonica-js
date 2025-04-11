@@ -6,6 +6,7 @@ const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
 const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
 const IS_HOTSEAT_MODE = true;
 const USE_DEFAULT_CLICK_ACTIONS = true;
+const AUTO_SCROLL = true;
 const APPROXIMATE_NODE_OFFSET = 45 / 2;
 
 // location is a coordinates x, y offset from the origin in the top right
@@ -61,12 +62,12 @@ const STARTING_TOKENS = ['extraPost', 'moveThree', 'switchPost']
 // They start off hidden unless they're starting
 // array has xdirection, ydirection, isStarting
 const TOKEN_CONFIG_BY_ROUTES = {
-        'Alpha-Beta': [0, .6, true],
-        'Alpha-Zeta': [.6, 0, true],
-        'Beta-Gamma': [.5, -.5, true],
-        'Gamma-Delta':[-.6, -.6],
-        'Gamma-Zeta': [0, -.6],
-        'Delta-Epsilon': [-.7, .1],
+    'Alpha-Beta': [0, .6, true],
+    'Alpha-Zeta': [.6, 0, true],
+    'Beta-Gamma': [.5, -.5, true],
+    'Gamma-Delta': [-.6, -.6],
+    'Gamma-Zeta': [0, -.6],
+    'Delta-Epsilon': [-.7, .1],
 }
 
 // The below can be used to fix my name mapping issue, but then deleted I think
@@ -107,16 +108,16 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     return div
 }
 const getRandomArrayElementAndModify = (array) => {
-    if (array.length === 0){
+    if (array.length === 0) {
         console.error('calling getRandomArrayElementAndModify with a 0 length array')
         return
     }
     const index = Math.floor(Math.random() * (array.length))
-    if (index === array.length){
+    if (index === array.length) {
         console.error('index === array.length, did not think this could happen')
     }
     const element = array[index]
-    array.splice(index,1)
+    array.splice(index, 1)
     return element
 }
 const getRouteIdFromNodeId = (nodeId) => {
@@ -534,6 +535,7 @@ const gameController = {
         this.cityStorageObject = {};
         this.moveInformation = {};
         this.bumpInformation = {};
+        this.tokensCapturedThisTurn = 0;
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
@@ -568,7 +570,7 @@ const gameController = {
                     const routeId = `${city.name}-${neighborCityName}`
 
                     let tokenValue = false;
-                    if (!!TOKEN_CONFIG_BY_ROUTES[routeId][2]){
+                    if (!!TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
                         tokenValue = getRandomArrayElementAndModify(startingTokensArray)
                     }
                     boardController.createRouteAndTokenFromLocations({
@@ -582,7 +584,7 @@ const gameController = {
                         isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
                         tokenValue,
                     })
-                    
+
                     this.routeStorageObject[routeId] = {
                         cities: [cityKey, neighborCityName],
                         routeNodes: {},
@@ -622,6 +624,13 @@ const gameController = {
         // TODO, only used for online play I think
     },
     advanceTurn(lastPlayer) {
+        // DEV 
+        // need to see if there's at least one token that has been cliamed
+        if (this.tokensCapturedThisTurn > 0) {
+            // psudeocode -> this.claimToken which should include
+
+        }
+        this.tokensCapturedThisTurn = 0;
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         if (IS_HOTSEAT_MODE) {
@@ -1297,11 +1306,21 @@ const gameController = {
 
     },
     routeCompleted(routeId, player) {
-        // HERE!! DEV
-        // Need to add token capturing logic
-        // It will also check for tokens (we will need to create a token holder when initializing routes)
         gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
         const route = this.routeStorageObject[routeId]
+
+        // ______________
+        if (route.token) {
+            // HERE!! DEV
+            // Need to add token capturing logic
+            // Will add a flag on the gameController for placement. This happens when 
+            // the end turn action is reached
+            // This will be a  whole deal, but let's not deal with it quite yet
+            boardController.clearTokenFromRoute(routeId)
+            const tokenKind = route.token
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
+        }
+        // ________
         route.cities.forEach(cityId => {
             const controller = this.calculateControllingPlayer(this.cityStorageObject[cityId])
             if (controller) {
@@ -1318,6 +1337,7 @@ const gameController = {
             };
             boardController.clearPieceFromRouteNode(nodeToClearId)
         }
+
     },
     scorePoints(pointValue, player) {
         const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
@@ -1439,9 +1459,16 @@ const boardController = {
 
             this.board.append(routeNode)
         }
-        let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta/ 2),
-                startY + (yDelta / 2));
+        let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta / 2),
+            startY + (yDelta / 2));
         this.createTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
+    },
+    clearTokenFromRoute(routeId) {
+        tokenDiv = document.getElementById(`token-${routeId}`);
+        tokenDiv.style.backgroundColor = 'silver'
+        tokenDiv.innerText = '';
+        tokenDiv.style.display = 'none'
+
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -1463,27 +1490,28 @@ const boardController = {
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
     },
-    createTokenHolder(location, routeId, direction, isStartingToken, tokenValue){
+    createTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
         // DEV
         const TOKEN_DISTANCE = 120
         const TOKEN_SIZE = 40
         // These should *NOT* need a click handler
         // I think this should be called by createRouteAndTokenFromLocations
         const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
-        const [x,y] = offSetCoordinatesForSize(location[0]+ (direction[0] * TOKEN_DISTANCE), 
+        const [x, y] = offSetCoordinatesForSize(location[0] + (direction[0] * TOKEN_DISTANCE),
             location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
         tokenDiv.style.left = x + 'px';
         tokenDiv.style.top = y + 'px';
-        if (isStartingToken){
+        if (isStartingToken) {
             tokenDiv.style.display = 'flex'
             tokenDiv.style.backgroundColor = 'goldenrod'
             tokenDiv.innerText = tokenValue
         }
+        // TODO this will need to be clickable for when
         this.board.append(tokenDiv)
         // I'm gonna be super hacky and just use an offset map. 
         // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
     },
-    updateTokenHolder(){
+    updateTokenHolder() {
         // TODO
         // I assume we can either empty a space or add to a space
     },
@@ -1869,8 +1897,10 @@ const gameLogController = {
             text = text.replaceAll('$PLAYER2_NAME', player2NameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
+        if(AUTO_SCROLL){
+            document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
+        }
         // TODO add to saved history
-
     }
 }
 
@@ -1920,9 +1950,9 @@ window.onload = start
 const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
     testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
-    
+
     testElement.id = 'TEST';
-    if (id){
+    if (id) {
         testElement.id = id
     }
     testElement.style.left = x + 'px'

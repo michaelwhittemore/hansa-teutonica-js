@@ -3,6 +3,9 @@
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
+    * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
+    * For the server we will need to handle player inputs and then inform all other players
+    * I'll probably keep the game logic in the client side for the moment
 * **Tokens**
     * acquisition - we need to update the route complete handler
     * will need to have an area within the player supply or bank to track tokens
@@ -12,9 +15,9 @@
     * Let's break this into three rough parts acquisition, replacement, usage
     * ***Acquisition***
         * Can further break this down into UI and actual game play
-        * There's only three starting spots - double check with rules, yep it's three
+        * There's only three starting spots
         * Maybe I should hard-code the starting spots 
-        * I think I will manually determine which of the directions we will go, otherwise do it programatically
+        * I think I will manually determine which of the directions we will go, otherwise do it programmatically
         * generate a list of golden (as in starting) tokens that are randomly places at the taverns
         * Need to place the tokens on the board
         * I think we will start with some dummy values i.e. A,B,C,D
@@ -41,7 +44,6 @@ I need to have a single word for each between city unlock, the divs for holding 
 * organize css into sections under comments
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
-* autoscroll to game log
 * add chat to game log
 * Move some of the gameController copy pasta into it's own methods
 * Add a turn timer to the turn tracker
@@ -57,6 +59,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
+~~gamelog autoscrolls on new message~~
 ~~time stamp to game log~~
 ~~Bump method~~
 ~~Place pluralifyText where we use awkward ternary operators in text~~
