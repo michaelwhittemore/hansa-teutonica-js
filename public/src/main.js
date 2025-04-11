@@ -625,10 +625,13 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         // DEV 
-        // need to see if there's at least one token that has been cliamed
+        // need to see if there's at least one token that has been claimed
         if (this.tokensCapturedThisTurn > 0) {
-            // psudeocode -> this.claimToken which should include
+            // psudeocode -> this.claimToken which should include a lot of things
+            // We will need to re-reveal all possible token holders (just display: flex)
 
+
+            console.warn('Player has captured some tokens. We need to give them the oppurtunity to re-add them')
         }
         this.tokensCapturedThisTurn = 0;
         this.currentTurn++;
@@ -643,7 +646,7 @@ const gameController = {
         gameController.moveInformation = {};
         gameController.bumpInformation = {};
         inputHandlers.clearAllActionSelection();
-        // TODO The below inputHandlers.toggleInputButtons maybe shoulkd just be tied to cleanup of
+        // TODO The below inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
         inputHandlers.toggleInputButtons(false)
         player.currentActions -= 1;
@@ -1312,13 +1315,23 @@ const gameController = {
         // ______________
         if (route.token) {
             // HERE!! DEV
-            // Need to add token capturing logic
-            // Will add a flag on the gameController for placement. This happens when 
-            // the end turn action is reached
-            // This will be a  whole deal, but let's not deal with it quite yet
-            boardController.clearTokenFromRoute(routeId)
+            // 1. @ Clear the token from the route UI
+            // 2. @ Clear token from route at the route storage level
+            // 2. Add a token to the player's token holder (no clue what to call it)
+            // 3. Add an array of availble tokens to the playerObject
+            // 4. @ Add a used token value to the playerObject
+            // 3. @ Add the token to the player object (just storage, no UI)
+            // 4. @ set the flag that new tokens will need to be added at EoT
+
+            
             const tokenKind = route.token
+            this.tokensCapturedThisTurn++;
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
+            player.currentTokens.push(tokenKind);
+            // Clear after adding the token otherwise we lose the reference
+            boardController.clearTokenFromRoute(routeId)
+            this.routeStorageObject[routeId].token = false;
+
         }
         // ________
         route.cities.forEach(cityId => {
@@ -1916,6 +1929,8 @@ class Player {
         this.maxActions = 2; // Not to be confused with current actions
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
+        this.currentTokens = [];
+        this.usedTokens = 0;
         this.unlockedColors = ['grey'];
         this.maxMovement = 2;
         this.keys = 1;
