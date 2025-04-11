@@ -1318,12 +1318,14 @@ const gameController = {
             // 1. @ Clear the token from the route UI
             // 2. @ Clear token from route at the route storage level
             // 2. Add a token to the player's token holder (no clue what to call it)
-            // 3. Add an array of availble tokens to the playerObject
+            // 3. @ Add an array of availble tokens to the playerObject
             // 4. @ Add a used token value to the playerObject
             // 3. @ Add the token to the player object (just storage, no UI)
             // 4. @ set the flag that new tokens will need to be added at EoT
+            // 5. Add a token to the player's "token eat area" (where the face down
+            // tokens go to be placed EOT)
 
-            
+
             const tokenKind = route.token
             this.tokensCapturedThisTurn++;
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
@@ -1817,7 +1819,25 @@ const playerInformationAndBoardController = {
             const supplyPieceTracker = createDivWithClassAndIdAndStyle(['pieceTracker'], `supply-pieces-${player.id}`)
             this.updateSupplyTracker(player, supplyPieceTracker);
             supplyDiv.append(supplyPieceTracker)
-            // Supply contains tokens, bank does not
+            // DEV 
+            // Let's just create a list for now. Maybe a drop down. It will have it's own updater
+            // Supply contains tokens, bank contains used tokens.
+            // The token container will be hidden by default untill the player owns at least one
+            // It will need it's own updater that takes a type and takes add/or delete. It can track
+            // If it should be hidden by itself
+            const tokenInSupplyDiv = createDivWithClassAndIdAndStyle(['circle', 'tokenInSupplyTracker',
+                'centeredFlex', 'tooltip'], `supply-tokens-${player.id}`)
+            tokenInSupplyDiv.innerText = "Hover to view tokens"
+            const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'], 
+            `supply-tokens-tooltip-${player.id}`)
+            tokenInSupplyTooltip.innerText ='asdasdsadasd'
+            tokenInSupplyDiv.append(tokenInSupplyTooltip)
+            // In update we should add how many tokens
+            // and also update the number in the tooltipText list
+            // I think update will just pass in the player.currentTokens and use that length 
+            // HERE!
+            // I think it should provide an expanding list of tokens on click
+            supplyDiv.append(tokenInSupplyDiv)
             return supplyDiv
         },
         createBankTracker(player) {
@@ -1910,7 +1930,7 @@ const gameLogController = {
             text = text.replaceAll('$PLAYER2_NAME', player2NameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
-        if(AUTO_SCROLL){
+        if (AUTO_SCROLL) {
             document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
         }
         // TODO add to saved history
@@ -1930,7 +1950,7 @@ class Player {
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
         this.currentTokens = [];
-        this.usedTokens = 0;
+        this.usedTokens = [];
         this.unlockedColors = ['grey'];
         this.maxMovement = 2;
         this.keys = 1;
