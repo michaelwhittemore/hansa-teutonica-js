@@ -31,6 +31,7 @@
         * maybe make the tokens on the player side of things respect color? i.e gold and silver
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
+* make the toggles more clear what the default does
 * add all the game logs to bump - just update a list on bumpInformation
 * add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode - also perhaps a collapsable rules doc? token explination at the very least
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function

@@ -687,9 +687,7 @@ const gameController = {
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     replaceTokens(player) {
-        // DEV HERE!!
-        // There's a lot to do here
-
+        // DEV 
         // 2. "Shuffle and Deal" the token stack
         // TODO, check for the regularTokensArray to be empty. Techinally the game should end 
         // after the ACTION not the TURN in this case (when the physical piece would be put on the
@@ -707,7 +705,7 @@ const gameController = {
         inputHandlers.setUpTokenActionInfo(currentReplacement);
         // The above method sets the actionInfo type to placeNewToken
         // 4. Un-hide all the token locations on the map (may need to switch from display to visible)
-        boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject))
+        boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         // 5. Set the selectedAction type to something like 'replacingToken'
         // 6. disable all the action buttons
         // 7. add all the tokensCapturedThisTurn to the player's bank and clear the field
@@ -771,22 +769,40 @@ const gameController = {
             this.tokenPlacementInformation.tokensToPlace);
         // 8. Should gamelog that a new token was placed
         gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
-        token at ${routeId}.`,player);
+        token at ${routeId}.`, player);
         // 9. This is where we check the tokensToPlace and have different behavior
         // ----------------Continuing (tokensToPlace > 0)-----------------
         // 10. If we keep going we probably call replaceTokens again
         // 11. Do not hide any token location
         // 12. I believe that the decrementing should be taken care of in the preceding steps
         // 13. We keep the selectedAction the same.
+        if (this.tokenPlacementInformation.tokensToPlace > 0) {
+            this.replaceTokens(player);
+            console.log('There are more tokens to place, repeating the process')
+            return;
+        } else {
+            // ------------------------ Ending (tokensToPlace === 0)--------------------
+            // 14. Consider breaking this out into a different method
+            // 15. clear the UI, both actioninfomation and turn tracker
+            inputHandlers.clearAllActionSelection();
+            // I think buttons should be updateed and turn tracker info cleared by end turn?
+            // 15. hide all tokensLocations (visibility=hidden) that aren't full
+            const emptyRouteIds = []
+            for (let key in this.routeStorageObject){
+                if (!this.routeStorageObject[key].token){
+                    emptyRouteIds.push(key)
+                }
+            }
+            boardController.toggleAllTokenLocations(emptyRouteIds,'hidden')
+            // HERE!
+            // 16. clear the this.tokenPlacementInformation blob
+            // 17. Clear the selected action
+            // 18. Double check that there's no cleanup steps from resolveAction that are being missed
+            // 16. Call this.advanceTurn(player)
 
-        // ------------------------ Ending (tokensToPlace === 0)--------------------
-        // 14. Consider breaking this out into a different method
-        // 15. clear the UI, both actioninfomation and turn tracker
-        // 15. hide all tokensLocations (visibility=hidden) that aren't full
-        // 16. clear the this.tokenPlacementInformation blob
-        // 17. Clear the selected action
-        // 18. Double check that there's no cleanup steps from resolveAction that are being missed
-        // 16. Call this.advanceTurn(player)
+        }
+
+
 
         // once we're done we need to clear all information and UI and re-call advanceTurn
         // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
@@ -1636,11 +1652,10 @@ const boardController = {
         tokenDiv.innerText = tokenKind;
         tokenDiv.style.visibility = 'visible'
     },
-    toggleAllTokenLocations(routes) {
-        console.log(routes)
+    toggleAllTokenLocations(routes, visibilityStatus = 'visible') {
         // dev
         routes.forEach(routeId => {
-            document.getElementById(`token-${routeId}`).style.visibility = 'visible'
+            document.getElementById(`token-${routeId}`).style.visibility = visibilityStatus
         })
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
