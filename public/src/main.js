@@ -343,6 +343,14 @@ const inputHandlers = {
             this.additionalInfo = 'circle'
         }
     },
+    setUpTokenActionInfo(token){
+        // dev
+        this.clearAllActionSelection();
+        this.toggleInputButtons(true)
+        this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${token}" token.`)
+        // I don't think we do the token nodes, but we do action input handelr
+        this.selectedAction = 'placeNewToken';
+    },
     handleMoveButton() {
         if (inputHandlers.selectedAction === 'move') {
             document.getElementById('move').innerText = 'Move Pieces'
@@ -460,6 +468,18 @@ const inputHandlers = {
         }
 
     },
+    tokenLocationClickHandler(routeId){
+        // dev
+        // HERE!
+        console.log('clicked token handler', routeId)
+        if (this.selectedAction !== 'placeNewToken'){
+            console.warn('Clicked on a token location without placeNewToken selected')
+            return
+        }
+        gameController.replaceTokenAtLocation(routeId);
+        // TODO will need to get playerId from the input handler in the case of online play
+        
+    },
     routeNodeClickHandler(nodeId) {
         switch (inputHandlers.selectedAction) {
             case 'move':
@@ -544,7 +564,7 @@ const gameController = {
         this.cityStorageObject = {};
         this.moveInformation = {};
         this.bumpInformation = {};
-        this.tokenInformation = {};
+        this.tokenPlacementInformation = {};
         this.tokensCapturedThisTurn = [];
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
@@ -650,11 +670,13 @@ const gameController = {
             // We will need to set the turn tracker with a message that player is placing tokens
             // Once all of this is down there will be a bit of cleanup including reseting gameCOntroller
             // fields, hiding all unused token locations, clearing the players
-            this.replaceTokens()
+            this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
+            this.replaceTokens(lastPlayer)
             console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
             return // We then re-excute this.advanceTurn(lastPlayer) once all the tokens have been placed
         }
-        this.tokenInformation = {}
+        console.log('should not be here')
+        this.tokenPlacementInformation = {}
         this.tokensCapturedThisTurn = []; // DELETE and do this as part of the method? WIll also need to clear the 'eat' area
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
@@ -664,19 +686,21 @@ const gameController = {
 
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
-    replaceTokens() {
+    replaceTokens(player) {
         // DEV HERE!!
         // There's a lot to do here
-        // We will likely need a method to replace each 
-        // 0.5 create a stack of all legal tokens. This will be a constant and reassigned during
-        // game initialization the same way I do for gold tokens
+
         // 2. "Shuffle and Deal" the token stack
         const currentReplacement = getRandomArrayElementAndModify(this.regularTokensArray)
-        this.tokenInformation.currentReplacement = currentReplacement;
+        this.tokenPlacementInformation.currentReplacement = currentReplacement;
+        const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
+
         // 3. Update both turn tracker and the action info area with the piece that is going to be replaces
-        // let's follow the example of the bump action - specifically setUpBumpActionInfo
-        
+        turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
+        inputHandlers.setUpTokenActionInfo(currentReplacement);
+        // The above method sets the actionInfo type to placeNewToken
         // 4. Un-hide all the token locations on the map (may need to switch from display to visible)
+        boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject))
         // 5. Set the selectedAction type to something like 'replacingToken'
         // 6. disable all the action buttons
         // 7. add all the tokensCapturedThisTurn to the player's bank and clear the field
@@ -684,7 +708,9 @@ const gameController = {
         // 35. Need to call advanceTurn(lastPlayer) to actually end the turn (probably after
         // the final replaceTokenAtLocation)
     },
-    replaceTokenAtLocation() {
+    replaceTokenAtLocation(routeId, playerId) {
+        // TODO boilerplate playerId copypasta
+        console.log('player has clicked on a token when the selectedAction is correct', routeId)
         // DEV 
         // this should be triggered by clicking on a token holder when the input selectedAction is correct
 
@@ -696,7 +722,7 @@ const gameController = {
     resolveAction(player) {
         gameController.moveInformation = {};
         gameController.bumpInformation = {};
-        gameController.tokenInformation = {}
+        gameController.tokenPlacementInformation = {}
         inputHandlers.clearAllActionSelection();
         // TODO The below inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
@@ -704,6 +730,8 @@ const gameController = {
         player.currentActions -= 1;
         if (player.currentActions === 0) {
             this.advanceTurn(player);
+            return // REMOVE THIS LINE, THIS BREAKS STUFF TODO
+            // may need to refactor this in the future
         }
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         this.playerArray.forEach(player => {
@@ -1527,8 +1555,15 @@ const boardController = {
         tokenDiv = document.getElementById(`token-${routeId}`);
         tokenDiv.style.backgroundColor = 'silver'
         tokenDiv.innerText = '';
-        tokenDiv.style.display = 'none'
+        tokenDiv.style.visibility = 'hidden'
 
+    },
+    toggleAllTokenLocations(routes){
+        console.log(routes)
+        // dev
+        routes.forEach(routeId => {
+            document.getElementById(`token-${routeId}`).style.visibility = 'visible'
+        })
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
@@ -1561,11 +1596,14 @@ const boardController = {
         tokenDiv.style.left = x + 'px';
         tokenDiv.style.top = y + 'px';
         if (isStartingToken) {
-            tokenDiv.style.display = 'flex'
+            tokenDiv.style.visibility = 'visible'
             tokenDiv.style.backgroundColor = 'goldenrod'
             tokenDiv.innerText = tokenValue
         }
-        // TODO this will need to be clickable for when
+        tokenDiv.onclick = () => {
+            // DEV?
+            inputHandlers.tokenLocationClickHandler(routeId)
+        }
         this.board.append(tokenDiv)
         // I'm gonna be super hacky and just use an offset map. 
         // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
@@ -1954,6 +1992,7 @@ const turnTrackerController = {
         this.resetTurnTimer()
     },
     updateTurnTrackerWithBumpInfo(props) {
+        console.log('updateTurnTrackerWithBumpInfo')
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         const { bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace } = props
         const bumpInfoDiv = createDivWithClassAndIdAndStyle(['bumpInfo'])
@@ -1971,6 +2010,18 @@ const turnTrackerController = {
 
         bumpInfoDiv.innerHTML = bumpInfoHTML;
         document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
+    },
+    updateTurnTrackerWithTokenInfo(player, token, numberOfTokens){
+        // dev
+        console.log('updateTurnTrackerWithTokenInfo called')
+        document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
+        const tokenPlacementInfoDiv = createDivWithClassAndIdAndStyle(['tokenPlacementInfo']);
+        let tokenPlacementHTML = `<span style="color: ${player.color}">${player.name}</span> `
+        tokenPlacementHTML += `can place ${pluralifyText('token', numberOfTokens)} on the board. The currently drawn `
+        tokenPlacementHTML += `token is "${token}".`
+
+        tokenPlacementInfoDiv.innerHTML = tokenPlacementHTML;
+        document.getElementById('turnTrackerAdditionalInformation').append(tokenPlacementInfoDiv)
     },
     resetTurnTimer() {
         // TODO

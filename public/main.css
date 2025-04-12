@@ -369,7 +369,8 @@
     width: 40px;
     position: absolute;
     background-color: silver;
-    display: none;
+    display: flex;
+    visibility: hidden;
 }
 
 /* Utility Classes */

@@ -6,6 +6,8 @@
     * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
     * For the server we will need to handle player inputs and then inform all other players
     * I'll probably keep the game logic in the client side for the moment
+    * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
+    - might disable all buttons and defualts when it's non the player's turn. 
 * **Tokens**
     * acquisition - we need to update the route complete handler
     * will need to have an area within the player supply or bank to track tokens
