@@ -470,7 +470,6 @@ const inputHandlers = {
     },
     tokenLocationClickHandler(routeId){
         // dev
-        // HERE!
         console.log('clicked token handler', routeId)
         if (this.selectedAction !== 'placeNewToken'){
             console.warn('Clicked on a token location without placeNewToken selected')
@@ -497,6 +496,7 @@ const inputHandlers = {
             default:
                 if (inputHandlers.selectedAction) {
                     console.error('We should not be hitting default with a selected action')
+                    return
                 }
                 if (USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
@@ -691,6 +691,13 @@ const gameController = {
         // There's a lot to do here
 
         // 2. "Shuffle and Deal" the token stack
+        // TODO, check for the regularTokensArray to be empty. Techinally the game should end 
+        // after the ACTION not the TURN in this case (when the physical piece would be put on the
+        // "eat stack"), but this works for the moment
+        if (this.regularTokensArray.length === 0){
+            this.endGame()
+            return;
+        }
         const currentReplacement = getRandomArrayElementAndModify(this.regularTokensArray)
         this.tokenPlacementInformation.currentReplacement = currentReplacement;
         const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
@@ -709,12 +716,46 @@ const gameController = {
         // the final replaceTokenAtLocation)
     },
     replaceTokenAtLocation(routeId, playerId) {
-        // TODO boilerplate playerId copypasta
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
         console.log('player has clicked on a token when the selectedAction is correct', routeId)
         // DEV 
-        // this should be triggered by clicking on a token holder when the input selectedAction is correct
+        console.log(this.tokenPlacementInformation)
 
-        // If the token stack is zero we call endGame (which doesn't acually do anything yet)
+        // HERE!
+        // Still need to plan this method out
+        // this should be triggered by clicking on a token holder when the input selectedAction is correct
+        // 1. Verification
+        // 2. Check that token is not already there - If it is we return and warn
+        // 3. Check that the route is completely empty (think we already have a helper for this)
+        // 4. Check that at least one city endpoint has an empty spot
+        // 5. We return and warn if any of the above are false
+        // 6. If the location is valid we need to add to the board.
+        // 7. We also need to update the route storage object
+        // 8. We then need to lower the this.tokenPlacementInformation.tokensToPlace
+        // 8. Also about the playerboard token "eat" plate gets decremented
+        // 8. Should gamelog that a new token was placed
+        // 9. This is where we check the tokensToPlace and have different behavior
+        // ----------------Continuing (tokensToPlace > 0)-----------------
+        // 10. If we keep going we probably call replaceTokens again
+        // 11. Do not hide any token location
+        // 12. I believe that the decrementing should be taken care of in the preceding steps
+        // 13. We keep the selectedAction the same.
+
+        // ------------------------ Ending (tokensToPlace === 0)--------------------
+        // 14. Consider breaking this out into a different method
+        // 15. clear the UI, both actioninfomation and turn tracker
+        // 15. hide all tokensLocations (visibility=hidden) that aren't full
+        // 16. clear the this.tokenPlacementInformation blob
+        // 17. Clear the selected action
+        // 18. Double check that there's no cleanup steps from resolveAction that are being missed
+        // 16. Call this.advanceTurn(player)
+ 
         // once we're done we need to clear all information and UI and re-call advanceTurn
         // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
         // of cleanup on its own
