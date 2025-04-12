@@ -343,7 +343,7 @@ const inputHandlers = {
             this.additionalInfo = 'circle'
         }
     },
-    setUpTokenActionInfo(token){
+    setUpTokenActionInfo(token) {
         // dev
         this.clearAllActionSelection();
         this.toggleInputButtons(true)
@@ -468,16 +468,16 @@ const inputHandlers = {
         }
 
     },
-    tokenLocationClickHandler(routeId){
+    tokenLocationClickHandler(routeId) {
         // dev
         console.log('clicked token handler', routeId)
-        if (this.selectedAction !== 'placeNewToken'){
+        if (this.selectedAction !== 'placeNewToken') {
             console.warn('Clicked on a token location without placeNewToken selected')
             return
         }
         gameController.replaceTokenAtLocation(routeId);
         // TODO will need to get playerId from the input handler in the case of online play
-        
+
     },
     routeNodeClickHandler(nodeId) {
         switch (inputHandlers.selectedAction) {
@@ -694,7 +694,7 @@ const gameController = {
         // TODO, check for the regularTokensArray to be empty. Techinally the game should end 
         // after the ACTION not the TURN in this case (when the physical piece would be put on the
         // "eat stack"), but this works for the moment
-        if (this.regularTokensArray.length === 0){
+        if (this.regularTokensArray.length === 0) {
             this.endGame()
             return;
         }
@@ -732,8 +732,27 @@ const gameController = {
         // this should be triggered by clicking on a token holder when the input selectedAction is correct
         // 1. Verification
         // 2. Check that token is not already there - If it is we return and warn
-        // 3. Check that the route is completely empty (think we already have a helper for this)
+        if (this.routeStorageObject[routeId].token) {
+            console.warn('That location already has a token.');
+            inputHandlers.warnInvalidAction('That location already has a token.')
+            return;
+        }
+        // 3. Check that the route is completely empty
+        // TODO consider breaking this logic out into a method if it's used anywhere else (it's
+        // *NOT* the same thing as occurs in checking bump locations)
+        for (let nodeId in this.routeStorageObject[routeId].routeNodes) {
+            if (this.routeStorageObject[routeId].routeNodes[nodeId].occupied) {
+                console.warn('Route must be unoccupied.')
+                inputHandlers.warnInvalidAction('Route must be unoccupied.');
+                return;
+            }
+        }
         // 4. Check that at least one city endpoint has an empty spot
+        let citiesHaveFreeSpot = false
+        this.routeStorageObject[routeId].cities.forEach(cityName => {
+            const city = this.cityStorageObject[cityName];
+            // if (city.openSpotIndex < )
+        })
         // 5. We return and warn if any of the above are false
         // 6. If the location is valid we need to add to the board.
         // 7. We also need to update the route storage object
@@ -755,7 +774,7 @@ const gameController = {
         // 17. Clear the selected action
         // 18. Double check that there's no cleanup steps from resolveAction that are being missed
         // 16. Call this.advanceTurn(player)
- 
+
         // once we're done we need to clear all information and UI and re-call advanceTurn
         // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
         // of cleanup on its own
@@ -1599,7 +1618,7 @@ const boardController = {
         tokenDiv.style.visibility = 'hidden'
 
     },
-    toggleAllTokenLocations(routes){
+    toggleAllTokenLocations(routes) {
         console.log(routes)
         // dev
         routes.forEach(routeId => {
@@ -2052,7 +2071,7 @@ const turnTrackerController = {
         bumpInfoDiv.innerHTML = bumpInfoHTML;
         document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
     },
-    updateTurnTrackerWithTokenInfo(player, token, numberOfTokens){
+    updateTurnTrackerWithTokenInfo(player, token, numberOfTokens) {
         // dev
         console.log('updateTurnTrackerWithTokenInfo called')
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
