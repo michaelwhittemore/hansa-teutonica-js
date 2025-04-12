@@ -751,14 +751,27 @@ const gameController = {
         let citiesHaveFreeSpot = false
         this.routeStorageObject[routeId].cities.forEach(cityName => {
             const city = this.cityStorageObject[cityName];
-            // if (city.openSpotIndex < )
+            if (city.openSpotIndex < city.spotArray.length) {
+                citiesHaveFreeSpot = true;
+            }
         })
-        // 5. We return and warn if any of the above are false
+        if (!citiesHaveFreeSpot) {
+            console.warn('City endpoints must have at least one open spot among them.')
+            inputHandlers.warnInvalidAction('City endpoints must have at least one open spot among them.');
+            return;
+        }
         // 6. If the location is valid we need to add to the board.
+        boardController.addTokenToRoute(routeId, this.tokenPlacementInformation.currentReplacement)
         // 7. We also need to update the route storage object
+        this.routeStorageObject[routeId].token = this.tokenPlacementInformation.currentReplacement;
         // 8. We then need to lower the this.tokenPlacementInformation.tokensToPlace
+        this.tokenPlacementInformation.tokensToPlace--;
         // 8. Also about the playerboard token "eat" plate gets decremented
+        playerInformationAndBoardController.componentBuilders.updateTokenTracker(player,
+            this.tokenPlacementInformation.tokensToPlace);
         // 8. Should gamelog that a new token was placed
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
+        token at ${routeId}.`,player);
         // 9. This is where we check the tokensToPlace and have different behavior
         // ----------------Continuing (tokensToPlace > 0)-----------------
         // 10. If we keep going we probably call replaceTokens again
@@ -1246,7 +1259,7 @@ const gameController = {
             console.error('You don\'t have enough actions, how did you even get here? The turn was supposed to advance!')
             return;
         }
-        if (city.openSpotIndex === city.spotArray) {
+        if (city.openSpotIndex === city.spotArray.length) {
             console.warn(`The city of ${city.cityName} is already full.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`The city of ${city.cityName} is already full.`);
@@ -1461,7 +1474,7 @@ const gameController = {
             playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
             playerInformationAndBoardController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn.length)
             // Clear after adding the token otherwise we lose the reference
-            boardController.clearTokenFromRoute(routeId)
+            boardController.clearTokenFromRouteAndHide(routeId)
             this.routeStorageObject[routeId].token = false;
         }
         // ________
@@ -1611,12 +1624,17 @@ const boardController = {
             startY + (yDelta / 2));
         this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
     },
-    clearTokenFromRoute(routeId) {
+    clearTokenFromRouteAndHide(routeId) {
         tokenDiv = document.getElementById(`token-${routeId}`);
         tokenDiv.style.backgroundColor = 'silver'
         tokenDiv.innerText = '';
         tokenDiv.style.visibility = 'hidden'
-
+    },
+    addTokenToRoute(routeId, tokenKind) {
+        tokenDiv = document.getElementById(`token-${routeId}`);
+        tokenDiv.style.backgroundColor = 'silver'
+        tokenDiv.innerText = tokenKind;
+        tokenDiv.style.visibility = 'visible'
     },
     toggleAllTokenLocations(routes) {
         console.log(routes)
