@@ -661,6 +661,8 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         // DEV 
+        // double check that tokenCaptiuredThisTurn is being cleared
+        // actually just clear tokensCapturedThisTurn
         if (this.tokensCapturedThisTurn.length > 0) {
             // psudeocode -> this.claimToken which should include a lot of things
             // We will need to re-reveal all possible token holders (just display: flex)
@@ -675,9 +677,7 @@ const gameController = {
             console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
             return // We then re-excute this.advanceTurn(lastPlayer) once all the tokens have been placed
         }
-        console.log('should not be here')
         this.tokenPlacementInformation = {}
-        this.tokensCapturedThisTurn = []; // DELETE and do this as part of the method? WIll also need to clear the 'eat' area
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         if (IS_HOTSEAT_MODE) {
@@ -794,6 +794,12 @@ const gameController = {
                 }
             }
             boardController.toggleAllTokenLocations(emptyRouteIds,'hidden')
+            this.tokensCapturedThisTurn = [];
+            this.advanceTurn(player)
+            gameController.tokenPlacementInformation = {}
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.toggleInputButtons(false)
+
             // HERE!
             // 16. clear the this.tokenPlacementInformation blob
             // 17. Clear the selected action
