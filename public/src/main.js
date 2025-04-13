@@ -455,6 +455,21 @@ const inputHandlers = {
             }
         })
     },
+    populateUpgradeMenuFromToken(upgrades) {
+        // dev
+        const tokenMenuDiv = document.getElementById('tokenMenu');
+        tokenMenuDiv.innerHTML = 'Select an upgrade: '
+        upgrades.forEach(upgrade => {
+            const button = document.createElement('button');
+            button.innerText = upgrade
+            // onclick with the type of upgrade
+            button.onclick = () => {
+                gameController.tokenActions.useFreeUpgrade(upgrade)
+            }
+            tokenMenuDiv.append(button)
+        })
+        console.log(upgrades)
+    },
     addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
         const actionInfoDiv = document.getElementById('actionInfo')
         if (useSquare) {
@@ -1568,6 +1583,7 @@ const gameController = {
                 this.tokenActions.gainActions(player, 4)
                 break;
             case 'freeUpgrade':
+                this.tokenActions.freeUpgradeSetup(player)
                 break;
             case 'switchPost':
                 break;
@@ -1579,7 +1595,7 @@ const gameController = {
                 console.error('Unknown Token Type')
         }
     },
-    finishTokenUsage(player, tokenType){
+    finishTokenUsage(player, tokenType) {
         // dev
         gameLogController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
         inputHandlers.clearAllActionSelection()
@@ -1590,12 +1606,43 @@ const gameController = {
 
     },
     tokenActions: {
-        // dev
-        gainActions(player, actionsNumber){
+        gainActions(player, actionsNumber) {
             console.warn(`${player.name} is gaining ${actionsNumber} actions`)
             player.currentActions += actionsNumber;
             turnTrackerController.updateTurnTracker(player)
             gameController.finishTokenUsage(player, actionsNumber === 3 ? 'threeActions' : 'fourActions')
+        },
+        freeUpgradeSetup(player) {
+            const availableUpgrades = [];
+            for (let unlockKey in player.unlockArrayIndex) {
+                if (player.unlockArrayIndex[unlockKey] < unlockMapMaxValues[unlockKey] - 1) {
+                    availableUpgrades.push(unlockKey)
+                    // Need a method to create all these buttons. The onclick will be
+                    // a gameController method which takes in the kind of upgrade 
+                }
+            }
+            if (availableUpgrades.length === 0) {
+                inputHandlers.clearAllActionSelection()
+                console.warn('You\'ve already maxed out all upgrades. Well done!')
+                inputHandlers.warnInvalidAction('You\'ve already maxed out all upgrades. Well done!')
+                return
+            }
+            inputHandlers.populateUpgradeMenuFromToken(availableUpgrades);
+
+        },
+        useFreeUpgrade(upgradeType, playerId){
+            // dev
+            // here!
+            let player;
+            if (IS_HOTSEAT_MODE) {
+                player = gameController.getActivePlayer()
+                playerId = player.id
+            } else {
+                // TODO, check that the playerId who made the request is the active player
+            }
+            // TODO we need to use the examples of upgradeAtCity
+            // but first we will need to break that logic out into it's own method that I can use
+            console.log(upgradeType)
         }
     },
     endGame() {
@@ -2273,6 +2320,15 @@ const unlockPurseToValue = [3, 5, 7, 'All'];
 const unlockMovementToValue = [2, 3, 4, 5];
 const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
 const unlockKeysToValue = [1, 2, 2, 3, 4];
+// TODO can probably generate this programtically somewhere
+const unlockMapMaxValues = {
+    "actions": 6,
+    "purse": 4,
+    "maxMovement": 4,
+    "colors": 4,
+    "keys": 5
+
+}
 
 const start = () => {
     gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)

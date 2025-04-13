@@ -41,7 +41,7 @@
         * We will need a 'tokenUsed' method that is only called after the token is fully used (i.e extra post added)
         * There are techincally six kinds of tokens, but the extra actions are functionally identical
         * I think the order of difficulty (and thus implementation) is:
-            1. Extra actions
+            1. ~~Extra actions~~
             2. Free upgrade (will need to place the token selection area with the upgrade selection)
             3. Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself)
             4. Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag
