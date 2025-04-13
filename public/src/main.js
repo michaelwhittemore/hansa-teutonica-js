@@ -1370,23 +1370,14 @@ const gameController = {
 
     },
     performUnlock(player, unlock) {
-        console.warn('unlock', unlock)
         const noFurtherUpgrades = (unlockName) => {
             console.warn(`You can't upgrade your ${unlockName} any further.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
         }
         // dev
-        // HERE!!
-        // IMPORTAT!! WATCH OUT FOR DIFFERENCES IN NAMES BETWEEN CITY UNLOCKS AND PLAYER UNLOCK ARRAY
-        // i.e 'actions' vs 'action'
-        // Will also need to look at unlockPieceFromBoard
-        // Once everything is working, lets get rid of some of this copy pasta - actually this
-        // may be more difficult than I thought given that there's stuff like maxActions vs currentActions
-
         switch (unlock) {
             case 'purse':
-                // DONE!
                 if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
                     noFurtherUpgrades('resupply capacity');
                     return false;
@@ -1659,10 +1650,9 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // TODO we need to use the examples of upgradeAtCity
-            // but first we will need to break that logic out into it's own method that I can use
-            console.log(upgradeType)
+
             gameController.performUnlock(player, upgradeType)
+            gameController.finishTokenUsage(player, 'freeUpgrade')
         }
     },
     endGame() {
@@ -1909,7 +1899,6 @@ const playerInformationAndBoardController = {
         return playerInfoBoard
     },
     unlockPieceFromBoard(player, index, unlock) {
-        // TODO add this to all the unlock game logic
         const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
         document.getElementById(divId).remove();
     },
