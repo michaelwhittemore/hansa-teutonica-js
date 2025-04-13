@@ -404,6 +404,7 @@ const inputHandlers = {
 
         document.getElementById('actionInfo').innerHTML = ''
         document.getElementById('warningText').innerHTML = ''
+        document.getElementById('tokenMenu').innerHTML = ''
     },
     bindInputHandlers() {
         document.getElementById('place').onclick = this.handlePlaceButton;
@@ -1577,11 +1578,24 @@ const gameController = {
             default:
                 console.error('Unknown Token Type')
         }
-        console.log(tokenType)
+    },
+    finishTokenUsage(player, tokenType){
+        // dev
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
+        inputHandlers.clearAllActionSelection()
+        const indexOfToken = player.currentTokens.indexOf(tokenType)
+        player.currentTokens.splice(indexOfToken, 1);
+        player.usedTokens.push(tokenType)
+        playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
+
     },
     tokenActions: {
+        // dev
         gainActions(player, actionsNumber){
             console.warn(`${player.name} is gaining ${actionsNumber} actions`)
+            player.currentActions += actionsNumber;
+            turnTrackerController.updateTurnTracker(player)
+            gameController.finishTokenUsage(player, actionsNumber === 3 ? 'threeActions' : 'fourActions')
         }
     },
     endGame() {
