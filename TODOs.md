@@ -29,6 +29,24 @@
         * need to make the tokens a little larger I think. While I'm at it, maybe I make cities smaller?
         * need to make tokens capture when completeing a route - routeCompleted **here**
         * maybe make the tokens on the player side of things respect color? i.e gold and silver
+    * ***Replacement***
+        * DONE!
+    * ***Usage***
+        * I think for the moment players will need to explicitly click the useToken button before starting any other part of their action
+        * The button's only function will be to create a dropdown menu with all the owned tokens
+        * Maybe instead of dropdown we populate an area beneath the action buttons with all the buttons
+        * The area described above should have text and highlight the selected token
+        * Each button will point to a inputHandler method which will then call the gameController method with information on the calling player and the selected token
+        * make sure to clear this part of the inputHandler 
+        * We will need a 'tokenUsed' method that is only called after the token is fully used (i.e extra post added)
+        * There are techincally five kinds of tokens, but the extra actions are functionally identical
+        * I think the order of difficulty (and thus implementation) is:
+            1. Extra actions
+            2. Free upgrade (will need to place the token selection area with the upgrade selection)
+            3. Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself)
+            4. Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag
+        * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
 * make the toggles more clear what the default does

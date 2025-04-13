@@ -307,6 +307,12 @@ const inputHandlers = {
         inputHandlers.selectedAction = 'upgrade'
         inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
     },
+    handleTokenButton(){
+        // dev
+        console.warn('token logic not implemented')
+        // We will still need to call the gameController as the game controller both needs to verify\
+        // That it's the correct player's turn and needs to know the tokens the player owns
+    },
     handlePlaceButton() {
         inputHandlers.clearAllActionSelection();
 
@@ -344,11 +350,9 @@ const inputHandlers = {
         }
     },
     setUpTokenActionInfo(token) {
-        // dev
         this.clearAllActionSelection();
         this.toggleInputButtons(true)
         this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${token}" token.`)
-        // I don't think we do the token nodes, but we do action input handelr
         this.selectedAction = 'placeNewToken';
     },
     handleMoveButton() {
@@ -408,6 +412,7 @@ const inputHandlers = {
         document.getElementById('resupply').onclick = this.handleResupplyButton;
         document.getElementById('capture').onclick = this.handleCaptureCityButton;
         document.getElementById('upgrade').onclick = this.handleUpgradeButton;
+        document.getElementById('token').onclick = this.handleTokenButton;
     },
     toggleInputButtons(disabled, buttonToExclude = false) {
         BUTTON_LIST.forEach(buttonName => {
@@ -469,7 +474,6 @@ const inputHandlers = {
 
     },
     tokenLocationClickHandler(routeId) {
-        // dev
         console.log('clicked token handler', routeId)
         if (this.selectedAction !== 'placeNewToken') {
             console.warn('Clicked on a token location without placeNewToken selected')
@@ -660,8 +664,6 @@ const gameController = {
         // TODO, only used for online play I think
     },
     advanceTurn(lastPlayer) {
-        // DEV 
-        // TODO the turnTrackerMain isn't being update to zero during the token placement pahse
         turnTrackerController.updateTurnTracker(lastPlayer)
         if (this.tokensCapturedThisTurn.length > 0) {
             this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
@@ -679,7 +681,6 @@ const gameController = {
         lastPlayer.currentActions = lastPlayer.maxActions;
     },
     replaceTokens(player) {
-        // DEV 
         // 2. "Shuffle and Deal" the token stack
         // TODO, check for the regularTokensArray to be empty. Techinally the game should end 
         // after the ACTION not the TURN in this case (when the physical piece would be put on the
@@ -713,12 +714,6 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        console.log('player has clicked on a token when the selectedAction is correct', routeId)
-        // DEV 
-        console.log(this.tokenPlacementInformation)
-
-        // HERE!
-        // Still need to plan this method out
         // this should be triggered by clicking on a token holder when the input selectedAction is correct
         // 1. Verification
         // 2. Check that token is not already there - If it is we return and warn
@@ -792,7 +787,6 @@ const gameController = {
             inputHandlers.toggleInputButtons(false)
             this.advanceTurn(player);
 
-            // HERE!
             // 16. clear the this.tokenPlacementInformation blob
             // 17. Clear the selected action
             // 18. Double check that there's no cleanup steps from resolveAction that are being missed
@@ -1645,7 +1639,6 @@ const boardController = {
         tokenDiv.style.visibility = 'visible'
     },
     toggleAllTokenLocations(routes, visibilityStatus = 'visible') {
-        // dev
         routes.forEach(routeId => {
             document.getElementById(`token-${routeId}`).style.visibility = visibilityStatus
         })
@@ -1686,7 +1679,6 @@ const boardController = {
             tokenDiv.innerText = tokenValue
         }
         tokenDiv.onclick = () => {
-            // DEV?
             inputHandlers.tokenLocationClickHandler(routeId)
         }
         this.board.append(tokenDiv)
@@ -2097,7 +2089,6 @@ const turnTrackerController = {
         document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
     },
     updateTurnTrackerWithTokenInfo(player, token, numberOfTokens) {
-        // dev
         console.log('updateTurnTrackerWithTokenInfo called')
         document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
         const tokenPlacementInfoDiv = createDivWithClassAndIdAndStyle(['tokenPlacementInfo']);
