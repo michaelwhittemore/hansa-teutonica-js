@@ -59,7 +59,7 @@
 * make nodes hoverable text with their ids as text - tooltip?
 * place collapse buttons at the actual edges. Might do some calulations when creating them
 * fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
-I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & movesDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
+I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & maxMovementDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * add token holder (don't have to make tokens functional)
 * re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers

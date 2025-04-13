@@ -16,7 +16,7 @@ const TEST_BOARD_CONFIG_CITIES = {
         spotArray:
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
         neighborRoutes: [['Beta', 3], ['Zeta', 3]],
-        unlock: 'action',
+        unlock: 'actions',
         location: [20, 20]
     },
     'Beta': {
@@ -31,7 +31,7 @@ const TEST_BOARD_CONFIG_CITIES = {
         name: 'Gamma',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         neighborRoutes: [['Delta', 3], ['Zeta', 3]],
-        unlock: 'unlockedColors',
+        unlock: 'colors',
         location: [600, 500]
     },
     'Delta': {
@@ -48,7 +48,7 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
     'Zeta': {
         name: 'Zeta',
-        unlock: 'movement',
+        unlock: 'maxMovement',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [30, 450],
     },
@@ -1349,9 +1349,9 @@ const gameController = {
         const { routeId } = routeCheckOutcome
         console.log(city)
         if (!city.unlock) {
-            console.warn(`The city of ${city.name} doesn't have a corresponding unlock.`)
+            console.warn(`The city of ${city.cityName} doesn't have a corresponding unlock.`)
             inputHandlers.clearAllActionSelection();
-            inputHandlers.warnInvalidAction(`The city of ${city.name} doesn't have a corresponding unlock.`);
+            inputHandlers.warnInvalidAction(`The city of ${city.cityName} doesn't have a corresponding unlock.`);
             return;
         }
         if (!routeCheckOutcome) {
@@ -1359,29 +1359,47 @@ const gameController = {
             inputHandlers.warnInvalidAction('You cannot upgrade without a completed route.');
             return;
         };
+        // IMPORTANT! WE NEED TO ENSURE THAT THE BOTTOM RESOLUTION THINGS ONLY OCCUR WHEN THE UNLOCK IS VALID
+        const wasUnlocked = this.performUnlock(player, city.unlock)
+        if (wasUnlocked) {
+            player.bankedCircles += routeCheckOutcome.circle;
+            player.bankedSquares += routeCheckOutcome.square;
+            this.routeCompleted(routeId, player);
+            this.resolveAction(player);
+        }
 
+    },
+    performUnlock(player, unlock) {
+        console.warn('unlock', unlock)
         const noFurtherUpgrades = (unlockName) => {
             console.warn(`You can't upgrade your ${unlockName} any further.`)
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
-            return;
         }
+        // dev
+        // HERE!!
+        // IMPORTAT!! WATCH OUT FOR DIFFERENCES IN NAMES BETWEEN CITY UNLOCKS AND PLAYER UNLOCK ARRAY
+        // i.e 'actions' vs 'action'
+        // Will also need to look at unlockPieceFromBoard
+        // Once everything is working, lets get rid of some of this copy pasta - actually this
+        // may be more difficult than I thought given that there's stuff like maxActions vs currentActions
 
-        switch (city.unlock) {
+        switch (unlock) {
             case 'purse':
+                // DONE!
                 if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
                     noFurtherUpgrades('resupply capacity');
-                    return;
+                    return false;
                 }
                 player.unlockArrayIndex.purse++;
                 player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
                 gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
                 break;
-            case 'action':
+            case 'actions':
                 if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
                     noFurtherUpgrades('actions');
-                    return;
+                    return false;
                 }
                 player.unlockArrayIndex.actions++;
                 player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
@@ -1393,53 +1411,54 @@ const gameController = {
                     actionUpgradeText += ' They get a free action as a result'
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText, player);
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
                 break;
-            case 'unlockedColors':
+            case 'colors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
                     noFurtherUpgrades('available colors');
-                    return;
+                    return false;
                 }
                 player.unlockArrayIndex.colors++;
                 player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
                 gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, 'color')
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, unlock)
                 break;
-            case 'movement':
+            case 'maxMovement':
                 if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
                     noFurtherUpgrades('pieces moved per action');
-                    return;
+                    return false;
                 }
                 player.unlockArrayIndex.maxMovement++;
                 player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
                 gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, 'moves')
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, unlock)
                 break;
             case 'keys':
                 if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
                     noFurtherUpgrades('route multiplier');
-                    return;
+                    return false;
                 }
                 player.unlockArrayIndex.keys++;
                 player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
                 gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, city.unlock)
+                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, unlock)
                 break;
             default:
                 console.error('we should not hit the default')
+                return false
         }
-        if (city.unlock === 'movement') {
+
+
+        // Adding the free pieces into supply
+        if (unlock === 'maxMovement') {
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
             player.supplyCircles++;
         } else {
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
             player.supplySquares++
         }
-        // TODO would make sense to move the bank update to routeCompleted Method
-        player.bankedCircles += routeCheckOutcome.circle;
-        player.bankedSquares += routeCheckOutcome.square;
-        this.routeCompleted(routeId, player);
-        this.resolveAction(player);
+        // let's us know that an upgrade was validated and occured
+        return true
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
         // at some point return BOTH routes
@@ -1630,7 +1649,7 @@ const gameController = {
             inputHandlers.populateUpgradeMenuFromToken(availableUpgrades);
 
         },
-        useFreeUpgrade(upgradeType, playerId){
+        useFreeUpgrade(upgradeType, playerId) {
             // dev
             // here!
             let player;
@@ -1643,6 +1662,7 @@ const gameController = {
             // TODO we need to use the examples of upgradeAtCity
             // but first we will need to break that logic out into it's own method that I can use
             console.log(upgradeType)
+            gameController.performUnlock(player, upgradeType)
         }
     },
     endGame() {
@@ -1891,7 +1911,6 @@ const playerInformationAndBoardController = {
     unlockPieceFromBoard(player, index, unlock) {
         // TODO add this to all the unlock game logic
         const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
-        console.log(divId)
         document.getElementById(divId).remove();
     },
     focusOnPlayerBoard(player) {
@@ -1957,20 +1976,20 @@ const playerInformationAndBoardController = {
             actionTracker.className = 'actionTracker';
             actionTracker.id = `${player.id}-actionTracker`;
             for (let i = 0; i < unlockActionsToValue.length; i++) {
-                const actionDiv = document.createElement('div');
-                actionDiv.classList.add('actionDiv')
+                const actionsDiv = document.createElement('div');
+                actionsDiv.classList.add('actionsDiv')
                 // TODO center content better
                 // Might need a innerText utility class
-                // actionDiv.classList.add('actionDiv', 'centeredFlex')
+                // actionsDiv.classList.add('actionsDiv', 'centeredFlex')
 
-                actionDiv.innerText = `Actiones ${unlockActionsToValue[i]}`
-                actionDiv.append(this.createUnlockableShape({
+                actionsDiv.innerText = `Actiones ${unlockActionsToValue[i]}`
+                actionsDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
-                    componentId: `${player.id}-actionDiv-${i}-shape`,
+                    componentId: `${player.id}-actionsDiv-${i}-shape`,
                     shape: 'square',
                 }))
-                actionTracker.append(actionDiv)
+                actionTracker.append(actionsDiv)
             }
             return actionTracker;
         },
@@ -1985,17 +2004,17 @@ const playerInformationAndBoardController = {
             colorTracker.append(colorBanner);
 
             for (let i = 0; i < unlockColorsToValue.length; i++) {
-                const colorDiv = document.createElement('div');
-                colorDiv.classList.add('colorDiv', 'centeredFlex')
-                colorDiv.style.backgroundColor = `${unlockColorsToValue[i]}`
-                colorDiv.append(this.createUnlockableShape({
+                const colorsDiv = document.createElement('div');
+                colorsDiv.classList.add('colorsDiv', 'centeredFlex')
+                colorsDiv.style.backgroundColor = `${unlockColorsToValue[i]}`
+                colorsDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
-                    componentId: `${player.id}-colorDiv-${i}-shape`,
+                    componentId: `${player.id}-colorsDiv-${i}-shape`,
                     shape: 'square',
                     isColors: true,
                 }))
-                colorTracker.append(colorDiv)
+                colorTracker.append(colorsDiv)
             }
             return colorTracker;
         },
@@ -2010,16 +2029,16 @@ const playerInformationAndBoardController = {
             movesTracker.append(movesBanner);
 
             for (let i = 0; i < unlockMovementToValue.length; i++) {
-                const movesDiv = document.createElement('div');
-                movesDiv.className = 'movesDiv';
-                movesDiv.innerText = `${unlockMovementToValue[i]}`
-                movesDiv.append(this.createUnlockableShape({
+                const maxMovementDiv = document.createElement('div');
+                maxMovementDiv.className = 'maxMovementDiv';
+                maxMovementDiv.innerText = `${unlockMovementToValue[i]}`
+                maxMovementDiv.append(this.createUnlockableShape({
                     locked: i > 0,
                     color: player.color,
-                    componentId: `${player.id}-movesDiv-${i}-shape`,
+                    componentId: `${player.id}-maxMovementDiv-${i}-shape`,
                     shape: 'circle',
                 }))
-                movesTracker.append(movesDiv)
+                movesTracker.append(maxMovementDiv)
             }
             return movesTracker
         },
