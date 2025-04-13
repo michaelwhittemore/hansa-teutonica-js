@@ -307,11 +307,11 @@ const inputHandlers = {
         inputHandlers.selectedAction = 'upgrade'
         inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
     },
-    handleTokenButton(){
-        // dev
-        console.warn('token logic not implemented')
-        // We will still need to call the gameController as the game controller both needs to verify\
+    handleTokenButton() {
+        // dev 
+        // We will still need to call the gameController as the game controller both needs to verify
         // That it's the correct player's turn and needs to know the tokens the player owns
+        gameController.handleTokenMenuRequest()
     },
     handlePlaceButton() {
         inputHandlers.clearAllActionSelection();
@@ -382,7 +382,7 @@ const inputHandlers = {
         } else {
             let playerId = undefined
             if (!IS_HOTSEAT_MODE) {
-                // get the player name from localstorage
+                // get the player name from sessionStorage
             }
             gameController.captureCity(inputHandlers.selectedLocation, playerId)
         }
@@ -391,7 +391,7 @@ const inputHandlers = {
     handleResupplyButton() {
         let playerId = undefined
         if (!IS_HOTSEAT_MODE) {
-            // get the player name from localstorage
+            // get the player name from sessionStorage
         }
         gameController.resupply(playerId);
     },
@@ -429,6 +429,30 @@ const inputHandlers = {
             actionInfoDiv.innerHTML = '';
         }
         actionInfoDiv.innerText += text;
+    },
+    populateTokenMenu(tokenArray) {
+        // dev
+        console.log(tokenArray)
+        // TODO -  make sure tokenMenu is being cleared elsewhere
+        const tokenMenuDiv = document.getElementById('tokenMenu');
+        tokenMenuDiv.innerText = 'Select a token to use: '
+        const tokenButtonsCreated = {};
+        // MAKE SURE I DON'T OVERWRITE THE ONCLICK - doesn't seem to be the case
+        tokenArray.forEach(tokenType => {
+            if (!tokenButtonsCreated[tokenType]) {
+                tokenButtonsCreated[tokenType] = 1;
+                const button = document.createElement('button');
+                button.id = tokenType
+                button.innerText = tokenType
+                button.onclick = () => {
+                    gameController.useToken(tokenType);
+                }
+                tokenMenuDiv.append(button)
+            } else {
+                tokenButtonsCreated[tokenType]++;
+                document.getElementById(tokenType).innerText = `${tokenType} (x${tokenButtonsCreated[tokenType]})`
+            }
+        })
     },
     addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
         const actionInfoDiv = document.getElementById('actionInfo')
@@ -775,12 +799,12 @@ const gameController = {
             // I think buttons should be updated and turn tracker info cleared by end turn?
             // 15. hide all tokensLocations (visibility=hidden) that aren't full
             const emptyRouteIds = []
-            for (let key in this.routeStorageObject){
-                if (!this.routeStorageObject[key].token){
+            for (let key in this.routeStorageObject) {
+                if (!this.routeStorageObject[key].token) {
                     emptyRouteIds.push(key)
                 }
             }
-            boardController.toggleAllTokenLocations(emptyRouteIds,'hidden')
+            boardController.toggleAllTokenLocations(emptyRouteIds, 'hidden')
             this.tokensCapturedThisTurn = [];
             gameController.tokenPlacementInformation = {}
             inputHandlers.clearAllActionSelection();
@@ -1503,6 +1527,62 @@ const gameController = {
         gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
+    },
+    handleTokenMenuRequest(playerId) {
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // dev 
+        // I think this method should be pretty simple.
+        // We validate that it's the player's turn in the copypasta
+        // If the player has no tokens we warn them and return
+        // Otherwise we call the inputHandler method
+        // The meat of token logic will occur in other functions
+        if (player.currentTokens.length === 0) {
+            console.warn('You don\'t have any tokens to use.')
+            inputHandlers.warnInvalidAction('You don\'t have any tokens to use.')
+            return
+        }
+        inputHandlers.populateTokenMenu(player.currentTokens)
+    },
+    useToken(tokenType, playerId) {
+        let player;
+        if (IS_HOTSEAT_MODE) {
+            player = this.getActivePlayer()
+            playerId = player.id
+        } else {
+            // TODO, check that the playerId who made the request is the active player
+        }
+        // dev
+        // gameController.playerArray[0].currentTokens = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'extraPost', 'extraPost', 'switchPost', 'moveThree']
+        switch (tokenType) {
+            case 'threeActions':
+                this.tokenActions.gainActions(player, 3)
+                break;
+            case 'fourActions':
+                this.tokenActions.gainActions(player, 4)
+                break;
+            case 'freeUpgrade':
+                break;
+            case 'switchPost':
+                break;
+            case 'moveThree':
+                break;
+            case 'extraPost':
+                break;
+            default:
+                console.error('Unknown Token Type')
+        }
+        console.log(tokenType)
+    },
+    tokenActions: {
+        gainActions(player, actionsNumber){
+            console.warn(`${player.name} is gaining ${actionsNumber} actions`)
+        }
     },
     endGame() {
         // TODO

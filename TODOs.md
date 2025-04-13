@@ -39,12 +39,14 @@
         * Each button will point to a inputHandler method which will then call the gameController method with information on the calling player and the selected token
         * make sure to clear this part of the inputHandler 
         * We will need a 'tokenUsed' method that is only called after the token is fully used (i.e extra post added)
-        * There are techincally five kinds of tokens, but the extra actions are functionally identical
+        * There are techincally six kinds of tokens, but the extra actions are functionally identical
         * I think the order of difficulty (and thus implementation) is:
             1. Extra actions
             2. Free upgrade (will need to place the token selection area with the upgrade selection)
             3. Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself)
             4. Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag
+            5. Move three - will need a selector for each (add two kinds of selctedAction and two kinds of route node handlers) - look to the first part of the dispalce action for some structure - this is psudeo action - we will basically use the resolve action except without actually decrementing the avaible actions
+        * All tokens will need to trigger the tokenUsed handler which should deal with the player's currentTokens vs usedTokens and their board UI. Will also need to gamelog
         * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
@@ -70,7 +72,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * Move some of the gameController copy pasta into it's own methods
 * Add a turn timer to the turn tracker
 * keyboard short cuts for place and selecting shape
-* local storage
+* localStorage (this is for saving game state), sessionStorage is for single tabs
 * fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationAndBoardController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
