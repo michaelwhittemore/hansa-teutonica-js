@@ -661,21 +661,13 @@ const gameController = {
     },
     advanceTurn(lastPlayer) {
         // DEV 
-        // double check that tokenCaptiuredThisTurn is being cleared
-        // actually just clear tokensCapturedThisTurn
+        // TODO the turnTrackerMain isn't being update to zero during the token placement pahse
+        turnTrackerController.updateTurnTracker(lastPlayer)
         if (this.tokensCapturedThisTurn.length > 0) {
-            // psudeocode -> this.claimToken which should include a lot of things
-            // We will need to re-reveal all possible token holders (just display: flex)
-            // will need to clear updateTokenTracker
-            // We will need to create a click handler for the token areas on the board
-            // Will need to verify that the route location is valid
-            // We will need to set the turn tracker with a message that player is placing tokens
-            // Once all of this is down there will be a bit of cleanup including reseting gameCOntroller
-            // fields, hiding all unused token locations, clearing the players
             this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
             this.replaceTokens(lastPlayer)
             console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
-            return // We then re-excute this.advanceTurn(lastPlayer) once all the tokens have been placed
+            return
         }
         this.tokenPlacementInformation = {}
         this.currentTurn++;
@@ -785,7 +777,7 @@ const gameController = {
             // 14. Consider breaking this out into a different method
             // 15. clear the UI, both actioninfomation and turn tracker
             inputHandlers.clearAllActionSelection();
-            // I think buttons should be updateed and turn tracker info cleared by end turn?
+            // I think buttons should be updated and turn tracker info cleared by end turn?
             // 15. hide all tokensLocations (visibility=hidden) that aren't full
             const emptyRouteIds = []
             for (let key in this.routeStorageObject){
@@ -795,10 +787,10 @@ const gameController = {
             }
             boardController.toggleAllTokenLocations(emptyRouteIds,'hidden')
             this.tokensCapturedThisTurn = [];
-            this.advanceTurn(player)
             gameController.tokenPlacementInformation = {}
             inputHandlers.clearAllActionSelection();
             inputHandlers.toggleInputButtons(false)
+            this.advanceTurn(player);
 
             // HERE!
             // 16. clear the this.tokenPlacementInformation blob
@@ -807,12 +799,6 @@ const gameController = {
             // 16. Call this.advanceTurn(player)
 
         }
-
-
-
-        // once we're done we need to clear all information and UI and re-call advanceTurn
-        // NOTE that advanceTurn assumes that resolveAction has just been called so it doesn't do a lot
-        // of cleanup on its own
     },
     resolveAction(player) {
         gameController.moveInformation = {};
