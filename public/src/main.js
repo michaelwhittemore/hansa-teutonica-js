@@ -616,6 +616,7 @@ const gameController = {
         this.moveInformation = {};
         this.bumpInformation = {};
         this.tokenPlacementInformation = {};
+        this.tokenUsageInformation = {}
         this.tokensCapturedThisTurn = [];
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
@@ -719,6 +720,7 @@ const gameController = {
             return
         }
         this.tokenPlacementInformation = {}
+        this.tokenUsageInformation = {}
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
         if (IS_HOTSEAT_MODE) {
@@ -845,6 +847,7 @@ const gameController = {
         gameController.moveInformation = {};
         gameController.bumpInformation = {};
         gameController.tokenPlacementInformation = {}
+        gameController.tokenUsageInformation = {}
         inputHandlers.clearAllActionSelection();
         // TODO The below inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
         // the input handlers? Like clearAllActionSelection?
@@ -1711,11 +1714,27 @@ const gameController = {
             }
             console.log('playerOwns', playerOwns)
             console.log('rivalOwns', rivalOwns)
+            if (!(playerOwns && rivalOwns)) {
+                console.warn(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
+                inputHandlers.warnInvalidAction(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
+                return;
+            }
+            // still need to do the warning
             // HERE!
-            // 2. check if there is a previous spot in the gameController.tokenInformation object
+            // 2. check if there is a previous spot in the gameController.tokenUsageInformation object
             // 3. If there isn't it's pretty easy. We add it to the object and update the UI (no overwrite)
+
+            if (!gameController.tokenUsageInformation.switchSpot1) {
+                console.log('Storing the first spot')
+                gameController.tokenUsageInformation.switchSpot1 = [cityId, citySpotNumber];
+                inputHandlers.updateActionInfoText(`\nYou selected post number ${citySpotNumber} in ${cityId}. Select one more spot in ${cityId} to exchange posts.`, false)
+                return;
+            }
+
             // --------------------------------------
-            // We will need to store information in the gameController.tokenInformation object
+            // Will need to double check that you haven' selected the same spot
+            // Maybe this can be taken care of by double checking that one is owned by you and one by a rival
+            // We will need to store information in the gameController.tokenUsageInformation object
             // should consider adding a gameController fields clear method given how much information 
             // I store there
 
