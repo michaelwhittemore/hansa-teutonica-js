@@ -308,7 +308,6 @@ const inputHandlers = {
         inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
     },
     handleTokenButton() {
-        // dev 
         // We will still need to call the gameController as the game controller both needs to verify
         // That it's the correct player's turn and needs to know the tokens the player owns
         gameController.handleTokenMenuRequest()
@@ -432,13 +431,10 @@ const inputHandlers = {
         actionInfoDiv.innerText += text;
     },
     populateTokenMenu(tokenArray) {
-        // dev
-        console.log(tokenArray)
         // TODO -  make sure tokenMenu is being cleared elsewhere
         const tokenMenuDiv = document.getElementById('tokenMenu');
         tokenMenuDiv.innerText = 'Select a token to use: '
         const tokenButtonsCreated = {};
-        // MAKE SURE I DON'T OVERWRITE THE ONCLICK - doesn't seem to be the case
         tokenArray.forEach(tokenType => {
             if (!tokenButtonsCreated[tokenType]) {
                 tokenButtonsCreated[tokenType] = 1;
@@ -512,6 +508,17 @@ const inputHandlers = {
             gameController.upgradeAtCity(cityId, undefined)
         }
 
+    },
+    citySpotClickHandler(spotNumber, cityId) {
+        // dev
+        // here!
+        if (inputHandlers.selectedAction !== 'switchPostSelection') {
+            console.warn(`clicked on ${spotNumber} at ${cityId} without the switch token, calling cityClickHandler(${cityId})`)
+            this.cityClickHandler(cityId)
+            return;
+        }
+        console.log('clicked on a cityspot with switchPostSelection and in the input handlers')
+        gameController.tokenActions.selectedPostToSwitch(cityId, spotNumber)
     },
     tokenLocationClickHandler(routeId) {
         console.log('clicked token handler', routeId)
@@ -1596,6 +1603,7 @@ const gameController = {
                 this.tokenActions.freeUpgradeSetup(player)
                 break;
             case 'switchPost':
+                this.tokenActions.switchPost(player)
                 break;
             case 'moveThree':
                 break;
@@ -1642,7 +1650,6 @@ const gameController = {
         },
         useFreeUpgrade(upgradeType, playerId) {
             // dev
-            // here!
             let player;
             if (IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
@@ -1653,6 +1660,65 @@ const gameController = {
 
             gameController.performUnlock(player, upgradeType)
             gameController.finishTokenUsage(player, 'freeUpgrade')
+        },
+        switchPost(player) {
+            // dev
+            console.log('switch post token selected')
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.selectedAction = 'switchPostSelection';
+            inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.')
+            // 1. We will need to clear the token menu and replace it with text saying to select
+            // 2. This method is fairly simple, it's going to be the other handler that has more logic
+            // 3. Remember that the player needs to control one of the pieces
+            // 4. We will need to update the token UI to tell you what you selected and remind you 
+            // that you need to selected a piece in the same city
+            // 5. There will be two calls to the method, the first is just storing the citySpot and updating
+            // the UI, the second is where there is potentially an error
+        },
+        selectedPostToSwitch(cityId, citySpotNumber, playerId) {
+            let player;
+            if (IS_HOTSEAT_MODE) {
+                player = gameController.getActivePlayer()
+                playerId = player.id
+            } else {
+                // TODO, check that the playerId who made the request is the active player
+            }
+            // dev here!
+            console.log(cityId, citySpotNumber)
+            // 1. Check that this spot is occupied, if not warn and return
+            const city = gameController.cityStorageObject[cityId];
+            if (city.occupants[citySpotNumber] === undefined) {
+                console.warn('That spot is unoccupied.')
+                inputHandlers.warnInvalidAction('That spot is unoccupied.')
+                return;
+            }
+            // 1. check that the player owns at least one spot and at least one other player has another spot
+            let playerOwns = false;
+            let rivalOwns = false;
+            city.occupants.forEach(occupantId => {
+                if (occupantId === player.id) {
+                    playerOwns = true;
+                } else {
+                    rivalOwns = true;
+                }
+            })
+            if (city.bonusSpotOccupantId !== undefined) {
+                if (city.bonusSpotOccupantId === player.Id) {
+                    playerOwns = true;
+                } else {
+                    rivalOwns = true;
+                }
+            }
+            console.log('playerOwns', playerOwns)
+            console.log('rivalOwns', rivalOwns)
+            // HERE!
+            // 2. check if there is a previous spot in the gameController.tokenInformation object
+            // 3. If there isn't it's pretty easy. We add it to the object and update the UI (no overwrite)
+            // --------------------------------------
+            // We will need to store information in the gameController.tokenInformation object
+            // should consider adding a gameController fields clear method given how much information 
+            // I store there
+
         }
     },
     endGame() {
@@ -1729,8 +1795,24 @@ const boardController = {
             const citySpotDiv = document.createElement('div');
             citySpotDiv.className = `big-${spotInfo[0]}`;
             citySpotDiv.classList.add('cityPieceHolder') // TODO make a one liner
+            const spotNumber = i;
             citySpotDiv.id = `${name}-${i}`
             citySpotDiv.style.backgroundColor = spotInfo[1]
+
+            // dev
+            // we want to add an onlick to cityPieceHolder
+            // the inputHandler have its own method that will check the selectedAction. 
+            // In any case other than switchPost,
+            // we will simply call inputHandlers.cityClickHandler(name)
+            // Otherwise we send it to the game controller. 
+            // Note that I don't think we currently have any methods to clear the pieces
+            // really we will just be switching colors and the rest of the action will occur in
+            // the city storage
+            citySpotDiv.onclick = (event) => {
+                // We prevent the event from also bubbling up to the city click handler
+                event.stopPropagation();
+                inputHandlers.citySpotClickHandler(spotNumber, name)
+            };
             cityPieceAreaDiv.append(citySpotDiv)
         }
 
