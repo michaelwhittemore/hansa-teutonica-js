@@ -1337,13 +1337,13 @@ const gameController = {
         city.openSpotIndex++;
 
         // HERE! dev
-        if (inputHandlers.additionalInfo === 'bonusPost') {
+        if (this.tokenUsageInformation.tokenAction === 'bonusPost') {
             // Let's do the UI stuff first
             // TODO figure out the shape
             console.warn(`Trying to capture ${cityName} with an additional post`)
             boardController.addBonusPieceToCity(cityName, player.color, 'square', city.bonusSpotOccupantArray.length + 1)
             gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
-            // We will subtract from the player's banked squares unless it's empty in which
+            // TDODO We will subtract from the player's banked squares unless it's empty in which
             // case we will use a circle (remember that this was already returned to the bank)
             // also will need to call the token used method
 
@@ -1757,10 +1757,10 @@ const gameController = {
         },
         bonusPost(player) {
             // dev
-            console.log('extra post selected')
+            // debugger;
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'capture';
-            inputHandlers.additionalInfo = 'bonusPost'
+            gameController.tokenUsageInformation.tokenAction = 'bonusPost';
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
     },
@@ -2463,7 +2463,8 @@ class Player {
         this.maxActions = 2; // Not to be confused with current actions
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
-        this.currentTokens = [];
+        // this.currentTokens = []; // TODO Revert this once I'm done testing
+        this.currentTokens  = TEST_FREE_TOKENS
         this.usedTokens = [];
         this.unlockedColors = ['grey'];
         this.maxMovement = 2;
@@ -2502,6 +2503,7 @@ const start = () => {
 window.onload = start
 
 // TEST VARIABLES 
+const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
 
 
 // TEST, DELETE THIS TODO
