@@ -46,6 +46,7 @@
 .bonusBox {
     background-color: white;
     border: dotted;
+    flex-wrap: wrap;
 }
 
 .routeBox {

@@ -1874,12 +1874,30 @@ const boardController = {
     },
     addBonusPieceToCity(cityName, color, shape, numberOfPieces){
         // numberOfPieces used for scaling
-        // need a console test line of code
+        // boardController.addBonusPieceToCity('Alpha', 'green', 'square', 1)
+
         // dev
         // here!
         const bonusBox = document.getElementById(`bonus-${cityName}`)
-        // might need to clear text
-        const bonusPiece = createDivWithClassAndIdAndStyle([shape])
+        
+        const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${cityName}`],'', {backgroundColor: color})
+        let size = 25;
+        if (numberOfPieces === 1){
+            // only clear if it's the first piece
+            bonusBox.innerText = ''
+            size = 45;
+        }
+
+        // HTMLCollection do not have iterable methods
+        bonusBox.append(bonusPiece)
+        const allPieces = document.getElementsByClassName(`bonus-piece-${cityName}`)
+        
+        for (let i = 0; i < allPieces.length; i++){
+            allPieces[i].style.height = size + 'px'
+            allPieces[i].style.width = size + 'px'
+        }
+
+
     },
     createRouteAndTokenFromLocations(routeProperties) {
         const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
@@ -1946,6 +1964,7 @@ const boardController = {
         const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
         const targetShape = city.spotArray[city.openSpotIndex][0];
         const playerPieceDiv = document.createElement('div')
+        // dev here!
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.id = `piece-${city.cityName}-${city.openSpotIndex}`
         playerPieceDiv.style.backgroundColor = playerColor;
