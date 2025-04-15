@@ -452,7 +452,6 @@ const inputHandlers = {
         })
     },
     populateUpgradeMenuFromToken(upgrades) {
-        // dev
         const tokenMenuDiv = document.getElementById('tokenMenu');
         tokenMenuDiv.innerHTML = 'Select an upgrade: '
         upgrades.forEach(upgrade => {
@@ -510,7 +509,6 @@ const inputHandlers = {
 
     },
     citySpotClickHandler(spotNumber, cityId) {
-        // dev
         if (inputHandlers.selectedAction !== 'switchPostSelection') {
             this.cityClickHandler(cityId)
             return;
@@ -1382,7 +1380,6 @@ const gameController = {
             inputHandlers.clearAllActionSelection();
             inputHandlers.warnInvalidAction(`You can't upgrade your ${unlockName} any further.`);
         }
-        // dev
         switch (unlock) {
             case 'purse':
                 if (player.unlockArrayIndex.purse === unlockPurseToValue.length - 1) {
@@ -1591,7 +1588,6 @@ const gameController = {
             // TODO, check that the playerId who made the request is the active player
         }
         // dev
-        // gameController.playerArray[0].currentTokens = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'extraPost', 'extraPost', 'switchPost', 'moveThree']
         switch (tokenType) {
             case 'threeActions':
                 this.tokenActions.gainActions(player, 3)
@@ -1608,18 +1604,20 @@ const gameController = {
             case 'moveThree':
                 break;
             case 'extraPost':
+                this.tokenActions.extraPost(player)
                 break;
             default:
                 console.error('Unknown Token Type')
         }
     },
     finishTokenUsage(player, tokenType) {
-        // dev
         gameLogController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
         inputHandlers.clearAllActionSelection()
         const indexOfToken = player.currentTokens.indexOf(tokenType)
         player.currentTokens.splice(indexOfToken, 1);
         player.usedTokens.push(tokenType)
+        // need to clear the token information
+        gameController.tokenUsageInformation = {};
         playerInformationAndBoardController.componentBuilders.updateTokensInSupplyAndBank(player)
 
     },
@@ -1649,7 +1647,6 @@ const gameController = {
 
         },
         useFreeUpgrade(upgradeType, playerId) {
-            // dev
             let player;
             if (IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
@@ -1662,18 +1659,9 @@ const gameController = {
             gameController.finishTokenUsage(player, 'freeUpgrade')
         },
         switchPost(player) {
-            // dev
-            console.log('switch post token selected')
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'switchPostSelection';
-            inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.')
-            // 1. We will need to clear the token menu and replace it with text saying to select
-            // 2. This method is fairly simple, it's going to be the other handler that has more logic
-            // 3. Remember that the player needs to control one of the pieces
-            // 4. We will need to update the token UI to tell you what you selected and remind you 
-            // that you need to selected a piece in the same city
-            // 5. There will be two calls to the method, the first is just storing the citySpot and updating
-            // the UI, the second is where there is potentially an error
+            inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.');
         },
         selectedPostToSwitch(cityId, citySpotNumber, playerId) {
             let player;
@@ -1740,25 +1728,31 @@ const gameController = {
             const occupantTwo = gameController.cityStorageObject[cityId].occupants[citySpotNumber];
             const haveDifferentOwners = occupantOne !== occupantTwo;
             const oneIsOwnedByPlayer = (occupantOne === playerId) || (occupantTwo === playerId);
-            console.log('haveDifferentOwners', haveDifferentOwners)
-            console.log('oneIsOwnedByPlayer', oneIsOwnedByPlayer)
+
             if (!(haveDifferentOwners && oneIsOwnedByPlayer)){
                 console.warn('Both trading posts must be owned by different players, one of whom is you.')
                 inputHandlers.warnInvalidAction('Both trading posts must be owned by different players, one of whom is you.')
                 return;
             }
-            console.warn('Reached a switchPost statement where everything looks good')
-            
-            // here!
-            // 1. The two cases above need to be tested more thourghly. Maybe after cancel button has been created
             // 1. Need to switch the colors on the board pieces, 
             boardController.switchPieceColor(`piece-${previousCityId}-${previousSpotNumber}`,`piece-${cityId}-${citySpotNumber}`)
             // 2. Need to switch the locations in cityStorage
             gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber] = occupantTwo;
             gameController.cityStorageObject[cityId].occupants[citySpotNumber] = occupantOne;
+            // 3. Call the token used function
+            gameController.finishTokenUsage(player, 'switchPost')
             // I will really need a cancel button to prevent a soft lock
             // Also need to block out the buttons in that case.
-        }
+        },
+        extraPost(player){
+            // dev
+            console.log('extra post selected')
+            // All this method needs to do is set the inputHandlers.selectedAction and update the token info
+            // inputHandlers.selectedAction will still be capture city
+            // instead it will be addtional info that get's upodated
+            // We will then need to add a special section in captureCity
+            // 
+        },
     },
     endGame() {
         // TODO
@@ -1838,15 +1832,6 @@ const boardController = {
             citySpotDiv.id = `${name}-${i}`
             citySpotDiv.style.backgroundColor = spotInfo[1]
 
-            // dev
-            // we want to add an onlick to cityPieceHolder
-            // the inputHandler have its own method that will check the selectedAction. 
-            // In any case other than switchPost,
-            // we will simply call inputHandlers.cityClickHandler(name)
-            // Otherwise we send it to the game controller. 
-            // Note that I don't think we currently have any methods to clear the pieces
-            // really we will just be switching colors and the rest of the action will occur in
-            // the city storage
             citySpotDiv.onclick = (event) => {
                 // We prevent the event from also bubbling up to the city click handler
                 event.stopPropagation();
@@ -1937,7 +1922,6 @@ const boardController = {
         pieceHolder.append(playerPieceDiv)
     },
     switchPieceColor(pieceIdOne, pieceIdTwo){
-        // dev
         const pieceOne = document.getElementById(pieceIdOne)
         const pieceTwo = document.getElementById(pieceIdTwo)
         const color1 = pieceOne.style.backgroundColor;
