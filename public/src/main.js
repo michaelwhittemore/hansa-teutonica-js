@@ -1341,12 +1341,20 @@ const gameController = {
             // Let's do the UI stuff first
             // TODO figure out the shape
             console.warn(`Trying to capture ${cityName} with an additional post`)
-            boardController.addBonusPieceToCity(cityName, player.color, 'square', city.bonusSpotOccupantArray.length + 1)
+            let usedShape;
+            if (player.bankedSquares > 0){
+                usedShape = 'square';
+                player.bankedSquares--;
+            } else {
+                usedShape = 'circle';
+                player.bankedCircles--;
+            }
+            boardController.addBonusPieceToCity(cityName, player.color, usedShape, city.bonusSpotOccupantArray.length + 1)
             gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
             // TDODO We will subtract from the player's banked squares unless it's empty in which
             // case we will use a circle (remember that this was already returned to the bank)
             // also will need to call the token used method
-
+            gameController.finishTokenUsage(player, 'bonusPost')
         }
 
         gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
