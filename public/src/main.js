@@ -55,10 +55,10 @@ const TEST_BOARD_CONFIG_CITIES = {
 
 };
 
-const STARTING_TOKENS = ['extraPost', 'moveThree', 'switchPost']
+const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
 // RULES TODO, verify that the blow values do *NOT* include the gold starters
 const REGULAR_TOKENS_NUMBER_MAP = {
-    'extraPost': 4,
+    'bonusPost': 4,
     'switchPost': 3,
     'moveThree': 2,
     'freeUpgrade': 2,
@@ -1336,14 +1336,17 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-        // HERE!
-        if (inputHandlers.additionalInfo = 'extraPost'){
+        // HERE! dev
+        if (inputHandlers.additionalInfo === 'bonusPost') {
             // Let's do the UI stuff first
+            // TODO figure out the shape
             console.warn(`Trying to capture ${cityName} with an additional post`)
-            // Remember that we need to double check that the bonus spot is empty.
-            // Otherwise we warn but complete the action (the warning might get erased?)
+            boardController.addBonusPieceToCity(cityName, player.color, 'square', city.bonusSpotOccupantArray.length + 1)
+            gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
             // We will subtract from the player's banked squares unless it's empty in which
             // case we will use a circle (remember that this was already returned to the bank)
+            // also will need to call the token used method
+
         }
 
         gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
@@ -1507,10 +1510,10 @@ const gameController = {
         city.occupants.forEach(occupantId => {
             controlObj[occupantId]++;
         })
-        
+
         // dev
         // may need to test this
-        if (city.bonusSpotOccupantArray.length > 0){
+        if (city.bonusSpotOccupantArray.length > 0) {
             city.bonusSpotOccupantArray.forEach(bonusId => {
                 controlObj[bonusId]++
             })
@@ -1617,11 +1620,11 @@ const gameController = {
                 break;
             case 'moveThree':
                 break;
-            case 'extraPost':
-                this.tokenActions.extraPost(player)
+            case 'bonusPost':
+                this.tokenActions.bonusPost(player)
                 break;
             default:
-                console.error('Unknown Token Type')
+                console.error(`Unknown Token Type: ${tokenType}`)
         }
     },
     finishTokenUsage(player, tokenType) {
@@ -1731,19 +1734,19 @@ const gameController = {
                 inputHandlers.warnInvalidAction('Both trading posts need to be in the same city.')
                 return;
             }
-            
+
             const occupantOne = gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber]
             const occupantTwo = gameController.cityStorageObject[cityId].occupants[citySpotNumber];
             const haveDifferentOwners = occupantOne !== occupantTwo;
             const oneIsOwnedByPlayer = (occupantOne === playerId) || (occupantTwo === playerId);
 
-            if (!(haveDifferentOwners && oneIsOwnedByPlayer)){
+            if (!(haveDifferentOwners && oneIsOwnedByPlayer)) {
                 console.warn('Both trading posts must be owned by different players, one of whom is you.')
                 inputHandlers.warnInvalidAction('Both trading posts must be owned by different players, one of whom is you.')
                 return;
             }
             // 1. Need to switch the colors on the board pieces, 
-            boardController.switchPieceColor(`piece-${previousCityId}-${previousSpotNumber}`,`piece-${cityId}-${citySpotNumber}`)
+            boardController.switchPieceColor(`piece-${previousCityId}-${previousSpotNumber}`, `piece-${cityId}-${citySpotNumber}`)
             // 2. Need to switch the locations in cityStorage
             gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber] = occupantTwo;
             gameController.cityStorageObject[cityId].occupants[citySpotNumber] = occupantOne;
@@ -1752,12 +1755,12 @@ const gameController = {
             // I will really need a cancel button to prevent a soft lock
             // Also need to block out the buttons in that case.
         },
-        extraPost(player){
+        bonusPost(player) {
             // dev
             console.log('extra post selected')
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'capture';
-            inputHandlers.additionalInfo = 'extraPost'
+            inputHandlers.additionalInfo = 'bonusPost'
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
     },
@@ -1830,13 +1833,7 @@ const boardController = {
         }
         const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
         cityDiv.append(cityPieceAreaDiv)
-        // here! dev
-        // may need to adjust the piece sizes
-        // the bonus piece zone will have a white background with a dotted black border
-        // and it will contain the text 'bonus'
-        // let's start by not making it hidden
-        // remember that the maximum number of bonus spots is four given the number of tokens
-        
+
         cityPieceAreaDiv.append(this.createCityBonusSpotArea(name))
         for (let i = 0; i < spotArray.length; i++) {
             const spotInfo = spotArray[i]
@@ -1866,23 +1863,20 @@ const boardController = {
         this.board.append(cityDiv)
         return cityDiv
     },
-    createCityBonusSpotArea(cityName){
-        // Will need a seperate method to add bonus pieces. Maybe make them scale in size?
+    createCityBonusSpotArea(cityName) {
         const bonusBox = createDivWithClassAndIdAndStyle(['big-square', 'bonusBox', 'centeredFlex'], `bonus-${cityName}`)
         bonusBox.innerText = 'Bonus trading posts'
         return bonusBox;
     },
-    addBonusPieceToCity(cityName, color, shape, numberOfPieces){
-        // numberOfPieces used for scaling
+    addBonusPieceToCity(cityName, color, shape, numberOfPieces) {
         // boardController.addBonusPieceToCity('Alpha', 'green', 'square', 1)
-
+        // boardController.addBonusPieceToCity('Alpha', 'red', 'circle', 2)
         // dev
-        // here!
         const bonusBox = document.getElementById(`bonus-${cityName}`)
-        
-        const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${cityName}`],'', {backgroundColor: color})
+
+        const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${cityName}`], '', { backgroundColor: color })
         let size = 25;
-        if (numberOfPieces === 1){
+        if (numberOfPieces === 1) {
             // only clear if it's the first piece
             bonusBox.innerText = ''
             size = 45;
@@ -1891,13 +1885,11 @@ const boardController = {
         // HTMLCollection do not have iterable methods
         bonusBox.append(bonusPiece)
         const allPieces = document.getElementsByClassName(`bonus-piece-${cityName}`)
-        
-        for (let i = 0; i < allPieces.length; i++){
+
+        for (let i = 0; i < allPieces.length; i++) {
             allPieces[i].style.height = size + 'px'
             allPieces[i].style.width = size + 'px'
         }
-
-
     },
     createRouteAndTokenFromLocations(routeProperties) {
         const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
@@ -1964,13 +1956,13 @@ const boardController = {
         const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
         const targetShape = city.spotArray[city.openSpotIndex][0];
         const playerPieceDiv = document.createElement('div')
-        // dev here!
+        // TODO make the pieces large in cities
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.id = `piece-${city.cityName}-${city.openSpotIndex}`
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
     },
-    switchPieceColor(pieceIdOne, pieceIdTwo){
+    switchPieceColor(pieceIdOne, pieceIdTwo) {
         const pieceOne = document.getElementById(pieceIdOne)
         const pieceTwo = document.getElementById(pieceIdTwo)
         const color1 = pieceOne.style.backgroundColor;
