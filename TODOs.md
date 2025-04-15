@@ -43,13 +43,15 @@
         * I think the order of difficulty (and thus implementation) is:
             1. ~~Extra actions~~
             2. ~~Free upgrade (will need to place the token selection area with the upgrade selection)~~
-            3. **HERE** !  Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself) - cityPieceHolder is the one that will need an onclick
-            4. Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag. We also will need to work with dreaded city UI. Maybe make the pieces smaller and add a leftmost dotted-outlined square which can be filled in
+            3.  ~~Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself) - cityPieceHolder is the one that will need an onclick~~
+            4. **HERE** ! Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag. We also will need to work with dreaded city UI. It looks like I misunderstood that there can be any number of bonus pieces. I will need to also update anywhere it's referenced to include an array instead of a single slot
             5. Move three - will need a selector for each (add two kinds of selctedAction and two kinds of route node handlers) - look to the first part of the dispalce action for some structure - this is psudeo action - we will basically use the resolve action except without actually decrementing the avaible actions
         * All tokens will need to trigger the tokenUsed handler which should deal with the player's currentTokens vs usedTokens and their board UI. Will also need to gamelog
         * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
-* BUG! I don't think switchPosts plays nice with bonus spots as use the spot index which is an array index for the occupantsArray.
+* BUG! I don't think switchPosts plays nice with bonus spots as use the spot index which is an array index for the occupantsArray. - actually "You may not apply the Exchange Trading Posts bonus marker to any
+of these additional trading posts."!!
+* Will need to add the move warning to clicking on a spot there. Will need to remove bonus logic
 * add an easy method to clear the board information fields (check where this is already hapenign)
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
@@ -68,6 +70,7 @@ I need to have a single word for each between city unlock, the divs for holding 
 * technically, it's legal to swap circles and squares as part of a move action (for two moves)
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
+* when reoragnizing css, use nesting
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
 * add chat to game log

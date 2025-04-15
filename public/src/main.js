@@ -25,7 +25,7 @@ const TEST_BOARD_CONFIG_CITIES = {
             [['circle', 'grey'], ['square', 'grey']],
         neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
-        location: [450, 20]
+        location: [480, 20]
     },
     'Gamma': {
         name: 'Gamma',
@@ -377,7 +377,7 @@ const inputHandlers = {
 
         inputHandlers.selectedAction = 'capture';
         if (!inputHandlers.selectedLocation) {
-            inputHandlers.updateActionInfoText('Select a city to capture', true);
+            inputHandlers.updateActionInfoText('Select a city to capture');
         } else {
             let playerId = undefined
             if (!IS_HOTSEAT_MODE) {
@@ -637,7 +637,7 @@ const gameController = {
                 occupants: [],
                 openSpotIndex: 0,
                 spotArray: city.spotArray,
-                bonusSpotOccupantId: undefined,
+                bonusSpotOccupantArray: [],
                 unlock: city.unlock,
                 location: city.location,
                 ownElement: cityDiv,
@@ -1336,7 +1336,17 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-        gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}`, player);
+        // HERE!
+        if (inputHandlers.additionalInfo = 'extraPost'){
+            // Let's do the UI stuff first
+            console.warn(`Trying to capture ${cityName} with an additional post`)
+            // Remember that we need to double check that the bonus spot is empty.
+            // Otherwise we warn but complete the action (the warning might get erased?)
+            // We will subtract from the player's banked squares unless it's empty in which
+            // case we will use a circle (remember that this was already returned to the bank)
+        }
+
+        gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
         this.resolveAction(player);
     },
     upgradeAtCity(cityName, playerId) {
@@ -1497,9 +1507,13 @@ const gameController = {
         city.occupants.forEach(occupantId => {
             controlObj[occupantId]++;
         })
-        // playerId can be zero, so can't just check that it exists
-        if (city.bonusSpotOccupantId !== undefined) {
-            controlObj[city.bonusSpotOccupantId]++;
+        
+        // dev
+        // may need to test this
+        if (city.bonusSpotOccupantArray.length > 0){
+            city.bonusSpotOccupantArray.forEach(bonusId => {
+                controlObj[bonusId]++
+            })
         }
 
         const maxPieces = Math.max(...Object.values(controlObj));
@@ -1672,7 +1686,7 @@ const gameController = {
                 // TODO, check that the playerId who made the request is the active player
             }
             console.log(cityId, citySpotNumber)
-            // dev
+            // TODO check that the spot is not a bonus spot!
             // 1. Check that this spot is occupied, if not warn and return
             const city = gameController.cityStorageObject[cityId];
             if (city.occupants[citySpotNumber] === undefined) {
@@ -1681,6 +1695,7 @@ const gameController = {
                 return;
             }
             // 1. check that the player owns at least one spot and at least one other player has another spot
+            // Bonus spots are *NOT* usable for switching
             let playerOwns = false;
             let rivalOwns = false;
             city.occupants.forEach(occupantId => {
@@ -1690,13 +1705,6 @@ const gameController = {
                     rivalOwns = true;
                 }
             })
-            if (city.bonusSpotOccupantId !== undefined) {
-                if (city.bonusSpotOccupantId === player.Id) {
-                    playerOwns = true;
-                } else {
-                    rivalOwns = true;
-                }
-            }
             if (!(playerOwns && rivalOwns)) {
                 console.warn(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
                 inputHandlers.warnInvalidAction(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
@@ -1747,11 +1755,10 @@ const gameController = {
         extraPost(player){
             // dev
             console.log('extra post selected')
-            // All this method needs to do is set the inputHandlers.selectedAction and update the token info
-            // inputHandlers.selectedAction will still be capture city
-            // instead it will be addtional info that get's upodated
-            // We will then need to add a special section in captureCity
-            // 
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.selectedAction = 'capture';
+            inputHandlers.additionalInfo = 'extraPost'
+            inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
     },
     endGame() {
@@ -1823,6 +1830,14 @@ const boardController = {
         }
         const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
         cityDiv.append(cityPieceAreaDiv)
+        // here! dev
+        // may need to adjust the piece sizes
+        // the bonus piece zone will have a white background with a dotted black border
+        // and it will contain the text 'bonus'
+        // let's start by not making it hidden
+        // remember that the maximum number of bonus spots is four given the number of tokens
+        
+        cityPieceAreaDiv.append(this.createCityBonusSpotArea(name))
         for (let i = 0; i < spotArray.length; i++) {
             const spotInfo = spotArray[i]
             const citySpotDiv = document.createElement('div');
@@ -1850,6 +1865,21 @@ const boardController = {
         }
         this.board.append(cityDiv)
         return cityDiv
+    },
+    createCityBonusSpotArea(cityName){
+        // Will need a seperate method to add bonus pieces. Maybe make them scale in size?
+        const bonusBox = createDivWithClassAndIdAndStyle(['big-square', 'bonusBox', 'centeredFlex'], `bonus-${cityName}`)
+        bonusBox.innerText = 'Bonus trading posts'
+        return bonusBox;
+    },
+    addBonusPieceToCity(cityName, color, shape, numberOfPieces){
+        // numberOfPieces used for scaling
+        // need a console test line of code
+        // dev
+        // here!
+        const bonusBox = document.getElementById(`bonus-${cityName}`)
+        // might need to clear text
+        const bonusPiece = createDivWithClassAndIdAndStyle([shape])
     },
     createRouteAndTokenFromLocations(routeProperties) {
         const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties

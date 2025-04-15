@@ -24,6 +24,7 @@
     margin: 1px;
 }
 
+
 .city {
     border: solid;
     display: flex;
@@ -40,6 +41,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.bonusBox {
+    background-color: white;
+    border: dotted;
 }
 
 .routeBox {
@@ -382,6 +388,11 @@
 
 .circle {
     border-radius: 50%;
+    margin: 1px
+}
+
+.square{
+    margin: 1px;
 }
 
 .collapsedContainer {
