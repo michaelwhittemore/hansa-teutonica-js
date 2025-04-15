@@ -511,13 +511,10 @@ const inputHandlers = {
     },
     citySpotClickHandler(spotNumber, cityId) {
         // dev
-        // here!
         if (inputHandlers.selectedAction !== 'switchPostSelection') {
-            console.warn(`clicked on ${spotNumber} at ${cityId} without the switch token, calling cityClickHandler(${cityId})`)
             this.cityClickHandler(cityId)
             return;
         }
-        console.log('clicked on a cityspot with switchPostSelection and in the input handlers')
         gameController.tokenActions.selectedPostToSwitch(cityId, spotNumber)
     },
     tokenLocationClickHandler(routeId) {
@@ -1686,8 +1683,8 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // dev here!
             console.log(cityId, citySpotNumber)
+            // dev
             // 1. Check that this spot is occupied, if not warn and return
             const city = gameController.cityStorageObject[cityId];
             if (city.occupants[citySpotNumber] === undefined) {
@@ -1712,32 +1709,55 @@ const gameController = {
                     rivalOwns = true;
                 }
             }
-            console.log('playerOwns', playerOwns)
-            console.log('rivalOwns', rivalOwns)
             if (!(playerOwns && rivalOwns)) {
                 console.warn(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
                 inputHandlers.warnInvalidAction(`The city of ${cityId} needs to have a post owned by you and a post owned by a rival to switch.`)
                 return;
             }
-            // still need to do the warning
-            // HERE!
             // 2. check if there is a previous spot in the gameController.tokenUsageInformation object
             // 3. If there isn't it's pretty easy. We add it to the object and update the UI (no overwrite)
 
-            if (!gameController.tokenUsageInformation.switchSpot1) {
+            if (!gameController.tokenUsageInformation.switchSpot) {
                 console.log('Storing the first spot')
-                gameController.tokenUsageInformation.switchSpot1 = [cityId, citySpotNumber];
+                gameController.tokenUsageInformation.switchSpot = [cityId, citySpotNumber];
                 inputHandlers.updateActionInfoText(`\nYou selected post number ${citySpotNumber} in ${cityId}. Select one more spot in ${cityId} to exchange posts.`, false)
                 return;
             }
 
-            // --------------------------------------
-            // Will need to double check that you haven' selected the same spot
-            // Maybe this can be taken care of by double checking that one is owned by you and one by a rival
-            // We will need to store information in the gameController.tokenUsageInformation object
-            // should consider adding a gameController fields clear method given how much information 
-            // I store there
+            // -------------------------------------- Second spot
+            const previousCityId = gameController.tokenUsageInformation.switchSpot[0]
+            const previousSpotNumber = gameController.tokenUsageInformation.switchSpot[1]
 
+            // 1. Check that it's the same city
+            // 2. Check that one is you and the other is a different player
+            if (cityId !== previousCityId) {
+                console.warn('Both trading posts need to be in the same city.')
+                inputHandlers.warnInvalidAction('Both trading posts need to be in the same city.')
+                return;
+            }
+            
+            const occupantOne = gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber]
+            const occupantTwo = gameController.cityStorageObject[cityId].occupants[citySpotNumber];
+            const haveDifferentOwners = occupantOne !== occupantTwo;
+            const oneIsOwnedByPlayer = (occupantOne === playerId) || (occupantTwo === playerId);
+            console.log('haveDifferentOwners', haveDifferentOwners)
+            console.log('oneIsOwnedByPlayer', oneIsOwnedByPlayer)
+            if (!(haveDifferentOwners && oneIsOwnedByPlayer)){
+                console.warn('Both trading posts must be owned by different players, one of whom is you.')
+                inputHandlers.warnInvalidAction('Both trading posts must be owned by different players, one of whom is you.')
+                return;
+            }
+            console.warn('Reached a switchPost statement where everything looks good')
+            
+            // here!
+            // 1. The two cases above need to be tested more thourghly. Maybe after cancel button has been created
+            // 1. Need to switch the colors on the board pieces, 
+            boardController.switchPieceColor(`piece-${previousCityId}-${previousSpotNumber}`,`piece-${cityId}-${citySpotNumber}`)
+            // 2. Need to switch the locations in cityStorage
+            gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber] = occupantTwo;
+            gameController.cityStorageObject[cityId].occupants[citySpotNumber] = occupantOne;
+            // I will really need a cancel button to prevent a soft lock
+            // Also need to block out the buttons in that case.
         }
     },
     endGame() {
@@ -1912,8 +1932,18 @@ const boardController = {
         const targetShape = city.spotArray[city.openSpotIndex][0];
         const playerPieceDiv = document.createElement('div')
         playerPieceDiv.className = `small-${targetShape}`
+        playerPieceDiv.id = `piece-${city.cityName}-${city.openSpotIndex}`
         playerPieceDiv.style.backgroundColor = playerColor;
         pieceHolder.append(playerPieceDiv)
+    },
+    switchPieceColor(pieceIdOne, pieceIdTwo){
+        // dev
+        const pieceOne = document.getElementById(pieceIdOne)
+        const pieceTwo = document.getElementById(pieceIdTwo)
+        const color1 = pieceOne.style.backgroundColor;
+        const color2 = pieceTwo.style.backgroundColor;
+        pieceOne.style.backgroundColor = color2;
+        pieceTwo.style.backgroundColor = color1;
     },
     createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
         const TOKEN_DISTANCE = 120
