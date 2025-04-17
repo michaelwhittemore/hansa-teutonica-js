@@ -244,7 +244,7 @@ const inputHandlers = {
         // 3. If the player has both shapes left add a button. Otherwise set shape defaults
         if (squares && circles) {
             this.addShapeSelectionToActionInfo()
-            if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
+            if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
                 this.additionalInfo = 'square';
             }
         } else if (squares && !circles) {
@@ -285,7 +285,7 @@ const inputHandlers = {
             inputHandlers.updateActionInfoText('Select a city to capture');
         } else {
             let playerId = undefined
-            if (!CONSTANTS. IS_HOTSEAT_MODE) {
+            if (!CONSTANTS.IS_HOTSEAT_MODE) {
                 // get the player name from sessionStorage
             }
             gameController.captureCity(inputHandlers.selectedLocation, playerId)
@@ -294,7 +294,7 @@ const inputHandlers = {
     },
     handleResupplyButton() {
         let playerId = undefined
-        if (!CONSTANTS. IS_HOTSEAT_MODE) {
+        if (!CONSTANTS.IS_HOTSEAT_MODE) {
             // get the player name from sessionStorage
         }
         gameController.resupply(playerId);
@@ -406,7 +406,7 @@ const inputHandlers = {
     },
     cityClickHandler(cityId) {
         if (!inputHandlers.selectedAction) {
-            if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
+            if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
                 inputHandlers.selectedLocation = cityId;
                 inputHandlers.selectedAction = 'capture';
             } else {
@@ -463,7 +463,7 @@ const inputHandlers = {
                     console.error('We should not be hitting default with a selected action')
                     return
                 }
-                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                     this.nodeActions.place(nodeId)
                 } else {
@@ -477,7 +477,7 @@ const inputHandlers = {
             // Need to call a game controller method here
             // pass in the selected shape, other wise use default
             if (!isShape(inputHandlers?.additionalInfo)) {
-                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                 } else {
                     console.warn('No shape selected')
@@ -494,7 +494,7 @@ const inputHandlers = {
         },
         place(nodeId) {
             if (!isShape(inputHandlers?.additionalInfo)) {
-                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                 } else {
                     console.warn('No shape selected')
@@ -547,8 +547,8 @@ const gameController = {
 
         const startingTokensArray = CONSTANTS.STARTING_TOKENS;
         const regularTokensArray = [];
-        Object.keys(CONSTANTS. REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
-            for (let i = 0; i < CONSTANTS. REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
+        Object.keys(CONSTANTS.REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
+            for (let i = 0; i < CONSTANTS.REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
                 regularTokensArray.push(key)
             }
         })
@@ -650,7 +650,7 @@ const gameController = {
         this.tokenUsageInformation = {}
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             playerInformationAndBoardController.focusOnPlayerBoard(this.getActivePlayer())
         }
 
@@ -684,7 +684,7 @@ const gameController = {
     },
     replaceTokenAtLocation(routeId, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -793,7 +793,7 @@ const gameController = {
     },
     placeWorkerOnNodeAction(nodeId, shape, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -836,7 +836,7 @@ const gameController = {
     },
     selectPieceToMove(nodeId, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -862,7 +862,7 @@ const gameController = {
     },
     movePieceToLocation(nodeId, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -902,7 +902,7 @@ const gameController = {
     },
     endMoveAction(playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -921,7 +921,7 @@ const gameController = {
     },
     resupply(playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -959,7 +959,7 @@ const gameController = {
     },
     bumpPieceFromNode(nodeId, shape, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1049,7 +1049,7 @@ const gameController = {
     placeBumpedPieceOnNode(nodeId, shape, playerId) {
         console.log('trying to place bumped piece')
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             // NOTE: this is different from the standard copy pasta as we aren't using the active player
             player = this.bumpInformation.bumpedPlayer
             playerId = player.id
@@ -1215,7 +1215,7 @@ const gameController = {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
         // probably use an onclick for a route node. Let's deal with that later
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1290,7 +1290,7 @@ const gameController = {
     },
     upgradeAtCity(cityName, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1513,7 +1513,7 @@ const gameController = {
     },
     handleTokenMenuRequest(playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1528,7 +1528,7 @@ const gameController = {
     },
     useToken(tokenType, playerId) {
         let player;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1595,7 +1595,7 @@ const gameController = {
         },
         useFreeUpgrade(upgradeType, playerId) {
             let player;
-            if (CONSTANTS. IS_HOTSEAT_MODE) {
+            if (CONSTANTS.IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1612,7 +1612,7 @@ const gameController = {
         },
         selectedPostToSwitch(cityId, citySpotNumber, playerId) {
             let player;
-            if (CONSTANTS. IS_HOTSEAT_MODE) {
+            if (CONSTANTS.IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1703,7 +1703,7 @@ const gameController = {
         },
         selectMoveThreePiece(nodeId, playerId) {
             let player;
-            if (CONSTANTS. IS_HOTSEAT_MODE) {
+            if (CONSTANTS.IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1727,7 +1727,7 @@ const gameController = {
         },
         selectMoveThreeLocation(nodeId, playerId) {
             let player;
-            if (CONSTANTS. IS_HOTSEAT_MODE) {
+            if (CONSTANTS.IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1782,7 +1782,7 @@ const gameController = {
         },
         endMoveThree(playerId) {
             let player;
-            if (CONSTANTS. IS_HOTSEAT_MODE) {
+            if (CONSTANTS.IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -2024,7 +2024,7 @@ const playerInformationAndBoardController = {
         })
 
         let currentViewingPlayer;
-        if (CONSTANTS. IS_HOTSEAT_MODE) {
+        if (CONSTANTS.IS_HOTSEAT_MODE) {
             currentViewingPlayer = 0
         }
         this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
