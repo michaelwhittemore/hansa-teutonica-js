@@ -52,6 +52,7 @@
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
 * BUG! I don't think switchPosts plays nice with bonus spots as use the spot index which is an array index for the occupantsArray. - actually "You may not apply the Exchange Trading Posts bonus marker to any
 of these additional trading posts."!!
+* consider renaming "inputHandlers" to something more accurate
 * Will need to add the move warning to clicking on a spot there. Will need to remove bonus logic
 * add an easy method to clear the board information fields (check where this is already hapenign)
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance

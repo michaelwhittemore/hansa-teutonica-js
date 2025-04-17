@@ -465,7 +465,7 @@ const inputHandlers = {
         })
     },
     populateMoveThreeMenu(movesLeft){
-        // dev here!
+        // dev
         const tokenMenuDiv = document.getElementById('tokenMenu');
         tokenMenuDiv.innerHTML = `You have ${pluralifyText('move', movesLeft)} left. `
         const endEarlyButton = document.createElement('button');
@@ -473,6 +473,7 @@ const inputHandlers = {
         endEarlyButton.innerText = 'End token moves';
         endEarlyButton.onclick = () => {
             console.log('end early clicked')
+            gameController.tokenActions.endMoveThree();
         }
         tokenMenuDiv.append(endEarlyButton)
     },
@@ -550,6 +551,9 @@ const inputHandlers = {
             case 'placeBumpedPiece':
                 this.nodeActions.placeSelectedBumpPieceOnNode(nodeId)
                 break
+            case 'tokenMove':
+                this.nodeActions.moveToken(nodeId)
+                break
             default:
                 if (inputHandlers.selectedAction) {
                     console.error('We should not be hitting default with a selected action')
@@ -602,6 +606,17 @@ const inputHandlers = {
                 gameController.movePieceToLocation(nodeId);
             }
         },
+        moveToken(nodeId){
+            // here! dev
+            if (inputHandlers.additionalInfo === 'selectPiece'){
+                gameController.tokenActions.selectMoveThreePiece(nodeId)
+            } else if (inputHandlers.additionalInfo === 'selectLocation'){
+                gameController.tokenActions.selectMoveThreeLocation(nodeId)
+            } else {
+                console.error(`Unknown additional info: ${inputHandlers.additionalInfo}`)
+            }
+            console.log('move token action at', nodeId)
+        }
     }
 }
 
@@ -1529,7 +1544,7 @@ const gameController = {
             controlObj[occupantId]++;
         })
 
-        // dev
+        // TODO
         // may need to test this
         if (city.bonusSpotOccupantArray.length > 0) {
             city.bonusSpotOccupantArray.forEach(bonusId => {
@@ -1601,12 +1616,6 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        // dev 
-        // I think this method should be pretty simple.
-        // We validate that it's the player's turn in the copypasta
-        // If the player has no tokens we warn them and return
-        // Otherwise we call the inputHandler method
-        // The meat of token logic will occur in other functions
         if (player.currentTokens.length === 0) {
             console.warn('You don\'t have any tokens to use.')
             inputHandlers.warnInvalidAction('You don\'t have any tokens to use.')
@@ -1622,7 +1631,6 @@ const gameController = {
         } else {
             // TODO, check that the playerId who made the request is the active player
         }
-        // dev
         switch (tokenType) {
             case 'threeActions':
                 this.tokenActions.gainActions(player, 3)
@@ -1774,19 +1782,19 @@ const gameController = {
             // I will really need a cancel button to prevent a soft lock
             // Also need to block out the buttons in that case.
         },
-        bonusPost(player) {
-            // dev
-  
+        bonusPost(player) {  
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'capture';
             gameController.tokenUsageInformation.tokenAction = 'bonusPost';
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
         moveThree(player){
-            // dev here!
+            // dev
             console.log('clicked moveThree')
             inputHandlers.clearAllActionSelection();
-            inputHandlers.selectedAction = 'selectPieceForTokenMove';
+            inputHandlers.selectedAction = 'tokenMove';
+            inputHandlers.additionalInfo = 'selectPiece'
+            // THE other mode is inputHandlers.additionalInfo = 'selectLocation'
             // need to clear other buttons as well
             inputHandlers.toggleInputButtons(true)
             inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
@@ -1801,6 +1809,53 @@ const gameController = {
             // 2. Set the selected action type
             // 3. Once it's selcted we set the inputHandler UI
             // 4. We will need a different 'moveThreeIsOver' method
+        },
+        selectMoveThreePiece(nodeId, playerId){
+            let player;
+            if (IS_HOTSEAT_MODE) {
+                player = gameController.getActivePlayer()
+                playerId = player.id
+            } else {
+                // TODO, check that the playerId who made the request is the active player
+            }
+            // here!
+            console.log('selectMoveThreePiece', nodeId)
+            // 1. Get a reference to the node itself
+            const routeId = getRouteIdFromNodeId(nodeId);
+            const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+            console.log(node)
+            // 1. Validate that the location is occupied and owned by an opponent - warn and return if not
+            if (!node.occupied || node.playerId === playerId){
+                console.warn('You must select a node occupied by an opposing piece.')
+                inputHandlers.warnInvalidAction(' You must select a node occupied by an opposing piece.')
+                return;
+            }
+            // 2. If we're on happy path, we need to store the location in the token info
+            
+            // 3. We need to update the action info UI
+            // 4. We need to change the addtionalInfo field
+        },
+        selectMoveThreeLocation(nodeId, playerId){
+            console.log('selectMoveThreeLocation', nodeId)
+        },
+        endMoveThree(playerId){
+            let player;
+            if (IS_HOTSEAT_MODE) {
+                player = gameController.getActivePlayer()
+                playerId = player.id
+            } else {
+                // TODO, check that the playerId who made the request is the active player
+            } 
+            // TODO
+            // dev,
+            // Need to reset the input buttons
+            // Note that this is either called naturally or is the result of pressing the 'end button'
+            // The below is not exhaustive
+            // 1. Reset inputHandlers. I think this should clear the token area and re-enable the action buttons
+            inputHandlers.toggleInputButtons(false)
+            inputHandlers.clearAllActionSelection()
+            // 2. Trigger the finishTokenUsage method
+            gameController.finishTokenUsage(player, 'moveThree');
         }
     },
     endGame() {
@@ -1908,9 +1963,6 @@ const boardController = {
         return bonusBox;
     },
     addBonusPieceToCity(cityName, color, shape, numberOfPieces) {
-        // boardController.addBonusPieceToCity('Alpha', 'green', 'square', 1)
-        // boardController.addBonusPieceToCity('Alpha', 'red', 'circle', 2)
-        // dev
         const bonusBox = document.getElementById(`bonus-${cityName}`)
 
         const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${cityName}`], '', { backgroundColor: color })
