@@ -2576,7 +2576,7 @@ class Player {
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
         // this.currentTokens = []; // TODO Revert this once I'm done testing
-        this.currentTokens = TEST_FREE_TOKENS
+        this.currentTokens = [...TEST_FREE_TOKENS]
         this.usedTokens = [];
         this.unlockedColors = ['grey'];
         this.maxMovement = 2;
