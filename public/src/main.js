@@ -1372,9 +1372,8 @@ const gameController = {
             }
             boardController.addBonusPieceToCity(cityName, player.color, usedShape, city.bonusSpotOccupantArray.length + 1)
             gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
-            // TDODO We will subtract from the player's banked squares unless it's empty in which
-            // case we will use a circle (remember that this was already returned to the bank)
-            // also will need to call the token used method
+
+
             gameController.finishTokenUsage(player, 'bonusPost')
         }
 
@@ -1925,9 +1924,7 @@ const boardController = {
         // TODO Perhaps the point tracker should live outside of board controller
         const pointTracker = document.getElementById('pointTrackerSection-1');
         for (let i = 0; i <= maxPoints; i++) {
-            const pointPieceContainer = document.createElement('div');
-            pointPieceContainer.className = 'pointPieceContainer'
-            pointPieceContainer.id = `points-${i}`;
+            const pointPieceContainer = createDivWithClassAndIdAndStyle(['pointPieceContainer'], `points-${i}`)
             pointPieceContainer.innerText = i;
             pointTracker.append(pointPieceContainer);
         }
@@ -1939,10 +1936,8 @@ const boardController = {
         // would be nice to evntually remove the number, but this works for now
         // TODO I think I can make the number it's own div and make it absolute (maybe need to play with z index)
         document.getElementById(`point-tracker-${playerColor}`)?.remove()
-        const pointTrackerPiece = document.createElement('div');
-        pointTrackerPiece.className = 'pointTrackerPiece';
-        pointTrackerPiece.style.backgroundColor = playerColor;
-        pointTrackerPiece.id = `point-tracker-${playerColor}`;
+        const pointTrackerPiece = createDivWithClassAndIdAndStyle(['pointTrackerPiece'], `point-tracker-${playerColor}`,
+            { backgroundColor: playerColor })
         document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
     },
     createCity(cityInformation) {
@@ -1960,13 +1955,10 @@ const boardController = {
 
         cityPieceAreaDiv.append(this.createCityBonusSpotArea(name))
         for (let i = 0; i < spotArray.length; i++) {
-            const spotInfo = spotArray[i]
-            const citySpotDiv = document.createElement('div');
-            citySpotDiv.className = `big-${spotInfo[0]}`;
-            citySpotDiv.classList.add('cityPieceHolder') // TODO make a one liner
             const spotNumber = i;
-            citySpotDiv.id = `${name}-${i}`
-            citySpotDiv.style.backgroundColor = spotInfo[1]
+            const spotInfo = spotArray[i]
+            const citySpotDiv = createDivWithClassAndIdAndStyle([`big-${spotInfo[0]}`, 'cityPieceHolder'],
+             `${name}-${i}`, {backgroundColor: spotInfo[1]});
 
             citySpotDiv.onclick = (event) => {
                 // We prevent the event from also bubbling up to the city click handler
@@ -2064,9 +2056,8 @@ const boardController = {
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
         routeNode = document.getElementById(nodeId);
-        playerPieceDiv = document.createElement('div');
-        playerPieceDiv.className = `small-${shape}`;
-        playerPieceDiv.style.backgroundColor = playerColor;
+        const playerPieceDiv = createDivWithClassAndIdAndStyle([`small-${shape}`], '', 
+        {backgroundColor: playerColor})
         routeNode.append(playerPieceDiv)
     },
     clearPieceFromRouteNode(nodeId) {

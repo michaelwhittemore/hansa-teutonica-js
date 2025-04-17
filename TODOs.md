@@ -1,5 +1,4 @@
 # TODOs #
-* Add token acquisition (FUN!!!!!!)
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
@@ -8,50 +7,9 @@
     * I'll probably keep the game logic in the client side for the moment
     * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
     - might disable all buttons and defualts when it's non the player's turn. 
-* **Tokens**
-    * acquisition - we need to update the route complete handler
-    * will need to have an area within the player supply or bank to track tokens
-    * will need to have something to place the token in the "food" area in the center of the player supply
-    * Let's do faceup tokens in supply (remember can't use the turn we acquire them)
-    * Facedown tokens in the bank (only used for scoring)
-    * Let's break this into three rough parts acquisition, replacement, usage
-    * ***Acquisition***
-        * Can further break this down into UI and actual game play
-        * There's only three starting spots
-        * Maybe I should hard-code the starting spots 
-        * I think I will manually determine which of the directions we will go, otherwise do it programmatically
-        * generate a list of golden (as in starting) tokens that are randomly places at the taverns
-        * Need to place the tokens on the board
-        * I think we will start with some dummy values i.e. A,B,C,D
-        * Remember that boardController handles UI and gameController handles state
-        * Need to have a readable text map for tokens if I'm not using images
-        * need to add the tokens to the route so the gameController knows what's happning
-        * need to make the tokens a little larger I think. While I'm at it, maybe I make cities smaller?
-        * need to make tokens capture when completeing a route - routeCompleted **here**
-        * maybe make the tokens on the player side of things respect color? i.e gold and silver
-    * ***Replacement***
-        * DONE!
-    * ***Usage***
-        * I think for the moment players will need to explicitly click the useToken button before starting any other part of their action
-        * The button's only function will be to create a dropdown menu with all the owned tokens
-        * Maybe instead of dropdown we populate an area beneath the action buttons with all the buttons
-        * The area described above should have text and highlight the selected token
-        * Each button will point to a inputHandler method which will then call the gameController method with information on the calling player and the selected token
-        * make sure to clear this part of the inputHandler 
-        * We will need a 'tokenUsed' method that is only called after the token is fully used (i.e extra post added)
-        * There are techincally six kinds of tokens, but the extra actions are functionally identical
-        * I think the order of difficulty (and thus implementation) is:
-            1. ~~Extra actions~~
-            2. ~~Free upgrade (will need to place the token selection area with the upgrade selection)~~
-            3.  ~~Switch posts - will need to make each city node clickable (the node onclick will check if this token is selected otherwise it treats it as though you clicked on the city itself) - cityPieceHolder is the one that will need an onclick~~
-            4. ~~Add the additional post - we will just be adding an additional info field. When a capture action occurs we will need to check the additonal info section for this flag. We also will need to work with dreaded city UI. It looks like I misunderstood that there can be any number of bonus pieces. I will need to also update anywhere it's referenced to include an array instead of a single slot~~
-            5. **HERE** ! Move three - will need a selector for each (add two kinds of selctedAction and two kinds of route node handlers) - look to the first part of the dispalce action for some structure - this is psudeo action - we will basically use the resolve action except without actually decrementing the avaible actions
-        * All tokens will need to trigger the tokenUsed handler which should deal with the player's currentTokens vs usedTokens and their board UI. Will also need to gamelog
-        * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * Host my own sever - need to look up IONOS docs
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
-* BUG! I don't think switchPosts plays nice with bonus spots as use the spot index which is an array index for the occupantsArray. - actually "You may not apply the Exchange Trading Posts bonus marker to any
-of these additional trading posts."!!
 * consider renaming "inputHandlers" to something more accurate
 * Will need to add the move warning to clicking on a spot there. Will need to remove bonus logic
 * add an easy method to clear the board information fields (check where this is already hapenign)
@@ -64,11 +22,7 @@ of these additional trading posts."!!
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make nodes hoverable text with their ids as text - tooltip?
 * place collapse buttons at the actual edges. Might do some calulations when creating them
-* fix the wonkiness in switch (city.unlock){} --- I use like three different names for somethings,
-I need to have a single word for each between city unlock, the divs for holding the information on the player board i.e. movesTracker & maxMovementDiv, the player properties, the player.unlockArrayIndex properties, and the unlock array themselves (i.e. unlockPurseToValue & unlockColorsToValue) --> REFACTOR
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
-* add token holder (don't have to make tokens functional)
-* re-adding tokens to the board as part of the player's end of turn will need to be a seperate method and code section - will need new input handlers
 * technically, it's legal to swap circles and squares as part of a move action (for two moves)
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
