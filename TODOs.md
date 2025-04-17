@@ -8,6 +8,8 @@
     * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
     - might disable all buttons and defualts when it's non the player's turn. 
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* really do need that linter
+* add installation and run instructions to README
 * Host my own sever - need to look up IONOS docs
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
 * consider renaming "inputHandlers" to something more accurate

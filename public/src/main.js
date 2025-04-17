@@ -1,103 +1,5 @@
 // CONSTANTS
-import testObj from '../src/helpers/test.js'
-
-// console.log(testObj)
-const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
-const FIRST_PLAYER_SQUARES = 6;
-const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
-const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
-const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
-const IS_HOTSEAT_MODE = true;
-const USE_DEFAULT_CLICK_ACTIONS = true;
-const AUTO_SCROLL = true;
-const APPROXIMATE_NODE_OFFSET = 45 / 2;
-
-// location is a coordinates x, y offset from the origin in the top right
-const TEST_BOARD_CONFIG_CITIES = {
-    'Alpha': {
-        name: 'Alpha',
-        spotArray:
-            [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta', 3], ['Zeta', 3]],
-        unlock: 'actions',
-        location: [20, 20]
-    },
-    'Beta': {
-        name: 'Beta',
-        spotArray:
-            [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['Gamma', 4]],
-        unlock: 'purse',
-        location: [480, 20]
-    },
-    'Gamma': {
-        name: 'Gamma',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        neighborRoutes: [['Delta', 3], ['Zeta', 3]],
-        unlock: 'colors',
-        location: [600, 500]
-    },
-    'Delta': {
-        name: 'Delta',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1000, 300],
-        neighborRoutes: [['Epsilon', 3]],
-    },
-    'Epsilon': {
-        name: 'Epsilon',
-        unlock: 'keys',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [900, 20]
-    },
-    'Zeta': {
-        name: 'Zeta',
-        unlock: 'maxMovement',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [30, 450],
-    },
-
-};
-
-const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
-// RULES TODO, verify that the blow values do *NOT* include the gold starters
-const REGULAR_TOKENS_NUMBER_MAP = {
-    'bonusPost': 4,
-    'switchPost': 3,
-    'moveThree': 2,
-    'freeUpgrade': 2,
-    'threeActions': 2,
-    'fourActions': 2,
-}
-
-// I don't think it makes sense to tie these to cities
-// Each indicates which direction we're going and if one is a starting location
-// They start off hidden unless they're starting
-// array has xdirection, ydirection, isStarting
-const TOKEN_CONFIG_BY_ROUTES = {
-    'Alpha-Beta': [0, .6, true],
-    'Alpha-Zeta': [.6, 0, true],
-    'Beta-Gamma': [.5, -.5, true],
-    'Gamma-Delta': [-.6, -.6],
-    'Gamma-Zeta': [0, -.6],
-    'Delta-Epsilon': [-.7, .1],
-}
-
-// The below can be used to fix my name mapping issue, but then deleted I think
-const PLAYER_FIELDS_TO_TEXT_MAP = {
-    name: 'Name',
-    color: 'Color',
-    keys: 'Keys',
-    unlockedColors: 'Unlocked Colors',
-    supplySquares: 'Traders (Squares) in Supply',
-    bankedSquares: 'Traders (Squares) in Bank',
-    supplyCircles: 'Merchants (Circles) in Supply',
-    bankedCircles: 'Merchants (Circles) in Bank',
-    maxActions: 'Max Actions',
-    currentActions: 'Actions Remaining',
-    currentPoints: 'Current Non-Endgame Points',
-    maxMovement: 'Maximum Piece Movement',
-    purse: 'Maximum Resupply'
-}
+import CONSTANTS from './constants.js'
 
 // Helper Functions:
 const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
@@ -342,7 +244,7 @@ const inputHandlers = {
         // 3. If the player has both shapes left add a button. Otherwise set shape defaults
         if (squares && circles) {
             this.addShapeSelectionToActionInfo()
-            if (USE_DEFAULT_CLICK_ACTIONS) {
+            if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
                 this.additionalInfo = 'square';
             }
         } else if (squares && !circles) {
@@ -383,7 +285,7 @@ const inputHandlers = {
             inputHandlers.updateActionInfoText('Select a city to capture');
         } else {
             let playerId = undefined
-            if (!IS_HOTSEAT_MODE) {
+            if (!CONSTANTS. IS_HOTSEAT_MODE) {
                 // get the player name from sessionStorage
             }
             gameController.captureCity(inputHandlers.selectedLocation, playerId)
@@ -392,7 +294,7 @@ const inputHandlers = {
     },
     handleResupplyButton() {
         let playerId = undefined
-        if (!IS_HOTSEAT_MODE) {
+        if (!CONSTANTS. IS_HOTSEAT_MODE) {
             // get the player name from sessionStorage
         }
         gameController.resupply(playerId);
@@ -418,7 +320,7 @@ const inputHandlers = {
         document.getElementById('token').onclick = this.handleTokenButton;
     },
     toggleInputButtons(disabled, buttonToExclude = false) {
-        BUTTON_LIST.forEach(buttonName => {
+        CONSTANTS.BUTTON_LIST.forEach(buttonName => {
             if (buttonName !== buttonToExclude) {
                 document.getElementById(buttonName).disabled = disabled;
             }
@@ -504,7 +406,7 @@ const inputHandlers = {
     },
     cityClickHandler(cityId) {
         if (!inputHandlers.selectedAction) {
-            if (USE_DEFAULT_CLICK_ACTIONS) {
+            if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
                 inputHandlers.selectedLocation = cityId;
                 inputHandlers.selectedAction = 'capture';
             } else {
@@ -561,7 +463,7 @@ const inputHandlers = {
                     console.error('We should not be hitting default with a selected action')
                     return
                 }
-                if (USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                     this.nodeActions.place(nodeId)
                 } else {
@@ -575,7 +477,7 @@ const inputHandlers = {
             // Need to call a game controller method here
             // pass in the selected shape, other wise use default
             if (!isShape(inputHandlers?.additionalInfo)) {
-                if (USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                 } else {
                     console.warn('No shape selected')
@@ -592,7 +494,7 @@ const inputHandlers = {
         },
         place(nodeId) {
             if (!isShape(inputHandlers?.additionalInfo)) {
-                if (USE_DEFAULT_CLICK_ACTIONS) {
+                if (CONSTANTS. USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.additionalInfo = 'square'
                 } else {
                     console.warn('No shape selected')
@@ -626,7 +528,7 @@ const gameController = {
         // let's just use turn order for IDs
         this.playerArray = []
         for (let i = 0; i < playerNames.length; i++) {
-            const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
+            const player = new Player(playerColors[i], playerNames[i], CONSTANTS.FIRST_PLAYER_SQUARES + i, i);
             this.playerArray.push(player)
         }
         playerInformationAndBoardController.initializePlayerInfoBoards(this.playerArray)
@@ -643,10 +545,10 @@ const gameController = {
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
-        const startingTokensArray = STARTING_TOKENS;
+        const startingTokensArray = CONSTANTS.STARTING_TOKENS;
         const regularTokensArray = [];
-        Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
-            for (let i = 0; i < REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
+        Object.keys(CONSTANTS. REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
+            for (let i = 0; i < CONSTANTS. REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
                 regularTokensArray.push(key)
             }
         })
@@ -681,7 +583,7 @@ const gameController = {
                     const routeId = `${city.name}-${neighborCityName}`
 
                     let tokenValue = false;
-                    if (!!TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
+                    if (!!CONSTANTS.TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
                         tokenValue = getRandomArrayElementAndModify(startingTokensArray)
                     }
                     boardController.createRouteAndTokenFromLocations({
@@ -690,8 +592,8 @@ const gameController = {
 
                         element1: this.cityStorageObject[cityKey].ownElement,
                         element2: this.cityStorageObject[neighborCityName].ownElement,
-                        tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
-                        isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
+                        tokenDirection: CONSTANTS.TOKEN_CONFIG_BY_ROUTES[routeId],
+                        isStartingToken: !!CONSTANTS.TOKEN_CONFIG_BY_ROUTES[routeId][2],
                         tokenValue,
                     })
 
@@ -748,7 +650,7 @@ const gameController = {
         this.tokenUsageInformation = {}
         this.currentTurn++;
         turnTrackerController.updateTurnTracker(this.getActivePlayer())
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             playerInformationAndBoardController.focusOnPlayerBoard(this.getActivePlayer())
         }
 
@@ -782,7 +684,7 @@ const gameController = {
     },
     replaceTokenAtLocation(routeId, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -891,7 +793,7 @@ const gameController = {
     },
     placeWorkerOnNodeAction(nodeId, shape, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -934,7 +836,7 @@ const gameController = {
     },
     selectPieceToMove(nodeId, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -960,7 +862,7 @@ const gameController = {
     },
     movePieceToLocation(nodeId, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1000,7 +902,7 @@ const gameController = {
     },
     endMoveAction(playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1019,7 +921,7 @@ const gameController = {
     },
     resupply(playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1057,7 +959,7 @@ const gameController = {
     },
     bumpPieceFromNode(nodeId, shape, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1147,7 +1049,7 @@ const gameController = {
     placeBumpedPieceOnNode(nodeId, shape, playerId) {
         console.log('trying to place bumped piece')
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             // NOTE: this is different from the standard copy pasta as we aren't using the active player
             player = this.bumpInformation.bumpedPlayer
             playerId = player.id
@@ -1313,7 +1215,7 @@ const gameController = {
         // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
         // probably use an onclick for a route node. Let's deal with that later
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1388,7 +1290,7 @@ const gameController = {
     },
     upgradeAtCity(cityName, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1611,7 +1513,7 @@ const gameController = {
     },
     handleTokenMenuRequest(playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1626,7 +1528,7 @@ const gameController = {
     },
     useToken(tokenType, playerId) {
         let player;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             player = this.getActivePlayer()
             playerId = player.id
         } else {
@@ -1693,7 +1595,7 @@ const gameController = {
         },
         useFreeUpgrade(upgradeType, playerId) {
             let player;
-            if (IS_HOTSEAT_MODE) {
+            if (CONSTANTS. IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1710,7 +1612,7 @@ const gameController = {
         },
         selectedPostToSwitch(cityId, citySpotNumber, playerId) {
             let player;
-            if (IS_HOTSEAT_MODE) {
+            if (CONSTANTS. IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1801,7 +1703,7 @@ const gameController = {
         },
         selectMoveThreePiece(nodeId, playerId) {
             let player;
-            if (IS_HOTSEAT_MODE) {
+            if (CONSTANTS. IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1825,7 +1727,7 @@ const gameController = {
         },
         selectMoveThreeLocation(nodeId, playerId) {
             let player;
-            if (IS_HOTSEAT_MODE) {
+            if (CONSTANTS. IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -1880,7 +1782,7 @@ const gameController = {
         },
         endMoveThree(playerId) {
             let player;
-            if (IS_HOTSEAT_MODE) {
+            if (CONSTANTS. IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
@@ -2122,7 +2024,7 @@ const playerInformationAndBoardController = {
         })
 
         let currentViewingPlayer;
-        if (IS_HOTSEAT_MODE) {
+        if (CONSTANTS. IS_HOTSEAT_MODE) {
             currentViewingPlayer = 0
         }
         this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
@@ -2562,7 +2464,7 @@ const gameLogController = {
             text = text.replaceAll('$PLAYER2_NAME', player2NameSpan)
         }
         document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
-        if (AUTO_SCROLL) {
+        if (CONSTANTS.AUTO_SCROLL) {
             document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
         }
         // TODO add to saved history
@@ -2575,7 +2477,7 @@ class Player {
         this.color = color;
         this.name = name;
         this.supplySquares = startingPieces;
-        this.bankedSquares = STARTING_BANK - startingPieces;
+        this.bankedSquares = CONSTANTS.STARTING_BANK - startingPieces;
         this.supplyCircles = 1;
         this.bankedCircles = 0;
         this.maxActions = 2; // Not to be confused with current actions
@@ -2614,7 +2516,7 @@ const unlockMapMaxValues = {
 }
 
 const start = () => {
-    gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
+    gameController.initializeGameStateAndUI(CONSTANTS.TEST_PLAYERS_NAMES, CONSTANTS.TEST_PLAYER_COLORS, CONSTANTS.TEST_BOARD_CONFIG_CITIES)
 }
 
 
