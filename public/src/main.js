@@ -722,7 +722,10 @@ const gameController = {
 
     },
     resumeGame(properties) {
-        //TODO
+        //TODO - will need to store in localStorage, this will require a LOT of effort and testing
+        // I guess it's possible that it won't be too bad if we're just loading gameController fields
+        // It will still be a big difference between autosaving and manual saving - the former maybe we 
+        // snapshot after every action? as part of resolve action?
     },
     getActivePlayer() {
         return this.playerArray[this.currentTurn % this.playerArray.length]
