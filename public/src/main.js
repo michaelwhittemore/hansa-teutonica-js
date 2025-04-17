@@ -464,7 +464,7 @@ const inputHandlers = {
             tokenMenuDiv.append(button)
         })
     },
-    populateMoveThreeMenu(movesLeft){
+    populateMoveThreeMenu(movesLeft) {
         // dev
         const tokenMenuDiv = document.getElementById('tokenMenu');
         tokenMenuDiv.innerHTML = `You have ${pluralifyText('move', movesLeft)} left. `
@@ -606,11 +606,11 @@ const inputHandlers = {
                 gameController.movePieceToLocation(nodeId);
             }
         },
-        moveToken(nodeId){
-            // here! dev
-            if (inputHandlers.additionalInfo === 'selectPiece'){
+        moveToken(nodeId) {
+            // dev
+            if (inputHandlers.additionalInfo === 'selectPiece') {
                 gameController.tokenActions.selectMoveThreePiece(nodeId)
-            } else if (inputHandlers.additionalInfo === 'selectLocation'){
+            } else if (inputHandlers.additionalInfo === 'selectLocation') {
                 gameController.tokenActions.selectMoveThreeLocation(nodeId)
             } else {
                 console.error(`Unknown additional info: ${inputHandlers.additionalInfo}`)
@@ -1363,11 +1363,9 @@ const gameController = {
         city.openSpotIndex++;
 
         if (this.tokenUsageInformation.tokenAction === 'bonusPost') {
-            // Let's do the UI stuff first
-            // TODO figure out the shape
             console.warn(`Trying to capture ${cityName} with an additional post`)
             let usedShape;
-            if (player.bankedSquares > 0){
+            if (player.bankedSquares > 0) {
                 usedShape = 'square';
                 player.bankedSquares--;
             } else {
@@ -1782,13 +1780,13 @@ const gameController = {
             // I will really need a cancel button to prevent a soft lock
             // Also need to block out the buttons in that case.
         },
-        bonusPost(player) {  
+        bonusPost(player) {
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'capture';
             gameController.tokenUsageInformation.tokenAction = 'bonusPost';
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
-        moveThree(player){
+        moveThree(player) {
             // dev
             console.log('clicked moveThree')
             inputHandlers.clearAllActionSelection();
@@ -1799,6 +1797,7 @@ const gameController = {
             inputHandlers.toggleInputButtons(true)
             inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
             inputHandlers.populateMoveThreeMenu(3)
+            gameController.tokenUsageInformation.movesLeft = 3;
             // Will need a fairly similar logic of two different methods for selecting origin and target
             // similar to the 'BUMP' replacement part
 
@@ -1810,7 +1809,7 @@ const gameController = {
             // 3. Once it's selcted we set the inputHandler UI
             // 4. We will need a different 'moveThreeIsOver' method
         },
-        selectMoveThreePiece(nodeId, playerId){
+        selectMoveThreePiece(nodeId, playerId) {
             let player;
             if (IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
@@ -1818,34 +1817,88 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // here!
-            console.log('selectMoveThreePiece', nodeId)
+            // dev
             // 1. Get a reference to the node itself
             const routeId = getRouteIdFromNodeId(nodeId);
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
             console.log(node)
             // 1. Validate that the location is occupied and owned by an opponent - warn and return if not
-            if (!node.occupied || node.playerId === playerId){
+            if (!node.occupied || node.playerId === playerId) {
                 console.warn('You must select a node occupied by an opposing piece.')
                 inputHandlers.warnInvalidAction(' You must select a node occupied by an opposing piece.')
                 return;
             }
             // 2. If we're on happy path, we need to store the location in the token info
-            
+            gameController.tokenUsageInformation.originLocation = nodeId;
             // 3. We need to update the action info UI
-            // 4. We need to change the addtionalInfo field
+            inputHandlers.updateActionInfoText(`You selected the piece at ${nodeId}. Select an empty spot to move it to.`)
+            // 4. We need to change the additionalInfo field
+            inputHandlers.additionalInfo = 'selectLocation'
         },
-        selectMoveThreeLocation(nodeId, playerId){
-            console.log('selectMoveThreeLocation', nodeId)
-        },
-        endMoveThree(playerId){
+        selectMoveThreeLocation(nodeId, playerId) {
             let player;
             if (IS_HOTSEAT_MODE) {
                 player = gameController.getActivePlayer()
                 playerId = player.id
             } else {
                 // TODO, check that the playerId who made the request is the active player
-            } 
+            }
+            // dev HERE!
+            console.log('selectMoveThreeLocation', nodeId)
+            // 1. First get the reference to the node
+            const routeId = getRouteIdFromNodeId(nodeId);
+            const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+            console.log(node)
+            // 2. Verify that the node is empty- if not warn and return
+            if (node.occupied) {
+                console.warn('That node is already occupied.')
+                inputHandlers.warnInvalidAction('That node is already occupied.');
+                return;
+            }
+
+            // 5. Store the owning player and the shape
+            const originId = gameController.tokenUsageInformation.originLocation
+            const routeOriginId = getRouteIdFromNodeId(originId);
+            const originNode = gameController.routeStorageObject[routeOriginId].routeNodes[originId]
+            const originPlayer = gameController.playerArray[originNode.playerId]
+            const originShape = originNode.shape;
+            // 6. Clear the piece from city storage
+            const clearedProps = {
+                occupied: false,
+                shape: undefined,
+                color: undefined,
+                playerId: undefined,
+            };
+            Object.assign(originNode, clearedProps);
+            // 7. clear the piece from the board
+            boardController.clearPieceFromRouteNode(originId)
+
+            // 8. Place piece in the new location in cityStorage
+            // 9. Place piece on the new location on boardUI
+            gameController.placePieceOnNode(nodeId, originShape, originPlayer)
+
+            // 10. Decrement the gameController.tokenUsageInformation.movesLeft - if
+            // it's zero we call this.endMoveThree
+            gameController.tokenUsageInformation.movesLeft--;
+            if (gameController.tokenUsageInformation.movesLeft === 0) {
+                this.endMoveThree();
+                return;
+            }
+            // 11. Otherwise we update the tokenUI and actionInfo UI texts
+            // 12. Then change the inputHandlers.additionalInfo back to 'selectPiece'
+            inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
+            inputHandlers.populateMoveThreeMenu(gameController.tokenUsageInformation.movesLeft)
+            inputHandlers.additionalInfo = 'selectPiece';
+            gameController.tokenUsageInformation.originLocation = undefined;
+        },
+        endMoveThree(playerId) {
+            let player;
+            if (IS_HOTSEAT_MODE) {
+                player = gameController.getActivePlayer()
+                playerId = player.id
+            } else {
+                // TODO, check that the playerId who made the request is the active player
+            }
             // TODO
             // dev,
             // Need to reset the input buttons
@@ -2555,7 +2608,7 @@ class Player {
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
         // this.currentTokens = []; // TODO Revert this once I'm done testing
-        this.currentTokens  = TEST_FREE_TOKENS
+        this.currentTokens = TEST_FREE_TOKENS
         this.usedTokens = [];
         this.unlockedColors = ['grey'];
         this.maxMovement = 2;
