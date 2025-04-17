@@ -1805,7 +1805,6 @@ const gameController = {
             // 1. Get a reference to the node itself
             const routeId = getRouteIdFromNodeId(nodeId);
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-            console.log(node)
             // 1. Validate that the location is occupied and owned by an opponent - warn and return if not
             if (!node.occupied || node.playerId === playerId) {
                 console.warn('You must select a node occupied by an opposing piece.')
