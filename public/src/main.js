@@ -463,7 +463,18 @@ const inputHandlers = {
             }
             tokenMenuDiv.append(button)
         })
-        console.log(upgrades)
+    },
+    populateMoveThreeMenu(movesLeft){
+        // dev here!
+        const tokenMenuDiv = document.getElementById('tokenMenu');
+        tokenMenuDiv.innerHTML = `You have ${pluralifyText('move', movesLeft)} left. `
+        const endEarlyButton = document.createElement('button');
+        // TODO: rephrase button text
+        endEarlyButton.innerText = 'End token moves';
+        endEarlyButton.onclick = () => {
+            console.log('end early clicked')
+        }
+        tokenMenuDiv.append(endEarlyButton)
     },
     addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
         const actionInfoDiv = document.getElementById('actionInfo')
@@ -1336,7 +1347,6 @@ const gameController = {
         city.occupants.push(playerId);
         city.openSpotIndex++;
 
-        // HERE! dev
         if (this.tokenUsageInformation.tokenAction === 'bonusPost') {
             // Let's do the UI stuff first
             // TODO figure out the shape
@@ -1627,6 +1637,7 @@ const gameController = {
                 this.tokenActions.switchPost(player)
                 break;
             case 'moveThree':
+                this.tokenActions.moveThree(player)
                 break;
             case 'bonusPost':
                 this.tokenActions.bonusPost(player)
@@ -1765,12 +1776,32 @@ const gameController = {
         },
         bonusPost(player) {
             // dev
-            // debugger;
+  
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'capture';
             gameController.tokenUsageInformation.tokenAction = 'bonusPost';
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
+        moveThree(player){
+            // dev here!
+            console.log('clicked moveThree')
+            inputHandlers.clearAllActionSelection();
+            inputHandlers.selectedAction = 'selectPieceForTokenMove';
+            // need to clear other buttons as well
+            inputHandlers.toggleInputButtons(true)
+            inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
+            inputHandlers.populateMoveThreeMenu(3)
+            // Will need a fairly similar logic of two different methods for selecting origin and target
+            // similar to the 'BUMP' replacement part
+
+            // need to add an 'end' button to the token area so you don't need to move three
+
+            // 1. need to update UI to say they're on moveToken - communicate how many left
+            // turnTracker info
+            // 2. Set the selected action type
+            // 3. Once it's selcted we set the inputHandler UI
+            // 4. We will need a different 'moveThreeIsOver' method
+        }
     },
     endGame() {
         // TODO

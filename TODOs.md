@@ -48,6 +48,7 @@
             5. **HERE** ! Move three - will need a selector for each (add two kinds of selctedAction and two kinds of route node handlers) - look to the first part of the dispalce action for some structure - this is psudeo action - we will basically use the resolve action except without actually decrementing the avaible actions
         * All tokens will need to trigger the tokenUsed handler which should deal with the player's currentTokens vs usedTokens and their board UI. Will also need to gamelog
         * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* Host my own sever - need to look up IONOS docs
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
 * BUG! I don't think switchPosts plays nice with bonus spots as use the spot index which is an array index for the occupantsArray. - actually "You may not apply the Exchange Trading Posts bonus marker to any
 of these additional trading posts."!!
