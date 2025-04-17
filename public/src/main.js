@@ -1,4 +1,7 @@
 // CONSTANTS
+import testObj from '../src/helpers/test.js'
+
+// console.log(testObj)
 const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
 const FIRST_PLAYER_SQUARES = 6;
 const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
@@ -138,7 +141,7 @@ const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
 }
 
 const offSetCoordinatesForGameBoard = (x, y) => {
-    gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
+    const gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     return [x - gameBoardDomRect.x, y - gameBoardDomRect.y]
 }
 
@@ -2040,13 +2043,13 @@ const boardController = {
         this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
     },
     clearTokenFromRouteAndHide(routeId) {
-        tokenDiv = document.getElementById(`token-${routeId}`);
+        const tokenDiv = document.getElementById(`token-${routeId}`);
         tokenDiv.style.backgroundColor = 'silver'
         tokenDiv.innerText = '';
         tokenDiv.style.visibility = 'hidden'
     },
     addTokenToRoute(routeId, tokenKind) {
-        tokenDiv = document.getElementById(`token-${routeId}`);
+        const tokenDiv = document.getElementById(`token-${routeId}`);
         tokenDiv.style.backgroundColor = 'silver'
         tokenDiv.innerText = tokenKind;
         tokenDiv.style.visibility = 'visible'
@@ -2058,13 +2061,13 @@ const boardController = {
     },
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
-        routeNode = document.getElementById(nodeId);
+        const routeNode = document.getElementById(nodeId);
         const playerPieceDiv = createDivWithClassAndIdAndStyle([`small-${shape}`], '', 
         {backgroundColor: playerColor})
         routeNode.append(playerPieceDiv)
     },
     clearPieceFromRouteNode(nodeId) {
-        routeNode = document.getElementById(nodeId);
+        const routeNode = document.getElementById(nodeId);
         routeNode.innerHTML = ''
     },
     addPieceToCity(city, playerColor) {
