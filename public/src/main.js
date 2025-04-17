@@ -465,7 +465,6 @@ const inputHandlers = {
         })
     },
     populateMoveThreeMenu(movesLeft) {
-        // dev
         const tokenMenuDiv = document.getElementById('tokenMenu');
         tokenMenuDiv.innerHTML = `You have ${pluralifyText('move', movesLeft)} left. `
         const endEarlyButton = document.createElement('button');
@@ -607,7 +606,6 @@ const inputHandlers = {
             }
         },
         moveToken(nodeId) {
-            // dev
             if (inputHandlers.additionalInfo === 'selectPiece') {
                 gameController.tokenActions.selectMoveThreePiece(nodeId)
             } else if (inputHandlers.additionalInfo === 'selectLocation') {
@@ -1787,27 +1785,14 @@ const gameController = {
             inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
         },
         moveThree(player) {
-            // dev
-            console.log('clicked moveThree')
             inputHandlers.clearAllActionSelection();
             inputHandlers.selectedAction = 'tokenMove';
             inputHandlers.additionalInfo = 'selectPiece'
-            // THE other mode is inputHandlers.additionalInfo = 'selectLocation'
-            // need to clear other buttons as well
+
             inputHandlers.toggleInputButtons(true)
             inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
             inputHandlers.populateMoveThreeMenu(3)
             gameController.tokenUsageInformation.movesLeft = 3;
-            // Will need a fairly similar logic of two different methods for selecting origin and target
-            // similar to the 'BUMP' replacement part
-
-            // need to add an 'end' button to the token area so you don't need to move three
-
-            // 1. need to update UI to say they're on moveToken - communicate how many left
-            // turnTracker info
-            // 2. Set the selected action type
-            // 3. Once it's selcted we set the inputHandler UI
-            // 4. We will need a different 'moveThreeIsOver' method
         },
         selectMoveThreePiece(nodeId, playerId) {
             let player;
@@ -1817,7 +1802,6 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // dev
             // 1. Get a reference to the node itself
             const routeId = getRouteIdFromNodeId(nodeId);
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
@@ -1843,7 +1827,6 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // dev HERE!
             console.log('selectMoveThreeLocation', nodeId)
             // 1. First get the reference to the node
             const routeId = getRouteIdFromNodeId(nodeId);
@@ -1899,11 +1882,6 @@ const gameController = {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-            // TODO
-            // dev,
-            // Need to reset the input buttons
-            // Note that this is either called naturally or is the result of pressing the 'end button'
-            // The below is not exhaustive
             // 1. Reset inputHandlers. I think this should clear the token area and re-enable the action buttons
             inputHandlers.toggleInputButtons(false)
             inputHandlers.clearAllActionSelection()
