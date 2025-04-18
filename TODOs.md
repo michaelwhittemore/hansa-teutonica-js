@@ -1,8 +1,14 @@
 # TODOs #
 * 4/18
-    * fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token
+    ~~fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token~~
     * add the bonus point piece to a few cities
+        * will create the UI element and a boolean flag in the city
+        * when capturing a city, if the flag is on, we clear the UI and turn off the flag, and grant to capturing player the point
     * trigger end game when anyone reaches twenty
+    * make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)
+    * move all the helpers ot their own module. Can then break that up at a later date
+    * clean up this TODOS file a bit
+    * have a checklist for this being play-test ready
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
@@ -14,6 +20,7 @@
 * HERE! add free points to some city locations (should be pretty simple I *think*) Will need to update the city array constant that we use to build the routes with
 * Now that I have the server, maybe doing the landing page would be a lot easier?
 * really do need that linter
+* converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add installation and run instructions to README
 * Host my own sever - need to look up IONOS docs
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
@@ -113,12 +120,14 @@
 * undo action button 
 * track game logic server side (only for online non-hotseat modes)
 * unit tests for all internal methods
-* add a favicon
+~~add a favicon~~
 * add linter
 * reorganize CSS and methods (just the ordering)
 * add images for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
-* corner case of empty bank and supply when being bumped - techincally the player can move their placed pieces
-* use a bundler like web pack
+* corner case of empty bank and supply when being bumped - technically the player can move their placed pieces
+* use a bundler like web pack or vite
+* read through mdn's web dev docs for a more generalized refresher https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
+// jump to line number - can click on the goto at the bottom of the page (i.e. "Ln 127, Col 87")

@@ -35,6 +35,7 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
     'Delta': {
         name: 'Delta',
+        freePoint: true,
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [1000, 300],
         neighborRoutes: [['Epsilon', 3]],
@@ -47,6 +48,7 @@ const TEST_BOARD_CONFIG_CITIES = {
     },
     'Zeta': {
         name: 'Zeta',
+        freePoint: true,
         unlock: 'maxMovement',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
         location: [30, 450],

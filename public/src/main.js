@@ -571,8 +571,9 @@ const gameController = {
                 location: city.location,
                 ownElement: cityDiv,
                 routes: [],
+                freePoint: !!city.freePoint,
             }
-
+            // dev
         })
         Object.keys(boardConfig).forEach(cityKey => {
             const city = boardConfig[cityKey]
@@ -1850,7 +1851,8 @@ const boardController = {
         document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
     },
     createCity(cityInformation) {
-        const { name, spotArray, unlock, location } = cityInformation;
+        // here! dev
+        const { name, spotArray, unlock, location, freePoint} = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifiers 
@@ -1874,6 +1876,11 @@ const boardController = {
                 event.stopPropagation();
                 inputHandlers.citySpotClickHandler(spotNumber, name)
             };
+            if (i ===0 && freePoint){
+                const freePointDiv = createDivWithClassAndIdAndStyle(['freePoint', 'centeredFlex'], `freePoint-${name}`);
+                freePointDiv.innerText = '1'
+                citySpotDiv.append(freePointDiv)
+            }
             cityPieceAreaDiv.append(citySpotDiv)
         }
 
@@ -2517,6 +2524,9 @@ const unlockMapMaxValues = {
 }
 
 const start = () => {
+    // GLOBAL
+    window.gameController = gameController
+    // TODO make all the useful objects available globally because working with modules is a headache
     gameController.initializeGameStateAndUI(CONSTANTS.TEST_PLAYERS_NAMES, CONSTANTS.TEST_PLAYER_COLORS, CONSTANTS.TEST_BOARD_CONFIG_CITIES)
 }
 
