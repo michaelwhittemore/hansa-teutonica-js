@@ -573,7 +573,6 @@ const gameController = {
                 routes: [],
                 freePoint: !!city.freePoint,
             }
-            // dev
         })
         Object.keys(boardConfig).forEach(cityKey => {
             const city = boardConfig[cityKey]
@@ -1258,6 +1257,12 @@ const gameController = {
             inputHandlers.warnInvalidAction(`You don't have a ${targetShape} in your route.`);
             return
         }
+        if (city.freePoint){
+            city.freePoint = false;
+            this.scorePoints(1, player)
+            gameLogController.addTextToGameLog(`$PLAYER1_NAME collected the free point at ${cityName}`, player)
+
+        }
         boardController.addPieceToCity(city, player.color)
         routeCheckOutcome[targetShape]--;
 
@@ -1851,7 +1856,6 @@ const boardController = {
         document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
     },
     createCity(cityInformation) {
-        // here! dev
         const { name, spotArray, unlock, location, freePoint} = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
@@ -1983,7 +1987,10 @@ const boardController = {
     addPieceToCity(city, playerColor) {
         const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
         const targetShape = city.spotArray[city.openSpotIndex][0];
-        const playerPieceDiv = document.createElement('div')
+        const playerPieceDiv = document.createElement('div');
+        if (document.getElementById(`freePoint-${city.cityName}`)){
+            document.getElementById(`freePoint-${city.cityName}`).remove();
+        }
         // TODO make the pieces large in cities
         playerPieceDiv.className = `small-${targetShape}`
         playerPieceDiv.id = `piece-${city.cityName}-${city.openSpotIndex}`
