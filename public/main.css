@@ -24,12 +24,17 @@
     margin: 1px;
 }
 
-
 .city {
     border: solid;
     display: flex;
     position: absolute;
     flex-direction: column;
+}
+
+.cityPiece{
+    height: 45px;
+    width: 45px;
+    margin: 1px;
 }
 
 .cityPieceArea {

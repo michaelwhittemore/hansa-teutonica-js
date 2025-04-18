@@ -542,6 +542,7 @@ const gameController = {
         this.tokenPlacementInformation = {};
         this.tokenUsageInformation = {}
         this.tokensCapturedThisTurn = [];
+        this.shouldEndGame = false;
         inputHandlers.bindInputHandlers()
         boardController.initializeUI(this.playerArray);
 
@@ -789,7 +790,9 @@ const gameController = {
         this.playerArray.forEach(player => {
             playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
         })
-
+        if (this.shouldEndGame) {
+            this.endGame()
+        }
     },
     placeWorkerOnNodeAction(nodeId, shape, playerId) {
         let player;
@@ -1257,7 +1260,7 @@ const gameController = {
             inputHandlers.warnInvalidAction(`You don't have a ${targetShape} in your route.`);
             return
         }
-        if (city.freePoint){
+        if (city.freePoint) {
             city.freePoint = false;
             this.scorePoints(1, player)
             gameLogController.addTextToGameLog(`$PLAYER1_NAME collected the free point at ${cityName}`, player)
@@ -1517,6 +1520,10 @@ const gameController = {
         gameLogController.addTextToGameLog(pointScoreText, player)
         player.currentPoints += pointValue;
         boardController.updatePoints(player.currentPoints, player.color)
+        if (player.currentPoints >= 20) {
+            // We don't end the game until the action has been completed
+            this.shouldEndGame = true;
+        }
     },
     handleTokenMenuRequest(playerId) {
         let player;
@@ -1856,7 +1863,7 @@ const boardController = {
         document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
     },
     createCity(cityInformation) {
-        const { name, spotArray, unlock, location, freePoint} = cityInformation;
+        const { name, spotArray, unlock, location, freePoint } = cityInformation;
         const cityDiv = document.createElement('button');
         cityDiv.className = 'city'
         // We assume all cities have unique names as identifiers 
@@ -1873,14 +1880,14 @@ const boardController = {
             const spotNumber = i;
             const spotInfo = spotArray[i]
             const citySpotDiv = createDivWithClassAndIdAndStyle([`big-${spotInfo[0]}`, 'cityPieceHolder'],
-             `${name}-${i}`, {backgroundColor: spotInfo[1]});
+                `${name}-${i}`, { backgroundColor: spotInfo[1] });
 
             citySpotDiv.onclick = (event) => {
                 // We prevent the event from also bubbling up to the city click handler
                 event.stopPropagation();
                 inputHandlers.citySpotClickHandler(spotNumber, name)
             };
-            if (i ===0 && freePoint){
+            if (i === 0 && freePoint) {
                 const freePointDiv = createDivWithClassAndIdAndStyle(['freePoint', 'centeredFlex'], `freePoint-${name}`);
                 freePointDiv.innerText = '1'
                 citySpotDiv.append(freePointDiv)
@@ -1976,8 +1983,8 @@ const boardController = {
     addPieceToRouteNode(nodeId, playerColor, shape) {
         this.clearPieceFromRouteNode(nodeId);
         const routeNode = document.getElementById(nodeId);
-        const playerPieceDiv = createDivWithClassAndIdAndStyle([`small-${shape}`], '', 
-        {backgroundColor: playerColor})
+        const playerPieceDiv = createDivWithClassAndIdAndStyle([`small-${shape}`], '',
+            { backgroundColor: playerColor })
         routeNode.append(playerPieceDiv)
     },
     clearPieceFromRouteNode(nodeId) {
@@ -1987,14 +1994,12 @@ const boardController = {
     addPieceToCity(city, playerColor) {
         const pieceHolder = document.getElementById(`${city.cityName}-${city.openSpotIndex}`)
         const targetShape = city.spotArray[city.openSpotIndex][0];
-        const playerPieceDiv = document.createElement('div');
-        if (document.getElementById(`freePoint-${city.cityName}`)){
+        if (document.getElementById(`freePoint-${city.cityName}`)) {
             document.getElementById(`freePoint-${city.cityName}`).remove();
         }
-        // TODO make the pieces large in cities
-        playerPieceDiv.className = `small-${targetShape}`
-        playerPieceDiv.id = `piece-${city.cityName}-${city.openSpotIndex}`
-        playerPieceDiv.style.backgroundColor = playerColor;
+
+        const playerPieceDiv = createDivWithClassAndIdAndStyle(['cityPiece', targetShape], `piece-${city.cityName}-${city.openSpotIndex}`,
+            { backgroundColor: playerColor })
         pieceHolder.append(playerPieceDiv)
     },
     switchPieceColor(pieceIdOne, pieceIdTwo) {

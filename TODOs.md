@@ -2,11 +2,10 @@
 * 4/18
     ~~fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token~~
     ~~add the bonus point piece to a few cities~~
-    * trigger end game when anyone reaches twenty
+    ~~trigger end game when anyone reaches twenty~~
     * make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)
     * move all the helpers ot their own module. Can then break that up at a later date
     * clean up this TODOS file a bit
-    * see why addPieceToCity isn't used by move or bump?
     * have a checklist for this being play-test ready
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
