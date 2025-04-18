@@ -3,10 +3,11 @@
     ~~fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token~~
     ~~add the bonus point piece to a few cities~~
     ~~trigger end game when anyone reaches twenty~~
-    * make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)
-    * move all the helpers ot their own module. Can then break that up at a later date
+    ~~make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)~~
+    ~~move all the helpers ot their own module. Can then break that up at a later date~~
     * clean up this TODOS file a bit
     * have a checklist for this being play-test ready
+    * delete my 'Done' field, stopped being satifsying and started being frustrating
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
     * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
@@ -15,8 +16,8 @@
     * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
     - might disable all buttons and defualts when it's non the player's turn. 
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
-* HERE! add free points to some city locations (should be pretty simple I *think*) Will need to update the city array constant that we use to build the routes with
-* Now that I have the server, maybe doing the landing page would be a lot easier?
+* consider using dynamic import https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import vs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import so that I can make main.js *NOT* a module
+* consider adding a shadow effect to the pieces
 * really do need that linter
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add installation and run instructions to README
