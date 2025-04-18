@@ -1,7 +1,10 @@
 # TODOs #
+* 4/18
+    * fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token
+    * add the bonus point piece to a few cities
+    * trigger end game when anyone reaches twenty
 * Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
     * move things into modules
-    * for most development just access main directly from file:///Users/michaelwhittemore/Desktop/repos/hansa-teutonica-js/public/main.html so that I don't need to have the server running -- this may not be possible once I set up modules
     * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
     * For the server we will need to handle player inputs and then inform all other players
     * I'll probably keep the game logic in the client side for the moment
@@ -15,7 +18,6 @@
 * Host my own sever - need to look up IONOS docs
 * BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
 * consider renaming "inputHandlers" to something more accurate
-* Will need to add the move warning to clicking on a spot there. Will need to remove bonus logic
 * add an easy method to clear the board information fields (check where this is already hapenign)
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**

@@ -1297,7 +1297,7 @@ const gameController = {
             // TODO, check that the playerId who made the request is the active player
         }
 
-        city = this.cityStorageObject[cityName]
+        const city = this.cityStorageObject[cityName]
 
         const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
         const { routeId } = routeCheckOutcome
@@ -1353,6 +1353,7 @@ const gameController = {
                 if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
                     player.currentActions++;
                     actionUpgradeText += ' They get a free action as a result'
+                    turnTrackerController.updateTurnTracker(player)
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText, player);
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
