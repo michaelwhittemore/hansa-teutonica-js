@@ -8,6 +8,8 @@
     * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
     - might disable all buttons and defualts when it's non the player's turn. 
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* HERE! add free points to some city locations (should be pretty simple I *think*) Will need to update the city array constant that we use to build the routes with
+* Now that I have the server, maybe doing the landing page would be a lot easier?
 * really do need that linter
 * add installation and run instructions to README
 * Host my own sever - need to look up IONOS docs

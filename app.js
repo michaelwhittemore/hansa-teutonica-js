@@ -11,10 +11,9 @@ const PORT = 3000;
 app.use(express.static(__dirname + '/public'));
 
 app.get("/", (req, res) => {
-  res.send("TODO - add a landing page");
-});
+  res.sendFile(__dirname + "/public/html/landingPage.html")});
 app.get("/hotseat",  (req, res) => {
-    res.sendFile(__dirname + "/public/main.html")
+    res.sendFile(__dirname + "/public/html/main.html")
 });
 
 app.listen(PORT, () => {
