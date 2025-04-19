@@ -16,7 +16,7 @@ const {
 const inputHandlers = {
     verifyPlayersTurn() {
         // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUTHANDLER SHOULD TELL YOU TO WAIT
-        // IT SHOULDN'T BE THE gameController's responsbility (I think??)
+        // IT SHOULDN'T BE THE gameController's responsibility (I think??)
 
         // if not true will update action info with 'It isn't your turn'
         // pretend this checks if it's the correct player's turn 
@@ -475,7 +475,7 @@ const gameController = {
     },
     replaceTokens(player) {
         // 2. "Shuffle and Deal" the token stack
-        // TODO, check for the regularTokensArray to be empty. Techinally the game should end 
+        // TODO, check for the regularTokensArray to be empty. Technically the game should end 
         // after the ACTION not the TURN in this case (when the physical piece would be put on the
         // "eat stack"), but this works for the moment
         if (this.regularTokensArray.length === 0) {
@@ -544,7 +544,7 @@ const gameController = {
         this.routeStorageObject[routeId].token = this.tokenPlacementInformation.currentReplacement;
         // 8. We then need to lower the this.tokenPlacementInformation.tokensToPlace
         this.tokenPlacementInformation.tokensToPlace--;
-        // 8. Also about the playerboard token "eat" plate gets decremented
+        // 8. Also about the playerBoard token "eat" plate gets decremented
         playerInformationAndBoardController.componentBuilders.updateTokenTracker(player,
             this.tokenPlacementInformation.tokensToPlace);
         // 8. Should gamelog that a new token was placed
@@ -2339,7 +2339,7 @@ const unlockPurseToValue = [3, 5, 7, 'All'];
 const unlockMovementToValue = [2, 3, 4, 5];
 const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
 const unlockKeysToValue = [1, 2, 2, 3, 4];
-// TODO can probably generate this programtically somewhere
+// TODO can probably generate this programmatically somewhere
 const unlockMapMaxValues = {
     "actions": 6,
     "purse": 4,
