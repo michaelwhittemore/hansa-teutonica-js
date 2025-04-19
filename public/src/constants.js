@@ -100,21 +100,3 @@ export const PLAYER_FIELDS_TO_TEXT_MAP = {
 
 // TEST VARIABLES 
 export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
-
-export default {
-    STARTING_BANK,
-    FIRST_PLAYER_SQUARES,
-    TEST_PLAYER_COLORS,
-    TEST_PLAYERS_NAMES,
-    BUTTON_LIST,
-    IS_HOTSEAT_MODE,
-    USE_DEFAULT_CLICK_ACTIONS,
-    AUTO_SCROLL,
-    APPROXIMATE_NODE_OFFSET,
-    REGULAR_TOKENS_NUMBER_MAP,
-    TEST_BOARD_CONFIG_CITIES,
-    STARTING_TOKENS,
-    TOKEN_CONFIG_BY_ROUTES,
-    PLAYER_FIELDS_TO_TEXT_MAP,
-    TEST_FREE_TOKENS
-}
