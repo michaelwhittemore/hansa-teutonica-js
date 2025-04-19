@@ -1,9 +1,10 @@
 import { createDivWithClassAndIdAndStyle, pluralifyText } from "../helpers/helpers.js"
 import { IS_HOTSEAT_MODE } from "../constants.js"
-export const playerInformationAndBoardControllerFactory = (logicBundle) => {
-    const { gameController } = logicBundle;
+import { logicBundle } from "../helpers/logicBundle.js";
 
-    const playerInformationAndBoardController = {
+export const playerBoardAndInformationControllerFactory = () => {
+
+    const playerBoardAndInformationController = {
         initializePlayerInfoBoards(playerArray) {
             this.playerBoardsObj = {}
             playerArray.forEach(player => {
@@ -16,7 +17,7 @@ export const playerInformationAndBoardControllerFactory = (logicBundle) => {
             if (IS_HOTSEAT_MODE) {
                 currentViewingPlayer = 0
             }
-            this.focusOnPlayerBoard(playerArray[currentViewingPlayer])
+            this.focusOnPlayerBoard(playerArray[currentViewingPlayer], playerArray)
             // Need to set the focused player before creating buttons
             document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
             document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))
@@ -67,7 +68,7 @@ export const playerInformationAndBoardControllerFactory = (logicBundle) => {
             const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
             document.getElementById(divId).remove();
         },
-        focusOnPlayerBoard(player) {
+        focusOnPlayerBoard(player, playerArray) {
             this.focusedPlayerId = player.id;
             for (let playerId in this.playerBoardsObj) {
                 // there are some real downsides to using indexes as object keys
@@ -80,17 +81,19 @@ export const playerInformationAndBoardControllerFactory = (logicBundle) => {
             }
             for (let arrowButton of document.getElementsByClassName('arrowButton')) {
                 const direction = arrowButton.id === ('arrow-left') ? 'left' : 'right'
-                this.updateArrowButton(arrowButton, direction)
+                this.updateArrowButton(arrowButton, direction, playerArray)
             }
         },
-        createArrowButton(direction,) {
+        createArrowButton(direction, playerArray) {
             // TODO test with more than two players
             const arrowButton = createDivWithClassAndIdAndStyle(['arrowButton'], `arrow-${direction}`);
-            this.updateArrowButton(arrowButton, direction)
+            this.updateArrowButton(arrowButton, direction, playerArray)
             return arrowButton
         },
-        updateArrowButton(arrowButton, direction) {
-            const playerArray = gameController.playerArray;
+        updateArrowButton(arrowButton, direction, playerArray) {
+            // TODO 
+            // We should never ask for the array
+            
             let targetPlayerIndex = this.focusedPlayerId + (direction === 'left' ? -1 : 1)
             if (targetPlayerIndex < 0) {
                 targetPlayerIndex = playerArray.length - 1
@@ -102,7 +105,7 @@ export const playerInformationAndBoardControllerFactory = (logicBundle) => {
             arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
 
             arrowButton.onclick = () => {
-                this.focusOnPlayerBoard(playerArray[targetPlayerIndex])
+                this.focusOnPlayerBoard(playerArray[targetPlayerIndex], playerArray)
             }
 
         },
@@ -371,7 +374,9 @@ export const playerInformationAndBoardControllerFactory = (logicBundle) => {
             },
         },
     }
-    return playerInformationAndBoardController;
+    logicBundle.playerBoardAndInformationController = playerBoardAndInformationController
+    return playerBoardAndInformationController;
+    
 }
 
 

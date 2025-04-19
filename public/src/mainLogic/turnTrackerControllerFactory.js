@@ -1,5 +1,5 @@
 import { pluralifyText, createDivWithClassAndIdAndStyle } from "../helpers/helpers.js"
-
+import { logicBundle } from "../helpers/logicBundle.js"
 export const turnTrackerControllerFactory = () => {
     const turnTrackerController = {
         updateTurnTracker(player) {
@@ -44,6 +44,7 @@ export const turnTrackerControllerFactory = () => {
             // TODO
         }
     }
-
+    logicBundle.turnTrackerController = turnTrackerController;
     return turnTrackerController;
+
 }

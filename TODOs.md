@@ -47,7 +47,7 @@
 * Add a turn timer to the turn tracker
 * keyboard short cuts for place and selecting shape
 * localStorage (this is for saving game state), sessionStorage is for single tabs
-* fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerInformationAndBoardController.unlockPieceFromBoard is messed up and could be much drier
+* fix the disconnect between variable names in unlockArrayIndex and city.unlocks --- playerBoardAndInformationController.unlockPieceFromBoard is messed up and could be much drier
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
 * For landing page - have a list of valid colors (no text on white background nonsense)

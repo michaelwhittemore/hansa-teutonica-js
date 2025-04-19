@@ -1,9 +1,9 @@
-// I think we should import the constants and helpers here, not use dependencies like I do now
 import {isShape, pluralifyText} from "../helpers/helpers.js";
 import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS } from "../constants.js";
+import { logicBundle } from "../helpers/logicBundle.js";
 
-export const inputHandlerFactory = (logicBundle) => {
-    const { gameController} = logicBundle;
+
+export const inputHandlerFactory = () => {
 
     const inputHandlers = {
         verifyPlayersTurn() {
@@ -330,5 +330,6 @@ export const inputHandlerFactory = (logicBundle) => {
             }
         }
     }
+    logicBundle.inputHandlers = inputHandlers
     return inputHandlers
 }

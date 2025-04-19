@@ -1,5 +1,5 @@
 import { AUTO_SCROLL } from "../constants.js";
-
+import { logicBundle } from "../helpers/logicBundle.js";
 export const gameLogControllerFactory = () => {
     const gameLogController = {
         initializeGameLog(history) {
@@ -42,5 +42,7 @@ export const gameLogControllerFactory = () => {
             // TODO add to saved history
         }
     }
+    logicBundle.gameLogController = gameLogController
     return gameLogController
+    
 }
