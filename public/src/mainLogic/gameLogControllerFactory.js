@@ -1,4 +1,4 @@
-import { AUTO_SCROLL } from "../constants.js";
+import { AUTO_SCROLL } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 export const gameLogControllerFactory = () => {
     const gameLogController = {

@@ -1,6 +1,7 @@
 import { createDivWithClassAndIdAndStyle, pluralifyText } from "../helpers/helpers.js"
-import { IS_HOTSEAT_MODE } from "../constants.js"
+import { IS_HOTSEAT_MODE } from "../helpers/constants.js"
 import { logicBundle } from "../helpers/logicBundle.js";
+import { unlockActionsToValue, unlockColorsToValue, unlockKeysToValue, unlockMovementToValue, unlockPurseToValue } from "../helpers/playerFieldsMaps.js";
 
 export const playerBoardAndInformationControllerFactory = () => {
 
@@ -377,20 +378,4 @@ export const playerBoardAndInformationControllerFactory = () => {
     logicBundle.playerBoardAndInformationController = playerBoardAndInformationController
     return playerBoardAndInformationController;
     
-}
-
-
-const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
-const unlockPurseToValue = [3, 5, 7, 'All'];
-const unlockMovementToValue = [2, 3, 4, 5];
-const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
-const unlockKeysToValue = [1, 2, 2, 3, 4];
-// TODO can probably generate this programmatically somewhere
-const unlockMapMaxValues = {
-    "actions": 6,
-    "purse": 4,
-    "maxMovement": 4,
-    "colors": 4,
-    "keys": 5
-
 }

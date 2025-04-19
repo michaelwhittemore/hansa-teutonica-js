@@ -1,5 +1,5 @@
 import {isShape, pluralifyText} from "../helpers/helpers.js";
-import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS } from "../constants.js";
+import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 
 

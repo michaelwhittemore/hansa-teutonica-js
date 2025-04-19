@@ -1,4 +1,4 @@
-import { STARTING_BANK, TEST_FREE_TOKENS } from "../constants.js";
+import { STARTING_BANK, TEST_FREE_TOKENS } from "../helpers/constants.js";
 
 export class Player {
     constructor(color, name, startingPieces, id) {

@@ -1,21 +1,25 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
-import { FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
+import {
+    FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
     IS_HOTSEAT_MODE
- } from "../constants.js";
+} from "../helpers/constants.js";
 import { getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText } from "../helpers/helpers.js";
+import {
+    unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
+    unlockMovementToValue, unlockKeysToValue, unlockMapMaxValues
+} from "../helpers/playerFieldsMaps.js";
 
 export const gameControllerFactory = () => {
     const gameController = {
         initializeGameStateAndUI(playerNames, playerColors, boardConfig) {
             // let's just use turn order for IDs
-            console.log(logicBundle)
-
             this.playerArray = []
             for (let i = 0; i < playerNames.length; i++) {
                 const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
                 this.playerArray.push(player)
             }
+
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
@@ -30,7 +34,7 @@ export const gameControllerFactory = () => {
             this.shouldEndGame = false;
             logicBundle.inputHandlers.bindInputHandlers()
             logicBundle.boardController.initializeUI(this.playerArray);
-    
+
             const startingTokensArray = STARTING_TOKENS;
             const regularTokensArray = [];
             Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
@@ -39,7 +43,7 @@ export const gameControllerFactory = () => {
                 }
             })
             this.regularTokensArray = regularTokensArray
-    
+
             // Let's break out the city generation into two loops
             // THe first one populates the cityStorageObject 
             // The second one will create the route
@@ -67,7 +71,7 @@ export const gameControllerFactory = () => {
                         const neighborCityName = routeArray[0]
                         const length = routeArray[1]
                         const routeId = `${city.name}-${neighborCityName}`
-    
+
                         let tokenValue = false;
                         if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
                             tokenValue = getRandomArrayElementAndModify(startingTokensArray)
@@ -75,14 +79,14 @@ export const gameControllerFactory = () => {
                         logicBundle.boardController.createRouteAndTokenFromLocations({
                             length: routeArray[1],
                             id: routeId,
-    
+
                             element1: this.cityStorageObject[cityKey].ownElement,
                             element2: this.cityStorageObject[neighborCityName].ownElement,
                             tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
                             isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
                             tokenValue,
                         })
-    
+
                         this.routeStorageObject[routeId] = {
                             cities: [cityKey, neighborCityName],
                             routeNodes: {},
@@ -110,7 +114,7 @@ export const gameControllerFactory = () => {
                     })
                 }
             })
-    
+
         },
         resumeGame(properties) {
             //TODO - will need to store in localStorage, this will require a LOT of effort and testing
@@ -139,7 +143,7 @@ export const gameControllerFactory = () => {
             if (IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
-    
+
             lastPlayer.currentActions = lastPlayer.maxActions;
         },
         replaceTokens(player) {
@@ -154,7 +158,7 @@ export const gameControllerFactory = () => {
             const currentReplacement = getRandomArrayElementAndModify(this.regularTokensArray)
             this.tokenPlacementInformation.currentReplacement = currentReplacement;
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
-    
+
             // 3. Update both turn tracker and the action info area with the piece that is going to be replaces
             logicBundle.turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
             logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement);
@@ -164,7 +168,7 @@ export const gameControllerFactory = () => {
             // 5. Set the selectedAction type to something like 'replacingToken'
             // 6. disable all the action buttons
             // 7. add all the tokensCapturedThisTurn to the player's bank and clear the field
-    
+
             // 35. Need to call advanceTurn(lastPlayer) to actually end the turn (probably after
             // the final replaceTokenAtLocation)
         },
@@ -248,12 +252,12 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.toggleInputButtons(false)
                 this.advanceTurn(player);
-    
+
                 // 16. clear the this.tokenPlacementInformation blob
                 // 17. Clear the selected action
                 // 18. Double check that there's no cleanup steps from resolveAction that are being missed
                 // 16. Call this.advanceTurn(player)
-    
+
             }
         },
         resolveAction(player) {
@@ -302,7 +306,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction('That route node is already occupied!')
                 return
             }
-    
+
             player[playerShapeKey] -= 1;
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
@@ -320,7 +324,7 @@ export const gameControllerFactory = () => {
             };
             Object.assign(this.routeStorageObject[routeId].routeNodes[nodeId], updatedProps)
             logicBundle.boardController.addPieceToRouteNode(nodeId, player.color, shape);
-    
+
         },
         selectPieceToMove(nodeId, playerId) {
             let player;
@@ -330,10 +334,10 @@ export const gameControllerFactory = () => {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-    
+
             const routeId = getRouteIdFromNodeId(nodeId)
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-    
+
             if (!node.occupied || node.playerId !== playerId) {
                 console.warn('You do not have a piece on this route node.')
                 logicBundle.inputHandlers.warnInvalidAction('You do not have a piece on this route node.');
@@ -342,7 +346,7 @@ export const gameControllerFactory = () => {
                 if (gameController.moveInformation.movesUsed === undefined) {
                     gameController.moveInformation.movesUsed = 0;
                 }
-    
+
                 logicBundle.inputHandlers.additionalInfo = 'selectLocationToMoveTo'
                 logicBundle.inputHandlers.updateActionInfoText(`You have a selected a ${node.shape}. Select an unoccupied route node to move there.`)
                 gameController.moveInformation.originNode = node;
@@ -358,7 +362,7 @@ export const gameControllerFactory = () => {
             }
             const routeId = getRouteIdFromNodeId(nodeId)
             const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-    
+
             const originNode = gameController.moveInformation.originNode;
             const shape = originNode.shape
             if (targetNode.occupied) {
@@ -367,7 +371,7 @@ export const gameControllerFactory = () => {
                 return;
             }
             this.placePieceOnNode(nodeId, shape, player);
-    
+
             logicBundle.gameLogController.addTextToGameLog(
                 `$PLAYER1_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
             const clearedProps = {
@@ -427,7 +431,7 @@ export const gameControllerFactory = () => {
                 player.supplyCircles += player.bankedCircles;
                 resuppliedCircles = player.bankedCircles;
                 player.bankedCircles = 0;
-    
+
                 player.supplySquares += player.bankedSquares;
                 resuppliedSquares = player.bankedSquares;
                 player.bankedSquares = 0;
@@ -453,7 +457,7 @@ export const gameControllerFactory = () => {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-    
+
             // 1. First verify that another player controls this location - if not warn and return
             const routeId = getRouteIdFromNodeId(nodeId)
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
@@ -516,10 +520,10 @@ export const gameControllerFactory = () => {
             this.bumpInformation.freePiece = true;
             this.bumpInformation.circlesToPlace = circlesToPlace;
             this.bumpInformation.squaresToPlace = squaresToPlace;
-    
+
             // 8. Then we place the active player piece and update the nodeStorage object
             this.placePieceOnNode(nodeId, shape, player);
-    
+
             // 9. Then we update the active player info area to make it clear that we're in a weird half-turn
             // We already have turnTrackerAdditionalInformation
             logicBundle.turnTrackerController.updateTurnTrackerWithBumpInfo({
@@ -531,7 +535,7 @@ export const gameControllerFactory = () => {
             // 12. Then update inputHandler.selectedAction
             logicBundle.inputHandlers.clearAllActionSelection();
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
-    
+
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId) {
@@ -553,7 +557,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction('This route node is already occupied.');
                 return;
             }
-    
+
             const isValidNode = this.checkThatLocationIsAdjacent(this.bumpInformation.bumpedLocation, nodeId)
             if (!isValidNode) {
                 console.warn('Selected node must be part of an adjacent route')
@@ -597,7 +601,7 @@ export const gameControllerFactory = () => {
                     player.bankedSquares--;
                     source = 'bank';
                 }
-    
+
             }
             // 6. Use the place method I created on the gameController for move to place the piece
             this.placePieceOnNode(nodeId, shape, player);
@@ -611,7 +615,7 @@ export const gameControllerFactory = () => {
             // Two situations trigger bump end - out of moves or out of available pieces
             const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
             const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
-    
+
             if (outOfMoves || outOfPieces) {
                 logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`,
                     this.bumpInformation.bumpingPlayer, player)
@@ -634,7 +638,7 @@ export const gameControllerFactory = () => {
         },
         checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
             // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO
-    
+
             // We are starting from the displaced node and radiating outward, check each un-checked route for 
             // either a matching routeId or a route with an unoccupied node (without finding a match on
             // that iteration number)
@@ -649,11 +653,11 @@ export const gameControllerFactory = () => {
             }
             const startingRouteId = getRouteIdFromNodeId(bumpedNodeId);
             const targetRouteId = getRouteIdFromNodeId(targetNodeId);
-    
+
             const alreadyVisitedRoutes = [];
             let routesToChecks = [];
             let routesToChecksNext = [startingRouteId];
-    
+
             let failSafe = 0;
             while (true) {
                 routesToChecks = routesToChecksNext;
@@ -690,7 +694,7 @@ export const gameControllerFactory = () => {
                         hadAnUnoccupiedNode = true;
                         console.warn(`${routeId} had an unoccupied node`)
                     }
-    
+
                 }
                 if (hadAnUnoccupiedNode) {
                     console.warn(`Found a hadAnUnoccupiedNode after ${failSafe} completed loops`)
@@ -711,10 +715,10 @@ export const gameControllerFactory = () => {
             }
             logicBundle.inputHandlers.clearAllActionSelection();
             const city = this.cityStorageObject[cityName]
-    
+
             const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
             const { routeId } = routeCheckOutcome
-    
+
             if (!routeCheckOutcome) {
                 console.warn('You do not have a completed route')
                 logicBundle.inputHandlers.clearAllActionSelection();
@@ -749,19 +753,19 @@ export const gameControllerFactory = () => {
                 city.freePoint = false;
                 this.scorePoints(1, player)
                 logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME collected the free point at ${cityName}`, player)
-    
+
             }
             logicBundle.boardController.addPieceToCity(city, player.color)
             routeCheckOutcome[targetShape]--;
-    
+
             player.bankedCircles += routeCheckOutcome.circle;
             player.bankedSquares += routeCheckOutcome.square;
-    
+
             // We need to do route completion first for point calculation
             this.routeCompleted(routeId, player);
             city.occupants.push(playerId);
             city.openSpotIndex++;
-    
+
             if (this.tokenUsageInformation.tokenAction === 'bonusPost') {
                 console.warn(`Trying to capture ${cityName} with an additional post`)
                 let usedShape;
@@ -774,11 +778,11 @@ export const gameControllerFactory = () => {
                 }
                 logicBundle.boardController.addBonusPieceToCity(cityName, player.color, usedShape, city.bonusSpotOccupantArray.length + 1)
                 gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
-    
-    
+
+
                 gameController.finishTokenUsage(player, 'bonusPost')
             }
-    
+
             logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
             this.resolveAction(player);
         },
@@ -790,9 +794,9 @@ export const gameControllerFactory = () => {
             } else {
                 // TODO, check that the playerId who made the request is the active player
             }
-    
+
             const city = this.cityStorageObject[cityName]
-    
+
             const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
             const { routeId } = routeCheckOutcome
             console.log(city)
@@ -815,7 +819,7 @@ export const gameControllerFactory = () => {
                 this.routeCompleted(routeId, player);
                 this.resolveAction(player);
             }
-    
+
         },
         performUnlock(player, unlock) {
             const noFurtherUpgrades = (unlockName) => {
@@ -888,8 +892,8 @@ export const gameControllerFactory = () => {
                     console.error('we should not hit the default')
                     return false
             }
-    
-    
+
+
             // Adding the free pieces into supply
             if (unlock === 'maxMovement') {
                 logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
@@ -943,7 +947,7 @@ export const gameControllerFactory = () => {
             city.occupants.forEach(occupantId => {
                 controlObj[occupantId]++;
             })
-    
+
             // TODO
             // may need to test this
             if (city.bonusSpotOccupantArray.length > 0) {
@@ -951,7 +955,7 @@ export const gameControllerFactory = () => {
                     controlObj[bonusId]++
                 })
             }
-    
+
             const maxPieces = Math.max(...Object.values(controlObj));
             const winnerArray = []
             for (let key in controlObj) {
@@ -965,12 +969,12 @@ export const gameControllerFactory = () => {
                 }
             }
             console.error('We should never reach here')
-    
+
         },
         routeCompleted(routeId, player) {
             logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
-    
+
             // ______________
             if (route.token) {
                 const tokenKind = route.token
@@ -1000,7 +1004,7 @@ export const gameControllerFactory = () => {
                 };
                 logicBundle.boardController.clearPieceFromRouteNode(nodeToClearId)
             }
-    
+
         },
         scorePoints(pointValue, player) {
             const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
@@ -1067,7 +1071,7 @@ export const gameControllerFactory = () => {
             // need to clear the token information
             gameController.tokenUsageInformation = {};
             logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
-    
+
         },
         tokenActions: {
             gainActions(player, actionsNumber) {
@@ -1092,7 +1096,7 @@ export const gameControllerFactory = () => {
                     return
                 }
                 logicBundle.inputHandlers.populateUpgradeMenuFromToken(availableUpgrades);
-    
+
             },
             useFreeUpgrade(upgradeType, playerId) {
                 let player;
@@ -1102,7 +1106,7 @@ export const gameControllerFactory = () => {
                 } else {
                     // TODO, check that the playerId who made the request is the active player
                 }
-    
+
                 gameController.performUnlock(player, upgradeType)
                 gameController.finishTokenUsage(player, 'freeUpgrade')
             },
@@ -1146,18 +1150,18 @@ export const gameControllerFactory = () => {
                 }
                 // 2. check if there is a previous spot in the gameController.tokenUsageInformation object
                 // 3. If there isn't it's pretty easy. We add it to the object and update the UI (no overwrite)
-    
+
                 if (!gameController.tokenUsageInformation.switchSpot) {
                     console.log('Storing the first spot')
                     gameController.tokenUsageInformation.switchSpot = [cityId, citySpotNumber];
                     logicBundle.inputHandlers.updateActionInfoText(`\nYou selected post number ${citySpotNumber} in ${cityId}. Select one more spot in ${cityId} to exchange posts.`, false)
                     return;
                 }
-    
+
                 // -------------------------------------- Second spot
                 const previousCityId = gameController.tokenUsageInformation.switchSpot[0]
                 const previousSpotNumber = gameController.tokenUsageInformation.switchSpot[1]
-    
+
                 // 1. Check that it's the same city
                 // 2. Check that one is you and the other is a different player
                 if (cityId !== previousCityId) {
@@ -1165,12 +1169,12 @@ export const gameControllerFactory = () => {
                     logicBundle.inputHandlers.warnInvalidAction('Both trading posts need to be in the same city.')
                     return;
                 }
-    
+
                 const occupantOne = gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber]
                 const occupantTwo = gameController.cityStorageObject[cityId].occupants[citySpotNumber];
                 const haveDifferentOwners = occupantOne !== occupantTwo;
                 const oneIsOwnedByPlayer = (occupantOne === playerId) || (occupantTwo === playerId);
-    
+
                 if (!(haveDifferentOwners && oneIsOwnedByPlayer)) {
                     console.warn('Both trading posts must be owned by different players, one of whom is you.')
                     logicBundle.inputHandlers.warnInvalidAction('Both trading posts must be owned by different players, one of whom is you.')
@@ -1196,7 +1200,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.selectedAction = 'tokenMove';
                 logicBundle.inputHandlers.additionalInfo = 'selectPiece'
-    
+
                 logicBundle.inputHandlers.toggleInputButtons(true)
                 logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
                 logicBundle.inputHandlers.populateMoveThreeMenu(3)
@@ -1245,7 +1249,7 @@ export const gameControllerFactory = () => {
                     logicBundle.inputHandlers.warnInvalidAction('That node is already occupied.');
                     return;
                 }
-    
+
                 // 5. Store the owning player and the shape
                 const originId = gameController.tokenUsageInformation.originLocation
                 const routeOriginId = getRouteIdFromNodeId(originId);
@@ -1262,11 +1266,11 @@ export const gameControllerFactory = () => {
                 Object.assign(originNode, clearedProps);
                 // 7. clear the piece from the board
                 logicBundle.boardController.clearPieceFromRouteNode(originId)
-    
+
                 // 8. Place piece in the new location in cityStorage
                 // 9. Place piece on the new location on boardUI
                 gameController.placePieceOnNode(nodeId, originShape, originPlayer)
-    
+
                 // 10. Decrement the gameController.tokenUsageInformation.movesLeft - if
                 // it's zero we call this.endMoveThree
                 gameController.tokenUsageInformation.movesLeft--;
@@ -1305,18 +1309,3 @@ export const gameControllerFactory = () => {
     return gameController
 }
 
-// TODO move this
-const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
-const unlockPurseToValue = [3, 5, 7, 'All'];
-const unlockMovementToValue = [2, 3, 4, 5];
-const unlockColorsToValue = ['grey', 'orange', 'purple', 'black'];
-const unlockKeysToValue = [1, 2, 2, 3, 4];
-// TODO can probably generate this programmatically somewhere
-const unlockMapMaxValues = {
-    "actions": 6,
-    "purse": 4,
-    "maxMovement": 4,
-    "colors": 4,
-    "keys": 5
-
-}
