@@ -19,6 +19,15 @@ import { playerInformationAndBoardControllerFactory } from './mainLogic/playerIn
 
 import { Player } from './mainLogic/PlayerClass.js';
 
+// NEW PLAN:
+/* 
+first deal with board controller so there's only main here. although I guess it doesn't matter that much
+Ugh I'm worried I'm dealing with some serious antipatterns here
+I *think* we go with an object instead of a factory for the export. 
+Once the logic bundle has been fully created (we still need the factories, but we don't take anything in)
+then we can call some sort of setter method that takes in the logic bundle
+*/
+
 // I think this should work? it's ok if the logic bundle is empty at first, it won't matter until we start calling 
 // the methods 
 const logicBundle = {}
