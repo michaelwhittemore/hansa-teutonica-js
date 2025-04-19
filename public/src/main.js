@@ -1,18 +1,16 @@
 // CONSTANTS
-import CONSTANTS from './constants.js'
-import helperObject from './helpers/helpers.js'
-import inputHandlerFactory from './mainLogic/inputHandlersFactory.js'
-
-const {
-    isShape, 
-    pluralifyText, 
-    createDivWithClassAndIdAndStyle, 
-    getRandomArrayElementAndModify, 
+import CONSTANTS from './constants.js';
+import {
+    pluralifyText,
+    createDivWithClassAndIdAndStyle,
+    getRandomArrayElementAndModify,
     getRouteIdFromNodeId,
-    offSetCoordinatesForSize, 
-    offSetCoordinatesForGameBoard, 
-    calculatePathBetweenElements, 
-} = helperObject
+    offSetCoordinatesForSize,
+    offSetCoordinatesForGameBoard,
+    calculatePathBetweenElements,
+} from './helpers/helpers.js';
+
+import inputHandlerFactory from './mainLogic/inputHandlersFactory.js';
 
 const gameController = {
     initializeGameStateAndUI(playerNames, playerColors, boardConfig) {
@@ -841,23 +839,25 @@ const gameController = {
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
                 break;
             case 'actions':
-                { if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
-                    noFurtherUpgrades('actions');
-                    return false;
+                {
+                    if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
+                        noFurtherUpgrades('actions');
+                        return false;
+                    }
+                    player.unlockArrayIndex.actions++;
+                    player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
+                    // We only give the player a free action when they are actually advancing the total
+                    // i.e. not going from 3 -> 3 at index 1 ->2
+                    let actionUpgradeText = `$PLAYER1_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
+                    if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
+                        player.currentActions++;
+                        actionUpgradeText += ' They get a free action as a result'
+                        turnTrackerController.updateTurnTracker(player)
+                    }
+                    gameLogController.addTextToGameLog(actionUpgradeText, player);
+                    playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
+                    break;
                 }
-                player.unlockArrayIndex.actions++;
-                player.maxActions = unlockActionsToValue[player.unlockArrayIndex.actions];
-                // We only give the player a free action when they are actually advancing the total
-                // i.e. not going from 3 -> 3 at index 1 ->2
-                let actionUpgradeText = `$PLAYER1_NAME has upgraded their actions per turn. They now have ${player.maxActions}.`
-                if ([1, 3, 5].includes(player.unlockArrayIndex.actions)) {
-                    player.currentActions++;
-                    actionUpgradeText += ' They get a free action as a result'
-                    turnTrackerController.updateTurnTracker(player)
-                }
-                gameLogController.addTextToGameLog(actionUpgradeText, player);
-                playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
-                break; }
             case 'colors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
                     noFurtherUpgrades('available colors');
@@ -1980,7 +1980,7 @@ const gameLogController = {
     }
 }
 
-const inputHandlers = inputHandlerFactory({gameController, CONSTANTS, isShape, pluralifyText})
+const inputHandlers = inputHandlerFactory({ gameController })
 
 class Player {
     constructor(color, name, startingPieces, id) {
@@ -2040,21 +2040,3 @@ window.onload = start
 const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
 
 
-// TEST, DELETE THIS TODO
-const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
-    const testElement = document.createElement('div')
-    testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
-
-    testElement.id = 'TEST';
-    if (id) {
-        testElement.id = id
-    }
-    testElement.style.left = x + 'px'
-    testElement.style.top = y + 'px'
-    if (color) {
-        testElement.style.backgroundColor = color
-    }
-    document.getElementById('gameBoard').append(testElement)
-
-    return testElement
-}

@@ -1,8 +1,8 @@
-const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
-const pluralifyText = (item, number) => {
+export const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
+export const pluralifyText = (item, number) => {
     return `${number} ${item}${number !== 1 ? 's' : ''}`
 }
-const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
+export const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
     // classNameArray is an array of strings, id is an optional string, styles is an optional object
     const div = document.createElement('div');
     div.classList.add(...classNameArray);
@@ -17,7 +17,7 @@ const createDivWithClassAndIdAndStyle = (classNameArray, id, styles) => {
 
     return div
 }
-const getRandomArrayElementAndModify = (array) => {
+export const getRandomArrayElementAndModify = (array) => {
     if (array.length === 0) {
         console.error('calling getRandomArrayElementAndModify with a 0 length array')
         return
@@ -30,24 +30,24 @@ const getRandomArrayElementAndModify = (array) => {
     array.splice(index, 1)
     return element
 }
-const getRouteIdFromNodeId = (nodeId) => {
+export const getRouteIdFromNodeId = (nodeId) => {
     return nodeId.slice(0, nodeId.lastIndexOf('-'));
 }
-const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
+export const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
     // This function will center an object instead of placing it with the top left at (x,y)
     return ([x - (width / 2), y - (height / 2)]);
 }
 
-const offSetCoordinatesForGameBoard = (x, y) => {
+export const offSetCoordinatesForGameBoard = (x, y) => {
     const gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     return [x - gameBoardDomRect.x, y - gameBoardDomRect.y]
 }
 
-const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
+export const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
     return (y2 - y1) / (x2 - x1)
 }
 
-const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
+export const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     const xCenter1 = rect1.x + (0.5 * rect1.width)
     const yCenter1 = rect1.y + (0.5 * rect1.height)
     const xCenter2 = rect2.x + (0.5 * rect2.width)
@@ -155,7 +155,7 @@ const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
     return [intersection1, intersection2]
 }
 
-const calculatePathBetweenElements = (element1, element2) => {
+export const calculatePathBetweenElements = (element1, element2) => {
     // drawLine(element1, element2);
 
     const domRect1 = element1.getBoundingClientRect()
@@ -170,7 +170,7 @@ const calculatePathBetweenElements = (element1, element2) => {
     }
 }
 
-const drawLine = (element1, element2) => {
+export const drawLine = (element1, element2) => {
     const LINE_LENGTH = 25
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
@@ -179,7 +179,7 @@ const drawLine = (element1, element2) => {
     const xCenter2 = domRect2.x + (0.5 * domRect2.width)
     const yCenter2 = domRect2.y + (0.5 * domRect2.height)
 
-    gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
+    const gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
     const xOffset = gameBoardDomRect.x
     const yOffset = gameBoardDomRect.y;
 
@@ -192,6 +192,26 @@ const drawLine = (element1, element2) => {
     addPixelAtLocation(xCenter1 - xOffset, yCenter1 - yOffset)
     addPixelAtLocation(xCenter2 - xOffset, yCenter2 - yOffset)
 }
+
+// TEST, DELETE THIS TODO
+const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
+    const testElement = document.createElement('div')
+    testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
+
+    testElement.id = 'TEST';
+    if (id) {
+        testElement.id = id
+    }
+    testElement.style.left = x + 'px'
+    testElement.style.top = y + 'px'
+    if (color) {
+        testElement.style.backgroundColor = color
+    }
+    document.getElementById('gameBoard').append(testElement)
+
+    return testElement
+}
+
 
 export default {
     isShape, 

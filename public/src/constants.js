@@ -1,15 +1,15 @@
-const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
-const FIRST_PLAYER_SQUARES = 6;
-const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
-const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
-const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
-const IS_HOTSEAT_MODE = true;
-const USE_DEFAULT_CLICK_ACTIONS = true;
-const AUTO_SCROLL = true;
-const APPROXIMATE_NODE_OFFSET = 45 / 2;
+export const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
+export const FIRST_PLAYER_SQUARES = 6;
+export const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
+export const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
+export const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
+export const IS_HOTSEAT_MODE = true;
+export const USE_DEFAULT_CLICK_ACTIONS = true;
+export const AUTO_SCROLL = true;
+export const APPROXIMATE_NODE_OFFSET = 45 / 2;
 
 // location is a coordinates x, y offset from the origin in the top right
-const TEST_BOARD_CONFIG_CITIES = {
+export const TEST_BOARD_CONFIG_CITIES = {
     'Alpha': {
         name: 'Alpha',
         spotArray:
@@ -56,9 +56,9 @@ const TEST_BOARD_CONFIG_CITIES = {
 
 };
 
-const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
+export const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
 // RULES TODO, verify that the blow values do *NOT* include the gold starters
-const REGULAR_TOKENS_NUMBER_MAP = {
+export const REGULAR_TOKENS_NUMBER_MAP = {
     'bonusPost': 4,
     'switchPost': 3,
     'moveThree': 2,
@@ -71,7 +71,7 @@ const REGULAR_TOKENS_NUMBER_MAP = {
 // Each indicates which direction we're going and if one is a starting location
 // They start off hidden unless they're starting
 // array has xdirection, ydirection, isStarting
-const TOKEN_CONFIG_BY_ROUTES = {
+export const TOKEN_CONFIG_BY_ROUTES = {
     'Alpha-Beta': [0, .6, true],
     'Alpha-Zeta': [.6, 0, true],
     'Beta-Gamma': [.5, -.5, true],
@@ -81,7 +81,7 @@ const TOKEN_CONFIG_BY_ROUTES = {
 }
 
 // The below can be used to fix my name mapping issue, but then deleted I think
-const PLAYER_FIELDS_TO_TEXT_MAP = {
+export const PLAYER_FIELDS_TO_TEXT_MAP = {
     name: 'Name',
     color: 'Color',
     keys: 'Keys',
@@ -99,7 +99,7 @@ const PLAYER_FIELDS_TO_TEXT_MAP = {
 
 
 // TEST VARIABLES 
-const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
+export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
 
 export default {
     STARTING_BANK,

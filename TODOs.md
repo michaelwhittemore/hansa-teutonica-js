@@ -6,11 +6,14 @@
     ~~make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)~~
     ~~move all the helpers ot their own module. Can then break that up at a later date~~
 * 4/19
-    * move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or somethimng like that
-        * Maybe we should given them a factory functin? That way we can pass in things like 
-    * clean up this TODOS file a bit
+    * move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or something like that
+        * Maybe we should given them a factory function? That way we can pass in things
+        * Let's great an object that has a reference to gameController, inputHandler, ect..
+        * some things like the Player class don't need the same treatment. I'm pretty sure that the game controller has a one way dependency with it
+    * clean up this TODOs file a bit
+    * clean up constants import
     * have a checklist for this being play-test ready
-    * delete my 'Done' field, stopped being satifsying and started being frustrating
+    * delete my 'Done' field, stopped being satisfying and started being frustrating
     * add slightly more to the landing page, maybe a github link?
     * potentially start looking into localStorage and the ability to save and resume an existiong game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
@@ -21,7 +24,7 @@
 * add installation and run instructions to README
 * Host my own sever - need to look up IONOS docs
 * consider renaming "inputHandlers" to something more accurate
-* add an easy method to clear the board information fields (check where this is already hapenign)
+* add an easy method to clear the board information fields (check where this is already happening)
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
 * Module system **HERE**
 * make the toggles more clear what the default does

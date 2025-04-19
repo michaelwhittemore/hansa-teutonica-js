@@ -1,5 +1,9 @@
+// I think we should import the constants and helpers here, not use dependencies like I do now
+import {isShape, pluralifyText} from "../helpers/helpers.js";
+import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS } from "../constants.js";
+
 const inputHandlerFactory = (dependencies) => {
-    const { gameController, CONSTANTS, isShape, pluralifyText } = dependencies;
+    const { gameController} = dependencies;
 
     const inputHandlers = {
         verifyPlayersTurn() {
@@ -48,7 +52,7 @@ const inputHandlerFactory = (dependencies) => {
             // 3. If the player has both shapes left add a button. Otherwise set shape defaults
             if (squares && circles) {
                 this.addShapeSelectionToActionInfo()
-                if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
+                if (USE_DEFAULT_CLICK_ACTIONS) {
                     this.additionalInfo = 'square';
                 }
             } else if (squares && !circles) {
@@ -89,7 +93,7 @@ const inputHandlerFactory = (dependencies) => {
                 inputHandlers.updateActionInfoText('Select a city to capture');
             } else {
                 let playerId = undefined
-                if (!CONSTANTS.IS_HOTSEAT_MODE) {
+                if (!IS_HOTSEAT_MODE) {
                     // get the player name from sessionStorage
                 }
                 gameController.captureCity(inputHandlers.selectedLocation, playerId)
@@ -98,7 +102,7 @@ const inputHandlerFactory = (dependencies) => {
         },
         handleResupplyButton() {
             let playerId = undefined
-            if (!CONSTANTS.IS_HOTSEAT_MODE) {
+            if (!IS_HOTSEAT_MODE) {
                 // get the player name from sessionStorage
             }
             gameController.resupply(playerId);
@@ -124,7 +128,7 @@ const inputHandlerFactory = (dependencies) => {
             document.getElementById('token').onclick = this.handleTokenButton;
         },
         toggleInputButtons(disabled, buttonToExclude = false) {
-            CONSTANTS.BUTTON_LIST.forEach(buttonName => {
+            BUTTON_LIST.forEach(buttonName => {
                 if (buttonName !== buttonToExclude) {
                     document.getElementById(buttonName).disabled = disabled;
                 }
@@ -210,7 +214,7 @@ const inputHandlerFactory = (dependencies) => {
         },
         cityClickHandler(cityId) {
             if (!inputHandlers.selectedAction) {
-                if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
+                if (USE_DEFAULT_CLICK_ACTIONS) {
                     inputHandlers.selectedLocation = cityId;
                     inputHandlers.selectedAction = 'capture';
                 } else {
@@ -267,7 +271,7 @@ const inputHandlerFactory = (dependencies) => {
                         console.error('We should not be hitting default with a selected action')
                         return
                     }
-                    if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
+                    if (USE_DEFAULT_CLICK_ACTIONS) {
                         inputHandlers.additionalInfo = 'square'
                         this.nodeActions.place(nodeId)
                     } else {
@@ -281,7 +285,7 @@ const inputHandlerFactory = (dependencies) => {
                 // Need to call a game controller method here
                 // pass in the selected shape, other wise use default
                 if (!isShape(inputHandlers?.additionalInfo)) {
-                    if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
+                    if (USE_DEFAULT_CLICK_ACTIONS) {
                         inputHandlers.additionalInfo = 'square'
                     } else {
                         console.warn('No shape selected')
@@ -298,7 +302,7 @@ const inputHandlerFactory = (dependencies) => {
             },
             place(nodeId) {
                 if (!isShape(inputHandlers?.additionalInfo)) {
-                    if (CONSTANTS.USE_DEFAULT_CLICK_ACTIONS) {
+                    if (USE_DEFAULT_CLICK_ACTIONS) {
                         inputHandlers.additionalInfo = 'square'
                     } else {
                         console.warn('No shape selected')
