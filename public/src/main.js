@@ -1,6 +1,7 @@
 // CONSTANTS
 import CONSTANTS from './constants.js'
 import helperObject from './helpers/helpers.js'
+// import inputHandlers from './mainLogic/inputHandlers.js'
 const {
     isShape, 
     pluralifyText, 
@@ -9,10 +10,7 @@ const {
     getRouteIdFromNodeId,
     offSetCoordinatesForSize, 
     offSetCoordinatesForGameBoard, 
-    calculateSlopeFromCoordinatePairs, 
-    findEdgeIntersectionPointFromRects, 
     calculatePathBetweenElements, 
-    drawLine
 } = helperObject
 
 const inputHandlers = {
@@ -565,7 +563,7 @@ const gameController = {
         } else {
             // ------------------------ Ending (tokensToPlace === 0)--------------------
             // 14. Consider breaking this out into a different method
-            // 15. clear the UI, both actioninfomation and turn tracker
+            // 15. clear the UI, both actionInformation and turn tracker
             inputHandlers.clearAllActionSelection();
             // I think buttons should be updated and turn tracker info cleared by end turn?
             // 15. hide all tokensLocations (visibility=hidden) that aren't full
@@ -917,7 +915,7 @@ const gameController = {
             }
             if (player.bankedSquares === 0) {
                 if (player.supplySquares === 0) {
-                    // We shouldn't reach here - this is a softlock
+                    // We shouldn't reach here - this is a soft lock
                     // TODO eventually ad a relocation option
                     console.error('You have no squares in your bank or supply.')
                     inputHandlers.warnInvalidAction('You have no squares in your bank or supply.');
@@ -966,7 +964,7 @@ const gameController = {
         playerInformationAndBoardController.componentBuilders.updateSupplyAndBank(player)
     },
     checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
-        // TODO Maybe we eventually move this out of the boardcontroller and pass in the map instead? TODO
+        // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO
 
         // We are starting from the displaced node and radiating outward, check each un-checked route for 
         // either a matching routeId or a route with an unoccupied node (without finding a match on
@@ -1229,7 +1227,7 @@ const gameController = {
             gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
             player.supplySquares++
         }
-        // let's us know that an upgrade was validated and occured
+        // let's us know that an upgrade was validated and occurred
         return true
     },
     checkIfPlayerControlsARoute(playerId, cityName) {
@@ -1673,7 +1671,7 @@ const boardController = {
         })
     },
     updatePoints(pointTarget, playerColor) {
-        // would be nice to evntually remove the number, but this works for now
+        // would be nice to eventually remove the number, but this works for now
         // TODO I think I can make the number it's own div and make it absolute (maybe need to play with z index)
         document.getElementById(`point-tracker-${playerColor}`)?.remove()
         const pointTrackerPiece = createDivWithClassAndIdAndStyle(['pointTrackerPiece'], `point-tracker-${playerColor}`,
@@ -1713,7 +1711,7 @@ const boardController = {
             cityPieceAreaDiv.append(citySpotDiv)
         }
 
-        // Adding location, will need to do route calculation seperatley - might want to hard code
+        // Adding location, will need to do route calculation separately - might want to hard code
         // some information on sizes to a constant in case I make style changes
         cityDiv.style.left = `${location[0]}px`
         cityDiv.style.top = `${location[1]}px`
@@ -1848,7 +1846,7 @@ const boardController = {
         }
         this.board.append(tokenDiv)
         // I'm gonna be super hacky and just use an offset map. 
-        // TODO fix this filth to use inverse slope and fixed disatnces (will still need a binary direction)
+        // TODO fix this filth to use inverse slope and fixed distances (will still need a binary direction)
     },
 }
 
@@ -2082,8 +2080,6 @@ const playerInformationAndBoardController = {
                     lockedShape.classList.add('circle')
                 }
             }
-            // need to add the subcomponnet if it's locked, need an unlockmethod
-            // maybe rename to be shape agnostic
             return unlockableShape
         },
         createTokenTracker(player) {

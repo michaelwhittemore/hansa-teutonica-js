@@ -5,16 +5,13 @@
     ~~trigger end game when anyone reaches twenty~~
     ~~make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)~~
     ~~move all the helpers ot their own module. Can then break that up at a later date~~
+* 4/19
+    * move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or somethimng like that
     * clean up this TODOS file a bit
     * have a checklist for this being play-test ready
     * delete my 'Done' field, stopped being satifsying and started being frustrating
-* Spin up a simple node server and move these to modules -- HERE**IMPORTANT**
-    * move things into modules
-    * We can think about this as two tasks - refactoring modules (all this only effects code I've already wrote) - and update the server
-    * For the server we will need to handle player inputs and then inform all other players
-    * I'll probably keep the game logic in the client side for the moment
-    * Player Input will know who the player is and will tell the gameController - the gamecontroller will ignore requests from players who don't need to be acting. This will require a lot of refactoring.
-    - might disable all buttons and defualts when it's non the player's turn. 
+    * add slightly more to the landing page, maybe a github link?
+    * potentially start looking into localStorage and the ability to save and resume an existiong game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * consider using dynamic import https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import vs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import so that I can make main.js *NOT* a module
 * consider adding a shadow effect to the pieces
@@ -22,7 +19,6 @@
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add installation and run instructions to README
 * Host my own sever - need to look up IONOS docs
-* BUG! actions aren't being updated in UI when upgrading action token - mabye this isn't true or needs additional steps to reproduce. Maybe i clicked the wrong one?? --- oh it's upgrade not free action
 * consider renaming "inputHandlers" to something more accurate
 * add an easy method to clear the board information fields (check where this is already hapenign)
 * I **HATE** how hacky my token coordinate system is - need to use system where we invert the slope and calculate the offset from that instead. Remember that the distance should always be the same, just to write out a simple system of coordinate equations when I get the chance
