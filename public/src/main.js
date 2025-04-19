@@ -15,7 +15,7 @@ const {
 
 const inputHandlers = {
     verifyPlayersTurn() {
-        // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUTHANDLER SHOULD TELL YOU TO WAIT
+        // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUT HANDLER SHOULD TELL YOU TO WAIT
         // IT SHOULDN'T BE THE gameController's responsibility (I think??)
 
         // if not true will update action info with 'It isn't your turn'
@@ -400,7 +400,7 @@ const gameController = {
                     const routeId = `${city.name}-${neighborCityName}`
 
                     let tokenValue = false;
-                    if (!!CONSTANTS.TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
+                    if (CONSTANTS.TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
                         tokenValue = getRandomArrayElementAndModify(startingTokensArray)
                     }
                     boardController.createRouteAndTokenFromLocations({
@@ -1166,7 +1166,7 @@ const gameController = {
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
                 break;
             case 'actions':
-                if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
+                { if (player.unlockArrayIndex.actions === unlockActionsToValue.length - 1) {
                     noFurtherUpgrades('actions');
                     return false;
                 }
@@ -1182,7 +1182,7 @@ const gameController = {
                 }
                 gameLogController.addTextToGameLog(actionUpgradeText, player);
                 playerInformationAndBoardController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
-                break;
+                break; }
             case 'colors':
                 if (player.unlockArrayIndex.colors === unlockColorsToValue.length - 1) {
                     noFurtherUpgrades('available colors');
