@@ -7,6 +7,7 @@
     ~~move all the helpers ot their own module. Can then break that up at a later date~~
 * 4/19
     * move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or somethimng like that
+        * Maybe we should given them a factory functin? That way we can pass in things like 
     * clean up this TODOS file a bit
     * have a checklist for this being play-test ready
     * delete my 'Done' field, stopped being satifsying and started being frustrating
