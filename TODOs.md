@@ -17,6 +17,7 @@
     * add slightly more to the landing page, maybe a github link?
     * potentially start looking into localStorage and the ability to save and resume an existiong game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* eventually will need a 'settings' property for things like AUTO_SCROLL and USE_DEFAULT
 * consider using dynamic import https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import vs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import so that I can make main.js *NOT* a module
 * consider adding a shadow effect to the pieces
 * really do need that linter

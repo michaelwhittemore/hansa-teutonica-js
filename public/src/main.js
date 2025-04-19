@@ -1,5 +1,5 @@
 // CONSTANTS
-import { IS_HOTSEAT_MODE, AUTO_SCROLL, STARTING_BANK, TEST_PLAYERS_NAMES, 
+import { IS_HOTSEAT_MODE, TEST_PLAYERS_NAMES, 
     TEST_BOARD_CONFIG_CITIES, TEST_PLAYER_COLORS, FIRST_PLAYER_SQUARES, STARTING_TOKENS, 
     REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES } from './constants.js';
 import {
@@ -13,7 +13,13 @@ import {
 } from './helpers/helpers.js';
 
 import inputHandlerFactory from './mainLogic/inputHandlersFactory.js';
+import { gameLogControllerFactory } from './mainLogic/gameLogControllerFactory.js';
 
+import { Player } from './mainLogic/PlayerClass.js';
+
+// I think this should work? it's ok if the logic bundle is empty at first, it won't matter until we start calling 
+// the methods 
+const logicBundle = {}
 const gameController = {
     initializeGameStateAndUI(playerNames, playerColors, boardConfig) {
         // let's just use turn order for IDs
@@ -1307,6 +1313,7 @@ const gameController = {
         console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
     },
 }
+logicBundle.gameController = gameController;
 
 // The interface does NOT track game state, just renders and creates buttons (although it can track its own state)
 const boardController = {
@@ -1940,78 +1947,8 @@ const turnTrackerController = {
     }
 }
 
-const gameLogController = {
-    initializeGameLog(history) {
-        // optionally, we should load in history
-        const collapseButton = document.createElement('button');
-        collapseButton.innerText = 'Collapse Game Log';
-        collapseButton.className = 'collapseButton';
-        collapseButton.onclick = () => this.toggleGameLog(collapseButton)
-        document.getElementById('gameLogContainer').append(collapseButton)
-        this.isCollapsed = false;
-    },
-    toggleGameLog(collapseButton) {
-        if (!this.isCollapsed) {
-            document.getElementById('gameLog').classList.add('collapsedContainer')
-            collapseButton.innerText = 'Expand Game Log'
-        } else {
-            document.getElementById('gameLog').classList.remove('collapsedContainer')
-            collapseButton.innerText = 'Collapse Game Log'
-        }
-        this.isCollapsed = !this.isCollapsed
-    },
-    addTextToGameLog(text, player1, player2) {
-        // player is an optional parameter
-        // what we want to do is replace every instance of the player name with a span 
-        // that wraps around them and contains their color
-        // I think we can just do a string replace, we have full control over the inputs in this method
-        const timestamp = (new Date()).toLocaleTimeString('en-US')
-        if (player1) {
-            const player1NameSpan = `<span style="color: ${player1.color}">${player1.name}</span>`
-            text = text.replaceAll('$PLAYER1_NAME', player1NameSpan)
-        }
-        if (player2) {
-            const player2NameSpan = `<span style="color: ${player2.color}">${player2.name}</span>`
-            text = text.replaceAll('$PLAYER2_NAME', player2NameSpan)
-        }
-        document.getElementById('gameLog').innerHTML += `${timestamp}: ${text}<br>`
-        if (AUTO_SCROLL) {
-            document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
-        }
-        // TODO add to saved history
-    }
-}
-
-const inputHandlers = inputHandlerFactory({ gameController })
-
-class Player {
-    constructor(color, name, startingPieces, id) {
-        this.id = id;
-        this.color = color;
-        this.name = name;
-        this.supplySquares = startingPieces;
-        this.bankedSquares = STARTING_BANK - startingPieces;
-        this.supplyCircles = 1;
-        this.bankedCircles = 0;
-        this.maxActions = 2; // Not to be confused with current actions
-        this.currentActions = this.maxActions;
-        this.currentPoints = 0;
-        // this.currentTokens = []; // TODO Revert this once I'm done testing
-        this.currentTokens = [...TEST_FREE_TOKENS]
-        this.usedTokens = [];
-        this.unlockedColors = ['grey'];
-        this.maxMovement = 2;
-        this.keys = 1;
-        this.purse = 3;
-        this.unlockArrayIndex = {
-            actions: 0,
-            purse: 0,
-            maxMovement: 0,
-            colors: 0,
-            keys: 0,
-        }
-    }
-}
+const gameLogController = gameLogControllerFactory();
+const inputHandlers = inputHandlerFactory(logicBundle)
 
 const unlockActionsToValue = [2, 3, 3, 4, 4, 5];
 const unlockPurseToValue = [3, 5, 7, 'All'];
@@ -2037,8 +1974,3 @@ const start = () => {
 
 
 window.onload = start
-
-// TEST VARIABLES 
-const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
-
-
