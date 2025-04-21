@@ -11,26 +11,19 @@
     ~~clean up constants import~~
 * 4/20 - long hike won't get much done
 * 4/21
-    * how do we want to approach the validator? I have a few assumptions
-        1. The gameController methods are being called by the input handlers
-        2. The input handlers know the playerId of the player who called them
-        3. We need to extract the player from the player ID (or alert and return)
-        4. This helper has a return value of the player or null (in which case return) - The helper will take care of the warning. 
-        5. Will eventually need a gameController method for selecting which playerUI/inputHandler to use, this will basically be an API for signalling. Not needed for hotseat
-    * replace copypasta with validator function for player & playerId
     * look into best way to pass parameters from landing page to hotseat 
     * have a checklist for this being play-test ready
         * need map to be correct
         * need end game points
         * need to be able to configure your hotseat settings
         * need the connections cities (the east to west routes)
-            * will have a 'traverse nextwork helper'
+            * will have a 'traverse network helper'
         * need the Coellen and Warburg special prestige point city
     * delete my 'Done' field, stopped being satisfying and started being frustrating
     * add slightly more to the landing page, maybe a github link?
     * potentially start looking into localStorage and the ability to save and resume an existing game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
-* Stuff will eventually end up being async. I might need some sort of debouncer? Or is that not the correct word?
+* Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?
 * TODO! all methods will need to actually pass in the playerId. Probably give inputHandlers a playerId field
 * will need to replace the gameController reference in the inputHandlers with an API (which either uses signalling or just straight references it via the logic bundle)
 * eventually will need a 'settings' property for things like AUTO_SCROLL and USE_DEFAULT
