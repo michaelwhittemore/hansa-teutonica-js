@@ -7,6 +7,8 @@ import { playerBoardAndInformationControllerFactory } from './mainLogic/playerBo
 import { gameLogControllerFactory } from './mainLogic/gameLogControllerFactory.js';
 import { boardControllerFactory } from './mainLogic/boardControllerFactory.js';
 
+import { logicBundle } from './helpers/logicBundle.js'; // This is just for easier testing
+
 // Maybe we rename 'factory' -> 'init' 
 const gameController = gameControllerFactory();
 gameLogControllerFactory();
@@ -17,10 +19,7 @@ boardControllerFactory();
 
 
 const start = () => {
-    // window.gameController = gameController
-    // TODO make all the useful objects available globally because working with modules is a headache
-    // potentially do it in their factory function like where we link the logicBundle, alternatively just expose
-    // the logic bundle
+    window.logicBundle = logicBundle // This is just for testing
     gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
 }
 

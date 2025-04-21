@@ -133,7 +133,6 @@ export const gameControllerFactory = () => {
             if (this.tokensCapturedThisTurn.length > 0) {
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
                 this.replaceTokens(lastPlayer)
-                console.warn('Player has captured some tokens. We need to give them the opportunity to re-add them')
                 return
             }
             this.tokenPlacementInformation = {}
@@ -173,13 +172,11 @@ export const gameControllerFactory = () => {
             // the final replaceTokenAtLocation)
         },
         replaceTokenAtLocation(routeId, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             // this should be triggered by clicking on a token holder when the input selectedAction is correct
             // 1. Verification
             // 2. Check that token is not already there - If it is we return and warn
@@ -284,13 +281,11 @@ export const gameControllerFactory = () => {
             }
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             // Validate that the player has enough supply and that the node is unoccupied
             const playerShapeKey = shape === 'square' ? 'supplySquares' : 'supplyCircles';
             if (player[playerShapeKey] < 1) {
@@ -327,13 +322,11 @@ export const gameControllerFactory = () => {
 
         },
         selectPieceToMove(nodeId, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
 
             const routeId = getRouteIdFromNodeId(nodeId)
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
@@ -353,13 +346,11 @@ export const gameControllerFactory = () => {
             }
         },
         movePieceToLocation(nodeId, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             const routeId = getRouteIdFromNodeId(nodeId)
             const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
 
@@ -393,13 +384,11 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
         },
         endMoveAction(playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             logicBundle.inputHandlers.toggleInputButtons(false)
             // The player never actually took an action, works for zero or undefined
             if (!gameController.moveInformation.movesUsed) {
@@ -412,13 +401,11 @@ export const gameControllerFactory = () => {
             }
         },
         resupply(playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             logicBundle.inputHandlers.clearAllActionSelection();
             if (player.bankedCircles === 0 && player.bankedSquares === 0) {
                 console.warn('There is nothing in your bank to resupply with.')
@@ -450,13 +437,11 @@ export const gameControllerFactory = () => {
             // eventually should chose circles vs squares, right now default to all circles, then square
         },
         bumpPieceFromNode(nodeId, shape, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
 
             // 1. First verify that another player controls this location - if not warn and return
             const routeId = getRouteIdFromNodeId(nodeId)
@@ -706,19 +691,16 @@ export const gameControllerFactory = () => {
         captureCity(cityName, playerId) {
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             logicBundle.inputHandlers.clearAllActionSelection();
             const city = this.cityStorageObject[cityName]
 
             const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
             const { routeId } = routeCheckOutcome
-
             if (!routeCheckOutcome) {
                 console.warn('You do not have a completed route')
                 logicBundle.inputHandlers.clearAllActionSelection();
@@ -787,13 +769,11 @@ export const gameControllerFactory = () => {
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
 
             const city = this.cityStorageObject[cityName]
 
@@ -1017,13 +997,11 @@ export const gameControllerFactory = () => {
             }
         },
         handleTokenMenuRequest(playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             if (player.currentTokens.length === 0) {
                 console.warn('You don\'t have any tokens to use.')
                 logicBundle.inputHandlers.warnInvalidAction('You don\'t have any tokens to use.')
@@ -1032,13 +1010,11 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.populateTokenMenu(player.currentTokens)
         },
         useToken(tokenType, playerId) {
-            let player;
-            if (IS_HOTSEAT_MODE) {
-                player = this.getActivePlayer()
-                playerId = player.id
-            } else {
-                // TODO, check that the playerId who made the request is the active player
+            const player = this.validateRequestedAction(playerId);
+            if (!player){
+                return
             }
+            playerId = player.id;
             switch (tokenType) {
                 case 'threeActions':
                     this.tokenActions.gainActions(player, 3)
@@ -1305,11 +1281,16 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
         },
         validateRequestedAction(playerId){
-            // Should we consider moving this to a helper? - I think I like it here as
-            // it will need access to the signalling API. 
-            // dev
-            // This method returns either false (when the wrong player tries to take an action), or the player
-            // This method is also responsible for checking hotseat mode
+            const activePlayer = this.getActivePlayer();
+            if (IS_HOTSEAT_MODE){
+                return activePlayer
+            }
+            if (playerId !== activePlayer.id){
+                console.warn('Player attempting to take off turn action')
+                // TODO warn the inputHandlers API
+                return false;
+            }
+
         },
     }
     logicBundle.gameController = gameController;
