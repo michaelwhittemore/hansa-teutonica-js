@@ -23,7 +23,7 @@ export const inputHandlerFactory = () => {
         handleTokenButton() {
             // We will still need to call the gameController as the game controller both needs to verify
             // That it's the correct player's turn and needs to know the tokens the player owns
-            gameController.handleTokenMenuRequest()
+            logicBundle.gameController.handleTokenMenuRequest()
         },
         handlePlaceButton() {
             inputHandlers.clearAllActionSelection();
@@ -71,7 +71,7 @@ export const inputHandlerFactory = () => {
             if (inputHandlers.selectedAction === 'move') {
                 document.getElementById('move').innerText = 'Move Pieces'
                 inputHandlers.clearAllActionSelection();
-                gameController.endMoveAction();
+                logicBundle.gameController.endMoveAction();
                 return;
             }
             inputHandlers.clearAllActionSelection();
@@ -96,7 +96,7 @@ export const inputHandlerFactory = () => {
                 if (!IS_HOTSEAT_MODE) {
                     // get the player name from sessionStorage
                 }
-                gameController.captureCity(inputHandlers.selectedLocation, playerId)
+                logicBundle.gameController.captureCity(inputHandlers.selectedLocation, playerId)
             }
 
         },
@@ -105,7 +105,7 @@ export const inputHandlerFactory = () => {
             if (!IS_HOTSEAT_MODE) {
                 // get the player name from sessionStorage
             }
-            gameController.resupply(playerId);
+            logicBundle.gameController.resupply(playerId);
         },
         clearAllActionSelection() {
             // NOTE: I should *NOT* be using this just to clear action info
@@ -155,7 +155,7 @@ export const inputHandlerFactory = () => {
                     button.id = tokenType
                     button.innerText = tokenType
                     button.onclick = () => {
-                        gameController.useToken(tokenType);
+                        logicBundle.gameController.useToken(tokenType);
                     }
                     tokenMenuDiv.append(button)
                 } else {
@@ -172,7 +172,7 @@ export const inputHandlerFactory = () => {
                 button.innerText = upgrade
                 // onclick with the type of upgrade
                 button.onclick = () => {
-                    gameController.tokenActions.useFreeUpgrade(upgrade)
+                    logicBundle.gameController.tokenActions.useFreeUpgrade(upgrade)
                 }
                 tokenMenuDiv.append(button)
             })
@@ -185,7 +185,7 @@ export const inputHandlerFactory = () => {
             endEarlyButton.innerText = 'End token moves';
             endEarlyButton.onclick = () => {
                 console.log('end early clicked')
-                gameController.tokenActions.endMoveThree();
+                logicBundle.gameController.tokenActions.endMoveThree();
             }
             tokenMenuDiv.append(endEarlyButton)
         },
@@ -224,11 +224,11 @@ export const inputHandlerFactory = () => {
             };
             if (inputHandlers.selectedAction === 'capture') {
                 // Might need to pass in player ID
-                gameController.captureCity(cityId, undefined)
+                logicBundle.gameController.captureCity(cityId, undefined)
             }
             if (inputHandlers.selectedAction === 'upgrade') {
                 // Might need to pass in player ID
-                gameController.upgradeAtCity(cityId, undefined)
+                logicBundle.gameController.upgradeAtCity(cityId, undefined)
             }
 
         },
@@ -237,7 +237,7 @@ export const inputHandlerFactory = () => {
                 this.cityClickHandler(cityId)
                 return;
             }
-            gameController.tokenActions.selectedPostToSwitch(cityId, spotNumber)
+            logicBundle.gameController.tokenActions.selectedPostToSwitch(cityId, spotNumber)
         },
         tokenLocationClickHandler(routeId) {
             console.log('clicked token handler', routeId)
@@ -245,7 +245,7 @@ export const inputHandlerFactory = () => {
                 console.warn('Clicked on a token location without placeNewToken selected')
                 return
             }
-            gameController.replaceTokenAtLocation(routeId);
+            logicBundle.gameController.replaceTokenAtLocation(routeId);
             // TODO will need to get playerId from the input handler in the case of online play
 
         },
@@ -292,13 +292,13 @@ export const inputHandlerFactory = () => {
                         return;
                     }
                 }
-                gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
+                logicBundle.gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
             },
             placeSelectedBumpPieceOnNode(nodeId) {
                 if (!isShape(inputHandlers?.additionalInfo)) {
                     console.error('Trying to do place a bumped piece without a shape.')
                 }
-                gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.additionalInfo)
+                logicBundle.gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.additionalInfo)
             },
             place(nodeId) {
                 if (!isShape(inputHandlers?.additionalInfo)) {
@@ -309,20 +309,20 @@ export const inputHandlerFactory = () => {
                         return;
                     }
                 }
-                gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
+                logicBundle.gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
             },
             move(nodeId) {
                 if (inputHandlers.additionalInfo === 'selectPieceToMove') {
-                    gameController.selectPieceToMove(nodeId)
+                    logicBundle.gameController.selectPieceToMove(nodeId)
                 } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
-                    gameController.movePieceToLocation(nodeId);
+                    logicBundle.gameController.movePieceToLocation(nodeId);
                 }
             },
             moveToken(nodeId) {
                 if (inputHandlers.additionalInfo === 'selectPiece') {
-                    gameController.tokenActions.selectMoveThreePiece(nodeId)
+                    logicBundle.gameController.tokenActions.selectMoveThreePiece(nodeId)
                 } else if (inputHandlers.additionalInfo === 'selectLocation') {
-                    gameController.tokenActions.selectMoveThreeLocation(nodeId)
+                    logicBundle.gameController.tokenActions.selectMoveThreeLocation(nodeId)
                 } else {
                     console.error(`Unknown additional info: ${inputHandlers.additionalInfo}`)
                 }

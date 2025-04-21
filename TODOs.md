@@ -6,17 +6,31 @@
     ~~make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)~~
     ~~move all the helpers ot their own module. Can then break that up at a later date~~
 * 4/19
-    * move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or something like that
-        * Maybe we should given them a factory function? That way we can pass in things
-        * Let's great an object that has a reference to gameController, inputHandler, ect..
-        * some things like the Player class don't need the same treatment. I'm pretty sure that the game controller has a one way dependency with it
+    ~~* move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or something like that~~
     * clean up this TODOs file a bit
-    * clean up constants import
+    ~~clean up constants import~~
+* 4/20 - long hike won't get much done
+* 4/21
+    * how do we want to approach the validator? I have a few assumptions
+        1. The gameController methods are being called by the input handlers
+        2. The input handlers know the playerId of the player who called them
+        3. We need to extract the player from the player ID (or alert and return)
+        4. This helper has a return value of the player or null (in which case return) - The helper will take care of the warning. 
+        5. Will eventually need a gamecontroller method for selecting which playerUI/inputHandler to use, this will basically be an API for signalling. Not needed for hotseat
+    * replace copypasta with validator function for player & playerId
+    * look into best way to pass parameters from landing page to hotseat 
     * have a checklist for this being play-test ready
+        * need map to be correct
+        * need end game points
+        * need to be able to configure your hotseat settings
+        * need the connections cities (the east to west routes)
+            * will have a 'traverse nextwork helper'
+        * need the Coellen and Warburg special prestige point city
     * delete my 'Done' field, stopped being satisfying and started being frustrating
     * add slightly more to the landing page, maybe a github link?
-    * potentially start looking into localStorage and the ability to save and resume an existiong game
+    * potentially start looking into localStorage and the ability to save and resume an existing game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* Stuff will eventually end up being async. I might need some sort of debouncer? Or is that not the correct word?
 * eventually will need a 'settings' property for things like AUTO_SCROLL and USE_DEFAULT
 * consider using dynamic import https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import vs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import so that I can make main.js *NOT* a module
 * consider adding a shadow effect to the pieces
@@ -30,16 +44,16 @@
 * Module system **HERE**
 * make the toggles more clear what the default does
 * add all the game logs to bump - just update a list on bumpInformation
-* add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode - also perhaps a collapsable rules doc? token explination at the very least
+* add a settings button - for the moment really just for the sake of having a drop down, but maybe also add the ability to toggle default mode - also perhaps a collapsible rules doc? token explanation at the very least
 * replace the if (IS_HOTSEAT_MODE) {player = this.getActivePlayer()} copypasta with a function
 * add a cancelSelection button to action bar (only works if you haven't done part of an action like move)
 * make nodes hoverable text with their ids as text - tooltip?
-* place collapse buttons at the actual edges. Might do some calulations when creating them
+* place collapse buttons at the actual edges. Might do some calculations when creating them
 * ^^^ need to actually use createDivWithClassAndIdAndStyle in place of document.createElement
 * technically, it's legal to swap circles and squares as part of a move action (for two moves)
 * make sure that the gameboard is scrollable -- This seems surprisingly hard. It might just make sense to remove the property from the gameboard for the moment
 * organize css into sections under comments
-* when reoragnizing css, use nesting
+* when reorganizing css, use nesting
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
 * add chat to game log
@@ -57,7 +71,6 @@
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 
 # Done #
-~~gamelog autoscrolls on new message~~
 ~~time stamp to game log~~
 ~~Bump method~~
 ~~Place pluralifyText where we use awkward ternary operators in text~~

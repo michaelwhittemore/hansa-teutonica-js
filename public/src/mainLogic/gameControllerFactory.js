@@ -116,7 +116,7 @@ export const gameControllerFactory = () => {
             })
 
         },
-        resumeGame(properties) {
+        resumeGame() {
             //TODO - will need to store in localStorage, this will require a LOT of effort and testing
             // I guess it's possible that it won't be too bad if we're just loading gameController fields
             // It will still be a big difference between autosaving and manual saving - the former maybe we 
@@ -1303,6 +1303,13 @@ export const gameControllerFactory = () => {
         endGame() {
             // TODO
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
+        },
+        validateRequestedAction(playerId){
+            // Should we consider moving this to a helper? - I think I like it here as
+            // it will need access to the signalling API. 
+            // dev
+            // This method returns either false (when the wrong player tries to take an action), or the player
+            // This method is also responsible for checking hotseat mode
         },
     }
     logicBundle.gameController = gameController;
