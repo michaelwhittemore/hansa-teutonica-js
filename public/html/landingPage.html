@@ -4,14 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" type="text/css" href="../main.css"> -->
+    <link rel="stylesheet" type="text/css" href="../css/landingPage.css">
     <link rel="icon" type="image/x-icon" href="../images/HT_favicon.png">
-    <!-- <script type="module" src="../src/main.js"></script> -->
+    <script type="module" src="../src/landingPage.js"></script>
     <title>Hansa Teutonica</title>
 </head>
+
 <body>
     <b>This is the landing page</b>
     <br>
-    <a href="hotseat">New Hotseat game</a>
+    <a href="hotseat">New Hotseat game</a> 
     <a href="hotseat?sadsadsadsa">Testing parameters</a>
+    <div class="hotseat">
+        <h3>Configure Hotseat settings</h3>
+        <label for="playerNumber">Number of Players: </label>
+        <select id="playerNumber">
+            <option value="3">3</option>
+            <option value="4" selected>4</option>
+            <option value="5">5</option>
+        </select>
+        <div id="playerSelector"> </div>
+    </div>
+
 </body>
