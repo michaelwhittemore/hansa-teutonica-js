@@ -12,11 +12,11 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerNames, playerColors, boardConfig) {
+        initializeGameStateAndUI(playerList, boardConfig) {
             // let's just use turn order for IDs
             this.playerArray = []
-            for (let i = 0; i < playerNames.length; i++) {
-                const player = new Player(playerColors[i], playerNames[i], FIRST_PLAYER_SQUARES + i, i);
+            for (let i = 0; i < playerList.length; i++) {
+                const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i, i);
                 this.playerArray.push(player)
             }
 

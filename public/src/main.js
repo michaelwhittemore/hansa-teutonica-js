@@ -1,5 +1,4 @@
-import { TEST_PLAYERS_NAMES, TEST_BOARD_CONFIG_CITIES, TEST_PLAYER_COLORS,} from './helpers/constants.js';
-
+import { TEST_PLAYERS, TEST_BOARD_CONFIG_CITIES } from './helpers/constants.js';
 import { inputHandlerFactory } from './mainLogic/inputHandlersFactory.js';
 import { gameControllerFactory } from './mainLogic/gameControllerFactory.js';
 import { turnTrackerControllerFactory } from './mainLogic/turnTrackerControllerFactory.js';
@@ -20,7 +19,7 @@ boardControllerFactory();
 
 const start = () => {
     window.logicBundle = logicBundle // This is just for testing
-    gameController.initializeGameStateAndUI(TEST_PLAYERS_NAMES, TEST_PLAYER_COLORS, TEST_BOARD_CONFIG_CITIES)
+    gameController.initializeGameStateAndUI(TEST_PLAYERS, TEST_BOARD_CONFIG_CITIES)
 }
 
 
