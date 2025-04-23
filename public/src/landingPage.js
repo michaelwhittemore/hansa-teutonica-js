@@ -120,11 +120,38 @@ const validateName = (nameString) => {
 const createColorPicker = (id) => {
     const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], `colorPicker-${id}`)
     // let's create a 5 by five grid
-    for (let i = 0; i < 25; i++){
-        colorPicker.append(createDivWithClassAndIdAndStyle(['colorSelection'], `colorSelection-${i}`))
-    }
+    colorOptions.forEach(color => {
+        const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
+            'backgroundColor': color
+        })
+        colorPicker.onclick = () => {
+            console.log(id, color)
+        }
+        colorPicker.append(colorSelector)
+    })
     document.body.append(colorPicker)
 }
+
+const colorOptions = [
+    '#696969',
+    '#a52a2a',
+    '#008000',
+    '#4b0082',
+    '#ff0000',
+    '#00ced1',
+    '#ffa500',
+    '#7cfc00',
+    '#00fa9a',
+    '#0000ff',
+    '#ff00ff',
+    '#1e90ff',
+    '#eee8aa', 
+    '#ffff54',
+    '#dda0dd',
+    '#ff1493',
+
+
+]
 
 // TODO's 
 /* 
