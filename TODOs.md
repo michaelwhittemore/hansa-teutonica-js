@@ -11,10 +11,8 @@
     ~~clean up constants import~~
 * 4/20 - long hike won't get much done
 * 4/22
-    * look into best way to pass parameters from landing page to hotseat
-        * I think we're gonna use URL based parameters 
-        * let's switch the separate Player name/player color array and create a single player array (just 2-5 right now)
-        * create a simple test button in the landing page and make sure it works
+    ~~look into best way to pass parameters from landing page to hotseat~~
+    * **HERE** parse URL params from the landing page
     * have a checklist for this being play-test ready
         * need map to be correct
         * need end game points

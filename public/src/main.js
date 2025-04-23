@@ -16,11 +16,28 @@ playerBoardAndInformationControllerFactory()
 turnTrackerControllerFactory();
 boardControllerFactory();
 
-
-const start = () => {
-    window.logicBundle = logicBundle // This is just for testing
-    gameController.initializeGameStateAndUI(TEST_PLAYERS, TEST_BOARD_CONFIG_CITIES)
+const playerArrayFromSearchParams = (params) => {
+    const playerArray = []
+    for (let i = 0; i< params.get('playerNumber'); i++){
+        const name = params.get(`playerName-${i}`)
+        const color = params.get(`playerColor-${i}`)
+        playerArray.push([name, color])
+    }
+    return playerArray
 }
 
+// TODO need to have a url parser that creates anm player array (otherwise we default to TEST_PLAYERS)
+const start = () => {
+    let startingPlayerArray;
+    const searchParams = (new URL(location)).searchParams
+    if (searchParams.size === 0){
+        // default case
+        startingPlayerArray = TEST_PLAYERS;
+    } else {
+        startingPlayerArray = playerArrayFromSearchParams(searchParams)
+    }
+    window.logicBundle = logicBundle // This is just for testing
+    gameController.initializeGameStateAndUI(startingPlayerArray, TEST_BOARD_CONFIG_CITIES)
+}
 
 window.onload = start

@@ -1,4 +1,4 @@
-export const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for settup
+export const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for setup
 export const FIRST_PLAYER_SQUARES = 6;
 // export const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
 // export const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
@@ -71,7 +71,7 @@ export const REGULAR_TOKENS_NUMBER_MAP = {
 // I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
 // They start off hidden unless they're starting
-// array has xdirection, ydirection, isStarting
+// array has x-direction, y-direction, isStarting
 export const TOKEN_CONFIG_BY_ROUTES = {
     'Alpha-Beta': [0, .6, true],
     'Alpha-Zeta': [.6, 0, true],

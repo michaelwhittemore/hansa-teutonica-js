@@ -4,9 +4,9 @@ import { createDivWithClassAndIdAndStyle } from "./helpers/helpers.js";
 const populatePlayerSelectionWithDefault = () => {
     for (let i = 0; i < TEST_PLAYERS.length; i++) {
         // I'm not zero indexing for UI
-        document.getElementById(`playerName-${i+1}`).value = TEST_PLAYERS[i][0]
-        document.getElementById(`playerColor-${i+1}`).value = TEST_PLAYERS[i][1]
-        document.getElementById(`playerColor-${i+1}`).style.color = TEST_PLAYERS[i][1]
+        document.getElementById(`playerName-${i + 1}`).value = TEST_PLAYERS[i][0]
+        document.getElementById(`playerColor-${i + 1}`).value = TEST_PLAYERS[i][1]
+        document.getElementById(`playerColor-${i + 1}`).style.color = TEST_PLAYERS[i][1]
     }
 };
 
@@ -39,26 +39,26 @@ const createPlayerInfoDiv = (id) => {
 
 const startGame = () => {
     // TODO
-    // Need to find gamemode, but right now I'm, going to default to hotseat
+    // Need to find game mode (i.e. online vs hotseat), but right now I'm, going to default to hotseat
     // Will need some validation here, but let's not worry about it for the moment
     // We can't allow special characters because they would screw up my URL I think
     // I don't need the player array, can directly add to URL
-    // May need to encodeURI for special charcters
+    // May need to encodeURI for special characters
+    const playerSelector = document.getElementById('playerSelector')
+
     const url = new URL(document.location.href);
     url.pathname = 'hotseat'
+    url.searchParams.append('playerNumber', playerSelector.childElementCount)
+    for (let i = 0; i < playerSelector.childElementCount; i++) {
+        const name = document.getElementById(`playerName-${i + 1}`).value;
+        const color = document.getElementById(`playerColor-${i + 1}`).value;
 
-    const playerSelector = document.getElementById('playerSelector')
-    for (let i = 0; i < playerSelector.childElementCount; i++ ){
-        const id = i + 1;
-        const name = document.getElementById(`playerName-${id}`).value;
-        const color = document.getElementById(`playerColor-${id}`).value;
-
-        url.searchParams.append(`playerName-${id}`, name)
-        url.searchParams.append(`playerColor-${id}`, color)
+        url.searchParams.append(`playerName-${i}`, name)
+        url.searchParams.append(`playerColor-${i}`, color)
     }
 
     console.log(url)
-    if (!URL.canParse(url)){
+    if (!URL.canParse(url)) {
         console.error('Can not parse url', url)
     }
     window.location.assign(url)
@@ -79,7 +79,7 @@ const bindButtons = () => {
 * Add an onchange to the player number drop down
 * Add the start button with the url parser
 * Start should also be hidden until the game mode is selected
-**/ 
+**/
 
 const start = () => {
     populatePlayerSelection(4)

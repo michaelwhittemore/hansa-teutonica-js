@@ -2,7 +2,8 @@ import { AUTO_SCROLL } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 export const gameLogControllerFactory = () => {
     const gameLogController = {
-        initializeGameLog(history) {
+        initializeGameLog() {
+            // I think history will pretty much always be stored locally
             // optionally, we should load in history
             const collapseButton = document.createElement('button');
             collapseButton.innerText = 'Collapse Game Log';
