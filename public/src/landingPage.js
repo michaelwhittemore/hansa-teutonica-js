@@ -59,10 +59,12 @@ const startGame = () => {
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
     for (let i = 0; i < playerSelector.childElementCount; i++) {
         const nameInput = document.getElementById(`playerName-${i + 1}`);
-        nameInput.classList.remove('invalidForm')
-        document.getElementById(`playerError-${i + 1}`).innerText = ''
+
         const name = nameInput.value;
         const nameValidation = validateName(name);
+
+        nameInput.classList.remove('invalidForm')
+        document.getElementById(`playerError-${i + 1}`).innerText = ''
         if (!nameValidation[0]) {
             nameInput.classList.add('invalidForm')
             document.getElementById(`playerError-${i + 1}`).innerText = nameValidation[1]
@@ -71,11 +73,10 @@ const startGame = () => {
         }
 
         const color = document.getElementById(`playerColor-${i + 1}`).value;
-
         url.searchParams.append(`playerName-${i}`, name)
         url.searchParams.append(`playerColor-${i}`, color)
     }
-    if (!allValid){
+    if (!allValid) {
         return
     }
     if (!URL.canParse(url)) {
@@ -98,7 +99,10 @@ const bindButtons = () => {
 
 const validateName = (nameString) => {
     if (nameString === '') {
-        return [false, 'Name must not be empty.']
+        return [false, 'Names may not be empty.']
+    }
+    if (nameString.length > 20){
+        return [false, 'Names may not be longer than 20 characters.']
     }
     // ^[a-zA-Z0-9\_]*$ 
     /*
@@ -107,18 +111,25 @@ const validateName = (nameString) => {
     "*": Zero or more instances of the preceding regex token
     "$": End of string
     */
-    if (!/^[a-zA-Z0-9_]*$/.test(nameString)){
+    if (!/^[a-zA-Z0-9_]*$/.test(nameString)) {
         return [false, 'Names can only contain alphanumerics or underscores.']
     }
-
-    // Happy Path
     return [true, 'This should never be displayed']
 }
+// I'm just testing this, I'll need to add it to a hidden popup later
+const createColorPicker = (id) => {
+    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], `colorPicker-${id}`)
+    // let's create a 5 by five grid
+    for (let i = 0; i < 25; i++){
+        colorPicker.append(createDivWithClassAndIdAndStyle(['colorSelection'], `colorSelection-${i}`))
+    }
+    document.body.append(colorPicker)
+}
+
 // TODO's 
 /* 
 * Eventually we would like the config to pop up when you select "hotseat" - possibly just hide it otherwise
 Need to validate colors work
-* Need to sanitize player input - both kinds
 * Use a nicer color selector
 * Two Players can't have the same color. 
 * Maybe we create a list of valid colors. Let's aim for thirty
@@ -135,5 +146,6 @@ const start = () => {
     populatePlayerSelection(4)
     populatePlayerSelectionWithDefault();
     bindButtons();
+    createColorPicker(1) // remove this
 }
 window.onload = start;

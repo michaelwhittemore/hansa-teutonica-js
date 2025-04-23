@@ -1,17 +1,39 @@
-.playerInfo{
+.playerInfo {
     margin: 2px;
     height: 40px;
 }
-.playerError{
+
+.playerError {
     color: red;
     font-style: italic;
 }
 
-input{
+input {
     border-color: black;
     border-radius: 4px;
 }
+
 .invalidForm {
     border-color: red;
     background-color: ivory;
+}
+
+.colorPicker {
+    height: 200px;
+    width: 200px;
+    background-color: aquamarine;
+    border-style:solid;
+    border-radius: 4px;
+    border-color: black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.colorSelection {
+    height: 17%;
+    width: 17%;
+    margin: 2px;
+    background-color: black;
 }
