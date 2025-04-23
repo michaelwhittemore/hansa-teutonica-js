@@ -8,6 +8,7 @@ const populatePlayerSelectionWithDefault = () => {
         document.getElementById(`playerColor-${i + 1}`).value = TEST_PLAYERS[i][1]
         document.getElementById(`playerColor-${i + 1}`).style.color = TEST_PLAYERS[i][1]
     }
+    document.getElementById('playerNumber').value = TEST_PLAYERS.length;
 };
 
 const populatePlayerSelection = (playerNumber) => {
@@ -57,16 +58,22 @@ const startGame = () => {
         url.searchParams.append(`playerColor-${i}`, color)
     }
 
-    console.log(url)
     if (!URL.canParse(url)) {
         console.error('Can not parse url', url)
+        return;
     }
     window.location.assign(url)
 
 }
 
+const playerNumberOnChange = () => {
+    const playerNumber = document.getElementById('playerNumber').value;
+    console.log(playerNumber)
+}
+
 const bindButtons = () => {
-    const playerNumberDropdown = document.getElementById('playerNumber')
+    // const playerNumberDropdown = document.getElementById('playerNumber')
+    document.getElementById('playerNumber').onchange = playerNumberOnChange
     document.getElementById('start').onclick = startGame
 }
 
@@ -76,9 +83,11 @@ const bindButtons = () => {
 * Need to validate colors work
 * Need to sanitize player input - both kinds
 * Use a nicer color selector
+* Shouldn't worry too much about the player's colors not being updated right now
 * Add an onchange to the player number drop down
 * Add the start button with the url parser
 * Start should also be hidden until the game mode is selected
+* 
 **/
 
 const start = () => {

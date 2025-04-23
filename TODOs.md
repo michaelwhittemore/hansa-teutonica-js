@@ -12,7 +12,13 @@
 * 4/20 - long hike won't get much done
 * 4/22
     ~~look into best way to pass parameters from landing page to hotseat~~
-    * **HERE** parse URL params from the landing page
+    ~~parse URL params from the landing page~~
+* 4/23
+    * Landing page work
+        * on change for the player number drop down
+        * hide the config page until the gameMode is selected
+        * name sanitization
+    * add eslint semicolon rules
     * have a checklist for this being play-test ready
         * need map to be correct
         * need end game points
