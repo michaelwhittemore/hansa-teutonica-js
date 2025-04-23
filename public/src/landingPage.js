@@ -13,12 +13,24 @@ const populatePlayerSelectionWithDefault = () => {
 
 const populatePlayerSelection = (playerNumber) => {
     const playerSelector = document.getElementById('playerSelector')
-    // need to check the current number of elements - not sure if can just get direct children
-
     for (let i = 0; i < playerNumber; i++) {
         playerSelector.append(createPlayerInfoDiv(i + 1))
     }
 };
+
+const modifyPlayerSelection = (playerNumber) => {
+    const playerSelector = document.getElementById('playerSelector')
+    const currentSize = playerSelector.childElementCount;
+    if (currentSize < playerNumber) {
+        for (let i = currentSize; i < playerNumber; i++) {
+            playerSelector.append(createPlayerInfoDiv(i + 1))
+        }
+    } else if (currentSize > playerNumber) {
+        for (let i = currentSize; i > playerNumber; i--) {
+            document.getElementById(`playerInfo-${i}`).remove();
+        }
+    }
+}
 
 const createPlayerInfoDiv = (id) => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], `playerInfo-${id}`)
@@ -69,10 +81,10 @@ const startGame = () => {
 const playerNumberOnChange = () => {
     const playerNumber = document.getElementById('playerNumber').value;
     console.log(playerNumber)
+    modifyPlayerSelection(playerNumber)
 }
 
 const bindButtons = () => {
-    // const playerNumberDropdown = document.getElementById('playerNumber')
     document.getElementById('playerNumber').onchange = playerNumberOnChange
     document.getElementById('start').onclick = startGame
 }
@@ -84,10 +96,8 @@ const bindButtons = () => {
 * Need to sanitize player input - both kinds
 * Use a nicer color selector
 * Shouldn't worry too much about the player's colors not being updated right now
-* Add an onchange to the player number drop down
-* Add the start button with the url parser
 * Start should also be hidden until the game mode is selected
-* 
+* Stylize the selectors a little 
 **/
 
 const start = () => {
