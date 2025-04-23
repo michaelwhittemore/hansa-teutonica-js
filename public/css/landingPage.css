@@ -1,6 +1,12 @@
 .playerInfo{
     margin: 2px;
+    height: 40px;
 }
+.playerError{
+    color: red;
+    font-style: italic;
+}
+
 input{
     border-color: black;
     border-radius: 4px;

@@ -46,31 +46,28 @@ const createPlayerInfoDiv = (id) => {
     const playerColorInput = document.createElement('input')
     playerColorInput.id = `playerColor-${id}`
 
-    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorLabel, playerColorInput)
+    const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], `playerError-${id}`);
+    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorLabel, playerColorInput, playerErrorDisplay)
     return playerInfoDiv
 }
 
 const startGame = () => {
-    // TODO
-    // Need to find game mode (i.e. online vs hotseat), but right now I'm, going to default to hotseat
-    // Will need some validation here, but let's not worry about it for the moment
-    // We can't allow special characters because they would screw up my URL I think
-    // I don't need the player array, can directly add to URL
-    // May need to encodeURI for special characters
     const playerSelector = document.getElementById('playerSelector')
-
+    let allValid = true;
     const url = new URL(document.location.href);
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
     for (let i = 0; i < playerSelector.childElementCount; i++) {
         const nameInput = document.getElementById(`playerName-${i + 1}`);
         nameInput.classList.remove('invalidForm')
+        document.getElementById(`playerError-${i + 1}`).innerText = ''
         const name = nameInput.value;
         const nameValidation = validateName(name);
         if (!nameValidation[0]) {
             nameInput.classList.add('invalidForm')
+            document.getElementById(`playerError-${i + 1}`).innerText = nameValidation[1]
             console.error(nameValidation[1])
-            return
+            allValid = false
         }
 
         const color = document.getElementById(`playerColor-${i + 1}`).value;
@@ -78,7 +75,9 @@ const startGame = () => {
         url.searchParams.append(`playerName-${i}`, name)
         url.searchParams.append(`playerColor-${i}`, color)
     }
-
+    if (!allValid){
+        return
+    }
     if (!URL.canParse(url)) {
         console.error('Can not parse url', url)
         return;
@@ -98,7 +97,6 @@ const bindButtons = () => {
 }
 
 const validateName = (nameString) => {
-    console.log('validating nameString', nameString)
     if (nameString === '') {
         return [false, 'Name must not be empty.']
     }
@@ -119,10 +117,12 @@ const validateName = (nameString) => {
 // TODO's 
 /* 
 * Eventually we would like the config to pop up when you select "hotseat" - possibly just hide it otherwise
-* Will need an area that warns invalid selections (and highlights invalid forms) 
 Need to validate colors work
 * Need to sanitize player input - both kinds
 * Use a nicer color selector
+* Two Players can't have the same color. 
+* Maybe we create a list of valid colors. Let's aim for thirty
+* maybe a grid?
 * Shouldn't worry too much about the player's colors not being updated right now
 * Start should also be hidden until the game mode is selected
 * Stylize the selectors a little 
