@@ -1,0 +1,11 @@
+.playerInfo{
+    margin: 2px;
+}
+input{
+    border-color: black;
+    border-radius: 4px;
+}
+.invalidForm {
+    border-color: red;
+    background-color: ivory;
+}

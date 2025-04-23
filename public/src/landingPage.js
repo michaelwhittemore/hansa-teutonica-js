@@ -63,7 +63,16 @@ const startGame = () => {
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
     for (let i = 0; i < playerSelector.childElementCount; i++) {
-        const name = document.getElementById(`playerName-${i + 1}`).value;
+        const nameInput = document.getElementById(`playerName-${i + 1}`);
+        nameInput.classList.remove('invalidForm')
+        const name = nameInput.value;
+        const nameValidation = validateName(name);
+        if (!nameValidation[0]) {
+            nameInput.classList.add('invalidForm')
+            console.error(nameValidation[1])
+            return
+        }
+
         const color = document.getElementById(`playerColor-${i + 1}`).value;
 
         url.searchParams.append(`playerName-${i}`, name)
@@ -80,7 +89,6 @@ const startGame = () => {
 
 const playerNumberOnChange = () => {
     const playerNumber = document.getElementById('playerNumber').value;
-    console.log(playerNumber)
     modifyPlayerSelection(playerNumber)
 }
 
@@ -89,15 +97,38 @@ const bindButtons = () => {
     document.getElementById('start').onclick = startGame
 }
 
+const validateName = (nameString) => {
+    console.log('validating nameString', nameString)
+    if (nameString === '') {
+        return [false, 'Name must not be empty.']
+    }
+    // ^[a-zA-Z0-9\_]*$ 
+    /*
+    "^" : Start of string
+    "[a-zA-Z0-9_]": Matches alphanumeric or underscore (don't need to escape underscore)
+    "*": Zero or more instances of the preceding regex token
+    "$": End of string
+    */
+    if (!/^[a-zA-Z0-9_]*$/.test(nameString)){
+        return [false, 'Names can only contain alphanumerics or underscores.']
+    }
+
+    // Happy Path
+    return [true, 'This should never be displayed']
+}
 // TODO's 
 /* 
 * Eventually we would like the config to pop up when you select "hotseat" - possibly just hide it otherwise
-* Need to validate colors work
+* Will need an area that warns invalid selections (and highlights invalid forms) 
+Need to validate colors work
 * Need to sanitize player input - both kinds
 * Use a nicer color selector
 * Shouldn't worry too much about the player's colors not being updated right now
 * Start should also be hidden until the game mode is selected
 * Stylize the selectors a little 
+* For online - should either offer 'NEW' or 'JOIN'. Will need to offer players the ability to create
+// a room name, and will also need to give the game a GUID (maybe can just do a smaller hash)
+* online play will need a waiting room feature, but that is beyond the scope of the landing page
 **/
 
 const start = () => {
