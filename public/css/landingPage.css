@@ -1,26 +1,18 @@
 .playerInfo {
     margin: 2px;
     height: 40px;
-    display: flex;
 }
 
 .playerError {
     color: red;
     font-style: italic;
-    /* We just have the below fields for bdeuggung for debgugin */
-    background-color: aquamarine;
-    min-height: 15px;
-    min-width: 30px;
-    
 }
 
 input {
     border-color: black;
     border-radius: 4px;
 }
-.playerNameInput{
-    height: 45%
-}
+
 .invalidForm {
     border-color: red;
     background-color: ivory;
