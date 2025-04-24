@@ -5,8 +5,8 @@ const populatePlayerSelectionWithDefault = () => {
     for (let i = 0; i < TEST_PLAYERS.length; i++) {
         // I'm not zero indexing for UI
         document.getElementById(`playerName-${i + 1}`).value = TEST_PLAYERS[i][0]
-        document.getElementById(`playerColor-${i + 1}`).value = TEST_PLAYERS[i][1]
-        document.getElementById(`playerColor-${i + 1}`).style.color = TEST_PLAYERS[i][1]
+        document.getElementById(`playerColor-${i + 1}`).innerHTML = 'Change Color'
+        document.getElementById(`playerColor-${i + 1}`).style.backgroundColor = TEST_PLAYERS[i][1]
     }
     document.getElementById('playerNumber').value = TEST_PLAYERS.length;
 };
@@ -44,16 +44,19 @@ const createPlayerInfoDiv = (id) => {
     // HERE!
     // Let's just create a button for each that exposes the color picker
     // WIll also need to update the player defaults to use pickable color
+    // When the button is pressed we will need to make the color picker visbile
 
-    const playerColorLabel = document.createElement('label')
-    playerColorLabel.innerText = ` Player ${id} Color: `;
-    playerColorLabel.htmlFor = `playerColor-${id}`
-    const playerColorInput = document.createElement('input')
-    playerColorInput.id = `playerColor-${id}`
+    const playerColorButton = document.createElement('button')
+    playerColorButton.id = `playerColor-${id}`
+    playerColorButton.innerText = 'Select Color';
+    playerColorButton.onclick = () => {
+        pickingColorId = id;
+        document.getElementById('colorPicker').style.visibility = 'visible'
+    }
 
     const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], `playerError-${id}`);
+    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton,playerErrorDisplay)
 
-    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorLabel, playerColorInput, playerErrorDisplay)
     return playerInfoDiv
 }
 
@@ -123,17 +126,26 @@ const validateName = (nameString) => {
     return [true, 'This should never be displayed']
 }
 // I'm just testing this, I'll need to add it to a hidden popup later
+let pickingColorId;
 const createColorPicker = (id) => {
-    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], `colorPicker-${id}`, {
-        // visibility: 'hidden'
+    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], 'colorPicker', {
+        visibility: 'hidden'
     })
     // let's create a 5 by five grid
     colorOptions.forEach(color => {
         const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
             'backgroundColor': color
         })
-        colorPicker.onclick = () => {
-            console.log(id, color)
+        colorSelector.onclick = () => {
+            console.log(color)
+            console.log('pickingColorId', pickingColorId)
+            if (pickingColorId){
+                // here!
+                document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
+                document.getElementById(`playerColor-${ pickingColorId}`).style.backgroundColor = color
+                colorPicker.style.visibility = 'hidden'
+                pickingColorId = undefined;
+            }
         }
         colorPicker.append(colorSelector)
     })
@@ -157,8 +169,6 @@ const colorOptions = [
     '#ffff54',
     '#dda0dd',
     '#ff1493',
-
-
 ]
 
 // TODO's 
