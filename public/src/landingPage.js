@@ -38,16 +38,24 @@ const createPlayerInfoDiv = (id) => {
     playerNameLabel.innerText = `Player ${id} Name: `;
     playerNameLabel.htmlFor = `playerName-${id}`
     const playerNameInput = document.createElement('input')
+    playerNameInput.className = 'playerNameInput'
     playerNameInput.id = `playerName-${id}`
 
-    const playerColorLabel = document.createElement('label')
-    playerColorLabel.innerText = ` Player ${id} Color: `;
-    playerColorLabel.htmlFor = `playerColor-${id}`
-    const playerColorInput = document.createElement('input')
-    playerColorInput.id = `playerColor-${id}`
+    // HERE!
+    // Let's just create a button for each that exposes the color picker
+    // WIll also need to update the player defaults to use pickable color
+
+    // const playerColorLabel = document.createElement('label')
+    // playerColorLabel.innerText = ` Player ${id} Color: `;
+    // playerColorLabel.htmlFor = `playerColor-${id}`
+    // const playerColorInput = document.createElement('input')
+    // playerColorInput.id = `playerColor-${id}`
+    const selectColorButton = createDivWithClassAndIdAndStyle(['colorButton'], `playerColor-${id}`)
 
     const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], `playerError-${id}`);
-    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorLabel, playerColorInput, playerErrorDisplay)
+    playerInfoDiv.append(playerNameLabel, playerNameInput,selectColorButton, playerErrorDisplay)
+
+    // playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorLabel, playerColorInput, playerErrorDisplay)
     return playerInfoDiv
 }
 
@@ -118,7 +126,9 @@ const validateName = (nameString) => {
 }
 // I'm just testing this, I'll need to add it to a hidden popup later
 const createColorPicker = (id) => {
-    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], `colorPicker-${id}`)
+    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], `colorPicker-${id}`, {
+        visibility: 'hidden'
+    })
     // let's create a 5 by five grid
     colorOptions.forEach(color => {
         const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {

@@ -15,9 +15,8 @@
     ~~parse URL params from the landing page~~
 * 4/23
     * Landing page work
-        * on change for the player number drop down
+        * Add color selector to player info 
         * hide the config page until the gameMode is selected
-        * name sanitization
     * add eslint semicolon rules
     * have a checklist for this being play-test ready
         * need map to be correct
@@ -30,6 +29,7 @@
     * add slightly more to the landing page, maybe a github link?
     * potentially start looking into localStorage and the ability to save and resume an existing game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
+* maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
 * Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?
 * TODO! all methods will need to actually pass in the playerId. Probably give inputHandlers a playerId field
 * will need to replace the gameController reference in the inputHandlers with an API (which either uses signalling or just straight references it via the logic bundle)
