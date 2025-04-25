@@ -4,9 +4,9 @@ import { createDivWithClassAndIdAndStyle } from "./helpers/helpers.js";
 const populatePlayerSelectionWithDefault = () => {
     for (let i = 0; i < TEST_PLAYERS.length; i++) {
         // I'm not zero indexing for UI
-        document.getElementById(`playerName-${i + 1}`).value = TEST_PLAYERS[i][0]
-        document.getElementById(`playerColor-${i + 1}`).innerHTML = 'Change Color'
-        document.getElementById(`playerColor-${i + 1}`).style.backgroundColor = TEST_PLAYERS[i][1]
+        document.getElementById(`playerName-${i}`).value = TEST_PLAYERS[i][0]
+        document.getElementById(`playerColor-${i}`).innerHTML = 'Change Color'
+        document.getElementById(`playerColor-${i}`).style.backgroundColor = TEST_PLAYERS[i][1]
     }
     document.getElementById('playerNumber').value = TEST_PLAYERS.length;
 };
@@ -14,7 +14,7 @@ const populatePlayerSelectionWithDefault = () => {
 const populatePlayerSelection = (playerNumber) => {
     const playerSelector = document.getElementById('playerSelector')
     for (let i = 0; i < playerNumber; i++) {
-        playerSelector.append(createPlayerInfoDiv(i + 1))
+        playerSelector.append(createPlayerInfoDiv(i))
     }
 };
 
@@ -23,7 +23,7 @@ const modifyPlayerSelection = (playerNumber) => {
     const currentSize = playerSelector.childElementCount;
     if (currentSize < playerNumber) {
         for (let i = currentSize; i < playerNumber; i++) {
-            playerSelector.append(createPlayerInfoDiv(i + 1))
+            playerSelector.append(createPlayerInfoDiv(i))
         }
     } else if (currentSize > playerNumber) {
         for (let i = currentSize; i > playerNumber; i--) {
@@ -67,21 +67,22 @@ const startGame = () => {
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
     for (let i = 0; i < playerSelector.childElementCount; i++) {
-        const nameInput = document.getElementById(`playerName-${i + 1}`);
+        const nameInput = document.getElementById(`playerName-${i}`);
 
         const name = nameInput.value;
         const nameValidation = validateName(name);
 
         nameInput.classList.remove('invalidForm')
-        document.getElementById(`playerError-${i + 1}`).innerText = ''
+        document.getElementById(`playerError-${i}`).innerText = ''
         if (!nameValidation[0]) {
             nameInput.classList.add('invalidForm')
-            document.getElementById(`playerError-${i + 1}`).innerText = nameValidation[1]
+            document.getElementById(`playerError-${i}`).innerText = nameValidation[1]
             console.error(nameValidation[1])
             allValid = false
         }
 
-        const color = document.getElementById(`playerColor-${i + 1}`).value;
+        // const color = document.getElementById(`playerColor-${i}`).value;
+        const color = playerInfoArray[i][1]
         url.searchParams.append(`playerName-${i}`, name)
         url.searchParams.append(`playerColor-${i}`, color)
     }
@@ -141,7 +142,7 @@ const createColorPicker = (id) => {
             'backgroundColor': color
         })
         colorSelector.onclick = () => {
-            if (pickingColorId){
+            if (pickingColorId !== undefined){
                 // here!
                 // need to maintain a player array and update it on button clicks
                 document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
