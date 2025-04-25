@@ -17,6 +17,7 @@
     * Landing page work
         * Add color selector to player info 
         * hide the config page until the gameMode is selected
+        * fix the bad use of non-zero index. That should only ever be used in the UI (maybe not even then)
     * add eslint semicolon rules
     * have a checklist for this being play-test ready
         * need map to be correct

@@ -125,8 +125,12 @@ const validateName = (nameString) => {
     }
     return [true, 'This should never be displayed']
 }
-// I'm just testing this, I'll need to add it to a hidden popup later
+
+// TODO hoist these values higher up
 let pickingColorId;
+let playerInfoArray = [...TEST_PLAYERS]
+console.log(playerInfoArray)
+// HERE! we should modify and use the playerInfoArray instead of using the values when pressing start
 const createColorPicker = (id) => {
     const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], 'colorPicker', {
         visibility: 'hidden'
@@ -137,13 +141,14 @@ const createColorPicker = (id) => {
             'backgroundColor': color
         })
         colorSelector.onclick = () => {
-            console.log(color)
-            console.log('pickingColorId', pickingColorId)
             if (pickingColorId){
                 // here!
+                // need to maintain a player array and update it on button clicks
                 document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
                 document.getElementById(`playerColor-${ pickingColorId}`).style.backgroundColor = color
                 colorPicker.style.visibility = 'hidden'
+                playerInfoArray[pickingColorId][1] = color;
+                console.log(playerInfoArray)
                 pickingColorId = undefined;
             }
         }
