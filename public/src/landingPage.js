@@ -41,11 +41,6 @@ const createPlayerInfoDiv = (id) => {
     playerNameInput.className = 'playerNameInput'
     playerNameInput.id = `playerName-${id}`
 
-    // HERE!
-    // Let's just create a button for each that exposes the color picker
-    // WIll also need to update the player defaults to use pickable color
-    // When the button is pressed we will need to make the color picker visbile
-
     const playerColorButton = document.createElement('button')
     playerColorButton.id = `playerColor-${id}`
     playerColorButton.innerText = 'Select Color';
@@ -61,11 +56,14 @@ const createPlayerInfoDiv = (id) => {
 }
 
 const startGame = () => {
+    // here! make sure we don't have duplicate colors
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
+    const selectedColors = []
     const url = new URL(document.location.href);
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
+
     for (let i = 0; i < playerSelector.childElementCount; i++) {
         const nameInput = document.getElementById(`playerName-${i}`);
 
@@ -78,11 +76,18 @@ const startGame = () => {
             nameInput.classList.add('invalidForm')
             document.getElementById(`playerError-${i}`).innerText = nameValidation[1]
             console.error(nameValidation[1])
-            allValid = false
+            allValid = false;
         }
 
-        // const color = document.getElementById(`playerColor-${i}`).value;
-        const color = playerInfoArray[i][1]
+        const color = playerColorArray[i]
+        if (!playerColorArray[i]){
+            document.getElementById(`playerError-${i}`).innerText = 'Color not selected.'
+            allValid = false;
+        } else if(selectedColors.includes(color)){
+            document.getElementById(`playerError-${i}`).innerText = 'Players may not have the same color.'
+            allValid = false;
+        }
+        selectedColors.push(color)
         url.searchParams.append(`playerName-${i}`, name)
         url.searchParams.append(`playerColor-${i}`, color)
     }
@@ -129,27 +134,25 @@ const validateName = (nameString) => {
 
 // TODO hoist these values higher up
 let pickingColorId;
-let playerInfoArray = [...TEST_PLAYERS]
-console.log(playerInfoArray)
-// HERE! we should modify and use the playerInfoArray instead of using the values when pressing start
-const createColorPicker = (id) => {
+let playerColorArray = []
+TEST_PLAYERS.forEach(playerArr => {
+    playerColorArray.push(playerArr[1])
+});
+
+const createColorPicker = () => {
     const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], 'colorPicker', {
         visibility: 'hidden'
     })
-    // let's create a 5 by five grid
     colorOptions.forEach(color => {
         const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
             'backgroundColor': color
         })
         colorSelector.onclick = () => {
             if (pickingColorId !== undefined){
-                // here!
-                // need to maintain a player array and update it on button clicks
                 document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
                 document.getElementById(`playerColor-${ pickingColorId}`).style.backgroundColor = color
                 colorPicker.style.visibility = 'hidden'
-                playerInfoArray[pickingColorId][1] = color;
-                console.log(playerInfoArray)
+                playerColorArray[pickingColorId] = color;
                 pickingColorId = undefined;
             }
         }

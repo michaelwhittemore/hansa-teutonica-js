@@ -13,11 +13,11 @@
 * 4/22
     ~~look into best way to pass parameters from landing page to hotseat~~
     ~~parse URL params from the landing page~~
-* 4/23
+* 4/25
     * Landing page work
-        * Add color selector to player info 
+        ~~Add color selector to player info~~
         * hide the config page until the gameMode is selected
-        * fix the bad use of non-zero index. That should only ever be used in the UI (maybe not even then)
+        ~~fix the bad use of non-zero index. That should only ever be used in the UI~~
     * add eslint semicolon rules
     * have a checklist for this being play-test ready
         * need map to be correct
@@ -26,7 +26,7 @@
         * need the connections cities (the east to west routes)
             * will have a 'traverse network helper'
         * need the Coellen and Warburg special prestige point city
-    * delete my 'Done' field, stopped being satisfying and started being frustrating
+    ~~delete my 'Done' field, stopped being satisfying and started being frustrating~~
     * add slightly more to the landing page, maybe a github link?
     * potentially start looking into localStorage and the ability to save and resume an existing game
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8

@@ -1,8 +1,6 @@
 export const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - see https://cdn.1j1ju.com/medias/df/af/68-hansa-teutonica-big-box-rulebook.pdf - page 3 for setup
 export const FIRST_PLAYER_SQUARES = 6;
-// export const TEST_PLAYERS_NAMES = ['Alice', 'Bob', 'Claire', 'Phil']
-// export const TEST_PLAYER_COLORS = ['red', 'blue', 'green', 'pink']
-export const TEST_PLAYERS = [['Alice', 'red'], ['Bob', 'blue'], ['Claire', 'green'], ['Phil', 'hotpink']]
+export const TEST_PLAYERS = [['Alice', '#ff0000'], ['Bob', '#0000ff'], ['Claire', '#008000'], ['Phil', '#ff1493']]
 export const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
 export const IS_HOTSEAT_MODE = true;
 export const USE_DEFAULT_CLICK_ACTIONS = true;
