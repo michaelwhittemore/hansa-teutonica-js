@@ -2,6 +2,7 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForGameBoard,
     offSetCoordinatesForSize,
  } from "../helpers/helpers.js";
+import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 
 export const boardControllerFactory = () => {
     const boardController = {
@@ -160,7 +161,7 @@ export const boardControllerFactory = () => {
         addTokenToRoute(routeId, tokenKind) {
             const tokenDiv = document.getElementById(`token-${routeId}`);
             tokenDiv.style.backgroundColor = 'silver'
-            tokenDiv.innerText = tokenKind;
+            tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenKind];
             tokenDiv.style.visibility = 'visible'
         },
         toggleAllTokenLocations(routes, visibilityStatus = 'visible') {
@@ -200,7 +201,7 @@ export const boardControllerFactory = () => {
         },
         createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
             const TOKEN_DISTANCE = 120
-            const TOKEN_SIZE = 40
+            const TOKEN_SIZE = 55
             // These should *NOT* need a click handler - actually will need one when re-adding tokens
             // I think this should be called by createRouteAndTokenFromLocations
             const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
@@ -211,7 +212,7 @@ export const boardControllerFactory = () => {
             if (isStartingToken) {
                 tokenDiv.style.visibility = 'visible'
                 tokenDiv.style.backgroundColor = 'goldenrod'
-                tokenDiv.innerText = tokenValue
+                tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenValue]
             }
             tokenDiv.onclick = () => {
                 logicBundle.inputHandlers.tokenLocationClickHandler(routeId)

@@ -11,7 +11,6 @@
 * Need a settings drop down (Change clicks default)
 * Need the ability to save and resume
 
-
 # TODOs #
 * 4/27
     * make tokens look nicer
@@ -22,6 +21,7 @@
     * potentially start looking into localStorage and the ability to save and resume an existing game
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
+* Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
 * Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?
@@ -47,7 +47,7 @@
 * when reorganizing css, use nesting
 * replace a lot of the css copy pasta, stuff like centered with flex into utility classes
 * refactor the warn and clear - should probably rename it to make it clear it's unrelated to player info
-* add chat to game log
+* add chat to game log (only relevant in online play)
 * Move some of the gameController copy pasta into it's own methods
 * Add a turn timer to the turn tracker
 * keyboard short cuts for place and selecting shape

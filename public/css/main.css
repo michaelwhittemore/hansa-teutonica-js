@@ -389,12 +389,15 @@
 }
 
 .onBoardToken {
-    height: 40px;
-    width: 40px;
+    height: 55px;
+    width: 55px;
     position: absolute;
     background-color: silver;
     display: flex;
     visibility: hidden;
+    font-size: 60%;
+    align-items: center;
+    text-align: center;
 }
 
 /* Utility Classes */

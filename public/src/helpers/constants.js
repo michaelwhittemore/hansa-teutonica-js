@@ -79,23 +79,15 @@ export const TOKEN_CONFIG_BY_ROUTES = {
     'Delta-Epsilon': [-.7, .1],
 }
 
-// The below can be used to fix my name mapping issue, but then deleted I think
-export const PLAYER_FIELDS_TO_TEXT_MAP = {
-    name: 'Name',
-    color: 'Color',
-    keys: 'Keys',
-    unlockedColors: 'Unlocked Colors',
-    supplySquares: 'Traders (Squares) in Supply',
-    bankedSquares: 'Traders (Squares) in Bank',
-    supplyCircles: 'Merchants (Circles) in Supply',
-    bankedCircles: 'Merchants (Circles) in Bank',
-    maxActions: 'Max Actions',
-    currentActions: 'Actions Remaining',
-    currentPoints: 'Current Non-Endgame Points',
-    maxMovement: 'Maximum Piece Movement',
-    purse: 'Maximum Resupply'
+export const TOKEN_READABLE_NAMES = {
+    bonusPost: 'Additional Trading Post',
+    freeUpgrade: 'Develop One Ability',
+    threeActions: 'Three Free Actions',
+    fourActions: 'Four Free Actions',
+    switchPost: 'Exchange Trading Posts',
+    moveThree: 'Move Three Tradesmen',
 }
-
 
 // TEST VARIABLES 
 export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
+
