@@ -21,8 +21,6 @@ export const inputHandlerFactory = () => {
             inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
         },
         handleTokenButton() {
-            // We will still need to call the gameController as the game controller both needs to verify
-            // That it's the correct player's turn and needs to know the tokens the player owns
             logicBundle.gameController.handleTokenMenuRequest()
         },
         handlePlaceButton() {
@@ -153,14 +151,14 @@ export const inputHandlerFactory = () => {
                     tokenButtonsCreated[tokenType] = 1;
                     const button = document.createElement('button');
                     button.id = tokenType
-                    button.innerText = tokenType
+                    button.innerText = TOKEN_READABLE_NAMES[tokenType]
                     button.onclick = () => {
                         logicBundle.gameController.useToken(tokenType);
                     }
                     tokenMenuDiv.append(button)
                 } else {
                     tokenButtonsCreated[tokenType]++;
-                    document.getElementById(tokenType).innerText = `${tokenType} (x${tokenButtonsCreated[tokenType]})`
+                    document.getElementById(tokenType).innerText = `${TOKEN_READABLE_NAMES[tokenType]} (x${tokenButtonsCreated[tokenType]})`
                 }
             })
         },

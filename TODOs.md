@@ -14,14 +14,11 @@
 
 # TODOs #
 * 4/27
-    * make tokens look nicer
-        * still need buttons, game log, and supply/bank
-    * BUG! looks like the supply isn't being updated with tokens - actually I don't think this is a bug, I think this is just an issue with the addition of testing tokens
+    * potentially start looking into localStorage and the ability to save and resume an existing game
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet
         * hotseat just opens up the config ("New Game") or "Resume saved game"
-    * potentially start looking into localStorage and the ability to save and resume an existing game
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
 * Keyboard shortcuts

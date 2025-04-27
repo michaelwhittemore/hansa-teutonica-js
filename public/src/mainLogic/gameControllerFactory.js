@@ -2,7 +2,7 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
-    IS_HOTSEAT_MODE
+    IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES
 } from "../helpers/constants.js";
 import { getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText } from "../helpers/helpers.js";
 import {
@@ -1030,7 +1030,7 @@ export const gameControllerFactory = () => {
             }
         },
         finishTokenUsage(player, tokenType) {
-            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME used a ${TOKEN_READABLE_NAMES[tokenType]} token.`, player)
             logicBundle.inputHandlers.clearAllActionSelection()
             const indexOfToken = player.currentTokens.indexOf(tokenType)
             player.currentTokens.splice(indexOfToken, 1);
