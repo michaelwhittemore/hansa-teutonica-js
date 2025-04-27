@@ -754,7 +754,6 @@ export const gameControllerFactory = () => {
                 logicBundle.boardController.addBonusPieceToCity(cityName, player.color, usedShape, city.bonusSpotOccupantArray.length + 1)
                 gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
 
-
                 gameController.finishTokenUsage(player, 'bonusPost')
             }
 
@@ -947,7 +946,6 @@ export const gameControllerFactory = () => {
         routeCompleted(routeId, player) {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
-
             // ______________
             if (route.token) {
                 const tokenKind = route.token

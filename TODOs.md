@@ -10,10 +10,13 @@
     * Need an option when clicking on the city
 * Need a settings drop down (Change clicks default)
 * Need the ability to save and resume
+* Need to remove the starting 8 tokens from player supply
 
 # TODOs #
 * 4/27
     * make tokens look nicer
+        * still need buttons, game log, and supply/bank
+    * BUG! looks like the supply isn't being updated with tokens - actually I don't think this is a bug, I think this is just an issue with the addition of testing tokens
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet

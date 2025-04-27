@@ -1,5 +1,6 @@
 import { pluralifyText, createDivWithClassAndIdAndStyle } from "../helpers/helpers.js"
 import { logicBundle } from "../helpers/logicBundle.js"
+import { TOKEN_READABLE_NAMES } from "../helpers/constants.js"
 export const turnTrackerControllerFactory = () => {
     const turnTrackerController = {
         updateTurnTracker(player) {
@@ -30,12 +31,11 @@ export const turnTrackerControllerFactory = () => {
             document.getElementById('turnTrackerAdditionalInformation').append(bumpInfoDiv)
         },
         updateTurnTrackerWithTokenInfo(player, token, numberOfTokens) {
-            console.log('updateTurnTrackerWithTokenInfo called')
             document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
             const tokenPlacementInfoDiv = createDivWithClassAndIdAndStyle(['tokenPlacementInfo']);
             let tokenPlacementHTML = `<span style="color: ${player.color}">${player.name}</span> `
             tokenPlacementHTML += `can place ${pluralifyText('token', numberOfTokens)} on the board. The currently drawn `
-            tokenPlacementHTML += `token is "${token}".`
+            tokenPlacementHTML += `token is "${TOKEN_READABLE_NAMES[token]}".`
 
             tokenPlacementInfoDiv.innerHTML = tokenPlacementHTML;
             document.getElementById('turnTrackerAdditionalInformation').append(tokenPlacementInfoDiv)

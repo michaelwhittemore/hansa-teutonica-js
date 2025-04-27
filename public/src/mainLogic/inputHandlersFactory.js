@@ -1,5 +1,5 @@
 import {isShape, pluralifyText} from "../helpers/helpers.js";
-import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS } from "../helpers/constants.js";
+import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 
 
@@ -64,7 +64,7 @@ export const inputHandlerFactory = () => {
         setUpTokenActionInfo(token) {
             this.clearAllActionSelection();
             this.toggleInputButtons(true)
-            this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${token}" token.`)
+            this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${TOKEN_READABLE_NAMES[token]}" token.`)
             this.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {

@@ -1,5 +1,5 @@
 import { createDivWithClassAndIdAndStyle, pluralifyText } from "../helpers/helpers.js"
-import { IS_HOTSEAT_MODE } from "../helpers/constants.js"
+import { IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES } from "../helpers/constants.js"
 import { logicBundle } from "../helpers/logicBundle.js";
 import { unlockActionsToValue, unlockColorsToValue, unlockKeysToValue, unlockMovementToValue, unlockPurseToValue } from "../helpers/playerFieldsMaps.js";
 
@@ -302,7 +302,7 @@ export const playerBoardAndInformationControllerFactory = () => {
                 }
                 let innerSupplyTextString = ''
                 currentTokenArray.forEach(token => {
-                    innerSupplyTextString += token + '\n'
+                    innerSupplyTextString += TOKEN_READABLE_NAMES[token] + '\n'
                 })
                 tokenInSupplyTooltip.innerText = innerSupplyTextString
 
@@ -319,7 +319,7 @@ export const playerBoardAndInformationControllerFactory = () => {
                 }
                 let innerBankTextString = ''
                 usedTokenArray.forEach(token => {
-                    innerBankTextString += token + '\n'
+                    innerBankTextString += TOKEN_READABLE_NAMES[token] + '\n'
 
                 })
                 tokenInBankTooltip.innerText = innerBankTextString
