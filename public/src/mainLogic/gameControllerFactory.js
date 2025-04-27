@@ -23,7 +23,7 @@ export const gameControllerFactory = () => {
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
-            logicBundle.gameLogController.initializeGameLog();
+            logicBundle.logController.initializeGameLog();
             this.routeStorageObject = {}
             this.cityStorageObject = {};
             this.moveInformation = {};
@@ -218,7 +218,7 @@ export const gameControllerFactory = () => {
             logicBundle.playerBoardAndInformationController.componentBuilders.updateTokenTracker(player,
                 this.tokenPlacementInformation.tokensToPlace);
             // 8. Should game log that a new token was placed
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
             token at ${routeId}.`, player);
             // 9. This is where we check the tokensToPlace and have different behavior
             // ----------------Continuing (tokensToPlace > 0)-----------------
@@ -304,7 +304,7 @@ export const gameControllerFactory = () => {
 
             player[playerShapeKey] -= 1;
             this.placePieceOnNode(nodeId, shape, player);
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
             this.resolveAction(player)
         },
         placePieceOnNode(nodeId, shape, player) {
@@ -363,7 +363,7 @@ export const gameControllerFactory = () => {
             }
             this.placePieceOnNode(nodeId, shape, player);
 
-            logicBundle.gameLogController.addTextToGameLog(
+            logicBundle.logController.addTextToGameLog(
                 `$PLAYER1_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
             const clearedProps = {
                 occupied: false,
@@ -395,7 +395,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.clearAllActionSelection()
                 return;
             } else {
-                logicBundle.gameLogController.addTextToGameLog(
+                logicBundle.logController.addTextToGameLog(
                     `$PLAYER1_NAME moved ${this.moveInformation.movesUsed} pieces.`, player)
                 this.resolveAction(player)
             }
@@ -432,7 +432,7 @@ export const gameControllerFactory = () => {
                 player.supplySquares += resuppliedSquares;
                 player.bankedSquares -= resuppliedSquares;
             }
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
             this.resolveAction(player)
             // eventually should chose circles vs squares, right now default to all circles, then square
         },
@@ -595,7 +595,7 @@ export const gameControllerFactory = () => {
             const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
 
             if (outOfMoves || outOfPieces) {
-                logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`,
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME displaced $PLAYER2_NAME at ${nodeId}`,
                     this.bumpInformation.bumpingPlayer, player)
                 this.resolveAction(this.bumpInformation.bumpingPlayer)
                 // TODO should we consider all nodeIds/shapes and logging them as well
@@ -727,7 +727,7 @@ export const gameControllerFactory = () => {
             if (city.freePoint) {
                 city.freePoint = false;
                 this.scorePoints(1, player)
-                logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME collected the free point at ${cityName}`, player)
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME collected the free point at ${cityName}`, player)
 
             }
             logicBundle.boardController.addPieceToCity(city, player.color)
@@ -758,7 +758,7 @@ export const gameControllerFactory = () => {
                 gameController.finishTokenUsage(player, 'bonusPost')
             }
 
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId) {
@@ -808,7 +808,7 @@ export const gameControllerFactory = () => {
                     }
                     player.unlockArrayIndex.purse++;
                     player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
-                    logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
                     logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
                     break;
                 case 'actions':
@@ -827,7 +827,7 @@ export const gameControllerFactory = () => {
                             actionUpgradeText += ' They get a free action as a result'
                             logicBundle.turnTrackerController.updateTurnTracker(player)
                         }
-                        logicBundle.gameLogController.addTextToGameLog(actionUpgradeText, player);
+                        logicBundle.logController.addTextToGameLog(actionUpgradeText, player);
                         logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
                         break;
                     }
@@ -838,7 +838,7 @@ export const gameControllerFactory = () => {
                     }
                     player.unlockArrayIndex.colors++;
                     player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
-                    logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
                     logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, unlock)
                     break;
                 case 'maxMovement':
@@ -848,7 +848,7 @@ export const gameControllerFactory = () => {
                     }
                     player.unlockArrayIndex.maxMovement++;
                     player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
-                    logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
                     logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, unlock)
                     break;
                 case 'keys':
@@ -858,7 +858,7 @@ export const gameControllerFactory = () => {
                     }
                     player.unlockArrayIndex.keys++;
                     player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
-                    logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
                     logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, unlock)
                     break;
                 default:
@@ -869,10 +869,10 @@ export const gameControllerFactory = () => {
 
             // Adding the free pieces into supply
             if (unlock === 'maxMovement') {
-                logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has unlocked a circle for their supply.`, player);
                 player.supplyCircles++;
             } else {
-                logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
                 player.supplySquares++
             }
             // let's us know that an upgrade was validated and occurred
@@ -945,14 +945,14 @@ export const gameControllerFactory = () => {
 
         },
         routeCompleted(routeId, player) {
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
 
             // ______________
             if (route.token) {
                 const tokenKind = route.token
                 this.tokensCapturedThisTurn.push(tokenKind);
-                logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
                 player.currentTokens.push(tokenKind);
                 logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
                 logicBundle.playerBoardAndInformationController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn.length)
@@ -981,7 +981,7 @@ export const gameControllerFactory = () => {
         },
         scorePoints(pointValue, player) {
             const pointScoreText = `$PLAYER1_NAME scored ${pluralifyText('point', pointValue)}!`
-            logicBundle.gameLogController.addTextToGameLog(pointScoreText, player)
+            logicBundle.logController.addTextToGameLog(pointScoreText, player)
             player.currentPoints += pointValue;
             logicBundle.boardController.updatePoints(player.currentPoints, player.color)
             if (player.currentPoints >= 20) {
@@ -1032,7 +1032,7 @@ export const gameControllerFactory = () => {
             }
         },
         finishTokenUsage(player, tokenType) {
-            logicBundle.gameLogController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME used a ${tokenType} token.`, player)
             logicBundle.inputHandlers.clearAllActionSelection()
             const indexOfToken = player.currentTokens.indexOf(tokenType)
             player.currentTokens.splice(indexOfToken, 1);

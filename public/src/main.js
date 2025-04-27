@@ -3,14 +3,14 @@ import { inputHandlerFactory } from './mainLogic/inputHandlersFactory.js';
 import { gameControllerFactory } from './mainLogic/gameControllerFactory.js';
 import { turnTrackerControllerFactory } from './mainLogic/turnTrackerControllerFactory.js';
 import { playerBoardAndInformationControllerFactory } from './mainLogic/playerBoardAndInformationControllerFactory.js'
-import { gameLogControllerFactory } from './mainLogic/gameLogControllerFactory.js';
+import { logControllerFactory } from './mainLogic/logControllerFactory.js';
 import { boardControllerFactory } from './mainLogic/boardControllerFactory.js';
 
 import { logicBundle } from './helpers/logicBundle.js'; // This is just for easier testing
 
 // Maybe we rename 'factory' -> 'init' 
 const gameController = gameControllerFactory();
-gameLogControllerFactory();
+logControllerFactory();
 inputHandlerFactory()
 playerBoardAndInformationControllerFactory()
 turnTrackerControllerFactory();

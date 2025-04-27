@@ -61,7 +61,7 @@ const createPlayerInfoDiv = (id) => {
     return playerInfoDiv
 }
 
-// TODO - let's rename this to some thing that communicates it's hotseat speific
+// TODO - let's rename this to some thing that communicates it's hotseat specific
 const startGame = () => {
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
@@ -188,11 +188,6 @@ const colorOptions = [
 /* 
 * Eventually we would like the config to pop up when you select "hotseat" - possibly just hide it otherwise
 Need to validate colors work
-* Use a nicer color selector
-* Two Players can't have the same color. 
-* Maybe we create a list of valid colors. Let's aim for thirty
-* maybe a grid?
-* Shouldn't worry too much about the player's colors not being updated right now
 * Start should also be hidden until the game mode is selected
 * Stylize the selectors a little 
 * For online - should either offer 'NEW' or 'JOIN'. Will need to offer players the ability to create

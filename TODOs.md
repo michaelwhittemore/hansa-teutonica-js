@@ -1,35 +1,27 @@
+# Play Test Ready Checklist #
+* Map replicates the actual gameboard
+* Endgame points are calculated and winners are reported
+    * need to check all sources of endgame points
+* Stendal to Arnheim (The east-west route)
+    * Will need a component to communicate winners 
+    * Will need a route traversal method when either of these cities are taken
+* Coellen special city points
+    * Maybe make it collapsible if I'm running out of space? 
+    * Need an option when clicking on the city
+* Need a settings drop down (Change clicks default)
+* Need the ability to save and resume
+
+
 # TODOs #
-* 4/18
-    ~~fix the issue with actions field not updating when getting a free action-upgrade off of the upgrade token~~
-    ~~add the bonus point piece to a few cities~~
-    ~~trigger end game when anyone reaches twenty~~
-    ~~make city pieces the same size as the bonus pieces in cities (go from 30x30 -> 45x45)~~
-    ~~move all the helpers ot their own module. Can then break that up at a later date~~
-* 4/19
-    ~~* move all the other functions into their own files. I'm thinking a 'mainLogic' folder, or something like that~~
-    ~~clean up this TODOs file a bit~~
-    ~~clean up constants import~~
-* 4/20 - long hike won't get much done
-* 4/22
-    ~~look into best way to pass parameters from landing page to hotseat~~
-    ~~parse URL params from the landing page~~
-* 4/25
-    * Landing page work
-        ~~Add color selector to player info~~
-        ~~there's some weirdness when removing an existing player and then readding it - I'm storing the color and not clearing it - maybe I trim down the color array?~~
-        * hide the config page until the gameMode is selected
-        ~~fix the bad use of non-zero index. That should only ever be used in the UI~~
-    * add eslint semicolon rules
-    * have a checklist for this being play-test ready
-        * need map to be correct
-        * need end game points
-        * need to be able to configure your hotseat settings
-        * need the connections cities (the east to west routes)
-            * will have a 'traverse network helper'
-        * need the Coellen and Warburg special prestige point city
-    ~~delete my 'Done' field, stopped being satisfying and started being frustrating~~
-    * add slightly more to the landing page, maybe a github link?
+* 4/27
+    * make tokens look nicer
+    * Landing page: 
+        * Add a hotseat and online button
+        * Online doesn't do anything yet
+        * hotseat just opens up the config ("New Game") or "Resume saved game"
     * potentially start looking into localStorage and the ability to save and resume an existing game
+    * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
+------
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
 * Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?
@@ -93,6 +85,7 @@
 * use a bundler like web pack or vite
 * read through mdn's web dev docs for a more generalized refresher https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
+* add a github link - I'm sure I can find a nice one somewhere online
 
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j

@@ -1,7 +1,7 @@
 import { AUTO_SCROLL } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
-export const gameLogControllerFactory = () => {
-    const gameLogController = {
+export const logControllerFactory = () => {
+    const logController = {
         initializeGameLog() {
             // I think history will pretty much always be stored locally
             // optionally, we should load in history
@@ -43,7 +43,7 @@ export const gameLogControllerFactory = () => {
             // TODO add to saved history
         }
     }
-    logicBundle.gameLogController = gameLogController
-    return gameLogController
+    logicBundle.logController = logController
+    return logController
     
 }
