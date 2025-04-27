@@ -1,6 +1,9 @@
 import { TEST_PLAYERS } from "./helpers/constants.js"
 import { createDivWithClassAndIdAndStyle } from "./helpers/helpers.js";
 
+let pickingColorId;
+let playerColorArray = []
+
 const populatePlayerSelectionWithDefault = () => {
     for (let i = 0; i < TEST_PLAYERS.length; i++) {
         // I'm not zero indexing for UI
@@ -18,15 +21,18 @@ const populatePlayerSelection = (playerNumber) => {
     }
 };
 
-const modifyPlayerSelection = (playerNumber) => {
+
+const modifyNumberOfPlayers = (playerNumber) => {
     const playerSelector = document.getElementById('playerSelector')
     const currentSize = playerSelector.childElementCount;
+
     if (currentSize < playerNumber) {
         for (let i = currentSize; i < playerNumber; i++) {
             playerSelector.append(createPlayerInfoDiv(i))
         }
     } else if (currentSize > playerNumber) {
-        for (let i = currentSize; i > playerNumber; i--) {
+        playerColorArray.splice(playerNumber)
+        for (let i = currentSize - 1; i > playerNumber - 1; i--) {
             document.getElementById(`playerInfo-${i}`).remove();
         }
     }
@@ -55,8 +61,8 @@ const createPlayerInfoDiv = (id) => {
     return playerInfoDiv
 }
 
+// TODO - let's rename this to some thing that communicates it's hotseat speific
 const startGame = () => {
-    // here! make sure we don't have duplicate colors
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
     const selectedColors = []
@@ -104,7 +110,7 @@ const startGame = () => {
 
 const playerNumberOnChange = () => {
     const playerNumber = document.getElementById('playerNumber').value;
-    modifyPlayerSelection(playerNumber)
+    modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
 const bindButtons = () => {
@@ -132,9 +138,7 @@ const validateName = (nameString) => {
     return [true, 'This should never be displayed']
 }
 
-// TODO hoist these values higher up
-let pickingColorId;
-let playerColorArray = []
+
 TEST_PLAYERS.forEach(playerArr => {
     playerColorArray.push(playerArr[1])
 });

@@ -16,6 +16,7 @@
 * 4/25
     * Landing page work
         ~~Add color selector to player info~~
+        ~~there's some weirdness when removing an existing player and then readding it - I'm storing the color and not clearing it - maybe I trim down the color array?~~
         * hide the config page until the gameMode is selected
         ~~fix the bad use of non-zero index. That should only ever be used in the UI~~
     * add eslint semicolon rules
