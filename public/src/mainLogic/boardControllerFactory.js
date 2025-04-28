@@ -100,10 +100,11 @@ export const boardControllerFactory = () => {
             bonusBox.innerText = 'Bonus trading posts'
             return bonusBox;
         },
-        addBonusPieceToCity(cityName, color, shape, numberOfPieces) {
-            const bonusBox = document.getElementById(`bonus-${cityName}`)
-    
-            const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${cityName}`], '', { backgroundColor: color })
+        addBonusPieceToCity(city, color, shape) {
+            const bonusBox = document.getElementById(`bonus-${city.cityName}`)
+            // here! need to get numberOFPieces from the city
+            const numberOfPieces = city.bonusSpotOccupantArray.length;
+            const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${city.cityName}`], '', { backgroundColor: color })
             let size = 25;
             if (numberOfPieces === 1) {
                 // only clear if it's the first piece
@@ -113,7 +114,7 @@ export const boardControllerFactory = () => {
     
             // HTMLCollection do not have iterable methods
             bonusBox.append(bonusPiece)
-            const allPieces = document.getElementsByClassName(`bonus-piece-${cityName}`)
+            const allPieces = document.getElementsByClassName(`bonus-piece-${city.cityName}`)
     
             for (let i = 0; i < allPieces.length; i++) {
                 allPieces[i].style.height = size + 'px'

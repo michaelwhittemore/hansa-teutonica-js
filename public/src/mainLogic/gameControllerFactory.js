@@ -751,8 +751,10 @@ export const gameControllerFactory = () => {
                     usedShape = 'circle';
                     player.bankedCircles--;
                 }
-                logicBundle.boardController.addBonusPieceToCity(cityName, player.color, usedShape, city.bonusSpotOccupantArray.length + 1)
-                gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push(playerId)
+                // here!
+                // let's make this more consistent with addPieceToCity
+                gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push([playerId, usedShape])
+                logicBundle.boardController.addBonusPieceToCity(city, player.color, usedShape)
 
                 gameController.finishTokenUsage(player, 'bonusPost')
             }
@@ -923,8 +925,8 @@ export const gameControllerFactory = () => {
             // TODO
             // may need to test this
             if (city.bonusSpotOccupantArray.length > 0) {
-                city.bonusSpotOccupantArray.forEach(bonusId => {
-                    controlObj[bonusId]++
+                city.bonusSpotOccupantArray.forEach(bonusIdArr => {
+                    controlObj[bonusIdArr[0]]++
                 })
             }
 
@@ -1305,13 +1307,32 @@ export const gameControllerFactory = () => {
             // actually maybe we *DO* call initializeGameStateAndUI, after all, we still need to build
             // the board and components. We just need to populate them  after being built
             this.playerArray = storedPlayerArray;
-            console.log(this)
             this.initializeCitiesAndState();
             this.cityStorageObject = storedCityStorageObject;
             this.routeStorageObject = storedRouteStorageObject;
-            // This should break it (setting the cities and routes I mean)
-            // Need comprehensive testing plan :(
-            // Still need to actually do something with all the UI
+            // Point tracker
+            this.playerArray.forEach(player => {
+                logicBundle.boardController.updatePoints(player.currentPoints, player.color)
+            })
+            // Cities
+            Object.keys(this.cityStorageObject).forEach(cityName => {
+                const city = this.cityStorageObject[cityName]
+                console.log(city)
+                // need to do both spots and bonus spots
+                city.openSpotIndex = 0;
+                // looks like we make assumptions about the openSpotIndex
+                city.occupants.forEach(id => {
+                    logicBundle.boardController.addPieceToCity(city, this.playerArray[id].color)
+                    city.openSpotIndex++;
+                })
+                city.bonusSpotOccupantArray.forEach((idAndShape) => {
+                    // HERE! the number is incorrect as is the shape
+                    logicBundle.boardController.addBonusPieceToCity(city, this.playerArray[idAndShape[0]].color,
+                        idAndShape[1], 1
+                    )
+                })
+            })
+          
         }
     }
     logicBundle.gameController = gameController;

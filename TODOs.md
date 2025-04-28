@@ -23,11 +23,12 @@
             * route array
             * **IMPORTANT** I should disable autosaving and always load in the same state so I can make sure it works correctly
         * Write out testing plan for things to resume
-            * point tracker
+            ~~point tracker~~
             * The game board
                 * cities
-                * bonus spots
-                * claimed bonus points
+                    * regular spot respect order
+                    * bonus spots
+                    * claimed bonus points
                 * tokens
                 * route nodes
                 * shapes and colors correct
@@ -51,6 +52,7 @@
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
+* BUG! trading posts bonus trading posts being overwritten! (is it in the cityObject or just UI??) - maybe false alarm, couldn't reproduce
 * Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
