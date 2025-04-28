@@ -30,6 +30,10 @@
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
+* I worry that using isResuming is a bit of an anti-pattern - would make more sense to have them as two different methods.
+    * Maybe gameController can have direct access to the boardConfig? 
+    * potentially use a parameter object?
+    * maybe we have an "initialize UI" and an "initializeState" method?
 * Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well

@@ -12,7 +12,8 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerList, boardConfig) {
+        initializeGameStateAndUI(playerList, boardConfig, isResuming = false) {
+            console.log(playerList, boardConfig)
             // let's just use turn order for IDs
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
@@ -1293,9 +1294,21 @@ export const gameControllerFactory = () => {
         loadGame(){
             // TODO - this will need to set the states for all the fields then populate
             // the point tracker, the board, the action tracker, the player info board, and the game log
-            console.log(JSON.parse(window.localStorage.getItem('playerArray')))
-            console.log(JSON.parse(window.localStorage.getItem('cityStorageObject')))
-            console.log(JSON.parse(window.localStorage.getItem('routeStorageObject')))
+
+            const storedPlayerArray = JSON.parse(window.localStorage.getItem('playerArray'))
+            const storedCityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'))
+            const storedRouteStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'))
+            console.log(storedCityStorageObject)
+            console.log(storedPlayerArray)
+            console.log(storedRouteStorageObject)
+            // here!
+            // let's follow the example of initializeGameStateAndUI()
+            // I think we're going to have to add a big 'resume' method to everything
+            // actually maybe we *DO* call initializeGameStateAndUI, after all, we still need to build
+            // the board and components. We just need to populate them  after being built
+            // this.initializeGameStateAndUI(playerList, boardConfig);
+            // I think we need to change initializeGameStateAndUI to be a little more agnostic so that we can 
+            // use it here as it expects playerList and boardConfig
         }
     }
     logicBundle.gameController = gameController;
