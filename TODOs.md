@@ -15,6 +15,15 @@
 # TODOs #
 * 4/27
     * potentially start looking into localStorage and the ability to save and resume an existing game
+        * I think we should create the resume button so that I can actually test this - **HERE!** - going to just add a parameter to the hotseat route
+        * Let's think about what information needs to be logged (maybe save after every turn?):
+            * Player array
+            * game log history
+            * city array
+            * route array
+        * I'm going to start doing this via console menu, but should eventually add the settings menu to the top left (remember also to add this to the landing page - will probably need a hotseat/resume route) - that in turn might require sever side logic
+        * part of the issue is that a lot of the UI stuffs has been built with the assumption that everything gets added as the result of an action
+        * This won't be hard to save, the more difficult part will be loading it back in
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet

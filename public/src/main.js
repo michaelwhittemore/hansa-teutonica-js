@@ -29,7 +29,13 @@ const playerArrayFromSearchParams = (params) => {
 // TODO need to have a url parser that creates anm player array (otherwise we default to TEST_PLAYERS)
 const start = () => {
     let startingPlayerArray;
+    // here! we're bugging out on resume
     const searchParams = (new URL(location)).searchParams
+    if (searchParams.get('resume')){
+        console.warn('Need to load in game!')
+        gameController.loadGame();
+        return;
+    }
     if (searchParams.size === 0){
         // default case
         startingPlayerArray = TEST_PLAYERS;

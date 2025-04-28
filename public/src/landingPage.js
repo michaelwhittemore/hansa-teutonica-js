@@ -108,14 +108,25 @@ const startGame = () => {
 
 }
 
+const resumeGame = () => {
+    const url = new URL(document.location.href);
+    url.pathname = 'hotseat';
+    url.searchParams.append('resumeGame', true)
+    console.log(url)
+    window.location.assign(url)
+}
+
 const playerNumberOnChange = () => {
     const playerNumber = document.getElementById('playerNumber').value;
     modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
 const bindButtons = () => {
+    // here! get element by id seems borked
+
     document.getElementById('playerNumber').onchange = playerNumberOnChange
     document.getElementById('start').onclick = startGame
+    document.getElementById('resumeHotseat').onclick = resumeGame
 }
 
 const validateName = (nameString) => {

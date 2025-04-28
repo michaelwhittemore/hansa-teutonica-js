@@ -142,7 +142,7 @@ export const gameControllerFactory = () => {
             if (IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
-
+            this.saveGame();
             lastPlayer.currentActions = lastPlayer.maxActions;
         },
         replaceTokens(player) {
@@ -1270,8 +1270,33 @@ export const gameControllerFactory = () => {
                 // TODO warn the inputHandlers API
                 return false;
             }
-
         },
+        saveGame(){
+            console.warn('Saving game')
+            // Here!
+            // dev
+            /* 
+            * Player array
+            * game log history
+            * city array
+            * route array
+            * current player (as in whose turn it is)
+            * I think points and city pieces and everything board state/player board can
+            * be derived from the above
+            */
+            window.localStorage.setItem('isSaved', true)
+            // Will need to use JSON.stringify() as we can only save string values
+            window.localStorage.setItem('playerArray', JSON.stringify(this.playerArray))
+            window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
+            window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
+        },
+        loadGame(){
+            // TODO - this will need to set the states for all the fields then populate
+            // the point tracker, the board, the action tracker, the player info board, and the game log
+            console.log(JSON.parse(window.localStorage.getItem('playerArray')))
+            console.log(JSON.parse(window.localStorage.getItem('cityStorageObject')))
+            console.log(JSON.parse(window.localStorage.getItem('routeStorageObject')))
+        }
     }
     logicBundle.gameController = gameController;
     return gameController
