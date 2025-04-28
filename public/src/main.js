@@ -31,7 +31,7 @@ const start = () => {
     let startingPlayerArray;
     // here! we're bugging out on resume
     const searchParams = (new URL(location)).searchParams
-    if (searchParams.get('resume')){
+    if (searchParams.get('resumeGame')){
         console.warn('Need to load in game!')
         gameController.loadGame();
         return;
