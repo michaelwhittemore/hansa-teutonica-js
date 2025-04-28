@@ -1,4 +1,4 @@
-import { TEST_PLAYERS, TEST_BOARD_CONFIG_CITIES } from './helpers/constants.js';
+import { TEST_PLAYERS } from './helpers/constants.js';
 import { inputHandlerFactory } from './mainLogic/inputHandlersFactory.js';
 import { gameControllerFactory } from './mainLogic/gameControllerFactory.js';
 import { turnTrackerControllerFactory } from './mainLogic/turnTrackerControllerFactory.js';
@@ -42,7 +42,7 @@ const start = () => {
         startingPlayerArray = playerArrayFromSearchParams(searchParams)
     }
     window.logicBundle = logicBundle // This is just for testing
-    gameController.initializeGameStateAndUI(startingPlayerArray, TEST_BOARD_CONFIG_CITIES)
+    gameController.initializeGameStateAndUI(startingPlayerArray)
 }
 
 window.onload = start

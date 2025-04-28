@@ -2,7 +2,7 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
-    IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES
+    IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
 } from "../helpers/constants.js";
 import { getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText } from "../helpers/helpers.js";
 import {
@@ -12,15 +12,20 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerList, boardConfig, isResuming = false) {
-            console.log(playerList, boardConfig)
+        initializeGameStateAndUI(playerList) {
+            
+            this.createPlayerArrayFromNamesAndColors(playerList);
+            this.initializeCitiesAndState();
+        },
+        createPlayerArrayFromNamesAndColors(playerList) {
             // let's just use turn order for IDs
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
                 const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i, i);
                 this.playerArray.push(player)
             }
-
+        },
+        initializeCitiesAndState() {
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
@@ -44,7 +49,9 @@ export const gameControllerFactory = () => {
                 }
             })
             this.regularTokensArray = regularTokensArray
-
+            // it's possible at some point in the far future that there are multiple 
+            // board configs (i.e. for three player or alt maps)
+            const boardConfig = TEST_BOARD_CONFIG_CITIES;
             // Let's break out the city generation into two loops
             // THe first one populates the cityStorageObject 
             // The second one will create the route
@@ -115,13 +122,6 @@ export const gameControllerFactory = () => {
                     })
                 }
             })
-
-        },
-        resumeGame() {
-            //TODO - will need to store in localStorage, this will require a LOT of effort and testing
-            // I guess it's possible that it won't be too bad if we're just loading gameController fields
-            // It will still be a big difference between autosaving and manual saving - the former maybe we 
-            // snapshot after every action? as part of resolve action?
         },
         getActivePlayer() {
             return this.playerArray[this.currentTurn % this.playerArray.length]
@@ -527,7 +527,7 @@ export const gameControllerFactory = () => {
         placeBumpedPieceOnNode(nodeId, shape, playerId) {
             console.log('trying to place bumped piece')
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
-            if (!player){
+            if (!player) {
                 return
             }
 
@@ -1272,7 +1272,7 @@ export const gameControllerFactory = () => {
                 return false;
             }
         },
-        saveGame(){
+        saveGame() {
             console.warn('Saving game')
             // Here!
             // dev
@@ -1291,7 +1291,7 @@ export const gameControllerFactory = () => {
             window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
             window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
         },
-        loadGame(){
+        loadGame() {
             // TODO - this will need to set the states for all the fields then populate
             // the point tracker, the board, the action tracker, the player info board, and the game log
 
