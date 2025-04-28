@@ -21,6 +21,27 @@
             * game log history
             * city array
             * route array
+            * **IMPORTANT** I should disable autosaving and always load in the same state so I can make sure it works correctly
+        * Write out testing plan for things to resume
+            * point tracker
+            * The game board
+                * cities
+                * bonus spots
+                * claimed bonus points
+                * tokens
+                * route nodes
+                * shapes and colors correct
+            * Turn tracker
+                * already looks like number of actions are bugged
+            * Player board
+                * all unlocks
+                * token eat
+                * supply 
+                * bank
+                * tokens in both supply and bank
+            * game history
+                * timestamps
+                * player colors
         * I'm going to start doing this via console menu, but should eventually add the settings menu to the top left (remember also to add this to the landing page - will probably need a hotseat/resume route) - that in turn might require sever side logic
         * part of the issue is that a lot of the UI stuffs has been built with the assumption that everything gets added as the result of an action
         * This won't be hard to save, the more difficult part will be loading it back in
@@ -30,10 +51,6 @@
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
-* I worry that using isResuming is a bit of an anti-pattern - would make more sense to have them as two different methods.
-    * Maybe gameController can have direct access to the boardConfig? 
-    * potentially use a parameter object?
-    * maybe we have an "initialize UI" and an "initializeState" method?
 * Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well

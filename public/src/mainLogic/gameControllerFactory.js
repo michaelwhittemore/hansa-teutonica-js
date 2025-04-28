@@ -12,8 +12,7 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerList) {
-            
+        initializeGameStateAndUI(playerList) {    
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
@@ -1302,13 +1301,17 @@ export const gameControllerFactory = () => {
             console.log(storedPlayerArray)
             console.log(storedRouteStorageObject)
             // here!
-            // let's follow the example of initializeGameStateAndUI()
             // I think we're going to have to add a big 'resume' method to everything
             // actually maybe we *DO* call initializeGameStateAndUI, after all, we still need to build
             // the board and components. We just need to populate them  after being built
-            // this.initializeGameStateAndUI(playerList, boardConfig);
-            // I think we need to change initializeGameStateAndUI to be a little more agnostic so that we can 
-            // use it here as it expects playerList and boardConfig
+            this.playerArray = storedPlayerArray;
+            console.log(this)
+            this.initializeCitiesAndState();
+            this.cityStorageObject = storedCityStorageObject;
+            this.routeStorageObject = storedRouteStorageObject;
+            // This should break it (setting the cities and routes I mean)
+            // Need comprehensive testing plan :(
+            // Still need to actually do something with all the UI
         }
     }
     logicBundle.gameController = gameController;

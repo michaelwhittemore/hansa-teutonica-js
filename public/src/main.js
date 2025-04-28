@@ -28,6 +28,8 @@ const playerArrayFromSearchParams = (params) => {
 
 // TODO need to have a url parser that creates anm player array (otherwise we default to TEST_PLAYERS)
 const start = () => {
+    window.logicBundle = logicBundle // This is just for testing
+
     let startingPlayerArray;
     const searchParams = (new URL(location)).searchParams
     if (searchParams.get('resumeGame') && window.localStorage.isSaved){
@@ -41,7 +43,7 @@ const start = () => {
     } else {
         startingPlayerArray = playerArrayFromSearchParams(searchParams)
     }
-    window.logicBundle = logicBundle // This is just for testing
+
     gameController.initializeGameStateAndUI(startingPlayerArray)
 }
 
