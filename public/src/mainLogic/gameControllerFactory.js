@@ -12,7 +12,7 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerList) {    
+        initializeGameStateAndUI(playerList) {
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
@@ -751,10 +751,10 @@ export const gameControllerFactory = () => {
                     usedShape = 'circle';
                     player.bankedCircles--;
                 }
-                // here!
-                // let's make this more consistent with addPieceToCity
                 gameController.cityStorageObject[cityName].bonusSpotOccupantArray.push([playerId, usedShape])
-                logicBundle.boardController.addBonusPieceToCity(city, player.color, usedShape)
+                // We subtract one from the length as we're including itself
+                logicBundle.boardController.addBonusPieceToCity(city, player.color, usedShape,
+                    city.bonusSpotOccupantArray.length - 1)
 
                 gameController.finishTokenUsage(player, 'bonusPost')
             }
@@ -1325,14 +1325,13 @@ export const gameControllerFactory = () => {
                     logicBundle.boardController.addPieceToCity(city, this.playerArray[id].color)
                     city.openSpotIndex++;
                 })
-                city.bonusSpotOccupantArray.forEach((idAndShape) => {
-                    // HERE! the number is incorrect as is the shape
+                city.bonusSpotOccupantArray.forEach((idAndShape, index) => {
+                    // I 
                     logicBundle.boardController.addBonusPieceToCity(city, this.playerArray[idAndShape[0]].color,
-                        idAndShape[1], 1
-                    )
+                        idAndShape[1], index)
                 })
             })
-          
+
         }
     }
     logicBundle.gameController = gameController;

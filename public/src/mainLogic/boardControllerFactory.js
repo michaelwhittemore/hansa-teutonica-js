@@ -100,14 +100,12 @@ export const boardControllerFactory = () => {
             bonusBox.innerText = 'Bonus trading posts'
             return bonusBox;
         },
-        addBonusPieceToCity(city, color, shape) {
+        addBonusPieceToCity(city, color, shape, numberOfPiecesAlreadyThere) {
             const bonusBox = document.getElementById(`bonus-${city.cityName}`)
-            // here! need to get numberOFPieces from the city
-            const numberOfPieces = city.bonusSpotOccupantArray.length;
             const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${city.cityName}`], '', { backgroundColor: color })
             let size = 25;
-            if (numberOfPieces === 1) {
-                // only clear if it's the first piece
+            if (numberOfPiecesAlreadyThere === 0) {
+                // this is what's causing the bug, we should be clearing text 
                 bonusBox.innerText = ''
                 size = 45;
             }

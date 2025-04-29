@@ -122,8 +122,6 @@ const playerNumberOnChange = () => {
 }
 
 const bindButtons = () => {
-    // here! get element by id seems borked
-
     document.getElementById('playerNumber').onchange = playerNumberOnChange
     document.getElementById('start').onclick = startGame
     document.getElementById('resumeHotseat').onclick = resumeGame
