@@ -1358,6 +1358,11 @@ export const gameControllerFactory = () => {
             if (IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
+            // Player board
+            this.playerArray.forEach(player => {
+                console.log(player)
+                logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
+            })
         }
     }
     logicBundle.gameController = gameController;

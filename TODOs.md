@@ -34,14 +34,13 @@
                     ~~this may also be a problem because we do the randomization in init - should make sure we have the same token array~~
                 ~~route nodes~~
                     ~~shapes and colors correct~~
-            * Turn tracker
-                * already looks like number of actions are bugged
+            ~~Turn tracker~~
             * Player board
                 * all unlocks
-                * token eat
-                * supply 
-                * bank
-                * tokens in both supply and bank
+                * token eat - not relevant right now unless I add mid turn saving
+                ~~supply ~~
+                ~~bank~~
+                ~~tokens in both supply and bank~~
             * game history
                 * timestamps
                 * player colors
