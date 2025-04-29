@@ -105,7 +105,7 @@ export const boardControllerFactory = () => {
             const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${city.cityName}`], '', { backgroundColor: color })
             let size = 25;
             if (numberOfPiecesAlreadyThere === 0) {
-                // this is what's causing the bug, we should be clearing text 
+                // We only clear if there's no pieces, just the text
                 bonusBox.innerText = ''
                 size = 45;
             }

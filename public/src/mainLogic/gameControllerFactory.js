@@ -1288,6 +1288,7 @@ export const gameControllerFactory = () => {
             */
             window.localStorage.setItem('isSaved', true)
             // Will need to use JSON.stringify() as we can only save string values
+            window.localStorage.setItem('regularTokensArray', JSON.stringify(this.regularTokensArray))
             window.localStorage.setItem('playerArray', JSON.stringify(this.playerArray))
             window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
             window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
@@ -1299,17 +1300,18 @@ export const gameControllerFactory = () => {
             const storedPlayerArray = JSON.parse(window.localStorage.getItem('playerArray'))
             const storedCityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'))
             const storedRouteStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'))
+            const storedRegularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'))
             console.log(storedCityStorageObject)
             console.log(storedPlayerArray)
             console.log(storedRouteStorageObject)
+            console.log(storedRegularTokensArray)
             // here!
-            // I think we're going to have to add a big 'resume' method to everything
-            // actually maybe we *DO* call initializeGameStateAndUI, after all, we still need to build
-            // the board and components. We just need to populate them  after being built
+
             this.playerArray = storedPlayerArray;
             this.initializeCitiesAndState();
             this.cityStorageObject = storedCityStorageObject;
             this.routeStorageObject = storedRouteStorageObject;
+            this.regularTokensArray = storedRegularTokensArray;
             // Point tracker
             this.playerArray.forEach(player => {
                 logicBundle.boardController.updatePoints(player.currentPoints, player.color)
@@ -1317,7 +1319,6 @@ export const gameControllerFactory = () => {
             // Cities
             Object.keys(this.cityStorageObject).forEach(cityName => {
                 const city = this.cityStorageObject[cityName]
-                console.log(city)
                 // need to do both spots and bonus spots
                 city.openSpotIndex = 0;
                 // looks like we make assumptions about the openSpotIndex
@@ -1326,12 +1327,20 @@ export const gameControllerFactory = () => {
                     city.openSpotIndex++;
                 })
                 city.bonusSpotOccupantArray.forEach((idAndShape, index) => {
-                    // I 
                     logicBundle.boardController.addBonusPieceToCity(city, this.playerArray[idAndShape[0]].color,
                         idAndShape[1], index)
                 })
             })
-
+            Object.keys(this.routeStorageObject).forEach(routeName => {
+                // This is also where we will need to do tokens (but not in the routeNode loop)
+                const route = this.routeStorageObject[routeName];
+                Object.keys(route.routeNodes).forEach(nodeId => {
+                    const node =route.routeNodes[nodeId]
+                    if(node.occupied){
+                        logicBundle.boardController.addPieceToRouteNode(nodeId, node.color, node.shape)
+                    }
+                })
+            })
         }
     }
     logicBundle.gameController = gameController;

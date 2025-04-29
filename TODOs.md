@@ -25,13 +25,15 @@
         * Write out testing plan for things to resume
             ~~point tracker~~
             * The game board
-                * cities
-                    * regular spot respect order
-                    * bonus spots
-                    * claimed bonus points
+                ~~cities~~
+                    ~~regular spot respect order~~
+                    ~~bonus spots~~
+                    ~~claimed bonus points~~
                 * tokens
-                * route nodes
-                * shapes and colors correct
+                    * will need to know if they're grey or silver - this may break things as I assume the token field is a string
+                    ~~this may also be a problem because we do the randomization in init - should make sure we have the same token array~~
+                ~~route nodes~~
+                    ~~shapes and colors correct~~
             * Turn tracker
                 * already looks like number of actions are bugged
             * Player board
