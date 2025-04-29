@@ -1,4 +1,4 @@
-import { AUTO_SCROLL } from "../helpers/constants.js";
+import { AUTO_SCROLL, IS_HOTSEAT_MODE } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 export const logControllerFactory = () => {
     const logController = {
@@ -26,7 +26,6 @@ export const logControllerFactory = () => {
             // player is an optional parameter
             // what we want to do is replace every instance of the player name with a span 
             // that wraps around them and contains their color
-            // I think we can just do a string replace, we have full control over the inputs in this method
             const timestamp = (new Date()).toLocaleTimeString('en-US')
             if (player1) {
                 const player1NameSpan = `<span style="color: ${player1.color}">${player1.name}</span>`
@@ -40,8 +39,19 @@ export const logControllerFactory = () => {
             if (AUTO_SCROLL) {
                 document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
             }
-            // TODO add to saved history
-        }
+            // TODO, should we consider involving the game controller? I don't know if the log should be accessing
+            // the memory by itself
+            if (IS_HOTSEAT_MODE){
+                window.localStorage.history = document.getElementById('gameLog').innerHTML;
+            }
+            
+        },
+        loadHistoryIntoLogFromLocalStorage(){
+            document.getElementById('gameLog').innerHTML = window.localStorage.history;
+            if (AUTO_SCROLL) {
+                document.getElementById('gameLog').scrollTop = document.getElementById('gameLog').scrollHeight
+            }
+        },
     }
     logicBundle.logController = logController
     return logController

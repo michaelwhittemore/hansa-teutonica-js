@@ -14,44 +14,12 @@
 
 # TODOs #
 * 4/27
-    * potentially start looking into localStorage and the ability to save and resume an existing game
-        * I think we should create the resume button so that I can actually test this - **HERE!** - going to just add a parameter to the hotseat route
-        * Let's think about what information needs to be logged (maybe save after every turn?):
-            * Player array
-            * game log history
-            * city array
-            * route array
-            * **IMPORTANT** I should disable autosaving and always load in the same state so I can make sure it works correctly
-        * Write out testing plan for things to resume
-            ~~point tracker~~
-            ~~The game board~~
-                ~~cities~~
-                    ~~regular spot respect order~~
-                    ~~bonus spots~~
-                    ~~claimed bonus points~~
-                ~~tokens~~
-                    ~~will need to know if they're grey or silver - this may break things as I assume the token field is a string~~
-                    ~~this may also be a problem because we do the randomization in init - should make sure we have the same token array~~
-                ~~route nodes~~
-                    ~~shapes and colors correct~~
-            ~~Turn tracker~~
-            * Player board
-                * all unlocks
-                * token eat - not relevant right now unless I add mid turn saving
-                ~~supply ~~
-                ~~bank~~
-                ~~tokens in both supply and bank~~
-            * game history
-                * timestamps
-                * player colors
-        * I'm going to start doing this via console menu, but should eventually add the settings menu to the top left (remember also to add this to the landing page - will probably need a hotseat/resume route) - that in turn might require sever side logic
-        * part of the issue is that a lot of the UI stuffs has been built with the assumption that everything gets added as the result of an action
-        * This won't be hard to save, the more difficult part will be loading it back in
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
+    * need to clear out my TODOs doc again
 ------
 * BUG! trading posts bonus trading posts being overwritten! (is it in the cityObject or just UI??) - maybe false alarm, couldn't reproduce
 * add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)

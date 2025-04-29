@@ -1371,6 +1371,8 @@ export const gameControllerFactory = () => {
 
                 logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
             })
+            // Game log
+            logicBundle.logController.loadHistoryIntoLogFromLocalStorage()
         }
     }
     logicBundle.gameController = gameController;
