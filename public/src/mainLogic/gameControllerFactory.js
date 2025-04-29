@@ -1297,28 +1297,12 @@ export const gameControllerFactory = () => {
             window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
         },
         loadGame() {
-            // TODO - this will need to set the states for all the fields then populate
-            // the point tracker, the board, the action tracker, the player info board, and the game log
-
-            // TODO don't need to store these as "stored"variables - just assign directly
-            const storedPlayerArray = JSON.parse(window.localStorage.getItem('playerArray'))
-            const storedCityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'))
-            const storedRouteStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'))
-            const storedRegularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'))
-            const storedCurrentTurn = window.localStorage.getItem('currentTurn')
-            console.log(storedCurrentTurn)
-            console.log(storedCityStorageObject)
-            console.log(storedPlayerArray)
-            console.log(storedRouteStorageObject)
-            console.log(storedRegularTokensArray)
-            // here!
-
-            this.playerArray = storedPlayerArray;
+            this.playerArray = JSON.parse(window.localStorage.getItem('playerArray'));
             this.initializeCitiesAndState();
-            this.cityStorageObject = storedCityStorageObject;
-            this.routeStorageObject = storedRouteStorageObject;
-            this.regularTokensArray = storedRegularTokensArray;
-            this.currentTurn = storedCurrentTurn;
+            this.cityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'));
+            this.routeStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'));
+            this.regularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'));
+            this.currentTurn = window.localStorage.getItem('currentTurn');
             // Point tracker
             this.playerArray.forEach(player => {
                 logicBundle.boardController.updatePoints(player.currentPoints, player.color)

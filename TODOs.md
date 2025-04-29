@@ -13,7 +13,7 @@
 * Need to remove the starting 8 tokens from player supply
 
 # TODOs #
-* 4/27
+* 4/29
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet
