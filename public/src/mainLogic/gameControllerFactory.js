@@ -1360,7 +1360,15 @@ export const gameControllerFactory = () => {
             }
             // Player board
             this.playerArray.forEach(player => {
-                console.log(player)
+                Object.keys(player.unlockArrayIndex).forEach(unlockKey => {
+                    if (player.unlockArrayIndex[unlockKey] > 0) {
+                        for (let index = 1; index <= player.unlockArrayIndex[unlockKey]; index++) {
+                            logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player,
+                                index, unlockKey)
+                        }
+                    }
+                })
+
                 logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
             })
         }

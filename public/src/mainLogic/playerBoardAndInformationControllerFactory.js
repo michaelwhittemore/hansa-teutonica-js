@@ -265,7 +265,8 @@ export const playerBoardAndInformationControllerFactory = () => {
                 this.updateBankTracker(player, bankTracker)
             },
             updateSupplyTracker(player, supplyTracker) {
-                // This feels awful and hacky
+                // This feels awful and hacky - probably the result of me misunderstanding 
+                // how innerHTML works
                 if (!supplyTracker) {
                     supplyTracker = document.getElementById(`supply-pieces-${player.id}`)
                 }
