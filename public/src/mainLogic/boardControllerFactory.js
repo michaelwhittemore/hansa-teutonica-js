@@ -157,9 +157,9 @@ export const boardControllerFactory = () => {
             tokenDiv.innerText = '';
             tokenDiv.style.visibility = 'hidden'
         },
-        addTokenToRoute(routeId, tokenKind) {
+        addTokenToRoute(routeId, tokenKind, color) {
             const tokenDiv = document.getElementById(`token-${routeId}`);
-            tokenDiv.style.backgroundColor = 'silver'
+            tokenDiv.style.backgroundColor = color;
             tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenKind];
             tokenDiv.style.visibility = 'visible'
         },
@@ -210,7 +210,7 @@ export const boardControllerFactory = () => {
             tokenDiv.style.top = y + 'px';
             if (isStartingToken) {
                 tokenDiv.style.visibility = 'visible'
-                tokenDiv.style.backgroundColor = 'goldenrod'
+                tokenDiv.style.backgroundColor = '#FFC000'
                 tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenValue]
             }
             tokenDiv.onclick = () => {

@@ -98,6 +98,8 @@ export const gameControllerFactory = () => {
                             cities: [cityKey, neighborCityName],
                             routeNodes: {},
                             token: tokenValue,
+                            // #FFC000 = yellowGold
+                            tokenColor: tokenValue ? '#FFC000' : 'silver'
                         }
                         // Cities should track which routes they are a part of
                         const addRoutesToCity = (cityName) => {
@@ -209,9 +211,10 @@ export const gameControllerFactory = () => {
                 return;
             }
             // 6. If the location is valid we need to add to the board.
-            logicBundle.boardController.addTokenToRoute(routeId, this.tokenPlacementInformation.currentReplacement)
+            logicBundle.boardController.addTokenToRoute(routeId, this.tokenPlacementInformation.currentReplacement, 'silver')
             // 7. We also need to update the route storage object
             this.routeStorageObject[routeId].token = this.tokenPlacementInformation.currentReplacement;
+            this.routeStorageObject[routeId].tokenColor = 'silver'
             // 8. We then need to lower the this.tokenPlacementInformation.tokensToPlace
             this.tokenPlacementInformation.tokensToPlace--;
             // 8. Also about the playerBoard token "eat" plate gets decremented
@@ -773,7 +776,6 @@ export const gameControllerFactory = () => {
 
             const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, cityName)
             const { routeId } = routeCheckOutcome
-            console.log(city)
             if (!city.unlock) {
                 console.warn(`The city of ${city.cityName} doesn't have a corresponding unlock.`)
                 logicBundle.inputHandlers.clearAllActionSelection();
@@ -1275,7 +1277,6 @@ export const gameControllerFactory = () => {
         },
         saveGame() {
             console.warn('Saving game')
-            // Here!
             // dev
             /* 
             * Player array
@@ -1331,12 +1332,16 @@ export const gameControllerFactory = () => {
                         idAndShape[1], index)
                 })
             })
-            Object.keys(this.routeStorageObject).forEach(routeName => {
+            Object.keys(this.routeStorageObject).forEach(routeId => {
                 // This is also where we will need to do tokens (but not in the routeNode loop)
-                const route = this.routeStorageObject[routeName];
+                const route = this.routeStorageObject[routeId];
+                logicBundle.boardController.clearTokenFromRouteAndHide(routeId)
+                if (route.token) {
+                    logicBundle.boardController.addTokenToRoute(routeId, route.token, route.tokenColor)
+                }
                 Object.keys(route.routeNodes).forEach(nodeId => {
-                    const node =route.routeNodes[nodeId]
-                    if(node.occupied){
+                    const node = route.routeNodes[nodeId]
+                    if (node.occupied) {
                         logicBundle.boardController.addPieceToRouteNode(nodeId, node.color, node.shape)
                     }
                 })
