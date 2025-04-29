@@ -24,13 +24,13 @@
             * **IMPORTANT** I should disable autosaving and always load in the same state so I can make sure it works correctly
         * Write out testing plan for things to resume
             ~~point tracker~~
-            * The game board
+            ~~The game board~~
                 ~~cities~~
                     ~~regular spot respect order~~
                     ~~bonus spots~~
                     ~~claimed bonus points~~
-                * tokens
-                    * will need to know if they're grey or silver - this may break things as I assume the token field is a string
+                ~~tokens~~
+                    ~~will need to know if they're grey or silver - this may break things as I assume the token field is a string~~
                     ~~this may also be a problem because we do the randomization in init - should make sure we have the same token array~~
                 ~~route nodes~~
                     ~~shapes and colors correct~~
@@ -55,6 +55,7 @@
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
 ------
 * BUG! trading posts bonus trading posts being overwritten! (is it in the cityObject or just UI??) - maybe false alarm, couldn't reproduce
+* add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
 * Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well

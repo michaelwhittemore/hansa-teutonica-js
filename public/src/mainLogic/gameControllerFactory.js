@@ -144,8 +144,8 @@ export const gameControllerFactory = () => {
             if (IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
-            this.saveGame();
             lastPlayer.currentActions = lastPlayer.maxActions;
+            this.saveGame();
         },
         replaceTokens(player) {
             // 2. "Shuffle and Deal" the token stack
@@ -1288,7 +1288,9 @@ export const gameControllerFactory = () => {
             * be derived from the above
             */
             window.localStorage.setItem('isSaved', true)
+            // TODO - move these fields into a "GAME STATE" object
             // Will need to use JSON.stringify() as we can only save string values
+            window.localStorage.setItem('currentTurn', this.currentTurn)
             window.localStorage.setItem('regularTokensArray', JSON.stringify(this.regularTokensArray))
             window.localStorage.setItem('playerArray', JSON.stringify(this.playerArray))
             window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
@@ -1298,10 +1300,13 @@ export const gameControllerFactory = () => {
             // TODO - this will need to set the states for all the fields then populate
             // the point tracker, the board, the action tracker, the player info board, and the game log
 
+            // TODO don't need to store these as "stored"variables - just assign directly
             const storedPlayerArray = JSON.parse(window.localStorage.getItem('playerArray'))
             const storedCityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'))
             const storedRouteStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'))
             const storedRegularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'))
+            const storedCurrentTurn = window.localStorage.getItem('currentTurn')
+            console.log(storedCurrentTurn)
             console.log(storedCityStorageObject)
             console.log(storedPlayerArray)
             console.log(storedRouteStorageObject)
@@ -1313,6 +1318,7 @@ export const gameControllerFactory = () => {
             this.cityStorageObject = storedCityStorageObject;
             this.routeStorageObject = storedRouteStorageObject;
             this.regularTokensArray = storedRegularTokensArray;
+            this.currentTurn = storedCurrentTurn;
             // Point tracker
             this.playerArray.forEach(player => {
                 logicBundle.boardController.updatePoints(player.currentPoints, player.color)
@@ -1332,6 +1338,7 @@ export const gameControllerFactory = () => {
                         idAndShape[1], index)
                 })
             })
+            // Routes
             Object.keys(this.routeStorageObject).forEach(routeId => {
                 // This is also where we will need to do tokens (but not in the routeNode loop)
                 const route = this.routeStorageObject[routeId];
@@ -1346,6 +1353,11 @@ export const gameControllerFactory = () => {
                     }
                 })
             })
+            // Turn tracker
+            logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
+            if (IS_HOTSEAT_MODE) {
+                logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
+            }
         }
     }
     logicBundle.gameController = gameController;
