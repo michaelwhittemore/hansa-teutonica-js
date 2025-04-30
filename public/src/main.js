@@ -16,6 +16,7 @@ playerBoardAndInformationControllerFactory()
 turnTrackerControllerFactory();
 boardControllerFactory();
 
+// TODO this can probably go in the helpers
 const playerArrayFromSearchParams = (params) => {
     const playerArray = []
     for (let i = 0; i< params.get('playerNumber'); i++){

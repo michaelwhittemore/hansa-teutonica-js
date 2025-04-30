@@ -8,18 +8,24 @@
 * Coellen special city points
     * Maybe make it collapsible if I'm running out of space? 
     * Need an option when clicking on the city
-* Need a settings drop down (Change clicks default)
+* Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
 * Need the ability to save and resume
 * Need to remove the starting 8 tokens from player supply
 
 # TODOs #
 * 4/30
-    * ESLINT semi colon
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
+    * Online play:
+        * Should break this into a few different areas: landing page, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
+        * Will need a different route from hotseat
+        * will need it's own main.js
+        * can we use the same main.html?
+        * let's rename main.js -> hotseat.js
+        * I think we still initialize everything the same way?
     * maybe start on endgame points calculation?
     * maybe create an account to ask my embarrassingly dumb questions
 ------
@@ -61,6 +67,7 @@
 * Fix the collapsible button and container code to involve less copy-pasta
 * write out a game flow document
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
+* ESLINT semi colon - ugh prettier was a hassle, might come back to this
 
 # Stretch Goals (in no particular order) # #
 * when doing online play we will likely need some sort of player validator. We don't want to update actionInfoDiv.innerText for example when its not the player's turn.
