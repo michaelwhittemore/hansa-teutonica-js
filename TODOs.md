@@ -13,15 +13,16 @@
 * Need to remove the starting 8 tokens from player supply
 
 # TODOs #
-* 4/29
+* 4/30
+    * ESLINT semi colon
     * Landing page: 
         * Add a hotseat and online button
         * Online doesn't do anything yet
         * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
-    * need to clear out my TODOs doc again
+    * maybe start on endgame points calculation?
+    * maybe create an account to ask my embarrassingly dumb questions
 ------
-* BUG! trading posts bonus trading posts being overwritten! (is it in the cityObject or just UI??) - maybe false alarm, couldn't reproduce
 * add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
 * Keyboard shortcuts
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
