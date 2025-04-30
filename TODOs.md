@@ -14,13 +14,18 @@
 
 # TODOs #
 * 4/30
-    * Landing page: 
-        * Add a hotseat and online button
-        * Online doesn't do anything yet
-        * hotseat just opens up the config ("New Game") or "Resume saved game"
     * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
     * Online play:
-        * Should break this into a few different areas: landing page, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
+        * Should break this into a few different areas: landing page, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
+        * Landing Page:
+            * For online config need a room name field
+            * Need "Join" or "New"
+            * "Join" just needs room name
+            * "New" needs both room name and number or players
+            * Need validation for room name, can use the same logic as hotseat names
+            * maybe move name-validation to a helper function
+            * minor stylizing so that I don't use the accursed <br> tag
+        * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
         * Will need a different route from hotseat
         * will need it's own main.js
         * can we use the same main.html?
@@ -30,7 +35,8 @@
     * maybe create an account to ask my embarrassingly dumb questions
 ------
 * add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
-* Keyboard shortcuts
+* Update the landing page to include a
+* Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
 * Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?

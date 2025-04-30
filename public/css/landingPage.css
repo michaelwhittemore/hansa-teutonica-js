@@ -13,6 +13,10 @@ input {
     border-radius: 4px;
 }
 
+select{
+    margin: 2px;
+}
+
 .invalidForm {
     border-color: red;
     background-color: ivory;

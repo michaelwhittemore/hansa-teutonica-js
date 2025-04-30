@@ -11,7 +11,7 @@ const populatePlayerSelectionWithDefault = () => {
         document.getElementById(`playerColor-${i}`).innerHTML = 'Change Color'
         document.getElementById(`playerColor-${i}`).style.backgroundColor = TEST_PLAYERS[i][1]
     }
-    document.getElementById('playerNumber').value = TEST_PLAYERS.length;
+    document.getElementById('playerNumberHotseat').value = TEST_PLAYERS.length;
 };
 
 const populatePlayerSelection = (playerNumber) => {
@@ -20,7 +20,6 @@ const populatePlayerSelection = (playerNumber) => {
         playerSelector.append(createPlayerInfoDiv(i))
     }
 };
-
 
 const modifyNumberOfPlayers = (playerNumber) => {
     const playerSelector = document.getElementById('playerSelector')
@@ -62,7 +61,7 @@ const createPlayerInfoDiv = (id) => {
 }
 
 // TODO - let's rename this to some thing that communicates it's hotseat specific
-const startGame = () => {
+const startHotseatGame = () => {
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
     const selectedColors = []
@@ -108,7 +107,7 @@ const startGame = () => {
 
 }
 
-const resumeGame = () => {
+const resumeHotseatGame = () => {
     const url = new URL(document.location.href);
     url.pathname = 'hotseat';
     url.searchParams.append('resumeGame', true)
@@ -117,14 +116,22 @@ const resumeGame = () => {
 }
 
 const playerNumberOnChange = () => {
-    const playerNumber = document.getElementById('playerNumber').value;
+    const playerNumber = document.getElementById('playerNumberHotseat').value;
     modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
 const bindButtons = () => {
-    document.getElementById('playerNumber').onchange = playerNumberOnChange
-    document.getElementById('start').onclick = startGame
-    document.getElementById('resumeHotseat').onclick = resumeGame
+    document.getElementById('playerNumberHotseat').onchange = playerNumberOnChange;
+    document.getElementById('startHotseat').onclick = startHotseatGame;
+    document.getElementById('resumeHotseat').onclick = resumeHotseatGame;
+    document.getElementById('hotseatToggle').onclick = () => {
+        document.getElementById('hotseatConfig').style.display = '';
+        document.getElementById('onlineConfig').style.display = 'none';
+    }
+    document.getElementById('onlineToggle').onclick = () => {
+        document.getElementById('hotseatConfig').style.display = 'none';
+        document.getElementById('onlineConfig').style.display = '';
+    }
 }
 
 const validateName = (nameString) => {
@@ -146,7 +153,6 @@ const validateName = (nameString) => {
     }
     return [true, 'This should never be displayed']
 }
-
 
 TEST_PLAYERS.forEach(playerArr => {
     playerColorArray.push(playerArr[1])
@@ -192,17 +198,6 @@ const colorOptions = [
     '#dda0dd',
     '#ff1493',
 ]
-
-// TODO's 
-/* 
-* Eventually we would like the config to pop up when you select "hotseat" - possibly just hide it otherwise
-Need to validate colors work
-* Start should also be hidden until the game mode is selected
-* Stylize the selectors a little 
-* For online - should either offer 'NEW' or 'JOIN'. Will need to offer players the ability to create
-// a room name, and will also need to give the game a GUID (maybe can just do a smaller hash)
-* online play will need a waiting room feature, but that is beyond the scope of the landing page
-**/
 
 const start = () => {
     populatePlayerSelection(4)

@@ -13,17 +13,35 @@
 <body>
     <b>This is the landing page</b>
     <br>
-    <div class="hotseat">
+    <h3>Select Game Type</h3>
+    <button id="hotseatToggle">Hotseat</button>
+    <button id="onlineToggle">Online</button>
+    <div class="hotseat" id="hotseatConfig" style="display: none;">
         <h3>Configure Hotseat settings</h3>
-        <label for="playerNumber">Number of Players: </label>
-        <select id="playerNumber">
+        <label for="playerNumberHotseat">Number of Players: </label>
+        <select id="playerNumberHotseat">
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
         </select>
         <div id="playerSelector"> </div>
-        <button id="start"> Start Game</button>
+        <button id="startHotseat"> Start Game</button>
         <button id="resumeHotseat"> Resume Game </button>
+    </div>
+    <div class="online" id="onlineConfig" style="display: none;">
+        <h3>Configure Online settings</h3>
+        <label for="playerNumberOnline">Number of Players: </label>
+        <select id="playerNumberOnline">
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select> 
+        <br>
+        <label for="roomName">Room Name:</label>
+        <input id="roomName"> 
+        <br>
+        <button id="startOnline"> Start New Game</button>
+        <button id="joinOnline"> Join Active Game </button>
     </div>
 
 </body>
