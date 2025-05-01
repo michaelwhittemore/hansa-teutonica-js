@@ -120,10 +120,26 @@ const playerNumberOnChange = () => {
     modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
+// here! both of these methods need validation
+// let's start by creating the routing in app.js
+const startOnline = () => {
+    // Need to check that the room doesn't exist
+    console.log('startOnline')
+}
+
+const joinOnline = () => {
+    console.log('joinOnline')
+    // Need to check the server if the room exists (eventually use a DB)
+    // If it doesn't exist we warn the user and ask them to start a new game
+    // Also need to account for it being full
+}
+
 const bindButtons = () => {
     document.getElementById('playerNumberHotseat').onchange = playerNumberOnChange;
     document.getElementById('startHotseat').onclick = startHotseatGame;
     document.getElementById('resumeHotseat').onclick = resumeHotseatGame;
+    document.getElementById('startOnline').onclick = startOnline;
+    document.getElementById('joinOnline').onclick = joinOnline;
     document.getElementById('hotseatToggle').onclick = () => {
         document.getElementById('hotseatConfig').style.display = '';
         document.getElementById('onlineConfig').style.display = 'none';

@@ -18,14 +18,16 @@
     * Online play:
         * Should break this into a few different areas: landing page, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Landing Page:
-            * For online config need a room name field
-            * Need "Join" or "New"
-            * "Join" just needs room name
-            * "New" needs both room name and number or players
             * Need validation for room name, can use the same logic as hotseat names
             * maybe move name-validation to a helper function
+            * The most important thing is the waiting room url
             * minor stylizing so that I don't use the accursed <br> tag
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
+            * Need to learn from the server how many players are there
+        * Building the server
+            * Will need to reorganize the server, probably at the very least give it a folder
+            * Read up on express best practices and the MDN HTTP docs
+            * The web pages can use FETCH API, I can test with postman
         * Will need a different route from hotseat
         * will need it's own main.js
         * can we use the same main.html?
@@ -76,8 +78,9 @@
 * ESLINT semi colon - ugh prettier was a hassle, might come back to this
 
 # Stretch Goals (in no particular order) # #
+* read https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview MDN guide to brush back up on http knowledge
 * when doing online play we will likely need some sort of player validator. We don't want to update actionInfoDiv.innerText for example when its not the player's turn.
-* local storage
+~~local storage~~
 * potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator
 * eventually, using 'this' is going to be preferable to referencing the gameController object as there may be more than one - will need a lot of clean up
@@ -94,7 +97,7 @@
 * track game logic server side (only for online non-hotseat modes)
 * unit tests for all internal methods
 ~~add a favicon~~
-* add linter
+~~add linter~~
 * reorganize CSS and methods (just the ordering)
 * add images for tokens and parts of the player board (i.e. keys and the book in liber sophia and purses)
 * corner case of empty bank and supply when being bumped - technically the player can move their placed pieces
