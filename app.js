@@ -9,6 +9,8 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.json())
+app.use(express.urlencoded())
 
 app.get("/", (request, res) => {
   res.sendFile(__dirname + "/public/html/landingPage.html")
@@ -25,7 +27,7 @@ app.post("/newRoom", (request,res) => {
   console.log(request)
   console.warn('body!')
   console.log(request.body)
-  res.send('This is the response')
+  res.send('This is the response1')
 })
 
 const roomTrackerMockDB = {}
