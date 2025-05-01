@@ -106,6 +106,7 @@
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add a github link - I'm sure I can find a nice one somewhere online
 
+// npx nodemon app.js (now I don't have to restart it all the time!)
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
 // jump to line number - can click on the goto at the bottom of the page (i.e. "Ln 127, Col 87")

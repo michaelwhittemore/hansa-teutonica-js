@@ -193,6 +193,27 @@ export const drawLine = (element1, element2) => {
     addPixelAtLocation(xCenter2 - xOffset, yCenter2 - yOffset)
 }
 
+
+export const validateName = (nameString) => {
+    if (nameString === '') {
+        return [false, 'Names may not be empty.']
+    }
+    if (nameString.length > 20){
+        return [false, 'Names may not be longer than 20 characters.']
+    }
+    // ^[a-zA-Z0-9\_]*$ 
+    /*
+    "^" : Start of string
+    "[a-zA-Z0-9_]": Matches alphanumeric or underscore (don't need to escape underscore)
+    "*": Zero or more instances of the preceding regex token
+    "$": End of string
+    */
+    if (!/^[a-zA-Z0-9_]*$/.test(nameString)) {
+        return [false, 'Names can only contain alphanumerics or underscores.']
+    }
+    return [true, 'This should never be displayed']
+}
+
 // TEST, DELETE THIS TODO
 const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
@@ -212,6 +233,7 @@ const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     return testElement
 }
 
+// TODO can probably delete export default
 
 export default {
     isShape, 

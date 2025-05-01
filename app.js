@@ -8,29 +8,53 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = 3000;
 
+// TODO replace this variable with an actual database
+const roomTrackerMockDB = {}
+
 app.use(express.static(__dirname + '/public'));
 app.use(express.json())
 app.use(express.urlencoded())
 
-app.get("/", (request, res) => {
-  res.sendFile(__dirname + "/public/html/landingPage.html")
+app.get("/", (request, response) => {
+  response.sendFile(__dirname + "/public/html/landingPage.html")
 });
-app.get("/hotseat", (request, res) => {
-  res.sendFile(__dirname + "/public/html/main.html")
+app.get("/hotseat", (request, response) => {
+  response.sendFile(__dirname + "/public/html/main.html")
 });
-app.get("/waitingRoom", (request, res) => {
-  res.sendFile(__dirname + "/public/html/waitingRoom.html")
+app.get("/waitingRoom", (request, response) => {
+  response.sendFile(__dirname + "/public/html/waitingRoom.html")
 });
 
-app.post("/newRoom", (request,res) => {
-  console.log('request is')
-  console.log(request)
-  console.warn('body!')
-  console.log(request.body)
-  res.send('This is the response1')
+// Will need a route to clear the room from storage
+
+// Let's plan out this 
+app.post("/newRoom", (request, response) => {
+  const { numberOfPlayers, roomName } = request.body
+  if (!numberOfPlayers || !roomName) {
+    console.error('Tried to create a new room without number of players or room name.')
+    response.status(400)
+    response.send('Tried to create a new room without number of players or room name.')
+    return
+  }
+  console.log(numberOfPlayers, roomName)
+  // Need to do sanitization here
+  if (!roomTrackerMockDB[roomName]) {
+    // Happy path, the name doesn't exist
+    // May need additional fields
+    roomTrackerMockDB[roomName] = {
+      isInUse: true,
+      numberOfPlayers,
+      playerArray: {}
+    }
+    response.send(`Successfully created room ${roomName}`)
+  } else {
+    response.status(400)
+    response.send('Room already exists')
+  }
+
 })
 
-const roomTrackerMockDB = {}
+
 
 // Here!
 // In the future I will absolutely need some kind of database for this, but I'm just going to store it
