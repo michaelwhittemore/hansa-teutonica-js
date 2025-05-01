@@ -291,7 +291,6 @@ export const playerBoardAndInformationControllerFactory = () => {
                 }
             },
             updateTokensInSupplyAndBank(player) {
-                // here! seems bugged
                 const tokenInSupplyDiv = document.getElementById(`supply-tokens-${player.id}`)
                 const tokenInSupplyTooltip = document.getElementById(`supply-tokens-tooltip-${player.id}`)
                 const currentTokenArray = player.currentTokens;

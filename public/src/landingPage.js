@@ -60,11 +60,11 @@ const createPlayerInfoDiv = (id) => {
     return playerInfoDiv
 }
 
-// TODO - let's rename this to some thing that communicates it's hotseat specific
 const startHotseatGame = () => {
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
     const selectedColors = []
+    // dev
     const url = new URL(document.location.href);
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
@@ -121,7 +121,6 @@ const playerNumberOnChange = () => {
     modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
-// here! 
 const startOnlineGame = async () => {
     const roomName = document.getElementById('roomName').value
     const numberOfPlayers = document.getElementById('playerNumberOnline').value
@@ -156,15 +155,28 @@ const startOnlineGame = async () => {
         document.getElementById('roomName').classList.add('invalidForm')
         document.getElementById('roomNameError').innerText = responseText
     }
+    // Happy path, will need to redirect to the waiting room
+    const url = new URL(window.location.href);
+    url.pathname = 'waitingRoom'
+    url.searchParams.append('numberOfPlayers', numberOfPlayers)
+    url.searchParams.append('roomName', roomName)
     console.log(response)
     console.log(responseText)
+    if (!URL.canParse(url)) {
+        console.error('Can not parse url', url)
+        return;
+    }
+    window.location.assign(url)
 }
 
+// here! 
 const joinOnlineGame = () => {
     console.log('joinOnline')
     // Need to check the server if the room exists (eventually use a DB)
     // If it doesn't exist we warn the user and ask them to start a new game
     // Also need to account for it being full
+
+    // dev
 }
 
 const bindButtons = () => {

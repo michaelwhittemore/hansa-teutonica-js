@@ -42,7 +42,7 @@ app.post("/newRoom", (request, response) => {
     // Happy path, the name doesn't exist
     // May need additional fields
     roomTrackerMockDB[roomName] = {
-      isInUse: true,
+      isInUse: true, // may be an unnecessary field
       numberOfPlayers,
       playerArray: {}
     }
@@ -53,13 +53,6 @@ app.post("/newRoom", (request, response) => {
   }
 
 })
-
-
-
-// Here!
-// In the future I will absolutely need some kind of database for this, but I'm just going to store it
-// locally for the moment.
-// The server will need some major refactoring as I get to it
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);

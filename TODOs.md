@@ -18,12 +18,10 @@
     * Online play:
         * Should break this into a few different areas: landing page, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Landing Page:
-            * Need validation for room name, can use the same logic as hotseat names
-            * maybe move name-validation to a helper function
-            * The most important thing is the waiting room url
-            * minor stylizing so that I don't use the accursed <br> tag
+            * Still need logic for joining active game, just check that the game exists that that there's room
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
             * Need to learn from the server how many players are there
+            * Need to give the player the opportunity to add their name and color
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
