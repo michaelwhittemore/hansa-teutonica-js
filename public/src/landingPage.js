@@ -1,5 +1,5 @@
 import { TEST_PLAYERS } from "./helpers/constants.js"
-import { createDivWithClassAndIdAndStyle, validateName} from "./helpers/helpers.js";
+import { createDivWithClassAndIdAndStyle, validateName } from "./helpers/helpers.js";
 
 let pickingColorId;
 let playerColorArray = []
@@ -55,7 +55,7 @@ const createPlayerInfoDiv = (id) => {
     }
 
     const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], `playerError-${id}`);
-    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton,playerErrorDisplay)
+    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton, playerErrorDisplay)
 
     return playerInfoDiv
 }
@@ -72,6 +72,7 @@ const startHotseatGame = () => {
     for (let i = 0; i < playerSelector.childElementCount; i++) {
         const nameInput = document.getElementById(`playerName-${i}`);
 
+        // dev
         const name = nameInput.value;
         const nameValidation = validateName(name);
 
@@ -85,10 +86,10 @@ const startHotseatGame = () => {
         }
 
         const color = playerColorArray[i]
-        if (!playerColorArray[i]){
+        if (!playerColorArray[i]) {
             document.getElementById(`playerError-${i}`).innerText = 'Color not selected.'
             allValid = false;
-        } else if(selectedColors.includes(color)){
+        } else if (selectedColors.includes(color)) {
             document.getElementById(`playerError-${i}`).innerText = 'Players may not have the same color.'
             allValid = false;
         }
@@ -120,15 +121,46 @@ const playerNumberOnChange = () => {
     modifyNumberOfPlayers(parseInt(playerNumber))
 }
 
-// here! both of these methods need validation
-// let's start by creating the routing in app.js
-const startOnline = () => {
-    // Need to check that the room doesn't exist
-    // validation first, then make the fetch request
-    console.log('startOnline')
+// here! 
+const startOnlineGame = async () => {
+    const roomName = document.getElementById('roomName').value
+    const numberOfPlayers = document.getElementById('playerNumberOnline').value
+    const roomNameValidation = validateName(roomName);
+
+    document.getElementById('roomName').classList.remove('invalidForm')
+    if (!roomNameValidation[0]) {
+        document.getElementById('roomName').classList.add('invalidForm')
+        document.getElementById('roomNameError').innerText = 'Room ' + roomNameValidation[1]
+        console.error(roomNameValidation[1])
+        return
+    }
+
+    let response;
+    let responseText;
+    try {
+        const url = window.location.origin + '/newRoom';
+        console.log(url)
+        response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ roomName, numberOfPlayers }),
+        });
+        responseText = await response.text();
+    } catch (err) {
+        console.error(err)
+    }
+    if (!response.ok){
+        console.error('response not ok')
+        document.getElementById('roomName').classList.add('invalidForm')
+        document.getElementById('roomNameError').innerText = responseText
+    }
+    console.log(response)
+    console.log(responseText)
 }
 
-const joinOnline = () => {
+const joinOnlineGame = () => {
     console.log('joinOnline')
     // Need to check the server if the room exists (eventually use a DB)
     // If it doesn't exist we warn the user and ask them to start a new game
@@ -139,8 +171,8 @@ const bindButtons = () => {
     document.getElementById('playerNumberHotseat').onchange = playerNumberOnChange;
     document.getElementById('startHotseat').onclick = startHotseatGame;
     document.getElementById('resumeHotseat').onclick = resumeHotseatGame;
-    document.getElementById('startOnline').onclick = startOnline;
-    document.getElementById('joinOnline').onclick = joinOnline;
+    document.getElementById('startOnline').onclick = startOnlineGame;
+    document.getElementById('joinOnline').onclick = joinOnlineGame;
     document.getElementById('hotseatToggle').onclick = () => {
         document.getElementById('hotseatConfig').style.display = '';
         document.getElementById('onlineConfig').style.display = 'none';
@@ -164,9 +196,9 @@ const createColorPicker = () => {
             'backgroundColor': color
         })
         colorSelector.onclick = () => {
-            if (pickingColorId !== undefined){
+            if (pickingColorId !== undefined) {
                 document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
-                document.getElementById(`playerColor-${ pickingColorId}`).style.backgroundColor = color
+                document.getElementById(`playerColor-${pickingColorId}`).style.backgroundColor = color
                 colorPicker.style.visibility = 'hidden'
                 playerColorArray[pickingColorId] = color;
                 pickingColorId = undefined;
@@ -190,7 +222,7 @@ const colorOptions = [
     '#0000ff',
     '#ff00ff',
     '#1e90ff',
-    '#eee8aa', 
+    '#eee8aa',
     '#ffff54',
     '#dda0dd',
     '#ff1493',
