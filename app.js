@@ -10,19 +10,22 @@ const PORT = 3000;
 
 app.use(express.static(__dirname + '/public'));
 
-app.get("/", (req, res) => {
+app.get("/", (request, res) => {
   res.sendFile(__dirname + "/public/html/landingPage.html")
 });
-app.get("/hotseat", (req, res) => {
+app.get("/hotseat", (request, res) => {
   res.sendFile(__dirname + "/public/html/main.html")
 });
-app.get("/waitingRoom", (req, res) => {
+app.get("/waitingRoom", (request, res) => {
   res.sendFile(__dirname + "/public/html/waitingRoom.html")
 });
 
-app.post("/newRoom", (req,res) => {
+app.post("/newRoom", (request,res) => {
   console.log('request is')
-  console.log(req)
+  console.log(request)
+  console.warn('body!')
+  console.log(request.body)
+  res.send('This is the response')
 })
 
 const roomTrackerMockDB = {}
