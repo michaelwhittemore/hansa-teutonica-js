@@ -48,21 +48,34 @@ app.post("/newRoom", (request, response) => {
     }
     response.send(`Successfully created room ${roomName}`)
   } else {
-    // TODO: I think this is wrong to use a 400
+    // TODO: I think this is the wrong way to use a 400, we should only send an error if the case of invalid values
     response.status(400)
     response.send('Room already exists')
   }
 
 })
-
+// Let's do some testing with manual rooms
+roomTrackerMockDB['aFullRoom'] = {isFull: true}
+roomTrackerMockDB['aGoodRoom'] = {isFull: false}
 app.get("/checkRoom/:roomName", (request, response) => {
   console.log(request.params)
   console.log(request.params.roomName)
   const { roomName } = request.params
   if (!roomTrackerMockDB[roomName]){
-
+    response.json({
+      isValidRoom: false,
+      errorMessage: 'That room does not exist.'
+    })
+  } else if (roomTrackerMockDB[roomName].isFull){
+    response.json({
+      isValidRoom: false,
+      errorMessage: 'That room is already full.'
+    })
+  } else {
+    response.json({
+      isValidRoom: true,
+    })
   }
-  response.send('This should have information on the room')
 })
 
 app.listen(PORT, () => {

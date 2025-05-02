@@ -150,7 +150,7 @@ const startOnlineGame = async () => {
     } catch (err) {
         console.error(err)
     }
-    if (!response.ok){
+    if (!response.ok) {
         console.error('response not ok')
         document.getElementById('roomName').classList.add('invalidForm')
         document.getElementById('roomNameError').innerText = responseText
@@ -171,7 +171,6 @@ const startOnlineGame = async () => {
 
 // here! 
 const joinOnlineGame = async () => {
-
     const roomName = document.getElementById('roomName').value
     const roomNameValidation = validateName(roomName);
 
@@ -184,23 +183,34 @@ const joinOnlineGame = async () => {
     }
 
     let response;
-    let responseText;
+    let responseBody;
     try {
         const url = window.location.origin + `/checkRoom/${roomName}`;
         console.log(url)
         response = await fetch(url, {
             method: 'GET',
         });
-        responseText = await response.text();
+        console.log(response)
+        responseBody = await response.json();
+        console.log(responseBody)
     } catch (err) {
         console.error(err)
+        return;
     }
-    if (!response.ok){
-        console.error('response not ok')
+    if (!responseBody.isValidRoom) {
         document.getElementById('roomName').classList.add('invalidForm')
-        document.getElementById('roomNameError').innerText = responseText
+        document.getElementById('roomNameError').innerText = responseBody.errorMessage
+    } else {
+        // Happy path, will need to redirect to the waiting room
+        const url = new URL(window.location.href);
+        url.pathname = 'waitingRoom'
+        url.searchParams.append('roomName', roomName)
+        if (!URL.canParse(url)) {
+            console.error('Can not parse url', url)
+            return;
+        }
+        window.location.assign(url)
     }
-    // dev
 }
 
 const bindButtons = () => {
