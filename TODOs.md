@@ -34,6 +34,7 @@
     * maybe start on endgame points calculation?
     * maybe create an account to ask my embarrassingly dumb questions
 ------
+* refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 * add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
 * Update the landing page to include a
 * Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op

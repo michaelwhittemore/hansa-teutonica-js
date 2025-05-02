@@ -170,12 +170,36 @@ const startOnlineGame = async () => {
 }
 
 // here! 
-const joinOnlineGame = () => {
-    console.log('joinOnline')
-    // Need to check the server if the room exists (eventually use a DB)
-    // If it doesn't exist we warn the user and ask them to start a new game
-    // Also need to account for it being full
+const joinOnlineGame = async () => {
 
+    const roomName = document.getElementById('roomName').value
+    const roomNameValidation = validateName(roomName);
+
+    document.getElementById('roomName').classList.remove('invalidForm')
+    if (!roomNameValidation[0]) {
+        document.getElementById('roomName').classList.add('invalidForm')
+        document.getElementById('roomNameError').innerText = 'Room ' + roomNameValidation[1]
+        console.error(roomNameValidation[1])
+        return
+    }
+
+    let response;
+    let responseText;
+    try {
+        const url = window.location.origin + `/checkRoom/${roomName}`;
+        console.log(url)
+        response = await fetch(url, {
+            method: 'GET',
+        });
+        responseText = await response.text();
+    } catch (err) {
+        console.error(err)
+    }
+    if (!response.ok){
+        console.error('response not ok')
+        document.getElementById('roomName').classList.add('invalidForm')
+        document.getElementById('roomNameError').innerText = responseText
+    }
     // dev
 }
 
@@ -218,7 +242,7 @@ const createColorPicker = () => {
         }
         colorPicker.append(colorSelector)
     })
-    document.body.append(colorPicker)
+    document.getElementById('hotseatConfig').append(colorPicker)
 }
 
 const colorOptions = [

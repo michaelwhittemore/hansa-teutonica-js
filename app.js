@@ -27,7 +27,6 @@ app.get("/waitingRoom", (request, response) => {
 
 // Will need a route to clear the room from storage
 
-// Let's plan out this 
 app.post("/newRoom", (request, response) => {
   const { numberOfPlayers, roomName } = request.body
   if (!numberOfPlayers || !roomName) {
@@ -43,15 +42,27 @@ app.post("/newRoom", (request, response) => {
     // May need additional fields
     roomTrackerMockDB[roomName] = {
       isInUse: true, // may be an unnecessary field
+      isFull: false,
       numberOfPlayers,
       playerArray: {}
     }
     response.send(`Successfully created room ${roomName}`)
   } else {
+    // TODO: I think this is wrong to use a 400
     response.status(400)
     response.send('Room already exists')
   }
 
+})
+
+app.get("/checkRoom/:roomName", (request, response) => {
+  console.log(request.params)
+  console.log(request.params.roomName)
+  const { roomName } = request.params
+  if (!roomTrackerMockDB[roomName]){
+
+  }
+  response.send('This should have information on the room')
 })
 
 app.listen(PORT, () => {
