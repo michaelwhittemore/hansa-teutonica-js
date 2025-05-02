@@ -1,5 +1,5 @@
-import { TEST_PLAYERS } from "./helpers/constants.js"
-import { createDivWithClassAndIdAndStyle, validateName } from "./helpers/helpers.js";
+import { TEST_PLAYERS } from "../helpers/constants.js"
+import { createDivWithClassAndIdAndStyle, validateName } from "../helpers/helpers.js";
 
 let pickingColorId;
 let playerColorArray = []
@@ -158,7 +158,6 @@ const startOnlineGame = async () => {
     // Happy path, will need to redirect to the waiting room
     const url = new URL(window.location.href);
     url.pathname = 'waitingRoom'
-    url.searchParams.append('numberOfPlayers', numberOfPlayers)
     url.searchParams.append('roomName', roomName)
     console.log(response)
     console.log(responseText)
@@ -169,7 +168,6 @@ const startOnlineGame = async () => {
     window.location.assign(url)
 }
 
-// here! 
 const joinOnlineGame = async () => {
     const roomName = document.getElementById('roomName').value
     const roomNameValidation = validateName(roomName);

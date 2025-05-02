@@ -15,7 +15,11 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json())
 app.use(express.urlencoded())
 
+// Page Routing
 app.get("/", (request, response) => {
+  response.sendFile(__dirname + "/public/html/landingPage.html")
+});
+app.get("/landingPage", (request, response) => {
   response.sendFile(__dirname + "/public/html/landingPage.html")
 });
 app.get("/hotseat", (request, response) => {
@@ -54,12 +58,10 @@ app.post("/newRoom", (request, response) => {
   }
 
 })
-// Let's do some testing with manual rooms
+// Let's do some testing with manual rooms, TODO delete these
 roomTrackerMockDB['aFullRoom'] = {isFull: true}
 roomTrackerMockDB['aGoodRoom'] = {isFull: false}
 app.get("/checkRoom/:roomName", (request, response) => {
-  console.log(request.params)
-  console.log(request.params.roomName)
   const { roomName } = request.params
   if (!roomTrackerMockDB[roomName]){
     response.json({
@@ -78,6 +80,19 @@ app.get("/checkRoom/:roomName", (request, response) => {
   }
 })
 
+app.get('/joinRoom/:roomName', (request, response) => {
+  console.log('here!!!')
+  const { roomName } = request.params
+  console.log(roomTrackerMockDB)
+  if (!roomTrackerMockDB[roomName]){
+    console.error(`Attempted to join an unknown room ${roomName}`);
+    response.status(400)
+    response.send(`${roomName} doesn't exits.`)
+  } else {
+    response.send('sadsadwe')
+    response.json(...roomTrackerMockDB[roomName])
+  }
+})
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });

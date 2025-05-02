@@ -1,12 +1,12 @@
-import { TEST_PLAYERS } from './helpers/constants.js';
-import { inputHandlerFactory } from './mainLogic/inputHandlersFactory.js';
-import { gameControllerFactory } from './mainLogic/gameControllerFactory.js';
-import { turnTrackerControllerFactory } from './mainLogic/turnTrackerControllerFactory.js';
-import { playerBoardAndInformationControllerFactory } from './mainLogic/playerBoardAndInformationControllerFactory.js'
-import { logControllerFactory } from './mainLogic/logControllerFactory.js';
-import { boardControllerFactory } from './mainLogic/boardControllerFactory.js';
+import { TEST_PLAYERS } from '../helpers/constants.js';
+import { inputHandlerFactory } from '../mainLogic/inputHandlersFactory.js';
+import { gameControllerFactory } from '../mainLogic/gameControllerFactory.js';
+import { turnTrackerControllerFactory } from '../mainLogic/turnTrackerControllerFactory.js';
+import { playerBoardAndInformationControllerFactory } from '../mainLogic/playerBoardAndInformationControllerFactory.js'
+import { logControllerFactory } from '../mainLogic/logControllerFactory.js';
+import { boardControllerFactory } from '../mainLogic/boardControllerFactory.js';
 
-import { logicBundle } from './helpers/logicBundle.js'; // This is just for easier testing
+import { logicBundle } from '../helpers/logicBundle.js'; // This is just for easier testing
 
 // Maybe we rename 'factory' -> 'init' 
 const gameController = gameControllerFactory();

@@ -13,15 +13,17 @@
 * Need to remove the starting 8 tokens from player supply
 
 # TODOs #
-* 4/30
-    * maybe get started online play? Will probably start with the API and messaging to the server (I don't think tabs communicate with each other). For the moment, the server will simply pass though messages
+* 5/02
     * Online play:
-        * Should break this into a few different areas: landing page, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
-        * Landing Page:
-            * Still need logic for joining active game, just check that the game exists that that there's room
+        * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
+        * ~~Landing Page~~
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
+            * **HERE!**
+            * As soon as the page loads we need to double check with the server that everything is good
             * Need to learn from the server how many players are there
             * Need to give the player the opportunity to add their name and color
+            * Need to wait to hear from the server, once the game is full we should then
+            redirect to the online tab 
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
