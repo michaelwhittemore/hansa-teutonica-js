@@ -81,16 +81,14 @@ app.get("/checkRoom/:roomName", (request, response) => {
 })
 
 app.get('/joinRoom/:roomName', (request, response) => {
-  console.log('here!!!')
   const { roomName } = request.params
   console.log(roomTrackerMockDB)
   if (!roomTrackerMockDB[roomName]){
     console.error(`Attempted to join an unknown room ${roomName}`);
     response.status(400)
-    response.send(`${roomName} doesn't exits.`)
+    response.send(`A room named "${roomName}" doesn't exit.`)
   } else {
-    response.send('sadsadwe')
-    response.json(...roomTrackerMockDB[roomName])
+    response.json(roomTrackerMockDB[roomName])
   }
 })
 app.listen(PORT, () => {
