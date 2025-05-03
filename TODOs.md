@@ -21,6 +21,8 @@
             * **HERE!**
             * As soon as the page loads we need to double check with the server that everything is good
             * Need to learn from the server how many players are there
+            * Also need to learn the total number of players who are ready
+            * need to distinguish between players supported and current player and ready players
             * Need to give the player the opportunity to add their name and color
             * Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
@@ -28,6 +30,9 @@
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
             * The web pages can use FETCH API, I can test with postman
+            * I'm eventually going to need to use websockets when the server needs to send messages
+            * I may want to hard code additional fixed rooms just for testing
+            * I will also need to add the data base. NoSQL might be easier? Regardless, that can probably come later
         * Will need a different route from hotseat
         * will need it's own main.js
         * can we use the same main.html?

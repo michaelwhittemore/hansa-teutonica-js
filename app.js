@@ -47,7 +47,8 @@ app.post("/newRoom", (request, response) => {
     roomTrackerMockDB[roomName] = {
       isInUse: true, // may be an unnecessary field
       isFull: false,
-      numberOfPlayers,
+      numberOfPlayers: parseInt(numberOfPlayers),
+      playersWaiting: 0,
       playerArray: {}
     }
     response.send(`Successfully created room ${roomName}`)
@@ -59,16 +60,16 @@ app.post("/newRoom", (request, response) => {
 
 })
 // Let's do some testing with manual rooms, TODO delete these
-roomTrackerMockDB['aFullRoom'] = {isFull: true}
-roomTrackerMockDB['aGoodRoom'] = {isFull: false}
+roomTrackerMockDB['aFullRoom'] = { isFull: true }
+roomTrackerMockDB['aGoodRoom'] = { isFull: false }
 app.get("/checkRoom/:roomName", (request, response) => {
   const { roomName } = request.params
-  if (!roomTrackerMockDB[roomName]){
+  if (!roomTrackerMockDB[roomName]) {
     response.json({
       isValidRoom: false,
       errorMessage: 'That room does not exist.'
     })
-  } else if (roomTrackerMockDB[roomName].isFull){
+  } else if (roomTrackerMockDB[roomName].isFull) {
     response.json({
       isValidRoom: false,
       errorMessage: 'That room is already full.'
@@ -83,11 +84,18 @@ app.get("/checkRoom/:roomName", (request, response) => {
 app.get('/joinRoom/:roomName', (request, response) => {
   const { roomName } = request.params
   console.log(roomTrackerMockDB)
-  if (!roomTrackerMockDB[roomName]){
+  if (!roomTrackerMockDB[roomName]) {
     console.error(`Attempted to join an unknown room ${roomName}`);
+    response.status(404)
+    response.send(`A room named "${roomName}" doesn't exist.`)
+  } else if (roomTrackerMockDB[roomName].isFull) {
+    // The above should check that the room isn't full
     response.status(400)
-    response.send(`A room named "${roomName}" doesn't exit.`)
+    response.send(`The room named "${roomName}" is full.`)
   } else {
+    // here!
+    // This is the happy path - we need to treat it as the though the player has sucessfully joined
+    // dev: we need to  update the playersWaiting field - and then update the isFull tag if necessary
     response.json(roomTrackerMockDB[roomName])
   }
 })
