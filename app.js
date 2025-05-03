@@ -94,7 +94,7 @@ app.get('/joinRoom/:roomName', (request, response) => {
     response.send(`The room named "${roomName}" is full.`)
   } else {
     // here!
-    // This is the happy path - we need to treat it as the though the player has sucessfully joined
+    // This is the happy path - we need to treat it as the though the player has successfully joined
     // dev: we need to  update the playersWaiting field - and then update the isFull tag if necessary
     response.json(roomTrackerMockDB[roomName])
   }

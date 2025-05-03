@@ -1,5 +1,5 @@
 import { TEST_PLAYERS } from "../helpers/constants.js"
-import { createDivWithClassAndIdAndStyle, validateName } from "../helpers/helpers.js";
+import { createDivWithClassAndIdAndStyle, validateName, createColorPickerWithOnClick } from "../helpers/helpers.js";
 
 let pickingColorId;
 let playerColorArray = []
@@ -231,51 +231,21 @@ TEST_PLAYERS.forEach(playerArr => {
     playerColorArray.push(playerArr[1])
 });
 
-const createColorPicker = () => {
-    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], 'colorPicker', {
-        visibility: 'hidden'
-    })
-    colorOptions.forEach(color => {
-        const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
-            'backgroundColor': color
-        })
-        colorSelector.onclick = () => {
-            if (pickingColorId !== undefined) {
-                document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
-                document.getElementById(`playerColor-${pickingColorId}`).style.backgroundColor = color
-                colorPicker.style.visibility = 'hidden'
-                playerColorArray[pickingColorId] = color;
-                pickingColorId = undefined;
-            }
-        }
-        colorPicker.append(colorSelector)
-    })
-    document.getElementById('hotseatConfig').append(colorPicker)
-}
 
-const colorOptions = [
-    '#696969',
-    '#a52a2a',
-    '#008000',
-    '#4b0082',
-    '#ff0000',
-    '#00ced1',
-    '#ffa500',
-    '#7cfc00',
-    '#00fa9a',
-    '#0000ff',
-    '#ff00ff',
-    '#1e90ff',
-    '#eee8aa',
-    '#ffff54',
-    '#dda0dd',
-    '#ff1493',
-]
+const colorOnClick = (color) => {
+    if (pickingColorId !== undefined) {
+        document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
+        document.getElementById(`playerColor-${pickingColorId}`).style.backgroundColor = color
+        document.getElementById('colorPicker').style.visibility = 'hidden'
+        playerColorArray[pickingColorId] = color;
+        pickingColorId = undefined;
+    }
+}
 
 const start = () => {
     populatePlayerSelection(4)
     populatePlayerSelectionWithDefault();
     bindButtons();
-    createColorPicker(1) // remove this
+    document.getElementById('hotseatConfig').append(createColorPickerWithOnClick(colorOnClick));
 }
 window.onload = start;

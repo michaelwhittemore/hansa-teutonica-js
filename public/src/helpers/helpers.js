@@ -215,6 +215,49 @@ export const validateName = (nameString) => {
     return [true, 'This should never be displayed']
 }
 
+export const createColorPickerWithOnClick = (onClickFunction) => {
+    const colorOptions = [
+        '#696969',
+        '#a52a2a',
+        '#008000',
+        '#4b0082',
+        '#ff0000',
+        '#00ced1',
+        '#ffa500',
+        '#7cfc00',
+        '#00fa9a',
+        '#0000ff',
+        '#ff00ff',
+        '#1e90ff',
+        '#eee8aa',
+        '#ffff54',
+        '#dda0dd',
+        '#ff1493',
+    ]
+    const colorPicker = createDivWithClassAndIdAndStyle(['colorPicker'], 'colorPicker', {
+        visibility: 'hidden'
+    })
+    colorOptions.forEach(color => {
+        const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
+            'backgroundColor': color
+        })
+        // colorSelector.onclick = () => {
+        //     if (pickingColorId !== undefined) {
+        //         document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
+        //         document.getElementById(`playerColor-${pickingColorId}`).style.backgroundColor = color
+        //         colorPicker.style.visibility = 'hidden'
+        //         playerColorArray[pickingColorId] = color;
+        //         pickingColorId = undefined;
+        //     }
+        // }
+        colorSelector.onclick = () => {
+            onClickFunction(color)
+        }
+        colorPicker.append(colorSelector)
+    })
+    return colorPicker
+}
+
 // TEST, DELETE THIS TODO
 const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
