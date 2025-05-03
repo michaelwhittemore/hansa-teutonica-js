@@ -1,4 +1,4 @@
-import { createColorPickerWithOnClick } from "../helpers/helpers.js"
+import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle } from "../helpers/helpers.js"
 // IMPORTANT -- I may need to move away from http for signaling - we need  bidirectional communication
 const roomName = new URL(window.location).searchParams.get('roomName')
 
@@ -43,7 +43,8 @@ const attemptToJoinRoom = async () => {
 // the server that the person is leaving (maybe can use websocket instead)
 const handleValidRoom = (roomInfo) => {
     // need the color picker to only be visible when the player color button is clicked
-    document.body.append(createColorPickerWithOnClick((color) => {
+    document.getElementById('playerInfo').append(createPlayerInputs())
+    document.getElementById('playerInfo').append(createColorPickerWithOnClick((color) => {
         console.log(color)
     }))
     // document.getElementById('colorPicker').style.visibility = 'visible'
@@ -56,6 +57,29 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('warningArea').innerText = warningText
     document.getElementById('backButton').style.display = '';
     document.getElementById('backButton').onclick = () => { history.back() };
+}
+
+// may need css
+const createPlayerInputs = () => {
+    const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
+    const playerNameLabel = document.createElement('label')
+    playerNameLabel.innerText = 'Your Name: ';
+    playerNameLabel.htmlFor = 'playerName'
+    const playerNameInput = document.createElement('input')
+    playerNameInput.className = 'playerNameInput'
+    playerNameInput.id = 'playerName'
+
+    const playerColorButton = document.createElement('button')
+    playerColorButton.id = 'playerColor'
+    playerColorButton.innerText = 'Select Color';
+    playerColorButton.onclick = () => {
+        document.getElementById('colorPicker').style.visibility = 'visible'
+    }
+
+    const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], 'playerError');
+    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton, playerErrorDisplay)
+
+    return playerInfoDiv
 }
 
 

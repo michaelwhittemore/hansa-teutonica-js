@@ -37,6 +37,7 @@ const modifyNumberOfPlayers = (playerNumber) => {
     }
 }
 
+// dev - moving this to a helper - or maybe not, looks like there's maybe too many diffs?
 const createPlayerInfoDiv = (id) => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], `playerInfo-${id}`)
     const playerNameLabel = document.createElement('label')

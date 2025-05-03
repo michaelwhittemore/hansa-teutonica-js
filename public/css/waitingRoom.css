@@ -2,26 +2,3 @@
     color: red;
     font-style: italic;
 }
-
-.colorPicker {
-    height: 200px;
-    width: 200px;
-    border-style:solid;
-    border-radius: 4px;
-    border-color: black;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.colorSelection {
-    height: 21%;
-    width: 21%;
-    border-style:solid;    
-    border-color: white;
-}
-.colorSelection:hover{
-    border-color: black;
-
-}

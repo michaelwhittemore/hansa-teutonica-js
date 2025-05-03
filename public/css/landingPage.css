@@ -21,36 +21,3 @@ select{
     border-color: red;
     background-color: ivory;
 }
-
-.colorPicker {
-    height: 200px;
-    width: 200px;
-    border-style:solid;
-    border-radius: 4px;
-    border-color: black;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.colorSelection {
-    height: 21%;
-    width: 21%;
-    border-style:solid;    
-    border-color: white;
-}
-.colorSelection:hover{
-    border-color: black;
-
-}
-
-.colorButton{
-    height: 30px;
-    width: 30px;
-    border-style: dotted;
-    border-color: black;
-}
-.colorButton:hover{
-    border-style: solid;
-}

@@ -1,3 +1,7 @@
+
+// --------------------------------------------------------------------------------------------------------
+// MAIN GAME LOGIC HELPERS
+// --------------------------------------------------------------------------------------------------------
 export const isShape = (inputString) => inputString === 'square' || inputString === 'circle';
 export const pluralifyText = (item, number) => {
     return `${number} ${item}${number !== 1 ? 's' : ''}`
@@ -271,20 +275,4 @@ const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     document.getElementById('gameBoard').append(testElement)
 
     return testElement
-}
-
-// TODO can probably delete export default
-
-export default {
-    isShape, 
-    pluralifyText, 
-    createDivWithClassAndIdAndStyle, 
-    getRandomArrayElementAndModify, 
-    getRouteIdFromNodeId,
-    offSetCoordinatesForSize, 
-    offSetCoordinatesForGameBoard, 
-    calculateSlopeFromCoordinatePairs, 
-    findEdgeIntersectionPointFromRects, 
-    calculatePathBetweenElements,
-    drawLine
 }
