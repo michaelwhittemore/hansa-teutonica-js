@@ -1,4 +1,4 @@
-
+import { createColorPickerWithOnClick } from "../helpers/helpers.js"
 // IMPORTANT -- I may need to move away from http for signaling - we need  bidirectional communication
 const roomName = new URL(window.location).searchParams.get('roomName')
 
@@ -22,33 +22,45 @@ const attemptToJoinRoom = async () => {
     // TODO consider changing this to just an object
     if (response.ok) {
         const responseBody = await response.json();
-        console.log(responseBody)
+        handleValidRoom(responseBody);
     } else {
         const responseText = await response.text();
-        console.log(responseText)
         warnInvalidRoom(responseText)
     }
-    // here
-    // Need to update the client side stuff. 
-    // ~~1. Need a title to inform the player that they're waiting for the roomName
-    // ~~2. Need to have an error area and a back button (history.back())
-    // ~~2. The above should have a method
-    // 3. Need to have a name field and import the color picker (maybe it should have a callback param)
-    // and a ready-up button
-    // 4. Will need to inform the client how many people are in waiting rooms and how many are ready
-    // 5. Should have a list of their colors and names 
-    // 6 If the client successfully joins a room we will need to add a beforeunload_event listener to inform
-    // the server that the person is leaving (maybe can use websocket instead)
+
+}
+
+// here!
+// Need to update the client side stuff. 
+// ~~1. Need a title to inform the player that they're waiting for the roomName
+// ~~2. Need to have an error area and a back button (history.back())
+// ~~2. The above should have a method
+// 3. Need to have a name field and import the color picker (maybe it should have a callback param)
+// and a ready-up button
+// 4. Will need to inform the client how many people are in waiting rooms and how many are ready
+// 5. Should have a list of their colors and names 
+// 6 If the client successfully joins a room we will need to add a beforeunload_event listener to inform
+// the server that the person is leaving (maybe can use websocket instead)
+const handleValidRoom = (roomInfo) => {
+    // need the color picker to only be visible when the player color button is clicked
+    document.body.append(createColorPickerWithOnClick((color) => {
+        console.log(color)
+    }))
+    // document.getElementById('colorPicker').style.visibility = 'visible'
+    console.warn(roomInfo)
+    // Will need to append everything to playerInfo - maybe can use the same thing as landing page?
 }
 
 const warnInvalidRoom = (warningText) => {
+    document.getElementById('waitingHeader').innerText = `Failed to join "${roomName}"`
     document.getElementById('warningArea').innerText = warningText
     document.getElementById('backButton').style.display = '';
     document.getElementById('backButton').onclick = () => { history.back() };
 }
 
+
 const start = async () => {
-    document.getElementById('waitingHeader').innerText = `Waiting to Join "${roomName}"`
+    document.getElementById('waitingHeader').innerText = `Waiting to join "${roomName}"`
     await attemptToJoinRoom();
 }
 window.onload = start

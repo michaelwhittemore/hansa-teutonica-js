@@ -193,6 +193,9 @@ export const drawLine = (element1, element2) => {
     addPixelAtLocation(xCenter2 - xOffset, yCenter2 - yOffset)
 }
 
+// --------------------------------------------------------------------------------------------------------
+// LANDING PAGE/ WAITING ROOM HELPERS
+// --------------------------------------------------------------------------------------------------------
 
 export const validateName = (nameString) => {
     if (nameString === '') {
@@ -215,6 +218,8 @@ export const validateName = (nameString) => {
     return [true, 'This should never be displayed']
 }
 
+// IMPORTANT, THIS FUNCTION NEEDS ITS OWN CSS FOR THE COLOR PICKER
+// TODO - maybe move the aforementioned css to it's own file?
 export const createColorPickerWithOnClick = (onClickFunction) => {
     const colorOptions = [
         '#696969',
@@ -241,15 +246,6 @@ export const createColorPickerWithOnClick = (onClickFunction) => {
         const colorSelector = createDivWithClassAndIdAndStyle(['colorSelection'], color, {
             'backgroundColor': color
         })
-        // colorSelector.onclick = () => {
-        //     if (pickingColorId !== undefined) {
-        //         document.getElementById(`playerColor-${pickingColorId}`).innerHTML = 'Change Color'
-        //         document.getElementById(`playerColor-${pickingColorId}`).style.backgroundColor = color
-        //         colorPicker.style.visibility = 'hidden'
-        //         playerColorArray[pickingColorId] = color;
-        //         pickingColorId = undefined;
-        //     }
-        // }
         colorSelector.onclick = () => {
             onClickFunction(color)
         }
