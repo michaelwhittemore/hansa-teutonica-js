@@ -59,7 +59,6 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').onclick = () => { history.back() };
 }
 
-// may need css
 const createPlayerInputs = () => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
     const playerNameLabel = document.createElement('label')
@@ -73,6 +72,7 @@ const createPlayerInputs = () => {
     playerColorButton.id = 'playerColor'
     playerColorButton.innerText = 'Select Color';
     playerColorButton.onclick = () => {
+        // here! need to add the color to the element and then hide the colorPicker
         document.getElementById('colorPicker').style.visibility = 'visible'
     }
 
