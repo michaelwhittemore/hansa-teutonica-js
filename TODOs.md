@@ -15,20 +15,23 @@
 # TODOs #
 * 5/03 
     ~~fix the visibility of the color picker to be absolute and next to the select color button~~
-    * add the number of players (as in game size) to the waiting room
+    ~~add the number of players (as in game size) to the waiting room~~
+    * add the validation to the ready up button (just name for the moment, not color yet)
+    * do some clean up with repeatedly using getElementById
 * immediate todos
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * ~~Landing Page~~
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
             * **HERE!**
-            * As soon as the page loads we need to double check with the server that everything is good
+            ~~As soon as the page loads we need to double check with the server that everything is good~~
             * Need to learn from the server how many players are there
             * Also need to learn the total number of players who are ready
             * need to distinguish between players supported and current player and ready players
             * Need to give the player the opportunity to add their name and color
             * Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
+            * Need establish a websocket with the server
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
