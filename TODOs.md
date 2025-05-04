@@ -13,7 +13,10 @@
 * Need to remove the starting 8 tokens from player supply
 
 # TODOs #
-* 5/02
+* 5/03 
+    ~~fix the visibility of the color picker to be absolute and next to the select color button~~
+    * add the number of players (as in game size) to the waiting room
+* immediate todos
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * ~~Landing Page~~
@@ -111,6 +114,7 @@
 * read through mdn's web dev docs for a more generalized refresher https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add a github link - I'm sure I can find a nice one somewhere online
+* make it so form validation happens real time (as opposed to on submission)
 
 // npx nodemon app.js (now I don't have to restart it all the time!)
 // collapse all = cmd-k and then cmd-0

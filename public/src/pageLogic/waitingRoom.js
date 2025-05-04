@@ -37,6 +37,8 @@ const attemptToJoinRoom = async () => {
 // ~~2. The above should have a method
 // 3. Need to have a name field and import the color picker (maybe it should have a callback param)
 // and a ready-up button
+// 3. Need the name field to do validation the same way as the landing page when clicking 'readyup'
+// 3. Need to fix the color picker so it isn't taking up space
 // 4. Will need to inform the client how many people are in waiting rooms and how many are ready
 // 5. Should have a list of their colors and names 
 // 6 If the client successfully joins a room we will need to add a beforeunload_event listener to inform
@@ -44,12 +46,19 @@ const attemptToJoinRoom = async () => {
 const handleValidRoom = (roomInfo) => {
     // need the color picker to only be visible when the player color button is clicked
     document.getElementById('playerInfo').append(createPlayerInputs())
-    document.getElementById('playerInfo').append(createColorPickerWithOnClick((color) => {
-        console.log(color)
-    }))
-    // document.getElementById('colorPicker').style.visibility = 'visible'
+    const colorPicker = createColorPickerWithOnClick((color) => {
+        document.getElementById('colorPicker').style.visibility = 'hidden';
+        document.getElementById('playerButtonSpan').innerHTML = 'Change Color'
+        document.getElementById('playerColor').style.backgroundColor = color
+    })
+    colorPicker.style.position = 'absolute';
+
+    document.getElementById('playerInfo').append(colorPicker)
+    const readyUpButton = document.createElement('button');
+    readyUpButton.innerText = 'Ready Up';
+    readyUpButton.onclick = readyUp;
+    document.getElementById('playerInfo').append(readyUpButton)
     console.warn(roomInfo)
-    // Will need to append everything to playerInfo - maybe can use the same thing as landing page?
 }
 
 const warnInvalidRoom = (warningText) => {
@@ -58,6 +67,9 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').style.display = '';
     document.getElementById('backButton').onclick = () => { history.back() };
 }
+// HERE! 
+// Need to write about how many players are in the game
+// Need to add the other players (via websockets)
 
 const createPlayerInputs = () => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
@@ -69,10 +81,12 @@ const createPlayerInputs = () => {
     playerNameInput.id = 'playerName'
 
     const playerColorButton = document.createElement('button')
+    const playerButtonSpan = document.createElement('span')
+    playerButtonSpan.id='playerButtonSpan'
+    playerButtonSpan.innerText = 'Select Color'
+    playerColorButton.append(playerButtonSpan)
     playerColorButton.id = 'playerColor'
-    playerColorButton.innerText = 'Select Color';
     playerColorButton.onclick = () => {
-        // here! need to add the color to the element and then hide the colorPicker
         document.getElementById('colorPicker').style.visibility = 'visible'
     }
 
@@ -82,6 +96,12 @@ const createPlayerInputs = () => {
     return playerInfoDiv
 }
 
+const readyUp = () => {
+    // TODO this will need a toggle
+    // The unready will be the same as the client disconnecting I think
+    console.log('trying to ready-up')
+    // This should be some what similar to the hotseat start button
+}
 
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Waiting to join "${roomName}"`
