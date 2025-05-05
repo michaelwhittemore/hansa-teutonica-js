@@ -109,20 +109,28 @@ app.listen(PORT, () => {
 // ----------------------------- TESTING WEBSOCKETS---------------------------
 const wss = new WebSocketServer({ port: 8080 });
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', (ws) => {
   // HERE! 
   // This is pretty important logic, I also need to account for the fact that the actual game logic will 
   // include websockets as well
   // Right now I think we focus on mapping websockets to participants and rooms
-  // 0.5 switch to big arrow notation for consistency 
-  // 1. Modify the waiting room to include that it's a waiting room 
+  // ~~0.5 switch to big arrow notation for consistency 
+  // ~~1. Modify the waiting room to include that it's a waiting room 
+  // 1. Need a "newParticipant" method
   // 2. Add an id of roomName + id (maybe just an index?)
   // 3. add a socketMap object to the room in the DB
   // 4. Create a method to inform all participants in a room (something like "messageAll")
-  
 
-  ws.on('message', function message(data) {
-    console.log('received: %s', data);
+
+  ws.on('message', (data) => {
+    const stringData = data.toString()
+    if (stringData.includes('$NEW_WS_CONNECTION:')){
+      console.log('A new websocket from the waiting room!')
+      const roomName = stringData.split(':')[1]
+      console.log('roomName', roomName)
+      // need a method here
+    }
+    console.log(`received data:${stringData}`);
   });
 
   ws.send('This is being sent from the server');

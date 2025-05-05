@@ -126,6 +126,7 @@ const setUpWebSocket = () => {
     const socket = new WebSocket(url)
     socket.onopen = () => {
         socket.send('Socket should be open');
+        socket.send(`$NEW_WS_CONNECTION:${roomName}`)
     };
     // Need to have a socket on message function (this should call another method)
     socket.onmessage = (event)=> {
