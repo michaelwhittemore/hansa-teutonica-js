@@ -112,7 +112,7 @@ const readyUp = () => {
         document.getElementById('playerError').innerText = nameValidation[1]
         console.error(nameValidation[1])
     }
-    if (!playerColor){
+    if (!playerColor) {
         nameInput.classList.add('invalidForm')
         document.getElementById('playerError').innerText += ' Color must be selected.'
     }
@@ -120,8 +120,26 @@ const readyUp = () => {
 
 }
 
+const setUpWebSocket = () => {
+    // should return the websocket object
+    const url = `ws://${window.location.hostname}:8080`
+    const socket = new WebSocket(url)
+    socket.onopen = () => {
+        socket.send('Socket should be open');
+    };
+    // Need to have a socket on message function (this should call another method)
+    socket.onmessage = (event)=> {
+        console.warn(event.data)
+    };
+    return socket
+}
+
+window.setUpWebSocket = setUpWebSocket
+
+
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
+    setUpWebSocket();
 }
 window.onload = start

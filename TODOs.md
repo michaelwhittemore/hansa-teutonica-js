@@ -16,7 +16,7 @@
 * 5/03 
     ~~fix the visibility of the color picker to be absolute and next to the select color button~~
     ~~add the number of players (as in game size) to the waiting room~~
-    * add the validation to the ready up button (just name for the moment, not color yet)
+    ~~add the validation to the ready up button (just name for the moment, not color yet)~~
     * do some clean up with repeatedly using getElementById
 * immediate todos
     * Online play:
@@ -25,13 +25,16 @@
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
             ~~As soon as the page loads we need to double check with the server that everything is good~~
             ~~Need to learn from the server how many players are there~~
-            *  **HERE!** START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide
+            ~~START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide~~
             * Also need to learn the total number of players who are ready
             * need to distinguish between players supported and current player and ready players
             * Need to give the player the opportunity to add their name and color
             * Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
             * Need establish a websocket with the server
+        * Server related to waiting room:
+            * **HERE!** On the websocket being connected need some sort of ID for each 
+            * Need to map the room participants to each websocket
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
@@ -45,8 +48,8 @@
         * let's rename main.js -> hotseat.js
         * I think we still initialize everything the same way?
     * maybe start on endgame points calculation?
-    * maybe create an account to ask my embarrassingly dumb questions
 ------
+* consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 * add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
 * Update the landing page to include a

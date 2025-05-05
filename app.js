@@ -2,6 +2,8 @@ import express from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+import { WebSocketServer } from 'ws';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -34,9 +36,9 @@ app.get("/waitingRoom", (request, response) => {
 app.post("/newRoom", (request, response) => {
   const { numberOfPlayers, roomName } = request.body
   if (!numberOfPlayers || !roomName) {
-    console.error('Tried to create a new room without number of players or room name.')
+    const errorMessage = 'Tried to create a new room without number of players or room name.'
     response.status(400)
-    response.send('Tried to create a new room without number of players or room name.')
+    response.send(errorMessage)
     return
   }
   console.log(numberOfPlayers, roomName)
@@ -89,14 +91,15 @@ app.get('/joinRoom/:roomName', (request, response) => {
     response.status(404)
     response.send(`A room named "${roomName}" doesn't exist.`)
   } else if (roomTrackerMockDB[roomName].isFull) {
-    // The above should check that the room isn't full
     response.status(400)
     response.send(`The room named "${roomName}" is full.`)
   } else {
-    // here!
-    // This is the happy path - we need to treat it as the though the player has successfully joined
-    // dev: we need to  update the playersWaiting field - and then update the isFull tag if necessary
+
     response.json(roomTrackerMockDB[roomName])
+    roomTrackerMockDB[roomName].playersWaiting++;
+    if (roomTrackerMockDB[roomName].playersWaiting === roomTrackerMockDB[roomName].numberOfPlayers){
+      roomTrackerMockDB[roomName].isFull = true;
+    } 
   }
 })
 app.listen(PORT, () => {
@@ -104,5 +107,23 @@ app.listen(PORT, () => {
 });
 
 // ----------------------------- TESTING WEBSOCKETS---------------------------
-// This doesn't work as we need the ws module for ws *SERVER* support, client support is built in
-// const socket = new WebSocket('ws://localhost:8080');
+const wss = new WebSocketServer({ port: 8080 });
+
+wss.on('connection', function connection(ws) {
+  // HERE! 
+  // This is pretty important logic, I also need to account for the fact that the actual game logic will 
+  // include websockets as well
+  // Right now I think we focus on mapping websockets to participants and rooms
+  // 0.5 switch to big arrow notation for consistency 
+  // 1. Modify the waiting room to include that it's a waiting room 
+  // 2. Add an id of roomName + id (maybe just an index?)
+  // 3. add a socketMap object to the room in the DB
+  // 4. Create a method to inform all participants in a room (something like "messageAll")
+  
+
+  ws.on('message', function message(data) {
+    console.log('received: %s', data);
+  });
+
+  ws.send('This is being sent from the server');
+});
