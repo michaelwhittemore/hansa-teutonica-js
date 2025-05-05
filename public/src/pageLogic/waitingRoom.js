@@ -1,7 +1,7 @@
 import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName } from "../helpers/helpers.js"
 // IMPORTANT -- I may need to move away from http for signaling - we need  bidirectional communication
 const roomName = new URL(window.location).searchParams.get('roomName')
-
+let playerColor;
 const attemptToJoinRoom = async () => {
     if (!roomName) {
         console.error('No room name')
@@ -37,7 +37,7 @@ const attemptToJoinRoom = async () => {
 // ~~2. The above should have a method
 // ~~3. Need to have a name field and import the color picker (maybe it should have a callback param)
 // and a ready-up button
-// **HERE!** 3. Need the name field to do validation the same way as the landing page when clicking 'readyup'
+// ~~3. Need the name field to do validation the same way as the landing page when clicking 'readyup'
 // ~~3. Need to fix the color picker so it isn't taking up space
 // 4. Will need to inform the client how many people are in waiting rooms and how many are ready
 // 5. Should have a list of their colors and names 
@@ -49,6 +49,7 @@ const handleValidRoom = (roomInfo) => {
         document.getElementById('colorPicker').style.visibility = 'hidden';
         document.getElementById('playerButtonSpan').innerHTML = 'Change Color'
         document.getElementById('playerColor').style.backgroundColor = color
+        playerColor = color
     })
     colorPicker.style.position = 'absolute';
 
@@ -59,7 +60,7 @@ const handleValidRoom = (roomInfo) => {
     document.getElementById('playerInfo').append(readyUpButton)
     console.warn(roomInfo)
 
-    document.getElementById('waitingHeader').innerText = 
+    document.getElementById('waitingHeader').innerText =
         `Waiting to join a ${roomInfo.numberOfPlayers} player game in room "${roomName}".`
 }
 
@@ -69,9 +70,6 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').style.display = '';
     document.getElementById('backButton').onclick = () => { history.back() };
 }
-// HERE! 
-// Need to write about how many players are in the game
-// Need to add the other players (via websockets)
 
 const createPlayerInputs = () => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
@@ -84,7 +82,7 @@ const createPlayerInputs = () => {
 
     const playerColorButton = document.createElement('button')
     const playerButtonSpan = document.createElement('span')
-    playerButtonSpan.id='playerButtonSpan'
+    playerButtonSpan.id = 'playerButtonSpan'
     playerButtonSpan.innerText = 'Select Color'
     playerColorButton.append(playerButtonSpan)
     playerColorButton.id = 'playerColor'
@@ -101,9 +99,7 @@ const createPlayerInputs = () => {
 const readyUp = () => {
     // TODO this will need a toggle
     // The unready will be the same as the client disconnecting I think
-    console.log('trying to ready-up')
-    // This should be some what similar to the hotseat start button
-    // HERE! - need to  validate name and ensure that color is selected
+
     const nameInput = document.getElementById('playerName')
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
@@ -111,11 +107,17 @@ const readyUp = () => {
 
     nameInput.classList.remove('invalidForm')
     document.getElementById('playerError').innerText = '';
-    if (!nameValidation[0]){
+    if (!nameValidation[0]) {
         nameInput.classList.add('invalidForm')
         document.getElementById('playerError').innerText = nameValidation[1]
         console.error(nameValidation[1])
     }
+    if (!playerColor){
+        nameInput.classList.add('invalidForm')
+        document.getElementById('playerError').innerText += ' Color must be selected.'
+    }
+
+
 }
 
 const start = async () => {

@@ -102,3 +102,7 @@ app.get('/joinRoom/:roomName', (request, response) => {
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
+
+// ----------------------------- TESTING WEBSOCKETS---------------------------
+// This doesn't work as we need the ws module for ws *SERVER* support, client support is built in
+// const socket = new WebSocket('ws://localhost:8080');

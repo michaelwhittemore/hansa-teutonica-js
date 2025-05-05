@@ -23,9 +23,9 @@
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * ~~Landing Page~~
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
-            * **HERE!**
             ~~As soon as the page loads we need to double check with the server that everything is good~~
-            * Need to learn from the server how many players are there
+            ~~Need to learn from the server how many players are there~~
+            *  **HERE!** START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide
             * Also need to learn the total number of players who are ready
             * need to distinguish between players supported and current player and ready players
             * Need to give the player the opportunity to add their name and color
