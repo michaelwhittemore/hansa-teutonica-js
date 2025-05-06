@@ -141,13 +141,11 @@ wss.on('connection', (ws) => {
 });
 
 // --------------- Internal room WS APIs---------------------- (maybe should be it's own module?)
+// Need to add onClose methods
 const waitingRoomToSocketMap = {}
 const joinedWaitingRoom = (socket, roomName) => {
   console.log(`Within joinedWaitingRoom of ${roomName}`)
-  // Need to do the mapping here I think
-  // currently my biggest friction point is participant ID
-  // The map has roomNames as keys
-  // it it turn needs a map of names to sockets
+
   if (!waitingRoomToSocketMap[roomName]){
     waitingRoomToSocketMap[roomName] = {
       IDsToSockets: {}
@@ -156,10 +154,9 @@ const joinedWaitingRoom = (socket, roomName) => {
   const waitingRoomObject = waitingRoomToSocketMap[roomName]
   // participantID will just be a 0-index value
   const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
-  console.log(participantID)
   waitingRoomObject.IDsToSockets[participantID] = socket
+  socket.send(`$PARTICIPANT_ID:${participantID}`)
+  // HERE! need to tell all the other players (maybe just message all)
+  socket.send(`$TOTAL_PARTICIPANTS:${Object.keys(waitingRoomObject.IDsToSockets).length}`)
 
-  // now we need to generate a player id
-  // I guess we could do UUIDs, but it seems like indexes would work just as well
-  // We need to inform the particpant of their own ID I believe
 }

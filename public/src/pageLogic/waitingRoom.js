@@ -1,7 +1,9 @@
-import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName } from "../helpers/helpers.js"
+import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
 // IMPORTANT -- I may need to move away from http for signaling - we need  bidirectional communication
 const roomName = new URL(window.location).searchParams.get('roomName')
 let playerColor;
+let participantID; // This value is setup by the server
+let participants;
 const attemptToJoinRoom = async () => {
     if (!roomName) {
         console.error('No room name')
@@ -43,6 +45,7 @@ const attemptToJoinRoom = async () => {
 // 5. Should have a list of their colors and names 
 // 6 If the client successfully joins a room we will need to add a beforeunload_event listener to inform
 // the server that the person is leaving (maybe can use websocket instead)
+// 7. Need an 'onMessage function'
 const handleValidRoom = (roomInfo) => {
     document.getElementById('playerInfo').append(createPlayerInputs())
     const colorPicker = createColorPickerWithOnClick((color) => {
@@ -65,7 +68,6 @@ const handleValidRoom = (roomInfo) => {
 
     // We should only set up a websocket with a valid room
     setUpWebSocket();
-
 }
 
 const warnInvalidRoom = (warningText) => {
@@ -133,13 +135,39 @@ const setUpWebSocket = () => {
         socket.send(`$NEW_WS_CONNECTION:${roomName}`)
     };
     // Need to have a socket on message function (this should call another method)
-    socket.onmessage = (event)=> {
-        console.warn(event.data)
+    socket.onmessage = (event) => {
+        handleIncomingMessage(event.data);
     };
     return socket
 }
 
-window.setUpWebSocket = setUpWebSocket
+const handleIncomingMessage = (data) => {
+    console.log('handleIncomingMessage with data', data)
+    if (typeof data !== 'string'){
+        console.error('handleIncomingMessage with non string data')
+        return
+    }
+    // Should fully document my protocol somewhere
+    const parsedData = data.split(':')
+    switch (parsedData[0]){
+        case '$PARTICIPANT_ID':
+            console.warn('setting participantID to', parsedData[1])
+            participantID = parsedData[1]
+            break;
+        case '$TOTAL_PARTICIPANTS':
+            participants = parseInt(parsedData[1])
+            if (participants === 1){
+                document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
+            } else {
+                const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
+                    participants -1)} in this room.`;
+                document.getElementById('waitingRoomInfo').innerText = text;
+            }
+            break;
+        default: 
+            console.error(`Unknown socket message type: ${parsedData[0]}`)
+    }
+}
 
 
 const start = async () => {

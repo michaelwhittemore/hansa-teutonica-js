@@ -49,6 +49,7 @@
         * I think we still initialize everything the same way?
     * maybe start on endgame points calculation?
 ------
+* bug - looks like you can 'start new game when it already exists'
 * might want to move the websocket server to a new module
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
