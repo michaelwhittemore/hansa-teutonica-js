@@ -61,7 +61,11 @@ const handleValidRoom = (roomInfo) => {
     console.warn(roomInfo)
 
     document.getElementById('waitingHeader').innerText =
-        `Waiting to join a ${roomInfo.numberOfPlayers} player game in room "${roomName}".`
+        `Waiting to join a ${roomInfo.numberOfPlayers} player game in room "${roomName}".`;
+
+    // We should only set up a websocket with a valid room
+    setUpWebSocket();
+
 }
 
 const warnInvalidRoom = (warningText) => {
@@ -141,6 +145,5 @@ window.setUpWebSocket = setUpWebSocket
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
-    setUpWebSocket();
 }
 window.onload = start

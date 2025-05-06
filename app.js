@@ -120,18 +120,46 @@ wss.on('connection', (ws) => {
   // 2. Add an id of roomName + id (maybe just an index?)
   // 3. add a socketMap object to the room in the DB
   // 4. Create a method to inform all participants in a room (something like "messageAll")
+  // 5. Let's start by testing that we can inform the client how many people are in the waiting room
+  //  1a. I guess we message "all-others or something to that effect" - when ever someone joins
 
 
   ws.on('message', (data) => {
     const stringData = data.toString()
     if (stringData.includes('$NEW_WS_CONNECTION:')){
-      console.log('A new websocket from the waiting room!')
       const roomName = stringData.split(':')[1]
-      console.log('roomName', roomName)
+      console.log('A new websocket from the waiting room!', roomName)
       // need a method here
+      // IMPORTANT - don't call this method if the room is full (I think this should only be an
+      // issue when connecting via postman)
+      joinedWaitingRoom(ws, roomName)
     }
     console.log(`received data:${stringData}`);
   });
 
   ws.send('This is being sent from the server');
 });
+
+// --------------- Internal room WS APIs---------------------- (maybe should be it's own module?)
+const waitingRoomToSocketMap = {}
+const joinedWaitingRoom = (socket, roomName) => {
+  console.log(`Within joinedWaitingRoom of ${roomName}`)
+  // Need to do the mapping here I think
+  // currently my biggest friction point is participant ID
+  // The map has roomNames as keys
+  // it it turn needs a map of names to sockets
+  if (!waitingRoomToSocketMap[roomName]){
+    waitingRoomToSocketMap[roomName] = {
+      IDsToSockets: {}
+    }
+  }
+  const waitingRoomObject = waitingRoomToSocketMap[roomName]
+  // participantID will just be a 0-index value
+  const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
+  console.log(participantID)
+  waitingRoomObject.IDsToSockets[participantID] = socket
+
+  // now we need to generate a player id
+  // I guess we could do UUIDs, but it seems like indexes would work just as well
+  // We need to inform the particpant of their own ID I believe
+}
