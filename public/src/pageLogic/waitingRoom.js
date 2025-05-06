@@ -4,6 +4,7 @@ const roomName = new URL(window.location).searchParams.get('roomName')
 let playerColor;
 let participantID; // This value is setup by the server
 let participants;
+let socket;
 const attemptToJoinRoom = async () => {
     if (!roomName) {
         console.error('No room name')
@@ -101,7 +102,7 @@ const createPlayerInputs = () => {
 
     return playerInfoDiv
 }
-
+// dev
 const readyUp = () => {
     // TODO this will need a toggle
     // The unready will be the same as the client disconnecting I think
@@ -109,6 +110,7 @@ const readyUp = () => {
     const nameInput = document.getElementById('playerName')
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
+    let isValid = true;
     console.log(nameValidation)
 
     nameInput.classList.remove('invalidForm')
@@ -117,10 +119,17 @@ const readyUp = () => {
         nameInput.classList.add('invalidForm')
         document.getElementById('playerError').innerText = nameValidation[1]
         console.error(nameValidation[1])
+        isValid = false;
     }
     if (!playerColor) {
         nameInput.classList.add('invalidForm')
         document.getElementById('playerError').innerText += ' Color must be selected.'
+        isValid = false;
+    }
+    if (isValid){
+        // here! message the server
+        // may need to include the participantID
+        sendSocketMessage(`$READY_NAME_AND_COLOR:${playerName}:${playerColor}:${participantID}`)
     }
 
 
@@ -129,16 +138,14 @@ const readyUp = () => {
 const setUpWebSocket = () => {
     // should return the websocket object
     const url = `ws://${window.location.hostname}:8080`
-    const socket = new WebSocket(url)
+    socket = new WebSocket(url); // exposing socket for other methods
     socket.onopen = () => {
-        socket.send('Socket should be open');
         socket.send(`$NEW_WS_CONNECTION:${roomName}`)
     };
     // Need to have a socket on message function (this should call another method)
     socket.onmessage = (event) => {
         handleIncomingMessage(event.data);
     };
-    return socket
 }
 
 const handleIncomingMessage = (data) => {
@@ -167,6 +174,11 @@ const handleIncomingMessage = (data) => {
         default: 
             console.error(`Unknown socket message type: ${parsedData[0]}`)
     }
+}
+
+const sendSocketMessage = (messageText) => {
+    // This should handle the JSON stringification when I switch it over
+    socket.send(messageText)
 }
 
 

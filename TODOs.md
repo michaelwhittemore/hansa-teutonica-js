@@ -11,13 +11,13 @@
 * Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
 * Need the ability to save and resume
 * Need to remove the starting 8 tokens from player supply
+* Need to add installation instructions to the read me
 
 # TODOs #
-* 5/03 
-    ~~fix the visibility of the color picker to be absolute and next to the select color button~~
-    ~~add the number of players (as in game size) to the waiting room~~
-    ~~add the validation to the ready up button (just name for the moment, not color yet)~~
-    * do some clean up with repeatedly using getElementById
+* 5/07
+    * css for the waitingRoomInfo element
+    * i'm worried that my string based approach for WS messaging is dumb and I should look into native object support for messaging, or if not that just using JSON.stringify
+    * may also want to break app.js into modules, getting large at this point
 * immediate todos
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
@@ -28,13 +28,17 @@
             ~~START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide~~
             * Also need to learn the total number of players who are ready
             * need to distinguish between players supported and current player and ready players
-            * Need to give the player the opportunity to add their name and color
+            ~~Need to give the player the opportunity to add their name and color~~
             * Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
             * Need establish a websocket with the server
         * Server related to waiting room:
-            * **HERE!** On the websocket being connected need some sort of ID for each 
-            * Need to map the room participants to each websocket
+            * ~~On the websocket being connected need some sort of ID for each~~
+            * ~~Need to map the room participants to each websocket~~
+            * **IMPORTANT** switch messaging to use stringified JSON
+            * **HERE!** Need to message server with player Names and color when ready up is clicked
+            * need to send names and colors back to all other players
+            * need to handle WS closed
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
