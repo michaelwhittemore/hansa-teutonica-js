@@ -40,7 +40,7 @@ const attemptToJoinRoom = async () => {
 // ~~2. The above should have a method
 // ~~3. Need to have a name field and import the color picker (maybe it should have a callback param)
 // and a ready-up button
-// ~~3. Need the name field to do validation the same way as the landing page when clicking 'readyup'
+// ~~3. Need the name field to do validation the same way as the landing page when clicking 'ready up'
 // ~~3. Need to fix the color picker so it isn't taking up space
 // 4. Will need to inform the client how many people are in waiting rooms and how many are ready
 // 5. Should have a list of their colors and names 
@@ -131,8 +131,6 @@ const readyUp = () => {
         // may need to include the participantID
         sendSocketMessage(`$READY_NAME_AND_COLOR:${playerName}:${playerColor}:${participantID}`)
     }
-
-
 }
 
 const setUpWebSocket = () => {
