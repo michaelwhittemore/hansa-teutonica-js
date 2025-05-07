@@ -144,12 +144,10 @@ const joinedWaitingRoom = (socket, roomName) => {
   // participantID will just be a 0-index value
   const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
   waitingRoomObject.IDsToSockets[participantID] = socket
-  // socket.send(`$PARTICIPANT_ID:${participantID}`)
   socket.send(JSON.stringify({
     type: 'participantID',
     participantID
   }))
-  // messageAllInRoom(roomName, `$TOTAL_PARTICIPANTS:${Object.keys(waitingRoomObject.IDsToSockets).length}`)
   messageAllInRoom(roomName, JSON.stringify({
     type: 'totalParticipants',
     totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
@@ -157,7 +155,7 @@ const joinedWaitingRoom = (socket, roomName) => {
 }
 
 const readiedUp = () => {
-  // Will need to parse everything then inform everyone other than the particpant
+  // Will need to parse everything then inform everyone other than the participant
 }
 
 const messageAllInRoom = (roomName, message) => {

@@ -140,17 +140,14 @@ const readyUp = () => {
 }
 
 const setUpWebSocket = () => {
-    // should return the websocket object
     const url = `ws://${window.location.hostname}:8080`
     socket = new WebSocket(url); // exposing socket for other methods
     socket.onopen = () => {
-        // socket.send(`$NEW_WS_CONNECTION:${roomName}`)
         sendSocketMessage({
             type: 'newConnection',
             roomName,
         })
     };
-    // Need to have a socket on message function (this should call another method)
     socket.onmessage = (event) => {
         handleIncomingMessage(event.data);
     };
@@ -162,26 +159,7 @@ const handleIncomingMessage = (data) => {
         console.error('handleIncomingMessage with non string data')
         return
     }
-    // Should fully document my protocol somewhere
-    // const parsedData = data.split(':')
-    // switch (parsedData[0]){
-    //     case '$PARTICIPANT_ID':
-    //         console.warn('setting participantID to', parsedData[1])
-    //         participantID = parsedData[1]
-    //         break;
-    //     case '$TOTAL_PARTICIPANTS':
-    //         participants = parseInt(parsedData[1])
-    //         if (participants === 1){
-    //             document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
-    //         } else {
-    //             const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
-    //                 participants -1)} in this room.`;
-    //             document.getElementById('waitingRoomInfo').innerText = text;
-    //         }
-    //         break;
-    //     default: 
-    //         console.error(`Unknown socket message type: ${parsedData[0]}`)
-    // }
+
     const parsedData = JSON.parse(data);
     console.log(parsedData)
     switch (parsedData.type){
@@ -205,7 +183,6 @@ const handleIncomingMessage = (data) => {
 }
 
 const sendSocketMessage = (messageObject) => {
-    // This should handle the JSON stringification when I switch it over
     const stringifiedMessage = JSON.stringify(messageObject)
     socket.send(stringifiedMessage)
 }
