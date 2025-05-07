@@ -119,7 +119,7 @@ wss.on('connection', (ws) => {
   // 1. Need a "newParticipant" method
   // 2. Add an id of roomName + id (maybe just an index?)
   // 3. add a socketMap object to the room in the DB
-  // 4. Create a method to inform all participants in a room (something like "messageAll")
+  // 4. Create a method to inform all participants in a room (something like "messageAllInRoom")
   // 5. Let's start by testing that we can inform the client how many people are in the waiting room
   //  1a. I guess we message "all-others or something to that effect" - when ever someone joins
 
@@ -144,15 +144,23 @@ const joinedWaitingRoom = (socket, roomName) => {
   // participantID will just be a 0-index value
   const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
   waitingRoomObject.IDsToSockets[participantID] = socket
-  socket.send(`$PARTICIPANT_ID:${participantID}`)
-  messageAll(roomName, `$TOTAL_PARTICIPANTS:${Object.keys(waitingRoomObject.IDsToSockets).length}`)
+  // socket.send(`$PARTICIPANT_ID:${participantID}`)
+  socket.send(JSON.stringify({
+    type: 'participantID',
+    participantID
+  }))
+  // messageAllInRoom(roomName, `$TOTAL_PARTICIPANTS:${Object.keys(waitingRoomObject.IDsToSockets).length}`)
+  messageAllInRoom(roomName, JSON.stringify({
+    type: 'totalParticipants',
+    totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
+  }))
 }
 
 const readiedUp = () => {
   // Will need to parse everything then inform everyone other than the particpant
 }
 
-const messageAll = (roomName, message) => {
+const messageAllInRoom = (roomName, message) => {
   const IDs = Object.keys(waitingRoomToSocketMap[roomName].IDsToSockets)
   IDs.forEach(id => {
     waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
@@ -160,17 +168,17 @@ const messageAll = (roomName, message) => {
 }
 
 const messageFromClientHandler = (messageString, socket) => {
-  const parsedData = messageString.split(':');
-  switch (parsedData[0]) {
-    case '$NEW_WS_CONNECTION':
-      { const roomName = parsedData[1];
+  const parsedData = JSON.parse(messageString)
+  switch (parsedData.type) {
+    case 'newConnection':
+      { const roomName = parsedData.roomName;
       console.log('A new websocket from the waiting room!', roomName)
       joinedWaitingRoom(socket, roomName)
       break; }
-    case `$READY_NAME_AND_COLOR`:
+    case 'readyNameAndColor':
       break;
     default:
-      console.error(`Unknown socket message type from client: ${parsedData[0]}`)
+      console.error(`Unknown socket message type from client: ${parsedData.type}`)
   }
 
 }

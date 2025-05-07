@@ -129,7 +129,13 @@ const readyUp = () => {
     if (isValid){
         // here! message the server
         // may need to include the participantID
-        sendSocketMessage(`$READY_NAME_AND_COLOR:${playerName}:${playerColor}:${participantID}`)
+        // sendSocketMessage(`$READY_NAME_AND_COLOR:${playerName}:${playerColor}:${participantID}`)
+        sendSocketMessage({
+            type: 'readyNameAndColor',
+            playerColor,
+            participantID,
+            playerName,
+        })
     }
 }
 
@@ -138,7 +144,11 @@ const setUpWebSocket = () => {
     const url = `ws://${window.location.hostname}:8080`
     socket = new WebSocket(url); // exposing socket for other methods
     socket.onopen = () => {
-        socket.send(`$NEW_WS_CONNECTION:${roomName}`)
+        // socket.send(`$NEW_WS_CONNECTION:${roomName}`)
+        sendSocketMessage({
+            type: 'newConnection',
+            roomName,
+        })
     };
     // Need to have a socket on message function (this should call another method)
     socket.onmessage = (event) => {
@@ -153,14 +163,34 @@ const handleIncomingMessage = (data) => {
         return
     }
     // Should fully document my protocol somewhere
-    const parsedData = data.split(':')
-    switch (parsedData[0]){
-        case '$PARTICIPANT_ID':
-            console.warn('setting participantID to', parsedData[1])
-            participantID = parsedData[1]
+    // const parsedData = data.split(':')
+    // switch (parsedData[0]){
+    //     case '$PARTICIPANT_ID':
+    //         console.warn('setting participantID to', parsedData[1])
+    //         participantID = parsedData[1]
+    //         break;
+    //     case '$TOTAL_PARTICIPANTS':
+    //         participants = parseInt(parsedData[1])
+    //         if (participants === 1){
+    //             document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
+    //         } else {
+    //             const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
+    //                 participants -1)} in this room.`;
+    //             document.getElementById('waitingRoomInfo').innerText = text;
+    //         }
+    //         break;
+    //     default: 
+    //         console.error(`Unknown socket message type: ${parsedData[0]}`)
+    // }
+    const parsedData = JSON.parse(data);
+    console.log(parsedData)
+    switch (parsedData.type){
+        case 'participantID':
+            console.warn('setting participantID to', parsedData.participantID)
+            participantID = parsedData.participantID;
             break;
-        case '$TOTAL_PARTICIPANTS':
-            participants = parseInt(parsedData[1])
+        case 'totalParticipants':
+            participants = parseInt(parsedData.totalParticipants)
             if (participants === 1){
                 document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
             } else {
@@ -170,13 +200,14 @@ const handleIncomingMessage = (data) => {
             }
             break;
         default: 
-            console.error(`Unknown socket message type: ${parsedData[0]}`)
+            console.error(`Unknown socket message type: ${parsedData.type}`)
     }
 }
 
-const sendSocketMessage = (messageText) => {
+const sendSocketMessage = (messageObject) => {
     // This should handle the JSON stringification when I switch it over
-    socket.send(messageText)
+    const stringifiedMessage = JSON.stringify(messageObject)
+    socket.send(stringifiedMessage)
 }
 
 
