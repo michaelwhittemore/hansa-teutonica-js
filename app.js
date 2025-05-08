@@ -51,7 +51,7 @@ app.post("/newRoom", (request, response) => {
       isFull: false,
       numberOfPlayers: parseInt(numberOfPlayers),
       playersWaiting: 0,
-      playerArray: {}
+      playerReadiedObject: {}
     }
     response.send(`Successfully created room ${roomName}`)
   } else {
@@ -140,6 +140,7 @@ const joinedWaitingRoom = (socket, roomName) => {
       IDsToSockets: {}
     }
   }
+  // here! we need to send all the other ready upped players (if this player isn't the first)
   const waitingRoomObject = waitingRoomToSocketMap[roomName]
   // participantID will just be a 0-index value
   const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
@@ -154,13 +155,35 @@ const joinedWaitingRoom = (socket, roomName) => {
   }))
 }
 
-const readiedUp = () => {
+const playerReadiedUp = (parsedData) => {
   // Will need to parse everything then inform everyone other than the participant
+  // here!
+  // We need to store the selection information and then send it too everyone. 
+  const {
+    playerColor,
+    participantID,
+    playerName,
+    roomName,
+  } = parsedData;
+  roomTrackerMockDB[roomName].playerReadiedObject[participantID]= {
+    playerColor,
+    playerName,
+    participantID, // not sure if we need this (maybe for removing in the future?)
+  }
+  // We've stored the data, now we need to send it
+  messageAllInRoom(roomName, JSON.stringify({
+    type: 'playerReadied',
+    playerColor,
+    playerName,
+    participantID }),participantID)
 }
 
-const messageAllInRoom = (roomName, message) => {
+const messageAllInRoom = (roomName, message, excludeId = undefined) => {
   const IDs = Object.keys(waitingRoomToSocketMap[roomName].IDsToSockets)
   IDs.forEach(id => {
+    if (id === excludeId){
+      return
+    }
     waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
   })
 }
@@ -169,11 +192,14 @@ const messageFromClientHandler = (messageString, socket) => {
   const parsedData = JSON.parse(messageString)
   switch (parsedData.type) {
     case 'newConnection':
-      { const roomName = parsedData.roomName;
-      console.log('A new websocket from the waiting room!', roomName)
-      joinedWaitingRoom(socket, roomName)
-      break; }
+      {
+        const roomName = parsedData.roomName;
+        console.log('A new websocket from the waiting room!', roomName)
+        joinedWaitingRoom(socket, roomName)
+        break;
+      }
     case 'readyNameAndColor':
+      playerReadiedUp(parsedData)
       break;
     default:
       console.error(`Unknown socket message type from client: ${parsedData.type}`)

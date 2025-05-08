@@ -135,6 +135,7 @@ const readyUp = () => {
             playerColor,
             participantID,
             playerName,
+            roomName,
         })
     }
 }
@@ -176,6 +177,11 @@ const handleIncomingMessage = (data) => {
                     participants -1)} in this room.`;
                 document.getElementById('waitingRoomInfo').innerText = text;
             }
+            break;
+        case 'playerReadied':
+            // here need to add to a readied player display
+            // should also exclude color on the color picker
+            console.log('another player readied')
             break;
         default: 
             console.error(`Unknown socket message type: ${parsedData.type}`)

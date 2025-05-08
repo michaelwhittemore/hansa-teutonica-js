@@ -14,9 +14,11 @@
 * Need to add installation instructions to the read me
 
 # TODOs #
-* 5/07
+* 5/08
     * css for the waitingRoomInfo element
-    * i'm worried that my string based approach for WS messaging is dumb and I should look into native object support for messaging, or if not that just using JSON.stringify
+    * ~~i'm worried that my string based approach for WS messaging is dumb and I should look into native object support for messaging, or if not that just using JSON.stringify~~
+    * handle the ready-up function on the server side
+    * **BUG!** - we're not exlcuding our own ready-up, may need to debug messageAllInRoom 
     * may also want to break app.js into modules, getting large at this point
 * immediate todos
     * Online play:
