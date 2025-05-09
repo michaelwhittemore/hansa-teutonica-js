@@ -127,9 +127,6 @@ const readyUp = () => {
         isValid = false;
     }
     if (isValid){
-        // here! message the server
-        // may need to include the participantID
-        // sendSocketMessage(`$READY_NAME_AND_COLOR:${playerName}:${playerColor}:${participantID}`)
         sendSocketMessage({
             type: 'readyNameAndColor',
             playerColor,

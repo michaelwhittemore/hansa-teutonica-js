@@ -110,19 +110,6 @@ app.listen(PORT, () => {
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', (ws) => {
-  // HERE! 
-  // This is pretty important logic, I also need to account for the fact that the actual game logic will 
-  // include websockets as well
-  // Right now I think we focus on mapping websockets to participants and rooms
-  // ~~0.5 switch to big arrow notation for consistency 
-  // ~~1. Modify the waiting room to include that it's a waiting room 
-  // 1. Need a "newParticipant" method
-  // 2. Add an id of roomName + id (maybe just an index?)
-  // 3. add a socketMap object to the room in the DB
-  // 4. Create a method to inform all participants in a room (something like "messageAllInRoom")
-  // 5. Let's start by testing that we can inform the client how many people are in the waiting room
-  //  1a. I guess we message "all-others or something to that effect" - when ever someone joins
-
   ws.on('message', (data) => {
     const stringData = data.toString()
     messageFromClientHandler(stringData, ws)
@@ -156,9 +143,6 @@ const joinedWaitingRoom = (socket, roomName) => {
 }
 
 const playerReadiedUp = (parsedData) => {
-  // Will need to parse everything then inform everyone other than the participant
-  // here!
-  // We need to store the selection information and then send it too everyone. 
   const {
     playerColor,
     participantID,
@@ -171,6 +155,8 @@ const playerReadiedUp = (parsedData) => {
     participantID, // not sure if we need this (maybe for removing in the future?)
   }
   // We've stored the data, now we need to send it
+  console.log('in playerReadiedUp with parsed data:')
+  console.log(parsedData)
   messageAllInRoom(roomName, JSON.stringify({
     type: 'playerReadied',
     playerColor,
@@ -178,13 +164,15 @@ const playerReadiedUp = (parsedData) => {
     participantID }),participantID)
 }
 
-const messageAllInRoom = (roomName, message, excludeId = undefined) => {
+const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
   const IDs = Object.keys(waitingRoomToSocketMap[roomName].IDsToSockets)
   IDs.forEach(id => {
-    if (id === excludeId){
-      return
+    // intentionally using  loose equality as we may need string to number
+    // TODO maybe fix this so it's always a string?
+    if (id != idToExclude){
+      console.log('ids do not match')
+      waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
     }
-    waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
   })
 }
 
