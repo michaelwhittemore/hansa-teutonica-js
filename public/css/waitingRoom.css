@@ -8,3 +8,7 @@
 #participantSettings{
     width: 50%;
 }
+#readyUpButton{
+    color: #33b249;
+    border-color: #33b249;
+}

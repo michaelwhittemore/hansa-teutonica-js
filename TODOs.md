@@ -16,11 +16,9 @@
 # TODOs #
 * 5/11
     * css for the waitingRoomInfo element
-    * ~~i'm worried that my string based approach for WS messaging is dumb and I should look into native object support for messaging, or if not that just using JSON.stringify~~
-    * handle the ready-up function on the server side
-    * include a filled room (just so I can test easier) - note this might casue issues with the WS not existing
-    * populate the UI with readied up players
-    * send ready up information to new participants joining the waiting room
+
+    * clean up UI for other readied up players
+    * feedback once you're readied up ( button and text change color and disable the name and color selector)
     * may also want to break app.js into modules, getting large at this point **IMPORTANT** really should address this soon, the server is getting to be some awful spaghetti - let's do this as soon as I get the on join messages working
     * clean up the server todos
 * immediate todos

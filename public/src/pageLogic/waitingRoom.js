@@ -43,6 +43,7 @@ const handleValidRoom = (roomInfo) => {
 
     document.getElementById('playerInfo').append(colorPicker)
     const readyUpButton = document.createElement('button');
+    readyUpButton.id = 'readyUpButton'
     readyUpButton.innerText = 'Ready Up';
     readyUpButton.onclick = readyUp;
     document.getElementById('playerInfo').append(readyUpButton)
@@ -62,40 +63,6 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').onclick = () => { history.back() };
 }
 
-const createPlayerInputs = () => {
-    const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
-    const playerNameLabel = document.createElement('label')
-    playerNameLabel.innerText = 'Your Name: ';
-    playerNameLabel.htmlFor = 'playerName'
-    const playerNameInput = document.createElement('input')
-    playerNameInput.className = 'playerNameInput'
-    playerNameInput.id = 'playerName'
-
-    const playerColorButton = document.createElement('button')
-    const playerButtonSpan = document.createElement('span')
-    playerButtonSpan.id = 'playerButtonSpan'
-    playerButtonSpan.innerText = 'Select Color'
-    playerColorButton.append(playerButtonSpan)
-    playerColorButton.id = 'playerColor'
-    playerColorButton.onclick = () => {
-        document.getElementById('colorPicker').style.visibility = 'visible'
-    }
-
-    const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], 'playerError');
-    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton, playerErrorDisplay)
-
-    return playerInfoDiv
-}
-
-// here!
-// dev
-const createOtherPlayerInfo = (readiedInfo) => {
-    const { playerColor, participantID, playerName } = readiedInfo
-    const otherPlayerDiv = createDivWithClassAndIdAndStyle(['otherPlayerDiv'], `otherPlayerDiv-${participantID}`)
-    otherPlayerDiv.innerText = playerName;
-    otherPlayerDiv.style.color = playerColor
-    return otherPlayerDiv;
-}
 // dev
 const readyUp = () => {
     // TODO this will need a toggle
@@ -127,8 +94,52 @@ const readyUp = () => {
             playerName,
             roomName,
         })
+        togglePlayerReadiedUI(true);
     }
 }
+
+// ---------------------UI--------------
+const createPlayerInputs = () => {
+    const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], 'playerInfo')
+    const playerNameLabel = document.createElement('label')
+    playerNameLabel.innerText = 'Your Name: ';
+    playerNameLabel.htmlFor = 'playerName'
+    const playerNameInput = document.createElement('input')
+    playerNameInput.className = 'playerNameInput'
+    playerNameInput.id = 'playerName'
+
+    const playerColorButton = document.createElement('button')
+    const playerButtonSpan = document.createElement('span')
+    playerButtonSpan.id = 'playerButtonSpan'
+    playerButtonSpan.innerText = 'Select Color'
+    playerColorButton.append(playerButtonSpan)
+    playerColorButton.id = 'playerColor'
+    playerColorButton.onclick = () => {
+        document.getElementById('colorPicker').style.visibility = 'visible'
+    }
+
+    const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], 'playerError');
+    playerInfoDiv.append(playerNameLabel, playerNameInput, playerColorButton, playerErrorDisplay)
+
+    return playerInfoDiv
+}
+
+const createOtherPlayerInfo = (readiedInfo) => {
+    const { playerColor, participantID, playerName } = readiedInfo
+    const otherPlayerDiv = createDivWithClassAndIdAndStyle(['otherPlayerDiv'], `otherPlayerDiv-${participantID}`)
+    otherPlayerDiv.innerText = playerName;
+    otherPlayerDiv.style.color = playerColor
+    return otherPlayerDiv;
+}
+
+const togglePlayerReadiedUI = (isReadied) => {
+    document.getElementById('readyUpButton').innerText = isReadied ? 'Cancel Ready Up' : 'Ready Up'
+    document.getElementById('readyUpButton').style.color = isReadied ? '#fc3d03' : '';
+    document.getElementById('readyUpButton').style.borderColor = isReadied ? '#fc3d03' : '';
+    document.getElementById('playerName').disabled = isReadied;
+    document.getElementById('playerColor').disabled = isReadied;
+}
+// -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
     const url = `ws://${window.location.hostname}:8080`
@@ -194,7 +205,7 @@ const sendSocketMessage = (messageObject) => {
     socket.send(stringifiedMessage)
 }
 
-
+// -----------------------------Start---------------------
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
