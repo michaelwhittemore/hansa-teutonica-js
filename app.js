@@ -61,6 +61,7 @@ app.post("/newRoom", (request, response) => {
 
 })
 
+// dev
 // ------------------------ TEST VALUES -----------------------
 roomTrackerMockDB['testRoom1'] = {
   isInUse: true,
@@ -175,12 +176,17 @@ const playerReadiedUp = (parsedData) => {
     playerName,
     participantID, // not sure if we need this (maybe for removing in the future?)
   }
-
+  // dev
   messageAllInRoom(roomName, JSON.stringify({
     type: 'playersReadied',
-    playerColor,
-    playerName,
-    participantID
+    playersReadiedObject: {
+      [participantID]: {
+        playerColor,
+        playerName,
+        participantID
+      }
+    }
+
   }), participantID)
 }
 

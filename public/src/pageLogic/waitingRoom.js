@@ -31,20 +31,6 @@ const attemptToJoinRoom = async () => {
 
 }
 
-// here!
-// Need to update the client side stuff. 
-// ~~1. Need a title to inform the player that they're waiting for the roomName
-// ~~2. Need to have an error area and a back button (history.back())
-// ~~2. The above should have a method
-// ~~3. Need to have a name field and import the color picker (maybe it should have a callback param)
-// and a ready-up button
-// ~~3. Need the name field to do validation the same way as the landing page when clicking 'ready up'
-// ~~3. Need to fix the color picker so it isn't taking up space
-// 4. Will need to inform the client how many people are in waiting rooms and how many are ready
-// 5. Should have a list of their colors and names 
-// 6 If the client successfully joins a room we will need to add a beforeunload_event listener to inform
-// the server that the person is leaving (maybe can use websocket instead)
-// 7. Need an 'onMessage function'
 const handleValidRoom = (roomInfo) => {
     document.getElementById('playerInfo').append(createPlayerInputs())
     const colorPicker = createColorPickerWithOnClick((color) => {
@@ -100,6 +86,16 @@ const createPlayerInputs = () => {
 
     return playerInfoDiv
 }
+
+// here!
+// dev
+const createOtherPlayerInfo = (readiedInfo) => {
+    const { playerColor, participantID, playerName } = readiedInfo
+    const otherPlayerDiv = createDivWithClassAndIdAndStyle(['otherPlayerDiv'], `otherPlayerDiv-${participantID}`)
+    otherPlayerDiv.innerText = playerName;
+    otherPlayerDiv.style.color = playerColor
+    return otherPlayerDiv;
+}
 // dev
 const readyUp = () => {
     // TODO this will need a toggle
@@ -123,7 +119,7 @@ const readyUp = () => {
         document.getElementById('playerError').innerText += ' Color must be selected.'
         isValid = false;
     }
-    if (isValid){
+    if (isValid) {
         sendSocketMessage({
             type: 'readyNameAndColor',
             playerColor,
@@ -149,25 +145,25 @@ const setUpWebSocket = () => {
 }
 
 const handleIncomingMessage = (data) => {
-    if (typeof data !== 'string'){
+    if (typeof data !== 'string') {
         console.error('handleIncomingMessage with non string data')
         return
     }
 
     const parsedData = JSON.parse(data);
     console.log(parsedData)
-    switch (parsedData.type){
+    switch (parsedData.type) {
         case 'participantID':
             console.warn('setting participantID to', parsedData.participantID)
             participantID = parsedData.participantID;
             break;
         case 'totalParticipants':
             participants = parseInt(parsedData.totalParticipants)
-            if (participants === 1){
+            if (participants === 1) {
                 document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
             } else {
                 const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
-                    participants -1)} in this room.`;
+                    participants - 1)} in this room.`;
                 document.getElementById('waitingRoomInfo').innerText = text;
             }
             break;
@@ -176,9 +172,19 @@ const handleIncomingMessage = (data) => {
             // should also exclude color on the color picker
             // This should expect any number of players.
             // here!
+            // 1. Need to create an area to store other players
+            // 2. Then we need a createOtherPlayerInfo method.
+            // 3. Remember to use the particpant id so we can track when we delete or change things
             console.log('another player readied')
+            Object.keys(parsedData.playersReadiedObject).forEach(key => {
+                document.getElementById('otherParticipants').append(createOtherPlayerInfo({
+                    participantID: key,
+                    playerColor: parsedData.playersReadiedObject[key].playerColor,
+                    playerName: parsedData.playersReadiedObject[key].playerName
+                }))
+            })
             break;
-        default: 
+        default:
             console.error(`Unknown socket message type: ${parsedData.type}`)
     }
 }

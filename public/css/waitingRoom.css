@@ -2,3 +2,9 @@
     color: red;
     font-style: italic;
 }
+#mainContainer{
+    display: flex;
+}
+#participantSettings{
+    width: 50%;
+}
