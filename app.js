@@ -41,7 +41,6 @@ app.post("/newRoom", (request, response) => {
     response.send(errorMessage)
     return
   }
-  console.log(numberOfPlayers, roomName)
   // Need to do sanitization here
   if (!roomTrackerMockDB[roomName]) {
     // Happy path, the name doesn't exist
@@ -51,7 +50,7 @@ app.post("/newRoom", (request, response) => {
       isFull: false,
       numberOfPlayers: parseInt(numberOfPlayers),
       playersWaiting: 0,
-      playerReadiedObject: {}
+      playersReadiedObject: {}
     }
     response.send(`Successfully created room ${roomName}`)
   } else {
@@ -61,9 +60,23 @@ app.post("/newRoom", (request, response) => {
   }
 
 })
-// Let's do some testing with manual rooms, TODO delete these
-roomTrackerMockDB['aFullRoom'] = { isFull: true }
-roomTrackerMockDB['aGoodRoom'] = { isFull: false }
+
+// ------------------------ TEST VALUES -----------------------
+roomTrackerMockDB['testRoom1'] = {
+  isInUse: true,
+  isFull: false,
+  numberOfPlayers: 3,
+  playersWaiting: 2,
+  playersReadiedObject: {
+    '0': {
+      playerColor: '#4b0082',
+      playerName: 'testPlayer1',
+      roomName: 'testRoom1',
+    }
+  }
+}
+// ---------------------------------------------
+
 app.get("/checkRoom/:roomName", (request, response) => {
   const { roomName } = request.params
   if (!roomTrackerMockDB[roomName]) {
@@ -136,6 +149,14 @@ const joinedWaitingRoom = (socket, roomName) => {
     type: 'participantID',
     participantID
   }))
+  // dev
+  if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length !== 0) {
+    socket.send(JSON.stringify({
+      type: 'playersReadied',
+      playersReadiedObject: roomTrackerMockDB[roomName].playersReadiedObject
+    }))
+  }
+
   messageAllInRoom(roomName, JSON.stringify({
     type: 'totalParticipants',
     totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
@@ -149,19 +170,18 @@ const playerReadiedUp = (parsedData) => {
     playerName,
     roomName,
   } = parsedData;
-  roomTrackerMockDB[roomName].playerReadiedObject[participantID]= {
+  roomTrackerMockDB[roomName].playersReadiedObject[participantID] = {
     playerColor,
     playerName,
     participantID, // not sure if we need this (maybe for removing in the future?)
   }
-  // We've stored the data, now we need to send it
-  console.log('in playerReadiedUp with parsed data:')
-  console.log(parsedData)
+
   messageAllInRoom(roomName, JSON.stringify({
-    type: 'playerReadied',
+    type: 'playersReadied',
     playerColor,
     playerName,
-    participantID }),participantID)
+    participantID
+  }), participantID)
 }
 
 const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
@@ -169,8 +189,7 @@ const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
   IDs.forEach(id => {
     // intentionally using  loose equality as we may need string to number
     // TODO maybe fix this so it's always a string?
-    if (id != idToExclude){
-      console.log('ids do not match')
+    if (id != idToExclude) {
       waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
     }
   })

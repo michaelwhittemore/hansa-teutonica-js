@@ -13,11 +13,9 @@ const attemptToJoinRoom = async () => {
     let response;
     try {
         const url = window.location.origin + `/joinRoom/${roomName}`;
-        console.log(url)
         response = await fetch(url, {
             method: 'GET',
         });
-        console.log(response)
     } catch (err) {
         console.error(err)
         return;
@@ -111,7 +109,6 @@ const readyUp = () => {
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
     let isValid = true;
-    console.log(nameValidation)
 
     nameInput.classList.remove('invalidForm')
     document.getElementById('playerError').innerText = '';
@@ -152,7 +149,6 @@ const setUpWebSocket = () => {
 }
 
 const handleIncomingMessage = (data) => {
-    console.log('handleIncomingMessage with data', data)
     if (typeof data !== 'string'){
         console.error('handleIncomingMessage with non string data')
         return
@@ -175,9 +171,11 @@ const handleIncomingMessage = (data) => {
                 document.getElementById('waitingRoomInfo').innerText = text;
             }
             break;
-        case 'playerReadied':
+        case 'playersReadied':
             // here need to add to a readied player display
             // should also exclude color on the color picker
+            // This should expect any number of players.
+            // here!
             console.log('another player readied')
             break;
         default: 
