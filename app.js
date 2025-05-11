@@ -5,6 +5,7 @@ import { dirname } from 'path';
 import { WebSocketServer } from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
+// TODO, when switching to a folder model may need to use the dirname to get the outer layer
 const __dirname = dirname(__filename);
 
 const app = express();

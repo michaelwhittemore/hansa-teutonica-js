@@ -16,9 +16,8 @@
 # TODOs #
 * 5/11
     * css for the waitingRoomInfo element
-
     * clean up UI for other readied up players
-    * feedback once you're readied up ( button and text change color and disable the name and color selector)
+    * ~~feedback once you're readied up ( button and text change color and disable the name and color selector)~~
     * may also want to break app.js into modules, getting large at this point **IMPORTANT** really should address this soon, the server is getting to be some awful spaghetti - let's do this as soon as I get the on join messages working
     * clean up the server todos
 * immediate todos
@@ -26,12 +25,12 @@
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * ~~Landing Page~~
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
-            * Need to block off color and name change once you've readied up
-            * Also need to change the button to indicate you're ready
+            * ~~Need to block off color and name change once you've readied up~~
+            * ~~Also need to change the button to indicate you're ready~~
             ~~As soon as the page loads we need to double check with the server that everything is good~~
             ~~Need to learn from the server how many players are there~~
             ~~START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide~~
-            * Also need to learn the total number of players who are ready
+            * ~~Also need to learn the total number of players who are ready~~
             ~~need to distinguish between players supported and current player and ready players~~
             ~~Need to give the player the opportunity to add their name and color~~
             * Need to wait to hear from the server, once the game is full we should then
@@ -41,8 +40,8 @@
             * ~~On the websocket being connected need some sort of ID for each~~
             * ~~Need to map the room participants to each websocket~~
             * ~~switch messaging to use stringified JSON~~
-            * **HERE!** Need to message server with player Names and color when ready up is clicked
-            * need to send names and colors back to all other players
+            * ~~Need to message server with player Names and color when ready up is clicked~~
+            * ~~need to send names and colors back to all other players~~
             * need to handle WS closed
             * need to account for un-readying and leaving the room
         * Building the server
@@ -59,6 +58,7 @@
         * I think we still initialize everything the same way?
     * maybe start on endgame points calculation?
 ------
+* add the ability to cancel the online ready-up 
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
 * bug - looks like you can 'start new game when it already exists'
 * might want to move the websocket server to a new module
