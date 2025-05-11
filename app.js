@@ -1,11 +1,9 @@
 import express from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-
-import { WebSocketServer } from 'ws';
+import { startWaitingRoomServer } from "./server/startWaitingRoomServer.js";
 
 const __filename = fileURLToPath(import.meta.url);
-// TODO, when switching to a folder model may need to use the dirname to get the outer layer
 const __dirname = dirname(__filename);
 
 const app = express();
@@ -121,102 +119,4 @@ app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
 
-// ----------------------------- TESTING WEBSOCKETS---------------------------
-const wss = new WebSocketServer({ port: 8080 });
-
-wss.on('connection', (ws) => {
-  ws.on('message', (data) => {
-    const stringData = data.toString()
-    messageFromClientHandler(stringData, ws)
-    console.log(`received data:${stringData}`);
-  });
-});
-
-// --------------- Internal room WS APIs---------------------- (maybe should be it's own module?)
-// Need to add onClose methods
-const waitingRoomToSocketMap = {}
-const joinedWaitingRoom = (socket, roomName) => {
-  console.log(`Within joinedWaitingRoom of ${roomName}`)
-  if (!waitingRoomToSocketMap[roomName]) {
-    waitingRoomToSocketMap[roomName] = {
-      IDsToSockets: {}
-    }
-  }
-  // here! we need to send all the other ready upped players (if this player isn't the first)
-  const waitingRoomObject = waitingRoomToSocketMap[roomName]
-  // participantID will just be a 0-index value
-  const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
-  waitingRoomObject.IDsToSockets[participantID] = socket
-  socket.send(JSON.stringify({
-    type: 'participantID',
-    participantID
-  }))
-  // dev
-  if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length !== 0) {
-    socket.send(JSON.stringify({
-      type: 'playersReadied',
-      playersReadiedObject: roomTrackerMockDB[roomName].playersReadiedObject
-    }))
-  }
-
-  messageAllInRoom(roomName, JSON.stringify({
-    type: 'totalParticipants',
-    totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
-  }))
-}
-
-const playerReadiedUp = (parsedData) => {
-  const {
-    playerColor,
-    participantID,
-    playerName,
-    roomName,
-  } = parsedData;
-  roomTrackerMockDB[roomName].playersReadiedObject[participantID] = {
-    playerColor,
-    playerName,
-    participantID, // not sure if we need this (maybe for removing in the future?)
-  }
-  // dev
-  messageAllInRoom(roomName, JSON.stringify({
-    type: 'playersReadied',
-    playersReadiedObject: {
-      [participantID]: {
-        playerColor,
-        playerName,
-        participantID
-      }
-    }
-
-  }), participantID)
-}
-
-const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
-  const IDs = Object.keys(waitingRoomToSocketMap[roomName].IDsToSockets)
-  IDs.forEach(id => {
-    // intentionally using  loose equality as we may need string to number
-    // TODO maybe fix this so it's always a string?
-    if (id != idToExclude) {
-      waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
-    }
-  })
-}
-
-const messageFromClientHandler = (messageString, socket) => {
-  const parsedData = JSON.parse(messageString)
-  switch (parsedData.type) {
-    case 'newConnection':
-      {
-        const roomName = parsedData.roomName;
-        console.log('A new websocket from the waiting room!', roomName)
-        joinedWaitingRoom(socket, roomName)
-        break;
-      }
-    case 'readyNameAndColor':
-      playerReadiedUp(parsedData)
-      break;
-    default:
-      console.error(`Unknown socket message type from client: ${parsedData.type}`)
-  }
-
-}
+startWaitingRoomServer(roomTrackerMockDB);
