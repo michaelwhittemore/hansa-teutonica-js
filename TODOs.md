@@ -26,6 +26,7 @@
         * Switch to a database potentially
         * Move some of the http routes related to room creation and joining to a module
         * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
+        * Alternatively, can pass the WS into joinedWaitingRoom (actually it might already be there), and then we can add the on-close method there.
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
