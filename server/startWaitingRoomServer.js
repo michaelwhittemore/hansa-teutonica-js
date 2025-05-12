@@ -34,7 +34,6 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       type: 'participantID',
       participantID
     }))
-    // dev
     if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length !== 0) {
       socket.send(JSON.stringify({
         type: 'playersReadied',
@@ -60,7 +59,7 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       playerName,
       participantID, // not sure if we need this (maybe for removing in the future?)
     }
-    // dev
+
     messageAllInRoom(roomName, JSON.stringify({
       type: 'playersReadied',
       playersReadiedObject: {

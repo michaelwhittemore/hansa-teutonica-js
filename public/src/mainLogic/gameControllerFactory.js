@@ -1277,19 +1277,8 @@ export const gameControllerFactory = () => {
         },
         saveGame() {
             console.warn('Saving game')
-            // dev
-            /* 
-            * Player array
-            * game log history
-            * city array
-            * route array
-            * current player (as in whose turn it is)
-            * I think points and city pieces and everything board state/player board can
-            * be derived from the above
-            */
             window.localStorage.setItem('isSaved', true)
             // TODO - move these fields into a "GAME STATE" object
-            // Will need to use JSON.stringify() as we can only save string values
             window.localStorage.setItem('currentTurn', this.currentTurn)
             window.localStorage.setItem('regularTokensArray', JSON.stringify(this.regularTokensArray))
             window.localStorage.setItem('playerArray', JSON.stringify(this.playerArray))

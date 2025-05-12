@@ -215,7 +215,6 @@ export const validateName = (nameString) => {
     "*": Zero or more instances of the preceding regex token
     "$": End of string
     */
-   // dev
     if (!/^[a-zA-Z0-9_]*$/.test(nameString)) {
         return [false, 'Names can only contain alphanumerics or underscores.']
     }

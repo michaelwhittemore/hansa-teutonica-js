@@ -48,7 +48,6 @@ const handleValidRoom = (roomInfo) => {
     readyUpButton.innerText = 'Ready Up';
     readyUpButton.onclick = readyUp;
     document.getElementById('playerInfo').append(readyUpButton)
-    console.warn(roomInfo)
 
     document.getElementById('waitingHeader').innerText =
         `Waiting to join a ${roomInfo.numberOfPlayers} player game in room "${roomName}".`;
@@ -72,7 +71,7 @@ const readyUp = () => {
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
     let isValid = true;
-
+    // dev
     nameInput.classList.remove('invalidForm')
     document.getElementById('playerError').innerText = '';
     if (!nameValidation[0]) {
@@ -83,9 +82,16 @@ const readyUp = () => {
     }
     if (!playerColor) {
         nameInput.classList.add('invalidForm')
-        document.getElementById('playerError').innerText += ' Color must be selected.'
+        document.getElementById('playerError').innerText += ' Color must be selected.';
         isValid = false;
     }
+    Object.keys(otherReadiedPlayers).forEach((key) => {
+        if (otherReadiedPlayers[key].playerColor === playerColor){
+            isValid = false;
+            document.getElementById('playerError').innerText += 
+                ` ${otherReadiedPlayers[key].playerName} has already selected that color.`;
+        }
+    })
     if (isValid) {
         sendSocketMessage({
             type: 'readyNameAndColor',
@@ -162,10 +168,8 @@ const handleIncomingMessage = (data) => {
     }
 
     const parsedData = JSON.parse(data);
-    console.log(parsedData)
     switch (parsedData.type) {
         case 'participantID':
-            console.warn('setting participantID to', parsedData.participantID)
             participantID = parsedData.participantID;
             break;
         case 'totalParticipants':
@@ -181,6 +185,7 @@ const handleIncomingMessage = (data) => {
         case 'playersReadied':
             document.getElementById('otherReadiedPlayerTitle').innerText = 'Other Players Readied:'
             // TODO: should also exclude color on the color picker
+            // dev
             Object.keys(parsedData.playersReadiedObject).forEach(key => {
                 otherReadiedPlayers[key] = {
                     participantID: key,

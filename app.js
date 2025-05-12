@@ -60,7 +60,6 @@ app.post("/newRoom", (request, response) => {
 
 })
 
-// dev
 // ------------------------ TEST VALUES -----------------------
 roomTrackerMockDB['testRoom1'] = {
   isInUse: true,

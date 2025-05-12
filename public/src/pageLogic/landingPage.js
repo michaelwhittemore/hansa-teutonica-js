@@ -37,7 +37,6 @@ const modifyNumberOfPlayers = (playerNumber) => {
     }
 }
 
-// dev - moving this to a helper - or maybe not, looks like there's maybe too many diffs?
 const createPlayerInfoDiv = (id) => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], `playerInfo-${id}`)
     const playerNameLabel = document.createElement('label')
@@ -65,15 +64,12 @@ const startHotseatGame = () => {
     const playerSelector = document.getElementById('playerSelector')
     let allValid = true;
     const selectedColors = []
-    // dev
     const url = new URL(document.location.href);
     url.pathname = 'hotseat'
     url.searchParams.append('playerNumber', playerSelector.childElementCount)
 
     for (let i = 0; i < playerSelector.childElementCount; i++) {
         const nameInput = document.getElementById(`playerName-${i}`);
-
-        // dev
         const name = nameInput.value;
         const nameValidation = validateName(name);
 
