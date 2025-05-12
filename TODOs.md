@@ -50,7 +50,6 @@
 * maybe allow you to start an online game by simply joining a room?
 * add the ability to cancel the online ready-up 
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
-* bug - looks like you can 'start new game when it already exists'
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 # Main Game TODOs #

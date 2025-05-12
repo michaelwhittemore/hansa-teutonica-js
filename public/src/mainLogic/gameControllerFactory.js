@@ -1362,4 +1362,3 @@ export const gameControllerFactory = () => {
     logicBundle.gameController = gameController;
     return gameController
 }
-

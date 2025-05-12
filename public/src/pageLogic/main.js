@@ -27,7 +27,6 @@ const playerArrayFromSearchParams = (params) => {
     return playerArray
 }
 
-// TODO need to have a url parser that creates anm player array (otherwise we default to TEST_PLAYERS)
 const start = () => {
     window.logicBundle = logicBundle // This is just for testing
 
