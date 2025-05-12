@@ -4,6 +4,8 @@ let playerColor;
 let participantID; // This value is setup by the server
 let participants;
 let socket;
+let otherReadiedPlayers = {};
+window.otherReadiedPlayers = otherReadiedPlayers// delete this
 const attemptToJoinRoom = async () => {
     if (!roomName) {
         console.error('No room name')
@@ -177,13 +179,16 @@ const handleIncomingMessage = (data) => {
             }
             break;
         case 'playersReadied':
+            document.getElementById('otherReadiedPlayerTitle').innerText = 'Other Players Readied:'
             // TODO: should also exclude color on the color picker
             Object.keys(parsedData.playersReadiedObject).forEach(key => {
-                document.getElementById('otherParticipants').append(createOtherPlayerInfo({
+                otherReadiedPlayers[key] = {
                     participantID: key,
                     playerColor: parsedData.playersReadiedObject[key].playerColor,
                     playerName: parsedData.playersReadiedObject[key].playerName
-                }))
+                }
+
+                document.getElementById('otherParticipants').append(createOtherPlayerInfo(otherReadiedPlayers[key]))
             })
             break;
         default:
