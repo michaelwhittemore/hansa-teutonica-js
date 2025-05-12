@@ -1,5 +1,4 @@
 import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
-// IMPORTANT -- I may need to move away from http for signaling - we need  bidirectional communication
 const roomName = new URL(window.location).searchParams.get('roomName')
 let playerColor;
 let participantID; // This value is setup by the server
@@ -63,7 +62,6 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').onclick = () => { history.back() };
 }
 
-// dev
 const readyUp = () => {
     // TODO this will need a toggle
     // The unready will be the same as the client disconnecting I think

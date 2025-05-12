@@ -155,6 +155,7 @@ const startOnlineGame = async () => {
         console.error('response not ok')
         document.getElementById('roomName').classList.add('invalidForm')
         document.getElementById('roomNameError').innerText = responseText
+        return;
     }
     // Happy path, will need to redirect to the waiting room
     const url = new URL(window.location.href);
