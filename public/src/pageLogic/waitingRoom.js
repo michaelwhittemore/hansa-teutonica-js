@@ -179,14 +179,7 @@ const handleIncomingMessage = (data) => {
             }
             break;
         case 'playersReadied':
-            // here need to add to a readied player display
-            // should also exclude color on the color picker
-            // This should expect any number of players.
-            // here!
-            // 1. Need to create an area to store other players
-            // 2. Then we need a createOtherPlayerInfo method.
-            // 3. Remember to use the particpant id so we can track when we delete or change things
-            console.log('another player readied')
+            // TODO: should also exclude color on the color picker
             Object.keys(parsedData.playersReadiedObject).forEach(key => {
                 document.getElementById('otherParticipants').append(createOtherPlayerInfo({
                     participantID: key,

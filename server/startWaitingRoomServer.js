@@ -9,9 +9,14 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       messageFromClientHandler(stringData, ws)
       console.log(`received data:${stringData}`);
     });
+    // TODO, handle the onclose event
+    ws.on('close', (event) => {
+      console.log('closed a websocket')
+      console.log(event)
+    })
   });
 
-  // --------------- Internal room WS APIs---------------------- (maybe should be it's own module?)
+  // --------------- Internal room WS APIs---------------------- 
   // Need to add onClose methods
   const waitingRoomToSocketMap = {}
   const joinedWaitingRoom = (socket, roomName) => {
@@ -21,7 +26,6 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
         IDsToSockets: {}
       }
     }
-    // here! we need to send all the other ready upped players (if this player isn't the first)
     const waitingRoomObject = waitingRoomToSocketMap[roomName]
     // participantID will just be a 0-index value
     const participantID = Object.keys(waitingRoomObject.IDsToSockets).length

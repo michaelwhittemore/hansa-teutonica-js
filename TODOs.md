@@ -14,58 +14,46 @@
 * Need to add installation instructions to the read me
 
 # TODOs #
-* 5/11
+* 5/12
     * css for the waitingRoomInfo element
     * clean up UI for other readied up players
-    * ~~feedback once you're readied up ( button and text change color and disable the name and color selector)~~
-    * may also want to break app.js into modules, getting large at this point **IMPORTANT** really should address this soon, the server is getting to be some awful spaghetti - let's do this as soon as I get the on join messages working
+
     * clean up the server todos
-* immediate todos
+    * **BEFORE MOVING ON TO IN GAME WS**
+        * Need to fix the waiting room css to be at least slightly ok.
+        * More thorough bug testing for starting/joining online games
+        * Move some of the 
+        * Switch to a database potentially
+        * Move some of the http routes related to room creation and joining to a module
+        * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
-        * ~~Landing Page~~
         * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
-            * ~~Need to block off color and name change once you've readied up~~
-            * ~~Also need to change the button to indicate you're ready~~
-            ~~As soon as the page loads we need to double check with the server that everything is good~~
-            ~~Need to learn from the server how many players are there~~
-            ~~START ON WEBSOCKETS https://blog.postman.com/set-up-a-websockets-server-in-node-js-postman/ - MDN also has a very low level guide~~
-            * ~~Also need to learn the total number of players who are ready~~
-            ~~need to distinguish between players supported and current player and ready players~~
-            ~~Need to give the player the opportunity to add their name and color~~
             * Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
-            * ~~Need establish a websocket with the server~~
         * Server related to waiting room:
-            * ~~On the websocket being connected need some sort of ID for each~~
-            * ~~Need to map the room participants to each websocket~~
-            * ~~switch messaging to use stringified JSON~~
-            * ~~Need to message server with player Names and color when ready up is clicked~~
-            * ~~need to send names and colors back to all other players~~
+            * for websocket closed - we may want to do this when the websocket is initially created, we also need to figure out how to know which websocket is being closed. Maybe we can add to the URI when initially making the request to open the websocket?            
             * need to handle WS closed
             * need to account for un-readying and leaving the room
         * Building the server
             * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
-            * The web pages can use FETCH API, I can test with postman
-            * I'm eventually going to need to use websockets when the server needs to send messages
-            * I may want to hard code additional fixed rooms just for testing
             * I will also need to add the data base. NoSQL might be easier? Regardless, that can probably come later
         * Will need a different route from hotseat
         * will need it's own main.js
         * can we use the same main.html?
         * let's rename main.js -> hotseat.js
         * I think we still initialize everything the same way?
-    * maybe start on endgame points calculation?
 ------
+* maybe allow you to start an online game by simply joining a room?
 * add the ability to cancel the online ready-up 
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
 * bug - looks like you can 'start new game when it already exists'
-* might want to move the websocket server to a new module
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
-* add currentTurn to the turn tracker or the game history or both  (as in how many turns have elapsed total)
-* Update the landing page to include a
+# Main Game TODOs #
+* endgame points calculation
+* add currentTurn to the turn tracker or the game history or both (as in how many turns have elapsed total)
 * Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
@@ -106,6 +94,7 @@
 * ESLINT semi colon - ugh prettier was a hassle, might come back to this
 
 # Stretch Goals (in no particular order) # #
+* NOTE: when the favicon is requested a 404s, chrome doesn't request it again on subsequent refreshes, need to use cmd+shift+r for hard refresh
 * convert some of my objects to JS maps
 * read https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview MDN guide to brush back up on http knowledge
 * when doing online play we will likely need some sort of player validator. We don't want to update actionInfoDiv.innerText for example when its not the player's turn.
