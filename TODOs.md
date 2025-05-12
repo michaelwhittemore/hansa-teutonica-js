@@ -15,10 +15,11 @@
 
 # TODOs #
 * 5/12
-    * clean up UI for other readied up players
-    * clean up the server todos
+    * clean up UI for other readied up players - include a background color so that yellow is actually readable
     * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
     * add the "allReady" message type to waitingRoom and server
+    * Once the "allReady" message occurs need to actually start on the game 
+    * need to add a 'get route to the room routes
     * **BEFORE MOVING ON TO IN GAME WS**
         * Switch to a database potentially
         * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
@@ -126,6 +127,7 @@
 * converting things like game controller and board controller to classes may make it easier to have multiple games running as we don't want them to be singletons - I think that's a bit in the future though, it's only relevant if the game logic is running server side, as long as it all occurs in the client we don't need to worry
 * add a github link - I'm sure I can find a nice one somewhere online
 * make it so form validation happens real time (as opposed to on submission)
+* I am inconsistent in using 'Id' vs 'ID' in variable names
 
 // npx nodemon app.js (now I don't have to restart it all the time!)
 // collapse all = cmd-k and then cmd-0

@@ -86,9 +86,9 @@ const readyUp = () => {
         isValid = false;
     }
     Object.keys(otherReadiedPlayers).forEach((key) => {
-        if (otherReadiedPlayers[key].playerColor === playerColor){
+        if (otherReadiedPlayers[key].playerColor === playerColor) {
             isValid = false;
-            document.getElementById('playerError').innerText += 
+            document.getElementById('playerError').innerText +=
                 ` ${otherReadiedPlayers[key].playerName} has already selected that color.`;
         }
     })
@@ -102,6 +102,22 @@ const readyUp = () => {
         })
         togglePlayerReadiedUI(true);
     }
+}
+
+const startGame = () => {
+    // dev
+    // HERE!
+
+    // "/onlineGame/:roomName?participantID=asdsadas"
+
+    const url = new URL(document.location.origin);
+    url.pathname = `/onlineGame/${roomName}`
+    url.searchParams.append('participantID', participantID)
+    if (!URL.canParse(url)) {
+        console.error('Can not parse url', url)
+        return;
+    }
+    window.location.assign(url)
 }
 
 // ---------------------UI--------------
@@ -184,8 +200,7 @@ const handleIncomingMessage = (data) => {
             break;
         case 'playersReadied':
             document.getElementById('otherReadiedPlayerTitle').innerText = 'Other Players Readied:'
-            // TODO: should also exclude color on the color picker
-            // dev
+
             Object.keys(parsedData.playersReadiedObject).forEach(key => {
                 otherReadiedPlayers[key] = {
                     participantID: key,
@@ -195,6 +210,9 @@ const handleIncomingMessage = (data) => {
 
                 document.getElementById('otherParticipants').append(createOtherPlayerInfo(otherReadiedPlayers[key]))
             })
+            break;
+        case 'allReady':
+            startGame();
             break;
         default:
             console.error(`Unknown socket message type: ${parsedData.type}`)

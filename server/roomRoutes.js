@@ -40,29 +40,29 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
     app.post("/newRoom", (request, response) => {
         const { numberOfPlayers, roomName } = request.body
         if (!numberOfPlayers || !roomName) {
-          const errorMessage = 'Tried to create a new room without number of players or room name.'
-          response.status(400)
-          response.send(errorMessage)
-          return
+            const errorMessage = 'Tried to create a new room without number of players or room name.'
+            response.status(400)
+            response.send(errorMessage)
+            return
         }
         // Need to do sanitization here
         if (!roomTrackerMockDB[roomName]) {
-          // Happy path, the name doesn't exist
-          // May need additional fields
-          roomTrackerMockDB[roomName] = {
-            isInUse: true, // may be an unnecessary field
-            isPlaying: false, // Used to differentiate from waiting room
-            isFull: false,
-            numberOfPlayers: parseInt(numberOfPlayers),
-            playersWaiting: 0,
-            playersReadiedObject: {}
-          }
-          response.send(`Successfully created room ${roomName}`)
+            // Happy path, the name doesn't exist
+            // May need additional fields
+            roomTrackerMockDB[roomName] = {
+                isInUse: true, // may be an unnecessary field
+                isPlaying: false, // Used to differentiate from waiting room
+                isFull: false,
+                numberOfPlayers: parseInt(numberOfPlayers),
+                playersWaiting: 0,
+                playersReadiedObject: {}
+            }
+            response.send(`Successfully created room ${roomName}`)
         } else {
-          // TODO: I think this is the wrong way to use a 400, we should only send an error if the case of invalid values
-          response.status(400)
-          response.send('Room already exists')
+            // TODO: I think this is the wrong way to use a 400, we should only send an error if the case of invalid values
+            response.status(400)
+            response.send('Room already exists')
         }
-      
-      })
+
+    })
 }

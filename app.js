@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { startWaitingRoomServer } from "./server/startWaitingRoomServer.js";
@@ -30,6 +30,11 @@ app.get("/hotseat", (request, response) => {
 app.get("/waitingRoom", (request, response) => {
   response.sendFile(__dirname + "/public/html/waitingRoom.html")
 });
+app.get("/onlineGame/:roomName", (request, response) => {
+  const { roomName } = request.params
+  console.log('roomName is', roomName)
+  response.send('hello and welcome to ' + roomName)
+})
 
 // ------------------------ TEST VALUES -----------------------
 roomTrackerMockDB['testRoom1'] = {
