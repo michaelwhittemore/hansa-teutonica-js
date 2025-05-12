@@ -71,6 +71,18 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       }
 
     }), participantID)
+
+    // here! Need to check against the DB object if all players are ready
+
+    // dev 
+    console.log(roomTrackerMockDB[roomName].playersReadiedObject)
+    if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length === roomTrackerMockDB[roomName].numberOfPlayers) {
+      console.log('We should now send all readied message')
+      messageAllInRoom(roomName, JSON.stringify({
+        type: 'allReady',
+      }))
+    }
+    
   }
 
   const messageAllInRoom = (roomName, message, idToExclude = undefined) => {

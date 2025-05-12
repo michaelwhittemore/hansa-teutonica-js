@@ -31,9 +31,6 @@ app.get("/waitingRoom", (request, response) => {
   response.sendFile(__dirname + "/public/html/waitingRoom.html")
 });
 
-// Will need a route to clear the room from storage
-setUpRoomRoutes(app, roomTrackerMockDB)
-
 // ------------------------ TEST VALUES -----------------------
 roomTrackerMockDB['testRoom1'] = {
   isInUse: true,
@@ -49,8 +46,10 @@ roomTrackerMockDB['testRoom1'] = {
   }
 }
 
+// Will need a route to clear the room from storage
+setUpRoomRoutes(app, roomTrackerMockDB)
+startWaitingRoomServer(roomTrackerMockDB);
+
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
-
-startWaitingRoomServer(roomTrackerMockDB);

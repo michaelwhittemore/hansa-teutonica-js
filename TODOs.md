@@ -17,27 +17,28 @@
 * 5/12
     * clean up UI for other readied up players
     * clean up the server todos
+    * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
+    * add the "allReady" message type to waitingRoom and server
     * **BEFORE MOVING ON TO IN GAME WS**
-        * Need to fix the waiting room css to be at least slightly ok.
-        * More thorough bug testing for starting/joining online games
         * Switch to a database potentially
-        * Move some of the http routes related to room creation and joining to a module
         * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
         * Alternatively, can pass the WS into joinedWaitingRoom (actually it might already be there), and then we can add the on-close method there.
-        * 'Other Readied players' shouldn't appear when no one else is ready (or maybe change the text )
-        * Will need a list of readied players so I can check color
-        * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
+
+       
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
-        * When joining an online game, will need to redirect to a waiting room which also lets the client select player name and color
-            * Need to wait to hear from the server, once the game is full we should then
+        * Waiting Room:
+            * **HERE!** Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
+                * as part of the Ready up methods we check if the length of the readied object is equal to
+                the game size
+            * add chat
+            * clean up css and general beautification - maybe should see if I can read anything online for making prettier web pages?
         * Server related to waiting room:
             * for websocket closed - we may want to do this when the websocket is initially created, we also need to figure out how to know which websocket is being closed. Maybe we can add to the URI when initially making the request to open the websocket?            
             * need to handle WS closed
             * need to account for un-readying and leaving the room
         * Building the server
-            * Will need to reorganize the server, probably at the very least give it a folder
             * Read up on express best practices and the MDN HTTP docs
             * I will also need to add the data base. NoSQL might be easier? Regardless, that can probably come later
         * Will need a different route from hotseat

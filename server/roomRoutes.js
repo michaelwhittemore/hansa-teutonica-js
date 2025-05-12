@@ -51,6 +51,7 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
           // May need additional fields
           roomTrackerMockDB[roomName] = {
             isInUse: true, // may be an unnecessary field
+            isPlaying: false, // Used to differentiate from waiting room
             isFull: false,
             numberOfPlayers: parseInt(numberOfPlayers),
             playersWaiting: 0,
