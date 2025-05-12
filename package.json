@@ -20,6 +20,7 @@
   "homepage": "https://github.com/michaelwhittemore/hansa-teutonica-js#readme",
   "dependencies": {
     "express": "^5.1.0",
+    "short-uuid": "^5.2.0",
     "ws": "^8.18.2"
   },
   "devDependencies": {

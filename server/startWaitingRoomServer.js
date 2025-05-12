@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+import shortUUID from 'short-uuid';
 
 export const startWaitingRoomServer = (roomTrackerMockDB) => {
   const wss = new WebSocketServer({ port: 8080 });
@@ -27,8 +28,7 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       }
     }
     const waitingRoomObject = waitingRoomToSocketMap[roomName]
-    // participantID will just be a 0-index value
-    const participantID = Object.keys(waitingRoomObject.IDsToSockets).length
+    const participantID = shortUUID.generate()
     waitingRoomObject.IDsToSockets[participantID] = socket
     socket.send(JSON.stringify({
       type: 'participantID',
