@@ -15,9 +15,7 @@
 
 # TODOs #
 * 5/12
-    * css for the waitingRoomInfo element
     * clean up UI for other readied up players
-
     * clean up the server todos
     * **BEFORE MOVING ON TO IN GAME WS**
         * Need to fix the waiting room css to be at least slightly ok.

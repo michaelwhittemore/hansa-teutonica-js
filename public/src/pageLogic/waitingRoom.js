@@ -71,8 +71,8 @@ const readyUp = () => {
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
     let isValid = true;
-    // dev
     nameInput.classList.remove('invalidForm')
+
     document.getElementById('playerError').innerText = '';
     if (!nameValidation[0]) {
         nameInput.classList.add('invalidForm')
