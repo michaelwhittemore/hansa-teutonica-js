@@ -61,28 +61,43 @@ const startOnline = async (roomName) => {
     // We still want to know the participant ID, as we need that to do validation
 
     // here! 
-    let responseBody;
+    let playerArray;
     const searchParams = (new URL(location)).searchParams
     const participantId = searchParams.get('participantId');
-    console.log(participantId)
     if (!participantId){
-        // Keep this, we need the particpant ID 
+        // Keep this, we need the participantId to join
         console.error('Tried to join a lobby without a participantId')
         return
     }
+    // try {
+    //     const url = window.location.origin + `/playerInformation/${roomName}/${participantId}`;
+    //     console.log(url)
+    //     const response = await fetch(url, {
+    //         method: 'GET',
+    //     });
+    //     responseBody = await response.json();
+    // } catch (err) {
+    //     console.error(err)
+    //     return;
+    // }
     try {
-        const url = window.location.origin + `/playerInformation/${roomName}/${participantId}`;
+        const url = window.location.origin + `/playerInformation/${roomName}`;
         console.log(url)
         const response = await fetch(url, {
             method: 'GET',
         });
-        responseBody = await response.json();
+        playerArray = await response.json();
     } catch (err) {
         console.error(err)
         return;
     }
-    console.log(responseBody)
-
+    console.log(playerArray)
+    // now we should see if we can populate the board
+    // Currently the method expects an array of arrays, not an array of objects 
+    // which is causing the bugged behavior
+    // I think we shouldn't change the input, instead we should change the method to account for 
+    // online stuff
+    gameController.initializeOnlineGame(playerArray)
 }
 
 const start = () => {

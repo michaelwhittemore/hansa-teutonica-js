@@ -13,16 +13,24 @@ import {
 export const gameControllerFactory = () => {
     const gameController = {
         initializeGameStateAndUI(playerList) {
+            console.log(playerList)
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
+        },
+        initializeOnlineGame(playerArray) {
+            console.log(playerArray)
         },
         createPlayerArrayFromNamesAndColors(playerList) {
             // let's just use turn order for IDs
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
-                const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i, i);
+                // const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i,
+                //     `player-${i}`);
+                const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i,
+                    i);
                 this.playerArray.push(player)
             }
+            console.log(this.playerArray)
         },
         initializeCitiesAndState() {
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)

@@ -74,6 +74,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             for (let playerId in this.playerBoardsObj) {
                 // there are some real downsides to using indexes as object keys
                 // TODO - once we switch from index to UUIDs this parseInt statement will break things
+                // here! let's see if we can convert the player id to a string without breaking
                 const parsedId = parseInt(playerId)
                 if (player.id === parsedId) {
                     this.playerBoardsObj[parsedId].style.display = ''
