@@ -31,7 +31,11 @@
 1. Let's move the playerArrayFromSearchParams into a helper - this is easy and we don't want it clogging up the main page code
 2. Let's try to see if we can get the room type from the location - we can then do different logic within the main start function
 3. We may want an easier way to test this. Perhaps we start a session with nodemon disabled? - May need to come back to this, it doesn't seem like an actual numbered step
-       
+       **IMPORTANT** anytime we accessed playerArray with an id, we need to change it to use a getter
+       * LIST of bugs
+        * moving other player's pieces doesn't work - currently silently failing
+        * move three token - explicitly failing - think I fixed it
+        * point tracker not working, or at least not when capturing a city
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:

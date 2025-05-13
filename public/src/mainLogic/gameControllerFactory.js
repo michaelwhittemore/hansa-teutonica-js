@@ -139,10 +139,15 @@ export const gameControllerFactory = () => {
             })
         },
         getActivePlayer() {
+            console.error('THIS METHOD IS FUBAR')
             return this.playerArray[this.currentTurn % this.playerArray.length]
         },
-        getPlayerById() {
-            // TODO, only used for online play I think
+        getPlayerById(id) {
+            for(let player of this.playerArray){
+                if (player.id === id){
+                    return player
+                }
+            }
         },
         advanceTurn(lastPlayer) {
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
@@ -530,7 +535,7 @@ export const gameControllerFactory = () => {
             // We already have turnTrackerAdditionalInformation
             logicBundle.turnTrackerController.updateTurnTrackerWithBumpInfo({
                 bumpingPlayer: player,
-                bumpedPlayer: this.playerArray[bumpedPlayerId],
+                bumpedPlayer: this.getPlayerById(bumpedPlayerId),
                 circlesToPlace,
                 squaresToPlace
             })
@@ -1231,8 +1236,9 @@ export const gameControllerFactory = () => {
                 const originId = gameController.tokenUsageInformation.originLocation
                 const routeOriginId = getRouteIdFromNodeId(originId);
                 const originNode = gameController.routeStorageObject[routeOriginId].routeNodes[originId]
-                const originPlayer = gameController.playerArray[originNode.playerId]
+                const originPlayer = gameController.getPlayerById(originNode.playerId);
                 const originShape = originNode.shape;
+
                 // 6. Clear the piece from city storage
                 const clearedProps = {
                     occupied: false,
