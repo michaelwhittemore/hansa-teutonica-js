@@ -56,28 +56,32 @@ const startOnline = async (roomName) => {
     // 4. Let's see if I can just get a gameboard populated. 
     // 5. I think we will need to open up new websockets given that we're navigating to a new page
 
+    // IMPORTANT - we might need to change this, we should be getting the whole player array 
+    // We will need it to constructor the UI.
+    // We still want to know the participant ID, as we need that to do validation
+
     // here! 
-    // let's follow the example of the waiting room for using fetch
-    let response;
-    // need to grab the particpant id from search params 
+    let responseBody;
     const searchParams = (new URL(location)).searchParams
     const participantId = searchParams.get('participantId');
     console.log(participantId)
     if (!participantId){
+        // Keep this, we need the particpant ID 
         console.error('Tried to join a lobby without a participantId')
         return
     }
     try {
         const url = window.location.origin + `/playerInformation/${roomName}/${participantId}`;
-        
         console.log(url)
-        // response = await fetch(url, {
-        //     method: 'GET',
-        // });
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+        responseBody = await response.json();
     } catch (err) {
         console.error(err)
         return;
     }
+    console.log(responseBody)
 
 }
 

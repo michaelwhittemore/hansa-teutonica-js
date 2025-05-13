@@ -36,7 +36,9 @@
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:
             * **HERE!** Need to wait to hear from the server, once the game is full we should then
-            redirect to the online tab 
+            redirect to the online tab
+            * It might make sense to process all the players into new object when starting up the game (i.e. when everyone is readied up and we're on the server side)
+            * Thoughts for tackling breaking into the main game logic:
                 * let's try to break logic for both hotseat and online into the main tab?
                 * I guess in the worst case I can create a method to generate the entire HTML body? and then both can call that function
                 * how are we going to handle online saving?

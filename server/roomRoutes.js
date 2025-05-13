@@ -69,4 +69,14 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
         const { roomName, participantId } = request.params
         response.json(roomTrackerMockDB[roomName].playersReadiedObject[participantId])
     })
+    app.get('/playerInformation/:roomName', (request, response) => {
+        const { roomName } = request.params
+        const playerArray = []
+        Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).forEach((key) => {
+            playerArray.push(roomTrackerMockDB[roomName].playersReadiedObject[key])
+        })
+        console.log(playerArray)
+        // this may cause an error due to json, may need to stringify
+        response.json(playerArray)
+    })
 }

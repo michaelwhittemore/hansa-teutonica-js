@@ -48,12 +48,17 @@ roomTrackerMockDB['testRoom1'] = {
   playersReadiedObject: {
     iigJEToZqLT8NCpUukFgfz: {
       playerColor: '#ff0000',
-      playerName: 'TestPlayer1',
+      playerName: 'Alice',
       participantId: 'iigJEToZqLT8NCpUukFgfz'
+    },
+    uW2d8XHHZn6SPb3vTak3uW: {
+      playerColor: '#ff00ff',
+      playerName: 'Bob',
+      participantId: 'uW2d8XHHZn6SPb3vTak3uW'
     }
   }
 }
-
+//uW2d8XHHZn6SPb3vTak3uW
 // Will need a route to clear the room from storage
 setUpRoomRoutes(app, roomTrackerMockDB)
 startWaitingRoomWSS(roomTrackerMockDB);
