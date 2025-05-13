@@ -5,7 +5,7 @@ let participantId; // This value is setup by the server
 let participants;
 let socket;
 let otherReadiedPlayers = {};
-window.otherReadiedPlayers = otherReadiedPlayers// delete this
+
 const attemptToJoinRoom = async () => {
     if (!roomName) {
         console.error('No room name')

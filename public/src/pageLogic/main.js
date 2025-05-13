@@ -35,9 +35,10 @@ const startHotseat = () => {
     gameController.initializeGameStateAndUI(startingPlayerArray)
 }
 
-const startOnline = (roomName) => {
+const startOnline = async (roomName) => {
     console.log('startOnline')
-    // here!
+    // http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
+    // Noe that the above link uses the test data that gets populated on the server
     // dev
     // ~~1. I think we need to make a query to the server to get the play information from participant (i.e.)
     // name, and color - in that case we should use a test value in the server - ~~
@@ -55,12 +56,32 @@ const startOnline = (roomName) => {
     // 4. Let's see if I can just get a gameboard populated. 
     // 5. I think we will need to open up new websockets given that we're navigating to a new page
 
+    // here! 
+    // let's follow the example of the waiting room for using fetch
+    let response;
+    // need to grab the particpant id from search params 
+    const searchParams = (new URL(location)).searchParams
+    const participantId = searchParams.get('participantId');
+    console.log(participantId)
+    if (!participantId){
+        console.error('Tried to join a lobby without a participantId')
+        return
+    }
+    try {
+        const url = window.location.origin + `/playerInformation/${roomName}/${participantId}`;
+        
+        console.log(url)
+        // response = await fetch(url, {
+        //     method: 'GET',
+        // });
+    } catch (err) {
+        console.error(err)
+        return;
+    }
 
 }
 
 const start = () => {
-    // dev let's break this into 'startHotseat' and 'startOnline' - use window.location.pathname
-    // http://localhost:3000/onlineGame/testRoom
     window.logicBundle = logicBundle // This is just for testing
     const parsedPath = window.location.pathname.split('/')
     if(parsedPath[1]==='hotseat'){
