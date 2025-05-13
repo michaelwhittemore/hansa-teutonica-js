@@ -39,12 +39,14 @@ const startOnline = (roomName) => {
     console.log('startOnline')
     // here!
     // dev
-    // 1. I think we need to make a query to the server to get the play information from participant (i.e.)
-    // name, and color - in that case we should use a test value in the server - 
-    // 1. As part of the above we will need to add a 'playerInfo' or 'playerInfoFromParticipant' route
-    // to the routing file (roomRoutes.js)
-    // 1. Once the information is established we should open up the websocket. Does it make sense to use 
-    // the startWaitingRoomServer and just rename it? We should probably rename it anyway
+    // ~~1. I think we need to make a query to the server to get the play information from participant (i.e.)
+    // name, and color - in that case we should use a test value in the server - ~~
+    // ~~1. As part of the above we will need to add a 'playerInfo' or 'playerInfoFromParticipant' route
+    // to the routing file (roomRoutes.js)~~
+    // 2. We will need to return some kind of error if you're trying to join a session as a participant who
+    // has already connected - may need to add an 'in use' field????
+    // 1. Once the information is established we should open up the websocket. - maybe that should be
+    // part of the API module
     // 2. I need a way to generate turn order - should it just be random for the moment? i.e. what order
     // the keys are generated
     // 3. I think we will need to modify gameController.initializeGameStateAndUI to include mode

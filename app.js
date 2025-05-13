@@ -1,7 +1,7 @@
 import express, { response } from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { startWaitingRoomServer } from "./server/startWaitingRoomServer.js";
+import { startWaitingRoomWSS } from "./server/startWaitingRoomWSS.js";
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,21 +41,22 @@ app.get("/onlineGame/:roomName", (request, response) => {
 // ------------------------ TEST VALUES -----------------------
 roomTrackerMockDB['testRoom1'] = {
   isInUse: true,
+  isPlaying: false,
   isFull: false,
   numberOfPlayers: 3,
-  playersWaiting: 2,
+  playersWaiting: 1,
   playersReadiedObject: {
-    '0': {
-      playerColor: '#4b0082',
-      playerName: 'testPlayer1',
-      roomName: 'testRoom1',
+    iigJEToZqLT8NCpUukFgfz: {
+      playerColor: '#ff0000',
+      playerName: 'TestPlayer1',
+      participantId: 'iigJEToZqLT8NCpUukFgfz'
     }
   }
 }
 
 // Will need a route to clear the room from storage
 setUpRoomRoutes(app, roomTrackerMockDB)
-startWaitingRoomServer(roomTrackerMockDB);
+startWaitingRoomWSS(roomTrackerMockDB);
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);

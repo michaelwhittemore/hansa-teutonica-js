@@ -1,7 +1,7 @@
 import { WebSocketServer } from 'ws';
 import shortUUID from 'short-uuid';
 
-export const startWaitingRoomServer = (roomTrackerMockDB) => {
+export const startWaitingRoomWSS = (roomTrackerMockDB) => {
   const wss = new WebSocketServer({ port: 8080 });
 
   wss.on('connection', (ws) => {
