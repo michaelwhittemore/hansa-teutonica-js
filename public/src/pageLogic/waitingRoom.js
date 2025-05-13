@@ -1,7 +1,7 @@
 import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
 const roomName = new URL(window.location).searchParams.get('roomName')
 let playerColor;
-let participantID; // This value is setup by the server
+let participantId; // This value is setup by the server
 let participants;
 let socket;
 let otherReadiedPlayers = {};
@@ -96,7 +96,7 @@ const readyUp = () => {
         sendSocketMessage({
             type: 'readyNameAndColor',
             playerColor,
-            participantID,
+            participantId,
             playerName,
             roomName,
         })
@@ -108,11 +108,11 @@ const startGame = () => {
     // dev
     // HERE!
 
-    // "/onlineGame/:roomName?participantID=thisIsAnID"
+    // "/onlineGame/:roomName?participantId=thisIsAnID"
 
     const url = new URL(document.location.origin);
     url.pathname = `/onlineGame/${roomName}`
-    url.searchParams.append('participantID', participantID)
+    url.searchParams.append('participantId', participantId)
     if (!URL.canParse(url)) {
         console.error('Can not parse url', url)
         return;
@@ -147,8 +147,8 @@ const createPlayerInputs = () => {
 }
 
 const createOtherPlayerInfo = (readiedInfo) => {
-    const { playerColor, participantID, playerName } = readiedInfo
-    const otherPlayerDiv = createDivWithClassAndIdAndStyle(['otherPlayerDiv'], `otherPlayerDiv-${participantID}`)
+    const { playerColor, participantId, playerName } = readiedInfo
+    const otherPlayerDiv = createDivWithClassAndIdAndStyle(['otherPlayerDiv'], `otherPlayerDiv-${participantId}`)
     otherPlayerDiv.innerText = playerName;
     otherPlayerDiv.style.color = playerColor
     return otherPlayerDiv;
@@ -185,8 +185,9 @@ const handleIncomingMessage = (data) => {
 
     const parsedData = JSON.parse(data);
     switch (parsedData.type) {
-        case 'participantID':
-            participantID = parsedData.participantID;
+        case 'participantId':
+            participantId = parsedData.participantId;
+            console.log(`setting participantId as ${participantId}`)
             break;
         case 'totalParticipants':
             participants = parseInt(parsedData.totalParticipants)
@@ -203,7 +204,7 @@ const handleIncomingMessage = (data) => {
 
             Object.keys(parsedData.playersReadiedObject).forEach(key => {
                 otherReadiedPlayers[key] = {
-                    participantID: key,
+                    participantId: key,
                     playerColor: parsedData.playersReadiedObject[key].playerColor,
                     playerName: parsedData.playersReadiedObject[key].playerName
                 }

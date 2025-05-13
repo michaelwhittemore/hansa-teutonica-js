@@ -18,15 +18,15 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
     console.log(`Within joinedWaitingRoom of ${roomName}`)
     if (!waitingRoomToSocketMap[roomName]) {
       waitingRoomToSocketMap[roomName] = {
-        IDsToSockets: {}
+        IdsToSockets: {}
       }
     }
     const waitingRoomObject = waitingRoomToSocketMap[roomName]
-    const participantID = shortUUID.generate()
-    waitingRoomObject.IDsToSockets[participantID] = socket
+    const participantId = shortUUID.generate()
+    waitingRoomObject.IdsToSockets[participantId] = socket
     socket.send(JSON.stringify({
-      type: 'participantID',
-      participantID
+      type: 'participantId',
+      participantId
     }))
     if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length !== 0) {
       socket.send(JSON.stringify({
@@ -37,38 +37,38 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
 
     messageAllInRoom(roomName, JSON.stringify({
       type: 'totalParticipants',
-      totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
+      totalParticipants: Object.keys(waitingRoomObject.IdsToSockets).length
     }))
 
     socket.on('close', ()=> {
-      socketCloseHandler(roomName, participantID)
+      socketCloseHandler(roomName, participantId)
     })
   }
 
   const playerReadiedUp = (parsedData) => {
     const {
       playerColor,
-      participantID,
+      participantId,
       playerName,
       roomName,
     } = parsedData;
-    roomTrackerMockDB[roomName].playersReadiedObject[participantID] = {
+    roomTrackerMockDB[roomName].playersReadiedObject[participantId] = {
       playerColor,
       playerName,
-      participantID, // not sure if we need this (maybe for removing in the future?)
+      participantId, // not sure if we need this (maybe for removing in the future?)
     }
 
     messageAllInRoom(roomName, JSON.stringify({
       type: 'playersReadied',
       playersReadiedObject: {
-        [participantID]: {
+        [participantId]: {
           playerColor,
           playerName,
-          participantID
+          participantId
         }
       }
 
-    }), participantID)
+    }), participantId)
     if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length === roomTrackerMockDB[roomName].numberOfPlayers) {
       roomTrackerMockDB[roomName].isPlaying = true;
       messageAllInRoom(roomName, JSON.stringify({
@@ -79,12 +79,12 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
   }
 
   const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
-    const IDs = Object.keys(waitingRoomToSocketMap[roomName].IDsToSockets)
-    IDs.forEach(id => {
+    const Ids = Object.keys(waitingRoomToSocketMap[roomName].IdsToSockets)
+    Ids.forEach(id => {
       // intentionally using  loose equality as we may need string to number
       // TODO maybe fix this so it's always a string?
       if (id != idToExclude) {
-        waitingRoomToSocketMap[roomName].IDsToSockets[id].send(message)
+        waitingRoomToSocketMap[roomName].IdsToSockets[id].send(message)
       }
     })
   }
@@ -109,8 +109,8 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
   }
 }
 
-const socketCloseHandler = (roomName, participantID) => {
+const socketCloseHandler = (roomName, participantId) => {
   // todo add the closed logic
   // dev
-  console.log('participantID closed their socket', participantID, roomName)
+  console.log('participantId closed their socket', participantId, roomName)
 }

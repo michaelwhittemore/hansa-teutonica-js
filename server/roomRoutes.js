@@ -65,4 +65,10 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
         }
 
     })
+    app.get('/playerInformation/:roomName/:participantId', (request, response) => {
+        const { roomName, participantId } = request.params
+        console.log('in /playerInformation/:roomName/:participantId')
+        console.log(roomTrackerMockDB[roomName])
+        response.json(roomTrackerMockDB[roomName].playersReadiedObject[participantId])
+    })
 }
