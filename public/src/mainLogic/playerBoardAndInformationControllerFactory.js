@@ -70,7 +70,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             document.getElementById(divId).remove();
         },
         focusOnPlayerBoard(player, playerArray) {
-            this.focusedPlayerId = player.id;
+            this.focusedPlayerIndex = player.index;
             for (let playerId in this.playerBoardsObj) {
                 if (player.id === playerId) {
                     this.playerBoardsObj[playerId].style.display = ''
@@ -93,7 +93,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             // TODO 
             // We should never ask for the array
             
-            let targetPlayerIndex = this.focusedPlayerId + (direction === 'left' ? -1 : 1)
+            let targetPlayerIndex = this.focusedPlayerIndex + (direction === 'left' ? -1 : 1)
             if (targetPlayerIndex < 0) {
                 targetPlayerIndex = playerArray.length - 1
             } else {
