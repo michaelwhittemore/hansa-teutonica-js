@@ -1,8 +1,10 @@
 import { STARTING_BANK, TEST_FREE_TOKENS } from "../helpers/constants.js";
 
 export class Player {
-    constructor(color, name, startingPieces, id) {
+    constructor(params) {
+        const { color, name, startingPieces, id, index } = params
         this.id = id;
+        this.index = index
         this.color = color;
         this.name = name;
         this.supplySquares = startingPieces;

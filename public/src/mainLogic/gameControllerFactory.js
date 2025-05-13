@@ -22,12 +22,18 @@ export const gameControllerFactory = () => {
         },
         createPlayerArrayFromNamesAndColors(playerList) {
             // let's just use turn order for IDs
+            // I think we need both an index AND an id
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
+                const player = new Player({
+                    color: playerList[i][1], 
+                    name: playerList[i][0], 
+                    startingPieces: FIRST_PLAYER_SQUARES + i,
+                    id: `player-${i}`,
+                    index: i
+                });
                 // const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i,
-                //     `player-${i}`);
-                const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i,
-                    i);
+                //     i);
                 this.playerArray.push(player)
             }
             console.log(this.playerArray)
