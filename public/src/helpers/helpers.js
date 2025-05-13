@@ -257,6 +257,16 @@ export const createColorPickerWithOnClick = (onClickFunction) => {
     return colorPicker
 }
 
+export const playerArrayFromSearchParams = (params) => {
+    const playerArray = []
+    for (let i = 0; i< params.get('playerNumber'); i++){
+        const name = params.get(`playerName-${i}`)
+        const color = params.get(`playerColor-${i}`)
+        playerArray.push([name, color])
+    }
+    return playerArray
+}
+
 // TEST, DELETE THIS TODO
 const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')

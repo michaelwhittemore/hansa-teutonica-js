@@ -108,7 +108,7 @@ const startGame = () => {
     // dev
     // HERE!
 
-    // "/onlineGame/:roomName?participantID=asdsadas"
+    // "/onlineGame/:roomName?participantID=thisIsAnID"
 
     const url = new URL(document.location.origin);
     url.pathname = `/onlineGame/${roomName}`

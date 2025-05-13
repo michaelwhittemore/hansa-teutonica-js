@@ -23,28 +23,29 @@
         * But we always want the same imports
     * clean up UI for other readied up players - include a background color so that yellow is actually readable
     * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
-    * add the "allReady" message type to waitingRoom and server
-    * Once the "allReady" message occurs need to actually start on the game 
     * need to add a 'get route to the room routes
     * **BEFORE MOVING ON TO IN GAME WS**
         * Switch to a database potentially
         * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
         * Alternatively, can pass the WS into joinedWaitingRoom (actually it might already be there), and then we can add the on-close method there.
-
+1. Let's move the playerArrayFromSearchParams into a helper - this is easy and we don't want it clogging up the main page code
+2. Let's try to see if we can get the room type from the location - we can then do different logic within the main start function
+3. We may want an easier way to test this. Perhaps we start a session with nodemon disabled? - May need to come back to this, it doesn't seem like an actual numbered step
        
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:
             * **HERE!** Need to wait to hear from the server, once the game is full we should then
             redirect to the online tab 
-                * as part of the Ready up methods we check if the length of the readied object is equal to
-                the game size
+                * let's try to break logic for both hotseat and online into the main tab?
+                * I guess in the worst case I can create a method to generate the entire HTML body? and then both can call that function
+                * how are we going to handle online saving?
+                * will need a new mainLogic method for dealing with WS communication
+
             * add chat
             * clean up css and general beautification - maybe should see if I can read anything online for making prettier web pages?
         * Server related to waiting room:
-            * for websocket closed - we may want to do this when the websocket is initially created, we also need to figure out how to know which websocket is being closed. Maybe we can add to the URI when initially making the request to open the websocket?            
-            * need to handle WS closed
-            * need to account for un-readying and leaving the room
+            * need to account for un-readying and leaving the room - we will tie them to the same method I think (although there's a difference between freeing up waiting room space and a player becoming un-ready)
         * Building the server
             * Read up on express best practices and the MDN HTTP docs
             * I will also need to add the data base. NoSQL might be easier? Regardless, that can probably come later

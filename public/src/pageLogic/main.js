@@ -1,4 +1,5 @@
 import { TEST_PLAYERS } from '../helpers/constants.js';
+import { playerArrayFromSearchParams } from '../helpers/helpers.js'
 import { inputHandlerFactory } from '../mainLogic/inputHandlersFactory.js';
 import { gameControllerFactory } from '../mainLogic/gameControllerFactory.js';
 import { turnTrackerControllerFactory } from '../mainLogic/turnTrackerControllerFactory.js';
@@ -15,17 +16,6 @@ inputHandlerFactory()
 playerBoardAndInformationControllerFactory()
 turnTrackerControllerFactory();
 boardControllerFactory();
-
-// TODO this can probably go in the helpers
-const playerArrayFromSearchParams = (params) => {
-    const playerArray = []
-    for (let i = 0; i< params.get('playerNumber'); i++){
-        const name = params.get(`playerName-${i}`)
-        const color = params.get(`playerColor-${i}`)
-        playerArray.push([name, color])
-    }
-    return playerArray
-}
 
 const start = () => {
     window.logicBundle = logicBundle // This is just for testing
