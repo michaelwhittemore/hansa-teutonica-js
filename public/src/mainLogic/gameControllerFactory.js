@@ -523,7 +523,8 @@ export const gameControllerFactory = () => {
             this.bumpInformation.bumpedShape = bumpedShape;
             this.bumpInformation.bumpedLocation = nodeId;
             this.bumpInformation.bumpingPlayer = player;
-            this.bumpInformation.bumpedPlayer = this.playerArray[bumpedPlayerId];
+            // this.bumpInformation.bumpedPlayer = this.playerArray[bumpedPlayerId];
+            this.bumpInformation.bumpedPlayer = this.getPlayerById(bumpedPlayerId);
             this.bumpInformation.freePiece = true;
             this.bumpInformation.circlesToPlace = circlesToPlace;
             this.bumpInformation.squaresToPlace = squaresToPlace;
@@ -1323,11 +1324,12 @@ export const gameControllerFactory = () => {
                 city.openSpotIndex = 0;
                 // looks like we make assumptions about the openSpotIndex
                 city.occupants.forEach(id => {
-                    logicBundle.boardController.addPieceToCity(city, this.playerArray[id].color)
+                    // here! todo
+                    logicBundle.boardController.addPieceToCity(city, this.getPlayerById(id).color)
                     city.openSpotIndex++;
                 })
                 city.bonusSpotOccupantArray.forEach((idAndShape, index) => {
-                    logicBundle.boardController.addBonusPieceToCity(city, this.playerArray[idAndShape[0]].color,
+                    logicBundle.boardController.addBonusPieceToCity(city, this.getPlayerById(idAndShape[0]).color,
                         idAndShape[1], index)
                 })
             })
