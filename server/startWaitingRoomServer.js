@@ -10,16 +10,10 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       messageFromClientHandler(stringData, ws)
       console.log(`received data:${stringData}`);
     });
-    // TODO, handle the onclose event
-    ws.on('close', (event) => {
-      console.log('closed a websocket')
-      console.log(event)
-    })
   });
 
-  // --------------- Internal room WS APIs---------------------- 
-  // Need to add onClose methods
   const waitingRoomToSocketMap = {}
+
   const joinedWaitingRoom = (socket, roomName) => {
     console.log(`Within joinedWaitingRoom of ${roomName}`)
     if (!waitingRoomToSocketMap[roomName]) {
@@ -45,6 +39,10 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
       type: 'totalParticipants',
       totalParticipants: Object.keys(waitingRoomObject.IDsToSockets).length
     }))
+
+    socket.on('close', ()=> {
+      socketCloseHandler(roomName, participantID)
+    })
   }
 
   const playerReadiedUp = (parsedData) => {
@@ -109,4 +107,10 @@ export const startWaitingRoomServer = (roomTrackerMockDB) => {
     }
 
   }
+}
+
+const socketCloseHandler = (roomName, participantID) => {
+  // todo add the closed logic
+  // dev
+  console.log('participantID closed their socket', participantID, roomName)
 }

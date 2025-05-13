@@ -15,6 +15,12 @@
 
 # TODOs #
 * 5/12
+    * Need to give some serious thought to how to handle the differences in hotseat and online play
+        * Maybe we start by just sending a simple HTMl file
+        * The crux of the problem is that we really want to limit the amount of copyPasta between the two
+        * I think it would make sense to have "main" serve both hotseat and online
+        * we should have different start methods depending on the type of the game
+        * But we always want the same imports
     * clean up UI for other readied up players - include a background color so that yellow is actually readable
     * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
     * add the "allReady" message type to waitingRoom and server
