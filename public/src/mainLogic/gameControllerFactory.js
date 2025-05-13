@@ -955,12 +955,12 @@ export const gameControllerFactory = () => {
             const winnerArray = []
             for (let key in controlObj) {
                 if (controlObj[key] === maxPieces) {
-                    winnerArray.push(parseInt(key, 10))
+                    winnerArray.push(key)
                 }
             }
             for (let i = city.occupants.length - 1; i >= 0; i--) {
                 if (winnerArray.includes(city.occupants[i])) {
-                    return this.playerArray[city.occupants[i]]
+                    return this.getPlayerById(city.occupants[i]);
                 }
             }
             console.error('We should never reach here')
