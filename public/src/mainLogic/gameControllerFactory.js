@@ -1,5 +1,6 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
+import { webSocketControllerFactory } from "./webSocketControllerFactory.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
     IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
@@ -16,7 +17,7 @@ export const gameControllerFactory = () => {
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
-        initializeOnlineGame(playerList) {
+        initializeOnlineGame(playerList, roomName, participantId) {
             // here! 
             // dev
             this.playerArray = []
@@ -31,7 +32,8 @@ export const gameControllerFactory = () => {
             }
             // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
             // we can start with the websocket based controller
-            this.initializeCitiesAndState(); // delete this
+            // this.initializeCitiesAndState(); // delete this
+            this.webSocketController = webSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {
             // let's just use turn order for IDs (change this to UUIDs in the future)

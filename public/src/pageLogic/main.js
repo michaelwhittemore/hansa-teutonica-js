@@ -92,12 +92,8 @@ const startOnline = async (roomName) => {
         return;
     }
     console.log(playerArray)
-    // now we should see if we can populate the board
-    // Currently the method expects an array of arrays, not an array of objects 
-    // which is causing the bugged behavior
-    // I think we shouldn't change the input, instead we should change the method to account for 
-    // online stuff
-    gameController.initializeOnlineGame(playerArray)
+
+    gameController.initializeOnlineGame(playerArray, roomName, participantId)
 }
 
 const start = () => {

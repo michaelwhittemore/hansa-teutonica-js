@@ -15,8 +15,9 @@
 
 # TODOs #
 * 5/14
-* Need to work on processing the player ready object into the correct form. 
-* Want to be able to run a hotseat game off the players storied in the readiedPlayers in the server
+    * Now that we're loading in the players we need to establish a websocket connection with the server 
+    * I think this should be in it's own module. 
+    * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
 
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
