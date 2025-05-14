@@ -14,37 +14,19 @@
 * Need to add installation instructions to the read me
 
 # TODOs #
-* 5/12
-    * Need to give some serious thought to how to handle the differences in hotseat and online play
-        * Maybe we start by just sending a simple HTMl file
-        * The crux of the problem is that we really want to limit the amount of copyPasta between the two
-        * I think it would make sense to have "main" serve both hotseat and online
-        * we should have different start methods depending on the type of the game
-        * But we always want the same imports
-    * clean up UI for other readied up players - include a background color so that yellow is actually readable
-    * maybe as a work around for the ugly player ID I can append a string? No comparison issue in that case at least
-    * need to add a 'get route to the room routes
-    * **BEFORE MOVING ON TO IN GAME WS**
-        * Switch to a database potentially
-        * **IMPORTANT** server maybe be able to track clients, this would make ids much easier https://github.com/websockets/ws/blob/HEAD/doc/ws.md#serverclients
-        * Alternatively, can pass the WS into joinedWaitingRoom (actually it might already be there), and then we can add the on-close method there.
-1. Let's move the playerArrayFromSearchParams into a helper - this is easy and we don't want it clogging up the main page code
-2. Let's try to see if we can get the room type from the location - we can then do different logic within the main start function
-3. We may want an easier way to test this. Perhaps we start a session with nodemon disabled? - May need to come back to this, it doesn't seem like an actual numbered step
-       **IMPORTANT** anytime we accessed playerArray with an id, we need to change it to use a getter
+* 5/14
+* Need to work on processing the player ready object into the correct form. 
+* Want to be able to run a hotseat game off the players storied in the readiedPlayers in the server
 
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:
-            * **HERE!** Need to wait to hear from the server, once the game is full we should then
-            redirect to the online tab
             * It might make sense to process all the players into new object when starting up the game (i.e. when everyone is readied up and we're on the server side)
             * Thoughts for tackling breaking into the main game logic:
                 * let's try to break logic for both hotseat and online into the main tab?
                 * I guess in the worst case I can create a method to generate the entire HTML body? and then both can call that function
                 * how are we going to handle online saving?
                 * will need a new mainLogic method for dealing with WS communication
-
             * add chat
             * clean up css and general beautification - maybe should see if I can read anything online for making prettier web pages?
         * Server related to waiting room:

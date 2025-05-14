@@ -13,15 +13,28 @@ import {
 export const gameControllerFactory = () => {
     const gameController = {
         initializeGameStateAndUI(playerList) {
-            console.log(playerList)
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
-        initializeOnlineGame(playerArray) {
-            console.log(playerArray)
+        initializeOnlineGame(playerList) {
+            // here! 
+            // dev
+            this.playerArray = []
+            for(let i = 0; i < playerList.length; i++){
+                this.playerArray.push(new Player({
+                    color: playerList[i].playerColor, 
+                    name: playerList[i].playerName, 
+                    startingPieces: FIRST_PLAYER_SQUARES + i,
+                    id: playerList[i].participantId,
+                    index: i
+                }))
+            }
+            // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
+            // we can start with the websocket based controller
+            this.initializeCitiesAndState(); // delete this
         },
         createPlayerArrayFromNamesAndColors(playerList) {
-            // let's just use turn order for IDs
+            // let's just use turn order for IDs (change this to UUIDs in the future)
             // I think we need both an index AND an id
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
