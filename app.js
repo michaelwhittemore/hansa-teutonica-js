@@ -58,7 +58,7 @@ roomTrackerMockDB['testRoom1'] = {
     }
   }
 }
-//uW2d8XHHZn6SPb3vTak3uW
+
 // Will need a route to clear the room from storage
 setUpRoomRoutes(app, roomTrackerMockDB)
 startWaitingRoomWSS(roomTrackerMockDB);

@@ -106,10 +106,6 @@ const readyUp = () => {
 
 const startGame = () => {
     // dev
-    // HERE!
-
-    // "/onlineGame/:roomName?participantId=thisIsAnID"
-
     const url = new URL(document.location.origin);
     url.pathname = `/onlineGame/${roomName}`
     url.searchParams.append('participantId', participantId)

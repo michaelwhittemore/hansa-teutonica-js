@@ -139,7 +139,7 @@ export const gameControllerFactory = () => {
             })
         },
         getActivePlayer() {
-            console.error('THIS METHOD IS FUBAR')
+            // This works because we're using the index of the player
             return this.playerArray[this.currentTurn % this.playerArray.length]
         },
         getPlayerById(id) {
@@ -898,7 +898,8 @@ export const gameControllerFactory = () => {
                 logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
                 player.supplySquares++
             }
-            // let's us know that an upgrade was validated and occurred
+            logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player);
+            // lets us know that an upgrade was validated and occurred
             return true
         },
         checkIfPlayerControlsARoute(playerId, cityName) {
@@ -1095,7 +1096,6 @@ export const gameControllerFactory = () => {
                     return
                 }
                 playerId = player.id;
-
                 gameController.performUnlock(player, upgradeType)
                 gameController.finishTokenUsage(player, 'freeUpgrade')
             },
@@ -1324,7 +1324,6 @@ export const gameControllerFactory = () => {
                 city.openSpotIndex = 0;
                 // looks like we make assumptions about the openSpotIndex
                 city.occupants.forEach(id => {
-                    // here! todo
                     logicBundle.boardController.addPieceToCity(city, this.getPlayerById(id).color)
                     city.openSpotIndex++;
                 })
