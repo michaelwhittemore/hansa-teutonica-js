@@ -1,7 +1,7 @@
 import express, { response } from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { startWaitingRoomWSS } from "./server/startWaitingRoomWSS.js";
+import { startWebSocketServer } from "./server/startWebSocketServer.js";
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -61,7 +61,7 @@ roomTrackerMockDB['testRoom1'] = {
 
 // Will need a route to clear the room from storage
 setUpRoomRoutes(app, roomTrackerMockDB)
-startWaitingRoomWSS(roomTrackerMockDB);
+startWebSocketServer(roomTrackerMockDB);
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);

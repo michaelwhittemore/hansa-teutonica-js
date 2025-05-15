@@ -1,10 +1,16 @@
 import { WebSocketServer } from 'ws';
 import shortUUID from 'short-uuid';
 
-export const startWaitingRoomWSS = (roomTrackerMockDB) => {
+export const startWebSocketServer = (roomTrackerMockDB) => {
   const wss = new WebSocketServer({ port: 8080 });
 
-  wss.on('connection', (ws) => {
+  wss.on('connection', (ws, request) => {
+    console.log(request.url)
+    if (request.url === '/waitingRoom'){
+      console.log('Opened a waiting room WS')
+    }
+    // here!
+    // we can break 
     ws.on('message', (data) => {
       const stringData = data.toString()
       messageFromClientHandler(stringData, ws)
@@ -107,10 +113,12 @@ export const startWaitingRoomWSS = (roomTrackerMockDB) => {
     }
 
   }
+
+  const socketCloseHandler = (roomName, participantId) => {
+    // todo add the closed logic
+    // dev
+    console.log('participantId closed their socket', participantId, roomName)
+  }
 }
 
-const socketCloseHandler = (roomName, participantId) => {
-  // todo add the closed logic
-  // dev
-  console.log('participantId closed their socket', participantId, roomName)
-}
+

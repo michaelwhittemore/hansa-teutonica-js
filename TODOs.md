@@ -19,6 +19,10 @@
     * I think this should be in it's own module. 
     * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
 
+    1. Rename the WSS waiting room to make it clear it's agnostic
+    2. Move the logic for waitingRoom into it's own file
+    3. Import the waitingRoomSocket and and gameSocket into the WSS file
+
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:

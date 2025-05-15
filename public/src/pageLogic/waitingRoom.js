@@ -160,7 +160,8 @@ const togglePlayerReadiedUI = (isReadied) => {
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
-    const url = `ws://${window.location.hostname}:8080`
+    // dev - I don't think we need to do anything here
+    const url = `ws://${window.location.hostname}:8080/waitingRoom`
     socket = new WebSocket(url); // exposing socket for other methods
     socket.onopen = () => {
         sendSocketMessage({
