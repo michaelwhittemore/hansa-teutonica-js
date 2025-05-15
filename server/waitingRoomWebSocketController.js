@@ -74,9 +74,7 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
     const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
         const Ids = Object.keys(waitingRoomToSocketMap[roomName].IdsToSockets)
         Ids.forEach(id => {
-            // intentionally using  loose equality as we may need string to number
-            // TODO maybe fix this so it's always a string?
-            if (id != idToExclude) {
+            if (id !== idToExclude) {
                 waitingRoomToSocketMap[roomName].IdsToSockets[id].send(message)
             }
         })

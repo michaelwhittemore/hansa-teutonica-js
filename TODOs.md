@@ -1,5 +1,5 @@
 # Play Test Ready Checklist #
-* Map replicates the actual gameboard
+* Map replicates the actual gameboard (i.e. has all the same routes and cities)
 * Endgame points are calculated and winners are reported
     * need to check all sources of endgame points
 * Stendal to Arnheim (The east-west route)
@@ -22,6 +22,10 @@
     * We will need to register the socket to the participantId the same way we do as the waiting room
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 
     * change IS_HOTSEAT_MODE - maybe make it a gameController property??
+    1. Let's map participantIds to sockets again (this needs to happen server side)
+    2. Let's change IS_HOTSEAT_MODE to be a property that is set by the gameController - this will require all files to have access to the gameController so maybe tie it to logicBundle instead?
+    3. take a look at where validatePlayerIsActivePlayer is called
+    4. Let's move some of the copy pasta for sockets into helpers
 
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
@@ -41,12 +45,12 @@
         * Will need a different route from hotseat
         * will need it's own main.js
         * can we use the same main.html?
-        * let's rename main.js -> hotseat.js
         * I think we still initialize everything the same way?
 ------
 * waiting room chat
 * maybe allow you to start an online game by simply joining a room?
 * add the ability to cancel the online ready-up 
+* there's a lot of copy paste between the websocket controllers. Maybe I should add some helpers? While I'm at it, maybe give the websocket logic its own folder
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)

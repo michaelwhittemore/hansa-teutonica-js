@@ -22,7 +22,7 @@ export const webSocketControllerFactory = (participantId, roomName) => {
     const socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({
-            type: 'newPlayer',
+            type: 'playerJoinedGame',
             roomName,
             participantId,
         })
