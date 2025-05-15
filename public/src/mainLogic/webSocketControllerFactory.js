@@ -7,6 +7,7 @@
 // I'm pretty sure we shouldn't receive events unless they're valid because otherwise we shouldn't dispatch
 // them in the first place
 // Need a well defined scope for this module. 
+// Should expose methods for the websocket controller so that the game controller may call it
 /**
  * It purely exists to communicate to the websocket
  * It is not responsible for validation
@@ -17,7 +18,7 @@
 
 // We may need additional parameters such as the logController
 export const webSocketControllerFactory = (participantId, roomName) => {
-    const url = `ws://${window.location.hostname}:8080`
+    const url = `ws://${window.location.hostname}:8080/onlineGame`
     const socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({

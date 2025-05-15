@@ -1,6 +1,6 @@
 import shortUUID from 'short-uuid';
 
-export const waitingRoomWebSocketServer = (socket, roomTrackerMockDB, waitingRoomToSocketMap) => {
+export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitingRoomToSocketMap) => {
     socket.on('message', (data) => {
         const stringData = data.toString()
         messageFromClientHandler(stringData, socket)

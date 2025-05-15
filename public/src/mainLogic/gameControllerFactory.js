@@ -33,6 +33,7 @@ export const gameControllerFactory = () => {
             // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
             // we can start with the websocket based controller
             // this.initializeCitiesAndState(); // delete this
+            // here!
             this.webSocketController = webSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {
@@ -1302,6 +1303,7 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
+            // dev
             if (IS_HOTSEAT_MODE) {
                 return activePlayer
             }

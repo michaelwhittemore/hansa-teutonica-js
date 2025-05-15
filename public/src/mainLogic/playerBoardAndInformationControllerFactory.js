@@ -24,7 +24,6 @@ export const playerBoardAndInformationControllerFactory = () => {
             document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
             document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))
 
-
             const collapseButton = document.createElement('button');
             collapseButton.innerText = 'Collapse Player Board';
             collapseButton.className = 'collapseButton';

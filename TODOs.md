@@ -18,15 +18,14 @@
     * Now that we're loading in the players we need to establish a websocket connection with the server 
     * I think this should be in it's own module. 
     * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
-
-    1. Rename the WSS waiting room to make it clear it's agnostic
-    2. Move the logic for waitingRoom into it's own file
-    3. Import the waitingRoomSocket and and gameSocket into the WSS file
+    * Now we need to try some basic commands with the gameWebSocketController. let's start by building out the controller on yhe client side
+    * We will need to register the socket to the participantId the same way we do as the waiting room
+    * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 
+    * change IS_HOTSEAT_MODE - maybe make it a gameController property??
 
     * Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:
-            * It might make sense to process all the players into new object when starting up the game (i.e. when everyone is readied up and we're on the server side)
             * Thoughts for tackling breaking into the main game logic:
                 * let's try to break logic for both hotseat and online into the main tab?
                 * I guess in the worst case I can create a method to generate the entire HTML body? and then both can call that function
