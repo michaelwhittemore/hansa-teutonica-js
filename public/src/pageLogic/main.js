@@ -69,17 +69,7 @@ const startOnline = async (roomName) => {
         console.error('Tried to join a lobby without a participantId')
         return
     }
-    // try {
-    //     const url = window.location.origin + `/playerInformation/${roomName}/${participantId}`;
-    //     console.log(url)
-    //     const response = await fetch(url, {
-    //         method: 'GET',
-    //     });
-    //     responseBody = await response.json();
-    // } catch (err) {
-    //     console.error(err)
-    //     return;
-    // }
+
     try {
         const url = window.location.origin + `/playerInformation/${roomName}`;
         console.log(url)

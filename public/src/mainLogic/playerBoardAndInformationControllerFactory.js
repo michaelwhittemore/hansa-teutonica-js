@@ -18,7 +18,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             if (IS_HOTSEAT_MODE) {
                 currentViewingPlayer = 0
             }
-            // here! this might be broken (need to see how currentViewingPlayer is established)
+            // dev this might be broken (need to see how currentViewingPlayer is established)
             this.focusOnPlayerBoard(playerArray[currentViewingPlayer], playerArray)
             // Need to set the focused player before creating buttons
             document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))

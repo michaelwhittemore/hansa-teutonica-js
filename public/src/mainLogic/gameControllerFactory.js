@@ -18,8 +18,6 @@ export const gameControllerFactory = () => {
             this.initializeCitiesAndState();
         },
         initializeOnlineGame(playerList, roomName, participantId) {
-            // here! 
-            // dev
             this.playerArray = []
             for(let i = 0; i < playerList.length; i++){
                 this.playerArray.push(new Player({

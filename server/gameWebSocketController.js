@@ -36,7 +36,8 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
             }
         }
         const waitingRoomObject = gameRoomToSocketMap[roomName]
-        // const participantId = shortUUID.generate()
         waitingRoomObject.IdsToSockets[participantId] = socket
+        // here! need to inform all other players, maybe we set up the message all method as an imported
+        // helper
     }
 }

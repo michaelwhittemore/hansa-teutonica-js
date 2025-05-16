@@ -31,13 +31,11 @@ export const webSocketControllerFactory = (participantId, roomName) => {
         handleIncomingMessage(event.data);
     };
 
-    console.log(socket)
-
     const sendSocketMessage = (messageObject) => {
         const stringifiedMessage = JSON.stringify(messageObject)
         socket.send(stringifiedMessage)
     }
-    
+
     const handleIncomingMessage = (data) => {
         const parsedData = JSON.parse(data);
         console.log(parsedData)
