@@ -31,9 +31,6 @@ app.get("/waitingRoom", (request, response) => {
   response.sendFile(__dirname + "/public/html/waitingRoom.html")
 });
 app.get("/onlineGame/:roomName", (request, response) => {
-  const { roomName } = request.params
-  console.log('roomName is', roomName)
-  // response.send('hello and welcome to ' + roomName)
   response.sendFile(__dirname + "/public/html/main.html")
 
 })

@@ -17,15 +17,25 @@
 * 5/16
     * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
     * Now we need to try some basic commands with the gameWebSocketController. let's start by building out the controller on yhe client side
-    * We will need to register the socket to the participantId the same way we do as the waiting room
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 
     * change IS_HOTSEAT_MODE - maybe make it a gameController property??
     1. ~~Let's map participantIds to sockets again (this needs to happen server side)~~
     2. Let's change IS_HOTSEAT_MODE to be a property that is set by the gameController - this will require all files to have access to the gameController so maybe tie it to logicBundle instead?
     3. take a look at where validatePlayerIsActivePlayer is called
-    4. Let's move some of the copy pasta for sockets into helpers - maybe only the stringification and register to a data base one?
+    4. ~~Let's move some of the copy pasta for sockets into helpers - maybe only the stringification and register to a data base one?~~
+    5. Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
+-------------------
+    
+# Test basic online gameplay # 
+1. Have the lengths for both participants for testing sake (from the prebuilt room)
+2. Join for each player (we can deal with the duplicate player problem later)
+3. Try to place a piece as the active player
+4. See that we get a message server side
+5. Try the same as the inactive player, hopefully observe a failure on the client side
 
-    * Online play:
+
+
+* Online play:
         * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
         * Waiting Room:
             * Thoughts for tackling breaking into the main game logic:

@@ -30,8 +30,11 @@ export const gameControllerFactory = () => {
             }
             // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
             // we can start with the websocket based controller
-            // this.initializeCitiesAndState(); // delete this
+            this.initializeCitiesAndState(); // delete this
+            // **IMPORTANT** need to use a common random seed or something for setting the tokens
+            // TODO - if not random seed, perhaps the server calculates this?
             // here!
+            // It's possible that the webSocketController should exists elsewhere?
             this.webSocketController = webSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {

@@ -75,8 +75,6 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
         Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).forEach((key) => {
             playerArray.push(roomTrackerMockDB[roomName].playersReadiedObject[key])
         })
-        console.log(playerArray)
-        // this may cause an error due to json, may need to stringify
         response.json(playerArray)
     })
 }
