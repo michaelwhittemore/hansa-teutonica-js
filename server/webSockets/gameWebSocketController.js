@@ -15,7 +15,7 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
     const messageFromClientHandler = (messageString, socket) => {
         const parsedData = JSON.parse(messageString)
         switch (parsedData.type) {
-            // here! need to handle the case of a new particpant (and their new socket)
+            // here! need to handle the case of a new participant (and their new socket)
             case 'playerJoinedGame':
                 playerJoinedGameHandler(parsedData);
                 // maybe we alert everyone else? and they log it?
@@ -29,14 +29,14 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
     const playerJoinedGameHandler = (parsedData) => {
         const { participantId, roomName } = parsedData
         console.log('playerJoinedGameHandler')
-        // dev, use gameRoomToSocketMap on this
         if (!gameRoomToSocketMap[roomName]) {
             gameRoomToSocketMap[roomName] = {
                 IdsToSockets: {}
             }
         }
-        const waitingRoomObject = gameRoomToSocketMap[roomName]
-        waitingRoomObject.IdsToSockets[participantId] = socket
+        gameRoomToSocketMap[roomName].IdsToSockets[participantId] = socket;
+        // const waitingRoomObject = gameRoomToSocketMap[roomName]
+        // waitingRoomObject.IdsToSockets[participantId] = socket
         // here! need to inform all other players, maybe we set up the message all method as an imported
         // helper
     }

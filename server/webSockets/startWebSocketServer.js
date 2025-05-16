@@ -10,9 +10,6 @@ export const startWebSocketServer = (roomTrackerMockDB) => {
     if (request.url === '/waitingRoom') {
       waitingRoomWebSocketController(ws, roomTrackerMockDB, waitingRoomToSocketMap)
     } else if (request.url === '/onlineGame') {
-      // dev 
-      // need to figure out if the gameWebSocketController actually needs access to the roomTrackerMockDB
-      // I assume it does so that the game can be ended and cleared at the very least
       gameWebSocketController(ws, roomTrackerMockDB, gameRoomToSocketMap)
     } else {
       console.error(`Unknown WebSocket Path: ${request.url}`)

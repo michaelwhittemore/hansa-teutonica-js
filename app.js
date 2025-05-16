@@ -1,7 +1,7 @@
 import express, { response } from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { startWebSocketServer } from "./server/startWebSocketServer.js";
+import { startWebSocketServer } from "./server/webSockets/startWebSocketServer.js";
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);

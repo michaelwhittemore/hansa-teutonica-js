@@ -1,6 +1,8 @@
 import shortUUID from 'short-uuid';
+import { messageAllInRoomFactory } from './webSocketHelpers.js';
 
 export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitingRoomToSocketMap) => {
+    const messageAllInRoom = messageAllInRoomFactory(waitingRoomToSocketMap)
     socket.on('message', (data) => {
         const stringData = data.toString()
         messageFromClientHandler(stringData, socket)
@@ -9,14 +11,15 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
 
     const joinedWaitingRoom = (socket, roomName) => {
         console.log(`Within joinedWaitingRoom of ${roomName}`)
+        // dev - this can also be added to a helper
         if (!waitingRoomToSocketMap[roomName]) {
             waitingRoomToSocketMap[roomName] = {
                 IdsToSockets: {}
             }
         }
-        const waitingRoomObject = waitingRoomToSocketMap[roomName]
+        const individualWaitingRoomObject = waitingRoomToSocketMap[roomName]
         const participantId = shortUUID.generate()
-        waitingRoomObject.IdsToSockets[participantId] = socket
+        individualWaitingRoomObject.IdsToSockets[participantId] = socket
         socket.send(JSON.stringify({
             type: 'participantId',
             participantId
@@ -28,10 +31,10 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
             }))
         }
 
-        messageAllInRoom(roomName, JSON.stringify({
+        messageAllInRoom(roomName, {
             type: 'totalParticipants',
-            totalParticipants: Object.keys(waitingRoomObject.IdsToSockets).length
-        }))
+            totalParticipants: Object.keys(individualWaitingRoomObject.IdsToSockets).length
+        })
 
         socket.on('close', () => {
             socketCloseHandler(roomName, participantId)
@@ -51,7 +54,7 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
             participantId, // not sure if we need this (maybe for removing in the future?)
         }
 
-        messageAllInRoom(roomName, JSON.stringify({
+        messageAllInRoom(roomName, {
             type: 'playersReadied',
             playersReadiedObject: {
                 [participantId]: {
@@ -60,24 +63,15 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
                     participantId
                 }
             }
+        }, participantId)
 
-        }), participantId)
         if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length === roomTrackerMockDB[roomName].numberOfPlayers) {
             roomTrackerMockDB[roomName].isPlaying = true;
-            messageAllInRoom(roomName, JSON.stringify({
+            messageAllInRoom(roomName, {
                 type: 'allReady',
-            }))
+            })
         }
 
-    }
-
-    const messageAllInRoom = (roomName, message, idToExclude = undefined) => {
-        const Ids = Object.keys(waitingRoomToSocketMap[roomName].IdsToSockets)
-        Ids.forEach(id => {
-            if (id !== idToExclude) {
-                waitingRoomToSocketMap[roomName].IdsToSockets[id].send(message)
-            }
-        })
     }
 
     const messageFromClientHandler = (messageString, socket) => {
