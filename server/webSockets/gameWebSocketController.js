@@ -24,6 +24,7 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
                 console.log(parsedData.actionType)
                 console.log(parsedData.actionDetails)
                 // here!
+                // need to send this to all other players
                 break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)

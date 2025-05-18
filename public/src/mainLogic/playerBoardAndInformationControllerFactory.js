@@ -15,15 +15,14 @@ export const playerBoardAndInformationControllerFactory = () => {
             })
 
             let currentViewingPlayer;
-            if (logicBundle.sessionInfo.isHotSeatMode) {
-                currentViewingPlayer = 0
+            if (logicBundle.sessionInfo.isHotseatMode) {
+                currentViewingPlayer = playerArray[0]
             } else {
-                // dev
-                // todo, make sure the correct player is view
-                currentViewingPlayer = 0
+                // TODO this may be a separation of concern violation by allowing the inputHandler to 
+                // have access to the game controller
+                currentViewingPlayer = logicBundle.gameController.getPlayerById(logicBundle.sessionInfo.participantId)
             }
-            // dev this might be broken (need to see how currentViewingPlayer is established)
-            this.focusOnPlayerBoard(playerArray[currentViewingPlayer], playerArray)
+            this.focusOnPlayerBoard(currentViewingPlayer, playerArray)
             // Need to set the focused player before creating buttons
             document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
             document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))

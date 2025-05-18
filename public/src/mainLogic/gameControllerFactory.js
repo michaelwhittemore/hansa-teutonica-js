@@ -14,12 +14,12 @@ import {
 export const gameControllerFactory = () => {
     const gameController = {
         initializeHotseatGame(playerList) {
-            logicBundle.sessionInfo.isHotSeatMode = true;
+            logicBundle.sessionInfo.isHotseatMode = true;
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
         initializeOnlineGame(playerList, roomName, participantId) {
-            logicBundle.sessionInfo.isHotSeatMode = false;
+            logicBundle.sessionInfo.isHotseatMode = false;
             logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
@@ -178,7 +178,7 @@ export const gameControllerFactory = () => {
             this.tokenUsageInformation = {}
             this.currentTurn++;
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (logicBundle.sessionInfo.isHotSeatMode) {
+            if (logicBundle.sessionInfo.isHotseatMode) {
                 // This is fine, don't need to focus on other players
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
@@ -328,7 +328,7 @@ export const gameControllerFactory = () => {
             // the input handlers) and also online
             // it might make sense to move the IS_HOTSEAT check out of validatePlayerIsActivePlayer
             // in that case
-            if (!playerId && !logicBundle.sessionInfo.isHotSeatMode) {
+            if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
                 console.log('This action is UI driven and online only')
                 playerId = logicBundle.sessionInfo.participantId
             }
@@ -358,7 +358,7 @@ export const gameControllerFactory = () => {
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
             // dev
-            if (!logicBundle.sessionInfo.isHotSeatMode) {
+            if (!logicBundle.sessionInfo.isHotseatMode) {
                 this.webSocketController.playerTookAction('placeWorkerOnNode', {
                     playerId,
                     nodeId,
@@ -1327,7 +1327,7 @@ export const gameControllerFactory = () => {
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             // dev
-            if (logicBundle.sessionInfo.isHotSeatMode) {
+            if (logicBundle.sessionInfo.isHotseatMode) {
                 return activePlayer
             }
             if (playerId !== activePlayer.id) {
@@ -1391,7 +1391,7 @@ export const gameControllerFactory = () => {
             })
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (logicBundle.sessionInfo.isHotSeatMode) {
+            if (logicBundle.sessionInfo.isHotseatMode) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             // Player board

@@ -41,7 +41,7 @@ export const logControllerFactory = () => {
             }
             // TODO, should we consider involving the game controller? I don't know if the log should be accessing
             // the memory by itself
-            if (logicBundle.sessionInfo.isHotSeatMode){
+            if (logicBundle.sessionInfo.isHotseatMode){
                 window.localStorage.history = document.getElementById('gameLog').innerHTML;
             }
             

@@ -91,7 +91,7 @@ export const inputHandlerFactory = () => {
                 inputHandlers.updateActionInfoText('Select a city to capture');
             } else {
                 let playerId = undefined
-                if (!logicBundle.sessionInfo.isHotSeatMode) {
+                if (!logicBundle.sessionInfo.isHotseatMode) {
                     // get the player name from sessionStorage
                 }
                 logicBundle.gameController.captureCity(inputHandlers.selectedLocation, playerId)
@@ -100,7 +100,7 @@ export const inputHandlerFactory = () => {
         },
         handleResupplyButton() {
             let playerId = undefined
-            if (!logicBundle.sessionInfo.isHotSeatMode) {
+            if (!logicBundle.sessionInfo.isHotseatMode) {
                 // get the player name from sessionStorage
             }
             logicBundle.gameController.resupply(playerId);

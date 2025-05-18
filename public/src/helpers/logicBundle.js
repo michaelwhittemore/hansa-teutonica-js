@@ -3,6 +3,6 @@ export const logicBundle = {
     sessionInfo: {
         participantId: undefined,
         roomName: undefined,
-        isHotSeatMode: undefined,
+        isHotseatMode: undefined,
     }
 };
