@@ -14,13 +14,13 @@ import {
 export const gameControllerFactory = () => {
     const gameController = {
         initializeHotseatGame(playerList) {
-            logicBundle.IS_HOTSEAT_MODE = true;
+            logicBundle.sessionInfo.isHotSeatMode = true;
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
         initializeOnlineGame(playerList, roomName, participantId) {
-            logicBundle.IS_HOTSEAT_MODE = false;
-            logicBundle.participantId = participantId; // This is who is actually controlling this client
+            logicBundle.sessionInfo.isHotSeatMode = false;
+            logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
                 this.playerArray.push(new Player({
@@ -178,7 +178,7 @@ export const gameControllerFactory = () => {
             this.tokenUsageInformation = {}
             this.currentTurn++;
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (logicBundle.IS_HOTSEAT_MODE) {
+            if (logicBundle.sessionInfo.isHotSeatMode) {
                 // This is fine, don't need to focus on other players
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
@@ -328,9 +328,9 @@ export const gameControllerFactory = () => {
             // the input handlers) and also online
             // it might make sense to move the IS_HOTSEAT check out of validatePlayerIsActivePlayer
             // in that case
-            if (!playerId && !logicBundle.IS_HOTSEAT_MODE) {
+            if (!playerId && !logicBundle.sessionInfo.isHotSeatMode) {
                 console.log('This action is UI driven and online only')
-                playerId = logicBundle.participantId
+                playerId = logicBundle.sessionInfo.participantId
             }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
 
@@ -357,14 +357,15 @@ export const gameControllerFactory = () => {
             player[playerShapeKey] -= 1;
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
-            // here! let's try to use the messaging now
             // dev
-            // what details do we need to send? I think just nodeId, shape, playerId, and action type
-            this.webSocketController.playerTookAction('placeWorkerOnNode', {
-                playerId,
-                nodeId,
-                shape,
-            })
+            if (!logicBundle.sessionInfo.isHotSeatMode) {
+                this.webSocketController.playerTookAction('placeWorkerOnNode', {
+                    playerId,
+                    nodeId,
+                    shape,
+                })
+            }
+
             this.resolveAction(player)
         },
         placePieceOnNode(nodeId, shape, player) {
@@ -1326,14 +1327,14 @@ export const gameControllerFactory = () => {
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             // dev
-            if (logicBundle.IS_HOTSEAT_MODE) {
+            if (logicBundle.sessionInfo.isHotSeatMode) {
                 return activePlayer
             }
             if (playerId !== activePlayer.id) {
                 console.warn('Player attempting to take an off-turn action')
                 logicBundle.inputHandlers.warnInvalidAction('It\'s not your turn.')
                 return false;
-            }  else {
+            } else {
                 return activePlayer
             }
         },
@@ -1390,7 +1391,7 @@ export const gameControllerFactory = () => {
             })
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (logicBundle.IS_HOTSEAT_MODE) {
+            if (logicBundle.sessionInfo.isHotSeatMode) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             // Player board

@@ -23,6 +23,7 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
             case 'playerAction':
                 console.log(parsedData.actionType)
                 console.log(parsedData.actionDetails)
+                // here!
                 break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)
@@ -38,9 +39,7 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
             }
         }
         gameRoomToSocketMap[roomName].IdsToSockets[participantId] = socket;
-        // const waitingRoomObject = gameRoomToSocketMap[roomName]
-        // waitingRoomObject.IdsToSockets[participantId] = socket
-        // here! need to inform all other players, maybe we set up the message all method as an imported
+        // dev TODO need to inform all other players, maybe we set up the message all method as an imported
         // helper
     }
 }

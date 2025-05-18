@@ -18,9 +18,9 @@
     * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
     * Now we need to try some basic commands with the gameWebSocketController. let's start by building out the controller on yhe client side
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
-    * change IS_HOTSEAT_MODE - maybe make it a gameController property??
+    * change isHotSeatMode - maybe make it a gameController property??
     1. ~~Let's map participantIds to sockets again (this needs to happen server side)~~
-    2. Let's change IS_HOTSEAT_MODE to be a property that is set by the gameController - this will require all files to have access to the gameController so maybe tie it to logicBundle instead?
+    2. Let's change isHotSeatMode to be a property that is set by the gameController - this will require all files to have access to the gameController so maybe tie it to logicBundle instead?
     3. take a look at where validatePlayerIsActivePlayer is called
     4. ~~Let's move some of the copy pasta for sockets into helpers - maybe only the stringification and register to a data base one?~~
     5. Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
@@ -29,14 +29,15 @@
 # Test basic online gameplay # 
 1. Have the links for both participants for testing sake (from the prebuilt room)
 2. Join for each player (we can deal with the duplicate player problem later)
-3.  Need to deal with IS_HOTSEAT_MODE and validatePlayerIsActivePlayer first
+3.  Need to deal with isHotSeatMode and validatePlayerIsActivePlayer first
 3. Now let's see why placing the piece is broken
 3. Try to place a piece as the active player - need to find where in the game controller factory that occurs - placeWorkerOnNodeAction
 4. **HERE!** time to get started on actual WS messaging for game actions!
 4. See that we get a message server side
 5. Try the same as the inactive player, hopefully observe a failure on the client side
 6. It might be worth adding a temporary way of communicating which player "YOU" are 
-7. Need to look at everywhere where I have a conditional involving IS_HOTSEAT_MODE. Many just don't do anything if IS_HOTSEAT_MODE is false
+7. Need to look at everywhere where I have a conditional involving isHotSeatMode. Many just don't do anything if isHotSeatMode is false
+8. make sure that currentViewingPlayer is fixed, should start looking at different ones for each online palyer and also rename it to make it clear it's either an index or id
 **IMPORTANT** it looks like playerId is undefined in many gameController methods - placeWorkerOnNodeAction for example
 // should add a sessionInfo to the logic bundle - stuff like roomName, online vs hotseat, and player ID
 // Would be nice to add "you" to the player's name in the turn tracker

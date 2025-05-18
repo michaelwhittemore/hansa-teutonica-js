@@ -15,11 +15,11 @@ export const playerBoardAndInformationControllerFactory = () => {
             })
 
             let currentViewingPlayer;
-            if (logicBundle.IS_HOTSEAT_MODE) {
+            if (logicBundle.sessionInfo.isHotSeatMode) {
                 currentViewingPlayer = 0
             } else {
-                // here!
-                // todo, where is the particpant to player stored??
+                // dev
+                // todo, make sure the correct player is view
                 currentViewingPlayer = 0
             }
             // dev this might be broken (need to see how currentViewingPlayer is established)
