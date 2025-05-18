@@ -34,7 +34,9 @@
 4. See that we get a message server side
 5. Try the same as the inactive player, hopefully observe a failure on the client side
 6. It might be worth adding a temporary way of communicating which player "YOU" are 
-let's figure out where the information on which player you are is stored
+7. Need to look at everywhere where I have a conditional involving IS_HOTSEAT_MODE. Many just don't do anything if IS_HOTSEAT_MODE is false
+**IMPORTANT** it looks like playerId is undefined in many gameController methods - placeWorkerOnNodeAction for example
+// should add a sessionInfo to the logic bundle - stuff like roomname, online vs hotseat, and player ID
 
 
 

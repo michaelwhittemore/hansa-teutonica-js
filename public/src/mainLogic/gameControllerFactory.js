@@ -180,6 +180,7 @@ export const gameControllerFactory = () => {
             this.currentTurn++;
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             if (logicBundle.IS_HOTSEAT_MODE) {
+                // This is fine, don't need to focus on other players
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             lastPlayer.currentActions = lastPlayer.maxActions;
@@ -323,6 +324,18 @@ export const gameControllerFactory = () => {
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId) {
             // here! let's try out websocket messaging
+            // dev - My thoughts are that if playerId is defined it's coming from the API controller
+            // if it's hotseat it doesn't matter 
+            // The case where we need to check is where it's UI driven (i.e. being called by 
+            // the input handlers) and also online
+            // it might make sense to move the IS_HOTSEAT check out of validatePlayerIsActivePlayer
+            // in that case
+            if (!playerId && !logicBundle.IS_HOTSEAT_MODE){
+                console.log('This action is UI driven and online only')
+                // 1. Grab the playerId from the logicBundle 
+                playerId = logicBundle.participantId
+                // 2. Pass the Id into validatePlayerIsActivePlayer and then I think everything should work
+            }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -1307,6 +1320,7 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
+            console.log('calling validatePlayerIsActivePlayer with', playerId, activePlayer)
             // dev
             // here! need to do something about the online play
             if (logicBundle.IS_HOTSEAT_MODE) {
