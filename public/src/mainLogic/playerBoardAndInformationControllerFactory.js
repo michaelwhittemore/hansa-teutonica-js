@@ -1,5 +1,5 @@
 import { createDivWithClassAndIdAndStyle, pluralifyText } from "../helpers/helpers.js"
-import { IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES } from "../helpers/constants.js"
+import { TOKEN_READABLE_NAMES } from "../helpers/constants.js"
 import { logicBundle } from "../helpers/logicBundle.js";
 import { unlockActionsToValue, unlockColorsToValue, unlockKeysToValue, unlockMovementToValue, unlockPurseToValue } from "../helpers/playerFieldsMaps.js";
 
@@ -15,7 +15,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             })
 
             let currentViewingPlayer;
-            if (IS_HOTSEAT_MODE) {
+            if (logicBundle.IS_HOTSEAT_MODE) {
                 currentViewingPlayer = 0
             }
             // dev this might be broken (need to see how currentViewingPlayer is established)

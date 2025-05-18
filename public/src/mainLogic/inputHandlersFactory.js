@@ -1,5 +1,5 @@
 import {isShape, pluralifyText} from "../helpers/helpers.js";
-import { IS_HOTSEAT_MODE, BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES } from "../helpers/constants.js";
+import { BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 
 
@@ -91,7 +91,7 @@ export const inputHandlerFactory = () => {
                 inputHandlers.updateActionInfoText('Select a city to capture');
             } else {
                 let playerId = undefined
-                if (!IS_HOTSEAT_MODE) {
+                if (!logicBundle.IS_HOTSEAT_MODE) {
                     // get the player name from sessionStorage
                 }
                 logicBundle.gameController.captureCity(inputHandlers.selectedLocation, playerId)
@@ -100,7 +100,7 @@ export const inputHandlerFactory = () => {
         },
         handleResupplyButton() {
             let playerId = undefined
-            if (!IS_HOTSEAT_MODE) {
+            if (!logicBundle.IS_HOTSEAT_MODE) {
                 // get the player name from sessionStorage
             }
             logicBundle.gameController.resupply(playerId);

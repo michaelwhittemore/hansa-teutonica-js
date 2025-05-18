@@ -17,7 +17,7 @@
 * 5/16
     * Also remember that we have an IS_ONLINE (or hotseat, can't remember which) constant. This should now be set - maybe it gets set in the main function where we call either startOnline or startHotseat
     * Now we need to try some basic commands with the gameWebSocketController. let's start by building out the controller on yhe client side
-    * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 
+    * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
     * change IS_HOTSEAT_MODE - maybe make it a gameController property??
     1. ~~Let's map participantIds to sockets again (this needs to happen server side)~~
     2. Let's change IS_HOTSEAT_MODE to be a property that is set by the gameController - this will require all files to have access to the gameController so maybe tie it to logicBundle instead?
@@ -27,9 +27,10 @@
 -------------------
     
 # Test basic online gameplay # 
-1. Have the lengths for both participants for testing sake (from the prebuilt room)
+1. Have the links for both participants for testing sake (from the prebuilt room)
 2. Join for each player (we can deal with the duplicate player problem later)
-3. Try to place a piece as the active player
+3. **HERE!** Need to deal with IS_HOTSEAT_MODE and validatePlayerIsActivePlayer first
+3. Try to place a piece as the active player - need to find where in the game controller factory that occurs - placeWorkerOnNodeAction
 4. See that we get a message server side
 5. Try the same as the inactive player, hopefully observe a failure on the client side
 

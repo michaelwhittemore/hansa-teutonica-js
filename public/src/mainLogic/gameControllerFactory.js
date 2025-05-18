@@ -3,7 +3,7 @@ import { Player } from "./PlayerClass.js";
 import { webSocketControllerFactory } from "./webSocketControllerFactory.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
-    IS_HOTSEAT_MODE, TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
+    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
 } from "../helpers/constants.js";
 import { getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText } from "../helpers/helpers.js";
 import {
@@ -13,11 +13,13 @@ import {
 
 export const gameControllerFactory = () => {
     const gameController = {
-        initializeGameStateAndUI(playerList) {
+        initializeHotseatGame(playerList) {
+            logicBundle.IS_HOTSEAT_MODE = true;
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
         initializeOnlineGame(playerList, roomName, participantId) {
+            logicBundle.IS_HOTSEAT_MODE = false;
             this.playerArray = []
             for(let i = 0; i < playerList.length; i++){
                 this.playerArray.push(new Player({
@@ -177,7 +179,7 @@ export const gameControllerFactory = () => {
             this.tokenUsageInformation = {}
             this.currentTurn++;
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (IS_HOTSEAT_MODE) {
+            if (logicBundle.IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             lastPlayer.currentActions = lastPlayer.maxActions;
@@ -320,6 +322,7 @@ export const gameControllerFactory = () => {
             }
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId) {
+            // here! let's try out websocket messaging
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -1305,7 +1308,8 @@ export const gameControllerFactory = () => {
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             // dev
-            if (IS_HOTSEAT_MODE) {
+            // here! need to do something about the online play
+            if (logicBundle.IS_HOTSEAT_MODE) {
                 return activePlayer
             }
             if (playerId !== activePlayer.id) {
@@ -1367,7 +1371,7 @@ export const gameControllerFactory = () => {
             })
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
-            if (IS_HOTSEAT_MODE) {
+            if (logicBundle.IS_HOTSEAT_MODE) {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             // Player board

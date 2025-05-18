@@ -15,7 +15,6 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
     const messageFromClientHandler = (messageString, socket) => {
         const parsedData = JSON.parse(messageString)
         switch (parsedData.type) {
-            // here! need to handle the case of a new participant (and their new socket)
             case 'playerJoinedGame':
                 playerJoinedGameHandler(parsedData);
                 // maybe we alert everyone else? and they log it?

@@ -2,7 +2,6 @@ export const STARTING_BANK = 15; // no clue if this is correct (GAME RULES) - se
 export const FIRST_PLAYER_SQUARES = 6;
 export const TEST_PLAYERS = [['Alice', '#ff0000'], ['Bob', '#0000ff'], ['Claire', '#008000'], ['Phil', '#ff1493']]
 export const BUTTON_LIST = ['place', 'bump', 'resupply', 'capture', 'upgrade', 'token', 'move'];
-export const IS_HOTSEAT_MODE = true;
 export const USE_DEFAULT_CLICK_ACTIONS = true;
 export const AUTO_SCROLL = true;
 export const APPROXIMATE_NODE_OFFSET = 45 / 2;

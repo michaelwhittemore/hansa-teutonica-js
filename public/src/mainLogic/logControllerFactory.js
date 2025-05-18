@@ -1,4 +1,4 @@
-import { AUTO_SCROLL, IS_HOTSEAT_MODE } from "../helpers/constants.js";
+import { AUTO_SCROLL } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 export const logControllerFactory = () => {
     const logController = {
@@ -41,7 +41,7 @@ export const logControllerFactory = () => {
             }
             // TODO, should we consider involving the game controller? I don't know if the log should be accessing
             // the memory by itself
-            if (IS_HOTSEAT_MODE){
+            if (logicBundle.IS_HOTSEAT_MODE){
                 window.localStorage.history = document.getElementById('gameLog').innerHTML;
             }
             
