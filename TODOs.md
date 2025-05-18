@@ -33,6 +33,8 @@
 3. Try to place a piece as the active player - need to find where in the game controller factory that occurs - placeWorkerOnNodeAction
 4. See that we get a message server side
 5. Try the same as the inactive player, hopefully observe a failure on the client side
+6. It might be worth adding a temporary way of communicating which player "YOU" are 
+let's figure out where the information on which player you are is stored
 
 
 

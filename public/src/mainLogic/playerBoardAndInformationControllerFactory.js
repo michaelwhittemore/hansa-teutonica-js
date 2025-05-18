@@ -17,6 +17,10 @@ export const playerBoardAndInformationControllerFactory = () => {
             let currentViewingPlayer;
             if (logicBundle.IS_HOTSEAT_MODE) {
                 currentViewingPlayer = 0
+            } else {
+                // here!
+                // todo, where is the particpant to player stored??
+                currentViewingPlayer = 0
             }
             // dev this might be broken (need to see how currentViewingPlayer is established)
             this.focusOnPlayerBoard(playerArray[currentViewingPlayer], playerArray)

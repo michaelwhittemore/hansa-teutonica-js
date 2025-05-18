@@ -73,7 +73,6 @@ const startOnline = async (roomName) => {
 
     try {
         const url = window.location.origin + `/playerInformation/${roomName}`;
-        console.log(url)
         const response = await fetch(url, {
             method: 'GET',
         });
@@ -82,8 +81,6 @@ const startOnline = async (roomName) => {
         console.error(err)
         return;
     }
-    console.log(playerArray)
-
     gameController.initializeOnlineGame(playerArray, roomName, participantId)
 }
 

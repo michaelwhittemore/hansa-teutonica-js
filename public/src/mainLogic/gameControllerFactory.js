@@ -20,6 +20,7 @@ export const gameControllerFactory = () => {
         },
         initializeOnlineGame(playerList, roomName, participantId) {
             logicBundle.IS_HOTSEAT_MODE = false;
+            logicBundle.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
             for(let i = 0; i < playerList.length; i++){
                 this.playerArray.push(new Player({
@@ -30,6 +31,8 @@ export const gameControllerFactory = () => {
                     index: i
                 }))
             }
+            const controllingPlayer = this.getPlayerById(participantId)
+            console.warn(`You are ${controllingPlayer.name} with an id of ${controllingPlayer.id}`)
             // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
             // we can start with the websocket based controller
             this.initializeCitiesAndState(); // delete this
@@ -51,11 +54,8 @@ export const gameControllerFactory = () => {
                     id: `player-${i}`,
                     index: i
                 });
-                // const player = new Player(playerList[i][1], playerList[i][0], FIRST_PLAYER_SQUARES + i,
-                //     i);
                 this.playerArray.push(player)
             }
-            console.log(this.playerArray)
         },
         initializeCitiesAndState() {
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
