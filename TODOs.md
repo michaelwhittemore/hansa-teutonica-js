@@ -29,14 +29,17 @@
 # Test basic online gameplay # 
 1. Have the links for both participants for testing sake (from the prebuilt room)
 2. Join for each player (we can deal with the duplicate player problem later)
-3. **HERE!** Need to deal with IS_HOTSEAT_MODE and validatePlayerIsActivePlayer first
+3.  Need to deal with IS_HOTSEAT_MODE and validatePlayerIsActivePlayer first
+3. Now let's see why placing the piece is broken
 3. Try to place a piece as the active player - need to find where in the game controller factory that occurs - placeWorkerOnNodeAction
+4. **HERE!** time to get started on actual WS messaging for game actions!
 4. See that we get a message server side
 5. Try the same as the inactive player, hopefully observe a failure on the client side
 6. It might be worth adding a temporary way of communicating which player "YOU" are 
 7. Need to look at everywhere where I have a conditional involving IS_HOTSEAT_MODE. Many just don't do anything if IS_HOTSEAT_MODE is false
 **IMPORTANT** it looks like playerId is undefined in many gameController methods - placeWorkerOnNodeAction for example
-// should add a sessionInfo to the logic bundle - stuff like roomname, online vs hotseat, and player ID
+// should add a sessionInfo to the logic bundle - stuff like roomName, online vs hotseat, and player ID
+// Would be nice to add "you" to the player's name in the turn tracker
 
 
 

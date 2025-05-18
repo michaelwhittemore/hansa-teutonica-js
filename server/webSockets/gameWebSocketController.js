@@ -20,6 +20,10 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
                 // maybe we alert everyone else? and they log it?
                 // dev, need to have a handler, need to map and need to add the onClosed handler
                 break;
+            case 'playerAction':
+                console.log(parsedData.actionType)
+                console.log(parsedData.actionDetails)
+                break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)
         }

@@ -22,10 +22,10 @@ export const gameControllerFactory = () => {
             logicBundle.IS_HOTSEAT_MODE = false;
             logicBundle.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
-            for(let i = 0; i < playerList.length; i++){
+            for (let i = 0; i < playerList.length; i++) {
                 this.playerArray.push(new Player({
-                    color: playerList[i].playerColor, 
-                    name: playerList[i].playerName, 
+                    color: playerList[i].playerColor,
+                    name: playerList[i].playerName,
                     startingPieces: FIRST_PLAYER_SQUARES + i,
                     id: playerList[i].participantId,
                     index: i
@@ -38,7 +38,6 @@ export const gameControllerFactory = () => {
             this.initializeCitiesAndState(); // delete this
             // **IMPORTANT** need to use a common random seed or something for setting the tokens
             // TODO - if not random seed, perhaps the server calculates this?
-            // here!
             // It's possible that the webSocketController should exists elsewhere?
             this.webSocketController = webSocketControllerFactory(participantId, roomName);
         },
@@ -48,8 +47,8 @@ export const gameControllerFactory = () => {
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
                 const player = new Player({
-                    color: playerList[i][1], 
-                    name: playerList[i][0], 
+                    color: playerList[i][1],
+                    name: playerList[i][0],
                     startingPieces: FIRST_PLAYER_SQUARES + i,
                     id: `player-${i}`,
                     index: i
@@ -162,8 +161,8 @@ export const gameControllerFactory = () => {
             return this.playerArray[this.currentTurn % this.playerArray.length]
         },
         getPlayerById(id) {
-            for(let player of this.playerArray){
-                if (player.id === id){
+            for (let player of this.playerArray) {
+                if (player.id === id) {
                     return player
                 }
             }
@@ -323,20 +322,18 @@ export const gameControllerFactory = () => {
             }
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId) {
-            // here! let's try out websocket messaging
             // dev - My thoughts are that if playerId is defined it's coming from the API controller
             // if it's hotseat it doesn't matter 
             // The case where we need to check is where it's UI driven (i.e. being called by 
             // the input handlers) and also online
             // it might make sense to move the IS_HOTSEAT check out of validatePlayerIsActivePlayer
             // in that case
-            if (!playerId && !logicBundle.IS_HOTSEAT_MODE){
+            if (!playerId && !logicBundle.IS_HOTSEAT_MODE) {
                 console.log('This action is UI driven and online only')
-                // 1. Grab the playerId from the logicBundle 
                 playerId = logicBundle.participantId
-                // 2. Pass the Id into validatePlayerIsActivePlayer and then I think everything should work
             }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
+
             if (!player) {
                 return
             }
@@ -360,6 +357,14 @@ export const gameControllerFactory = () => {
             player[playerShapeKey] -= 1;
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
+            // here! let's try to use the messaging now
+            // dev
+            // what details do we need to send? I think just nodeId, shape, playerId, and action type
+            this.webSocketController.playerTookAction('placeWorkerOnNode', {
+                playerId,
+                nodeId,
+                shape,
+            })
             this.resolveAction(player)
         },
         placePieceOnNode(nodeId, shape, player) {
@@ -1320,16 +1325,16 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
-            console.log('calling validatePlayerIsActivePlayer with', playerId, activePlayer)
             // dev
-            // here! need to do something about the online play
             if (logicBundle.IS_HOTSEAT_MODE) {
                 return activePlayer
             }
             if (playerId !== activePlayer.id) {
                 console.warn('Player attempting to take an off-turn action')
-                // TODO warn the inputHandlers API
+                logicBundle.inputHandlers.warnInvalidAction('It\'s not your turn.')
                 return false;
+            }  else {
+                return activePlayer
             }
         },
         saveGame() {

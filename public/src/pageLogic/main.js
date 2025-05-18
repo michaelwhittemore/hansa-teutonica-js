@@ -91,7 +91,6 @@ const start = () => {
         startHotseat()
     } else if (parsedPath[1] === 'onlineGame') {
         startOnline(parsedPath[2])
-        console.log('online with room name', parsedPath[2])
     } else {
         console.error('There is something wrong with the path')
     }

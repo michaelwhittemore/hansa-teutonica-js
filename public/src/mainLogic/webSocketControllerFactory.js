@@ -41,6 +41,14 @@ export const webSocketControllerFactory = (participantId, roomName) => {
         console.log(parsedData)
     }
 
-    const webSocketController = {}
+    const webSocketController = {
+        playerTookAction: (actionType, actionDetails) => {
+            sendSocketMessage({
+                actionType,
+                type: 'playerAction',
+                actionDetails
+            })
+        }
+    }
     return webSocketController;
 }
