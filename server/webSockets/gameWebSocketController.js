@@ -1,3 +1,4 @@
+import { messageAllInRoomFactory } from "./webSocketHelpers.js";
 // TODO - might need a message queuing system in case people get disconnect or don't join fast enough
 // Frankly I'm dreading all the corner cases, it might make sense to see if the WS npm modules has
 // any built in solutions 
@@ -6,6 +7,9 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
     // TODO - do we actually need to p[ass in the socket to our methods here? I think these
     // are created on a per-socket basis can can get the socket from the outer scope. Note that this
     // isn't true if we start using a helper module
+
+    const messageAllInRoom = messageAllInRoomFactory(gameRoomToSocketMap);
+
     socket.on('message', (data) => {
         const stringData = data.toString()
         messageFromClientHandler(stringData, socket)
@@ -25,6 +29,11 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
                 console.log(parsedData.actionDetails)
                 // here!
                 // need to send this to all other players
+                // messageAllInRoom(parsedData.roomName, {
+                //     type: 'testMessage',
+                //     foo: 'bar'
+                // }) // just testing without excluding
+                // // }, parsedData.participantId)
                 break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)

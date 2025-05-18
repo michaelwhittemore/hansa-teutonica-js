@@ -1,6 +1,6 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
-import { webSocketControllerFactory } from "./webSocketControllerFactory.js";
+import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
     TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
@@ -39,7 +39,7 @@ export const gameControllerFactory = () => {
             // **IMPORTANT** need to use a common random seed or something for setting the tokens
             // TODO - if not random seed, perhaps the server calculates this?
             // It's possible that the webSocketController should exists elsewhere?
-            this.webSocketController = webSocketControllerFactory(participantId, roomName);
+            this.webSocketController = clientWebSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {
             // let's just use turn order for IDs (change this to UUIDs in the future)

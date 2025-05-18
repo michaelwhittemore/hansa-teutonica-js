@@ -17,7 +17,7 @@
  */
 
 // We may need additional parameters such as the logController
-export const webSocketControllerFactory = (participantId, roomName) => {
+export const clientWebSocketControllerFactory = (participantId, roomName) => {
     const url = `ws://${window.location.hostname}:8080/onlineGame`
     const socket = new WebSocket(url);
     socket.onopen = () => {
@@ -46,7 +46,8 @@ export const webSocketControllerFactory = (participantId, roomName) => {
             sendSocketMessage({
                 actionType,
                 type: 'playerAction',
-                actionDetails
+                participantId,
+                actionDetails,
             })
         }
     }
