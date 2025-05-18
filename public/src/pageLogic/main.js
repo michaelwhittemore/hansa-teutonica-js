@@ -60,8 +60,7 @@ const startOnline = async (roomName) => {
     // IMPORTANT - we might need to change this, we should be getting the whole player array 
     // We will need it to constructor the UI.
     // We still want to know the participant ID, as we need that to do validation
-
-    // here!
+    // dev
     let playerArray;
     const searchParams = (new URL(location)).searchParams
     const participantId = searchParams.get('participantId');

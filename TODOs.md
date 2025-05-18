@@ -18,7 +18,12 @@
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
     * clean up my todos a bit
     * Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
+    * **HERE!!** handle the incoming message on the clientWebSocketControllerFactory.js side 
 -------------------
+
+
+
+
     
 # Test basic online gameplay # 
 1. Have the links for both participants for testing sake (from the prebuilt room)

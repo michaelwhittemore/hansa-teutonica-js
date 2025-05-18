@@ -39,6 +39,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
     const handleIncomingMessage = (data) => {
         const parsedData = JSON.parse(data);
         console.log(parsedData)
+        // here! need to actually use the game controller 
     }
 
     const webSocketController = {
@@ -48,6 +49,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 type: 'playerAction',
                 participantId,
                 actionDetails,
+                roomName,
             })
         }
     }
