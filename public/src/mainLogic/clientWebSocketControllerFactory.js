@@ -38,8 +38,25 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
 
     const handleIncomingMessage = (data) => {
         const parsedData = JSON.parse(data);
-        console.log(parsedData)
-        // here! need to actually use the game controller 
+        switch (parsedData.type){
+            case 'playerActionTaken':
+                handleActionTaken(parsedData.actionType, parsedData.actionDetails)
+                break;
+            default:
+                console.error('Unknown Message type:', parsedData.type)
+        }
+    }
+
+    const handleActionTaken = (actionType, actionDetails) => {
+        // dev
+        switch (actionType){
+            case 'placeWorkerOnNode':
+                console.log('placeWorkerOnNode')
+                console.log(actionDetails)
+                break;
+            default:
+                console.error('Unknown action type:', actionType)
+        }
     }
 
     const webSocketController = {

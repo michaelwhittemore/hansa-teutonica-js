@@ -29,8 +29,9 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
                 console.log(parsedData)
                 // dev
                 messageAllInRoom(parsedData.roomName, {
-                    type: 'testMessage',
-                    foo: 'bar'
+                    type: 'playerActionTaken',
+                    actionType: parsedData.actionType,
+                    actionDetails: parsedData.actionDetails,
                 }, parsedData.participantId)
                 break;
             default:
