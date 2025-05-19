@@ -5,9 +5,7 @@ import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
     TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
 } from "../helpers/constants.js";
-import {
-    getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText, shuffleArray
-} from "../helpers/helpers.js";
+import { getRouteIdFromNodeId, pluralifyText, shuffleArray } from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
     unlockMovementToValue, unlockKeysToValue, unlockMapMaxValues
@@ -76,14 +74,14 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.bindInputHandlers()
             logicBundle.boardController.initializeUI(this.playerArray);
 
-            const startingTokensArray = STARTING_TOKENS;
+            const startingTokensArray = shuffleArray(STARTING_TOKENS);
             const regularTokensArray = [];
             Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
                 for (let i = 0; i < REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
                     regularTokensArray.push(key)
                 }
             })
-            this.regularTokensArray = regularTokensArray
+            this.regularTokensArray = shuffleArray(regularTokensArray)
             // it's possible at some point in the far future that there are multiple 
             // board configs (i.e. for three player or alt maps)
             const boardConfig = TEST_BOARD_CONFIG_CITIES;
@@ -117,7 +115,7 @@ export const gameControllerFactory = () => {
 
                         let tokenValue = false;
                         if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
-                            tokenValue = getRandomArrayElementAndModify(startingTokensArray)
+                            tokenValue = startingTokensArray.pop()
                         }
                         logicBundle.boardController.createRouteAndTokenFromLocations({
                             length: routeArray[1],
@@ -198,7 +196,7 @@ export const gameControllerFactory = () => {
                 this.endGame()
                 return;
             }
-            const currentReplacement = getRandomArrayElementAndModify(this.regularTokensArray)
+            const currentReplacement = this.regularTokensArray.pop()
             this.tokenPlacementInformation.currentReplacement = currentReplacement;
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
 
