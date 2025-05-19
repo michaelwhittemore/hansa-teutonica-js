@@ -24,12 +24,6 @@
     * Looks like psudeo-random seeded is gonna be a pain (I'll need webpack to bundle it for the client), so instead I think I'll just pre-generate the arrays
 
     * If I don't work on the tokensArray then instead I should move on to the next online action (maybe capture cities?)
-    * I should also double check that logs are supplies are correct but I don't see why they wouldn't be
-    * looks like circles aren't being updated?? - let's see if it's the same in hotseat, I suspect it might be related to the player-id stuff
-        * looks like only happens when placing circles as the second action??
-        * It *IS* reproducable on hotseat
-        * looks like it effects sqaures too
-        I Think the bug is fixed but need to keep my eye out for any future issues realted to turn ending
 -------------------
 
 

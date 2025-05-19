@@ -5,7 +5,9 @@ import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
     TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
 } from "../helpers/constants.js";
-import { getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText } from "../helpers/helpers.js";
+import {
+    getRandomArrayElementAndModify, getRouteIdFromNodeId, pluralifyText, shuffleArray
+} from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
     unlockMovementToValue, unlockKeysToValue, unlockMapMaxValues
