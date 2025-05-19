@@ -25,8 +25,6 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
                 // dev, need to have a handler, need to map and need to add the onClosed handler
                 break;
             case 'playerAction':
-
-                console.log(parsedData)
                 // dev
                 messageAllInRoom(parsedData.roomName, {
                     type: 'playerActionTaken',
@@ -48,7 +46,5 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
             }
         }
         gameRoomToSocketMap[roomName].IdsToSockets[participantId] = socket;
-        // dev TODO need to inform all other players, maybe we set up the message all method as an imported
-        // helper
     }
 }

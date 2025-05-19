@@ -1,3 +1,4 @@
+import { logicBundle } from "../helpers/logicBundle.js";
 // Some thoughts: This method should be aware of the participantId (maybe the room name, it could
 // get that itself but I don't think that's the correct approach)
 // I really have no clue how to handle disconnects - at the moment let's just have that be a really
@@ -37,8 +38,9 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
     }
 
     const handleIncomingMessage = (data) => {
+        console.log('handleIncomingMessage')
         const parsedData = JSON.parse(data);
-        switch (parsedData.type){
+        switch (parsedData.type) {
             case 'playerActionTaken':
                 handleActionTaken(parsedData.actionType, parsedData.actionDetails)
                 break;
@@ -49,11 +51,14 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
 
     const handleActionTaken = (actionType, actionDetails) => {
         // dev
-        switch (actionType){
+        switch (actionType) {
             case 'placeWorkerOnNode':
-                console.log('placeWorkerOnNode')
-                console.log(actionDetails)
-                break;
+                {
+                    console.log(actionDetails)
+                    const { nodeId, playerId, shape } = actionDetails;
+                    logicBundle.gameController.placeWorkerOnNodeAction(nodeId, shape, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

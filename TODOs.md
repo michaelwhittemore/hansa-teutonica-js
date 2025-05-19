@@ -20,7 +20,15 @@
     * Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
     * **HERE!!** handle the incoming message on the clientWebSocketControllerFactory.js side 
 -------------------
-
+# Bugs with taking online action # 
+* "That route node is already occupied!" error
+    * also getting a 'not enough circles'. It looks like I'm trying to take the action twice?
+    * Oh - maybe I'm triggering the webSocketController action again? - i will need to look more
+    * handleIncomingMessage should NOT be called by the person taking the action
+    * looks like playerId !== participantId??? - probably a server issue?
+    * I'm pretty sure the problem is that when Bob takes the action he then tries to call the websocket method which then tells Alice to try taking the turn again
+    * I think the solution is an isOnlineAction parameter that tells us not to try messaging again
+* saving when I shouldn't (maybe this isn't an error?)
 
 
 

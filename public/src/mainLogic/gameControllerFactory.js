@@ -321,15 +321,8 @@ export const gameControllerFactory = () => {
                 this.endGame()
             }
         },
-        placeWorkerOnNodeAction(nodeId, shape, playerId) {
-            // dev - My thoughts are that if playerId is defined it's coming from the API controller
-            // if it's hotseat it doesn't matter 
-            // The case where we need to check is where it's UI driven (i.e. being called by 
-            // the input handlers) and also online
-            // it might make sense to move the IS_HOTSEAT check out of validatePlayerIsActivePlayer
-            // in that case
+        placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
             if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
-                console.log('This action is UI driven and online only')
                 playerId = logicBundle.sessionInfo.participantId
             }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
@@ -358,7 +351,10 @@ export const gameControllerFactory = () => {
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
             // dev
-            if (!logicBundle.sessionInfo.isHotseatMode) {
+            // We don't tell everyone to take the action if our client didn't drive it 
+            // TODO rename isOnlineAction too something more clear - maybe "isClientDriven?" 
+            // (and then we would reverse its truthiness)
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('placeWorkerOnNode', {
                     playerId,
                     nodeId,
