@@ -18,25 +18,21 @@
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
     * clean up my todos a bit
     * Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
-    * **HERE!!** handle the incoming message on the clientWebSocketControllerFactory.js side 
+    * **HERE!!** Fix the inconsistencies between tokens for both players - then test in the console
+    * Perhaps instead of grabbing a new one, the tokens are generated at intialization for both hotseat and online
+    * will need to do regularTokensArray & startingTokensArray
+    * Looks like psudeo-random seeded is gonna be a pain (I'll need webpack to bundle it for the client), so instead I think I'll just pre-generate the arrays
+
+    * If I don't work on the tokensArray then instead I should move on to the next online action (maybe capture cities?)
+    * I should also double check that logs are supplies are correct but I don't see why they wouldn't be
+    * looks like circles aren't being updated?? - let's see if it's the same in hotseat, I suspect it might be related to the player-id stuff
+        * looks like only happens when placing circles as the second action??
+        * It *IS* reproducable on hotseat
+        * looks like it effects sqaures too
+        I Think the bug is fixed but need to keep my eye out for any future issues realted to turn ending
 -------------------
-# Bugs with taking online action # 
-* "That route node is already occupied!" error
-    * also getting a 'not enough circles'. It looks like I'm trying to take the action twice?
-    * Oh - maybe I'm triggering the webSocketController action again? - i will need to look more
-    * handleIncomingMessage should NOT be called by the person taking the action
-    * looks like playerId !== participantId??? - probably a server issue?
-    * I'm pretty sure the problem is that when Bob takes the action he then tries to call the websocket method which then tells Alice to try taking the turn again
-    * I think the solution is an isOnlineAction parameter that tells us not to try messaging again
-* saving when I shouldn't (maybe this isn't an error?)
 
 
-
-    
-# Test basic online gameplay # 
-1. Have the links for both participants for testing sake (from the prebuilt room)
-2. **HERE** need to send the action information to all other players in the session. (use the exclude parameter and consider how to get the participant ID)
-3. Then need to add methods to the clientWebSocketControllerFactory.js to handle actions being taken by other players, i think this will be my next big project
 
 
 * Need to look at everywhere where I have a conditional involving isHotseatMode. Many just don't do anything if isHotseatMode is false

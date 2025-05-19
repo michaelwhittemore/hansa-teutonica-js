@@ -35,10 +35,12 @@ export const gameControllerFactory = () => {
             console.warn(`You are ${controllingPlayer.name} with an id of ${controllingPlayer.id}`)
             // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
             // we can start with the websocket based controller
+            // HERE! initializeCitiesAndState should optionally take a series of RNG rolls
+            // We will get these from the server (which creates them as soon as the game room is created)
             this.initializeCitiesAndState(); // delete this
             // **IMPORTANT** need to use a common random seed or something for setting the tokens
             // TODO - if not random seed, perhaps the server calculates this?
-            // It's possible that the webSocketController should exists elsewhere?
+            // It's possible that the webSocketController should exist elsewhere?
             this.webSocketController = clientWebSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {
@@ -299,6 +301,7 @@ export const gameControllerFactory = () => {
             }
         },
         resolveAction(player) {
+            console.log('resolveAction', player)
             gameController.moveInformation = {};
             gameController.bumpInformation = {};
             gameController.tokenPlacementInformation = {}
@@ -310,8 +313,7 @@ export const gameControllerFactory = () => {
             player.currentActions -= 1;
             if (player.currentActions === 0) {
                 this.advanceTurn(player);
-                return // REMOVE THIS LINE, THIS BREAKS STUFF TODO
-                // may need to refactor this in the future
+                // return // REMOVE THIS LINE, THIS BREAKS STUFF TODO
             }
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             this.playerArray.forEach(player => {
