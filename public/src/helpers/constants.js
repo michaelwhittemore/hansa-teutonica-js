@@ -55,6 +55,32 @@ export const TEST_BOARD_CONFIG_CITIES = {
 };
 
 export const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
+export const REGULAR_TOKENS = [
+    "fourActions",
+    "threeActions",
+    "freeUpgrade",
+    "moveThree",
+    "switchPost",
+    "moveThree",
+    "bonusPost",
+    "fourActions",
+    "switchPost",
+    "switchPost",
+    "bonusPost",
+    "bonusPost",
+    "bonusPost",
+    "threeActions",
+    "freeUpgrade"
+]
+/*
+const regularTokensArray = [];
+Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
+    for (let i = 0; i < REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
+        regularTokensArray.push(key)
+    }
+})
+*/
+
 // RULES TODO, verify that the blow values do *NOT* include the gold starters
 export const REGULAR_TOKENS_NUMBER_MAP = {
     'bonusPost': 4,

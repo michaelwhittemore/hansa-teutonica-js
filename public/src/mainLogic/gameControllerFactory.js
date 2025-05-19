@@ -2,8 +2,8 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import {
-    FIRST_PLAYER_SQUARES, STARTING_TOKENS, REGULAR_TOKENS_NUMBER_MAP, TOKEN_CONFIG_BY_ROUTES,
-    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES
+    FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_CONFIG_BY_ROUTES,
+    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS,
 } from "../helpers/constants.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray } from "../helpers/helpers.js";
 import {
@@ -58,7 +58,7 @@ export const gameControllerFactory = () => {
                 this.playerArray.push(player)
             }
         },
-        initializeCitiesAndState() {
+        initializeCitiesAndState(optionalParameters) {
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
@@ -74,14 +74,10 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.bindInputHandlers()
             logicBundle.boardController.initializeUI(this.playerArray);
 
-            const startingTokensArray = shuffleArray(STARTING_TOKENS);
-            const regularTokensArray = [];
-            Object.keys(REGULAR_TOKENS_NUMBER_MAP).forEach(key => {
-                for (let i = 0; i < REGULAR_TOKENS_NUMBER_MAP[key]; i++) {
-                    regularTokensArray.push(key)
-                }
-            })
-            this.regularTokensArray = shuffleArray(regularTokensArray)
+            const startingTokensArray = optionalParameters?.startingTokensArray ||
+                shuffleArray(STARTING_TOKENS);
+
+            this.regularTokensArray = optionalParameters?.regularTokensArray || shuffleArray(REGULAR_TOKENS)
             // it's possible at some point in the far future that there are multiple 
             // board configs (i.e. for three player or alt maps)
             const boardConfig = TEST_BOARD_CONFIG_CITIES;
@@ -301,7 +297,6 @@ export const gameControllerFactory = () => {
             }
         },
         resolveAction(player) {
-            console.log('resolveAction', player)
             gameController.moveInformation = {};
             gameController.bumpInformation = {};
             gameController.tokenPlacementInformation = {}
