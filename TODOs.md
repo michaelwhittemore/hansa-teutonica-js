@@ -21,7 +21,7 @@
     * **HERE!!** Let's get started on capturing cities
     * also let's remove most of the server logging (or at least where we're dropping whole objects into the logs)
 -------------------
-
+**BUG!** looks like my index changes may have broken loading in players
 
 
 
