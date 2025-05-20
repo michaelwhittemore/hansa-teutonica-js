@@ -39,28 +39,8 @@ const startOnline = async (roomName) => {
     console.log('startOnline')
     // http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 1
     // http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW 2
-    // Noe that the above link uses the test data that gets populated on the server
-    // dev
-    // ~~1. I think we need to make a query to the server to get the play information from participant (i.e.)
-    // name, and color - in that case we should use a test value in the server - ~~
-    // ~~1. As part of the above we will need to add a 'playerInfo' or 'playerInfoFromParticipant' route
-    // to the routing file (roomRoutes.js)~~
-    // 2. We will need to return some kind of error if you're trying to join a session as a participant who
-    // has already connected - may need to add an 'in use' field????
-    // 1. Once the information is established we should open up the websocket. - maybe that should be
-    // part of the API module
-    // 2. I need a way to generate turn order - should it just be random for the moment? i.e. what order
-    // the keys are generated
-    // 3. I think we will need to modify gameController.initializeHotseatGame to include mode
-    // or alternatively, we have two different methods for it, both of which then trickle down to 
-    // gameController.initializeHotseatGame
-    // 4. Let's see if I can just get a gameboard populated. 
-    // 5. I think we will need to open up new websockets given that we're navigating to a new page
+    // Note that the above link uses the test data that gets populated on the server
 
-    // IMPORTANT - we might need to change this, we should be getting the whole player array 
-    // We will need it to constructor the UI.
-    // We still want to know the participant ID, as we need that to do validation
-    // dev
     let playerArray;
     const searchParams = (new URL(location)).searchParams
     const participantId = searchParams.get('participantId');

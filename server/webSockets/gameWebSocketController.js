@@ -43,15 +43,7 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
     }
 
     const playerJoinedGameHandler = (parsedData) => {
-        // here! let's see if the room already exists, if it doesn't we generate the token arrays and 
-        // send them to back the player (we do that last part regardless). This can be what triggers
-        // the call to initializeCitiesAndState
-
         const { participantId, roomName } = parsedData
-        console.log(waitingRoomMockDB[roomName])
-
-        console.log('playerJoinedGameHandler')
-        console.log(REGULAR_TOKENS)
         if (!gameRoomToSocketMap[roomName]) {
             gameRoomToSocketMap[roomName] = {
                 IdsToSockets: {}

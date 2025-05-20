@@ -105,7 +105,6 @@ const readyUp = () => {
 }
 
 const startGame = () => {
-    // dev
     const url = new URL(document.location.origin);
     url.pathname = `/onlineGame/${roomName}`
     url.searchParams.append('participantId', participantId)
@@ -160,9 +159,8 @@ const togglePlayerReadiedUI = (isReadied) => {
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
-    // dev - I don't think we need to do anything here
     const url = `ws://${window.location.hostname}:8080/waitingRoom`
-    socket = new WebSocket(url); // exposing socket for other methods
+    socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({
             type: 'newConnection',

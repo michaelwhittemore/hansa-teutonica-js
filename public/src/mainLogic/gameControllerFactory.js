@@ -33,14 +33,7 @@ export const gameControllerFactory = () => {
             }
             const controllingPlayer = this.getPlayerById(participantId)
             console.warn(`You are ${controllingPlayer.name} with an id of ${controllingPlayer.id}`)
-            // Then we can run initializeCitiesAndState, just seeing if this works at the moment and then
-            // we can start with the websocket based controller
-            // HERE! initializeCitiesAndState should optionally take a series of RNG rolls
-            // We will get these from the server (which creates them as soon as the game room is created)
-            
-            // **IMPORTANT** need to use a common random seed or something for setting the tokens
-            // TODO - if not random seed, perhaps the server calculates this?
-            // It's possible that the webSocketController should exist elsewhere?
+
             this.webSocketController = clientWebSocketControllerFactory(participantId, roomName);
         },
         createPlayerArrayFromNamesAndColors(playerList) {
@@ -738,10 +731,12 @@ export const gameControllerFactory = () => {
             }
         },
         captureCity(cityName, playerId) {
+            // here! -- should follow the logic we established in placeWorkerOnNode for handling playerID
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
+                // dev 
                 return
             }
             playerId = player.id;

@@ -17,19 +17,10 @@
 * 5/16
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
     * clean up my todos a bit
-    * Create some logic so that when sockets don't actually exist (only for testing) we don't fail, but instead warn that we should only be seeing this while testing
-    *  Fix the inconsistencies between tokens for both players - then test in the console
-    * Perhaps instead of grabbing a new one, the tokens are generated at intialization for both hotseat and online
-    * will need to do regularTokensArray & startingTokensArray
-    * Looks like psudeo-random seeded is gonna be a pain (I'll need webpack to bundle it for the client), so instead I think I'll just pre-generate the arrays
-    * remeber that we can't call the method untill we get the response from the server
-    **IMPORTANT** I think i'd like a different DB for the waitingRoom and gameRoom
-    * **HERE!!** On a player joining a game room in gameWebSocketController.js, we should check if the roomDB has the token array. If it doesn't we create it. We then send it to the player (regardless of if it exists or not) - maybe the messageType will be something like "newGameAcknowledged"?
-    * If I don't work on the tokensArray then instead I should move on to the next online action (maybe capture cities?)
+
+    * **HERE!!** Let's get started on capturing cities
+    * also let's remove most of the server logging (or at least where we're dropping whole objects into the logs)
 -------------------
-* tokens still not synced - 
-* let's see if the new room route is being called multiple times - may need to clear all console logs
-ooooh - it's because we're not using the say variable, we shuffle it each time
 
 
 

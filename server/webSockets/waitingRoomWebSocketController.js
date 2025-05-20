@@ -10,7 +10,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     });
 
     const joinedWaitingRoom = (socket, roomName) => {
-        console.log(`Within joinedWaitingRoom of ${roomName}`)
         // dev - this can also be added to a helper
         if (!waitingRoomToSocketMap[roomName]) {
             waitingRoomToSocketMap[roomName] = {
@@ -80,7 +79,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             case 'newConnection':
                 {
                     const roomName = parsedData.roomName;
-                    console.log('A new websocket from the waiting room!', roomName)
                     joinedWaitingRoom(socket, roomName)
                     break;
                 }
