@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { startWebSocketServer } from "./server/webSockets/startWebSocketServer.js";
@@ -11,7 +11,8 @@ const app = express();
 const PORT = 3000;
 
 // TODO replace this variable with an actual database
-const roomTrackerMockDB = {}
+const waitingRoomMockDB = {};
+const gameRoomMockDB = {};
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json())
@@ -36,7 +37,7 @@ app.get("/onlineGame/:roomName", (request, response) => {
 })
 
 // ------------------------ TEST VALUES -----------------------
-roomTrackerMockDB['testRoom1'] = {
+waitingRoomMockDB['testRoom1'] = {
   isInUse: true,
   isPlaying: false,
   isFull: false,
@@ -57,8 +58,8 @@ roomTrackerMockDB['testRoom1'] = {
 }
 
 // Will need a route to clear the room from storage
-setUpRoomRoutes(app, roomTrackerMockDB)
-startWebSocketServer(roomTrackerMockDB);
+setUpRoomRoutes(app, waitingRoomMockDB)
+startWebSocketServer(waitingRoomMockDB, gameRoomMockDB);
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);

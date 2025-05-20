@@ -38,12 +38,15 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
     }
 
     const handleIncomingMessage = (data) => {
-        console.log('handleIncomingMessage')
         const parsedData = JSON.parse(data);
+        console.log(parsedData)
         switch (parsedData.type) {
             case 'playerActionTaken':
                 handleActionTaken(parsedData.actionType, parsedData.actionDetails)
                 break;
+            case 'joinedGameSuccess':
+                handleJoinedGameSuccess(parsedData.shuffledRegularTokens, parsedData.shuffledStartingTokens)
+                break
             default:
                 console.error('Unknown Message type:', parsedData.type)
         }
@@ -62,6 +65,13 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
             default:
                 console.error('Unknown action type:', actionType)
         }
+    }
+
+    const handleJoinedGameSuccess = (regularTokensArray, startingTokensArray) => {
+        logicBundle.gameController.initializeCitiesAndState({
+            regularTokensArray, 
+            startingTokensArray,
+        })
     }
 
     const webSocketController = {

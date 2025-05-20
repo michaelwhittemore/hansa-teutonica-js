@@ -37,7 +37,7 @@ export const gameControllerFactory = () => {
             // we can start with the websocket based controller
             // HERE! initializeCitiesAndState should optionally take a series of RNG rolls
             // We will get these from the server (which creates them as soon as the game room is created)
-            this.initializeCitiesAndState(); // delete this
+            
             // **IMPORTANT** need to use a common random seed or something for setting the tokens
             // TODO - if not random seed, perhaps the server calculates this?
             // It's possible that the webSocketController should exist elsewhere?
@@ -59,6 +59,7 @@ export const gameControllerFactory = () => {
             }
         },
         initializeCitiesAndState(optionalParameters) {
+            // This can be called by an incoming 'joinedGameSuccess' when online
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
@@ -76,8 +77,8 @@ export const gameControllerFactory = () => {
 
             const startingTokensArray = optionalParameters?.startingTokensArray ||
                 shuffleArray(STARTING_TOKENS);
-
-            this.regularTokensArray = optionalParameters?.regularTokensArray || shuffleArray(REGULAR_TOKENS)
+            this.regularTokensArray = optionalParameters?.regularTokensArray || 
+                shuffleArray(REGULAR_TOKENS);
             // it's possible at some point in the far future that there are multiple 
             // board configs (i.e. for three player or alt maps)
             const boardConfig = TEST_BOARD_CONFIG_CITIES;

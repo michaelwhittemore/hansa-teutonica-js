@@ -23,9 +23,13 @@
     * will need to do regularTokensArray & startingTokensArray
     * Looks like psudeo-random seeded is gonna be a pain (I'll need webpack to bundle it for the client), so instead I think I'll just pre-generate the arrays
     * remeber that we can't call the method untill we get the response from the server
+    **IMPORTANT** I think i'd like a different DB for the waitingRoom and gameRoom
     * **HERE!!** On a player joining a game room in gameWebSocketController.js, we should check if the roomDB has the token array. If it doesn't we create it. We then send it to the player (regardless of if it exists or not) - maybe the messageType will be something like "newGameAcknowledged"?
     * If I don't work on the tokensArray then instead I should move on to the next online action (maybe capture cities?)
 -------------------
+* tokens still not synced - 
+* let's see if the new room route is being called multiple times - may need to clear all console logs
+ooooh - it's because we're not using the say variable, we shuffle it each time
 
 
 

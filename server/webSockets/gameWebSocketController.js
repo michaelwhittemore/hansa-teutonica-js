@@ -1,13 +1,13 @@
 import { messageAllInRoomFactory } from "./webSocketHelpers.js";
+// public/src/helpers/constants.js
+// server/webSockets
+import { REGULAR_TOKENS, STARTING_TOKENS } from "../../public/src/helpers/constants.js"
+import { shuffleArray } from "../../public/src/helpers/helpers.js"
 // TODO - might need a message queuing system in case people get disconnect or don't join fast enough
 // Frankly I'm dreading all the corner cases, it might make sense to see if the WS npm modules has
 // any built in solutions 
 
-export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSocketMap) => {
-    // TODO - do we actually need to p[ass in the socket to our methods here? I think these
-    // are created on a per-socket basis can can get the socket from the outer scope. Note that this
-    // isn't true if we start using a helper module
-
+export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSocketMap, gameRoomMockDB) => {
     const messageAllInRoom = messageAllInRoomFactory(gameRoomToSocketMap);
 
     socket.on('message', (data) => {
@@ -20,7 +20,7 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
         const parsedData = JSON.parse(messageString)
         switch (parsedData.type) {
             case 'playerJoinedGame':
-                playerJoinedGameHandler(parsedData);
+                playerJoinedGameHandler(parsedData, socket);
                 // maybe we alert everyone else? and they log it?
                 // dev, need to have a handler, need to map and need to add the onClosed handler
                 break;
@@ -37,17 +37,45 @@ export const gameWebSocketController = (socket, roomTrackerMockDB, gameRoomToSoc
         }
     }
 
+    const sendSocketMessage = (messageObject, socket) => {
+        const stringifiedMessage = JSON.stringify(messageObject)
+        socket.send(stringifiedMessage)
+    }
+
     const playerJoinedGameHandler = (parsedData) => {
         // here! let's see if the room already exists, if it doesn't we generate the token arrays and 
         // send them to back the player (we do that last part regardless). This can be what triggers
         // the call to initializeCitiesAndState
+
         const { participantId, roomName } = parsedData
+        console.log(waitingRoomMockDB[roomName])
+
         console.log('playerJoinedGameHandler')
+        console.log(REGULAR_TOKENS)
         if (!gameRoomToSocketMap[roomName]) {
             gameRoomToSocketMap[roomName] = {
                 IdsToSockets: {}
             }
         }
+
+        // TODO - perhaps gameRoomToSocketMap should be a property of the room DB??
+        if (!gameRoomMockDB[roomName]) {
+            const shuffledRegularTokens = shuffleArray(REGULAR_TOKENS);
+            const shuffledStartingTokens = shuffleArray(STARTING_TOKENS);
+            gameRoomMockDB[roomName] = {
+                numberOfPlayers: waitingRoomMockDB[roomName].numberOfPlayers,
+                playersObject: waitingRoomMockDB[roomName].playersReadiedObject,
+                shuffledRegularTokens,
+                shuffledStartingTokens,
+            }
+        }
+
+        sendSocketMessage({
+            type: 'joinedGameSuccess',
+            shuffledRegularTokens: gameRoomMockDB[roomName].shuffledRegularTokens,
+            shuffledStartingTokens: gameRoomMockDB[roomName].shuffledStartingTokens,
+        }, socket);
+
         gameRoomToSocketMap[roomName].IdsToSockets[participantId] = socket;
     }
 }

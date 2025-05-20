@@ -1,12 +1,12 @@
-export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
+export const setUpRoomRoutes = (app, waitingRoomMockDB) => {
     app.get("/checkRoom/:roomName", (request, response) => {
         const { roomName } = request.params
-        if (!roomTrackerMockDB[roomName]) {
+        if (!waitingRoomMockDB[roomName]) {
             response.json({
                 isValidRoom: false,
                 errorMessage: 'That room does not exist.'
             })
-        } else if (roomTrackerMockDB[roomName].isFull) {
+        } else if (waitingRoomMockDB[roomName].isFull) {
             response.json({
                 isValidRoom: false,
                 errorMessage: 'That room is already full.'
@@ -20,19 +20,19 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
 
     app.get('/joinRoom/:roomName', (request, response) => {
         const { roomName } = request.params
-        if (!roomTrackerMockDB[roomName]) {
+        if (!waitingRoomMockDB[roomName]) {
             console.error(`Attempted to join an unknown room ${roomName}`);
             response.status(404)
             response.send(`A room named "${roomName}" doesn't exist.`)
-        } else if (roomTrackerMockDB[roomName].isFull) {
+        } else if (waitingRoomMockDB[roomName].isFull) {
             response.status(400)
             response.send(`The room named "${roomName}" is full.`)
         } else {
 
-            response.json(roomTrackerMockDB[roomName])
-            roomTrackerMockDB[roomName].playersWaiting++;
-            if (roomTrackerMockDB[roomName].playersWaiting === roomTrackerMockDB[roomName].numberOfPlayers) {
-                roomTrackerMockDB[roomName].isFull = true;
+            response.json(waitingRoomMockDB[roomName])
+            waitingRoomMockDB[roomName].playersWaiting++;
+            if (waitingRoomMockDB[roomName].playersWaiting === waitingRoomMockDB[roomName].numberOfPlayers) {
+                waitingRoomMockDB[roomName].isFull = true;
             }
         }
     })
@@ -46,10 +46,10 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
             return
         }
         // Need to do sanitization here
-        if (!roomTrackerMockDB[roomName]) {
+        if (!waitingRoomMockDB[roomName]) {
             // Happy path, the name doesn't exist
             // May need additional fields
-            roomTrackerMockDB[roomName] = {
+            waitingRoomMockDB[roomName] = {
                 isInUse: true, // may be an unnecessary field
                 isPlaying: false, // Used to differentiate from waiting room
                 isFull: false,
@@ -67,13 +67,13 @@ export const setUpRoomRoutes = (app, roomTrackerMockDB) => {
     })
     app.get('/playerInformation/:roomName/:participantId', (request, response) => {
         const { roomName, participantId } = request.params
-        response.json(roomTrackerMockDB[roomName].playersReadiedObject[participantId])
+        response.json(waitingRoomMockDB[roomName].playersReadiedObject[participantId])
     })
     app.get('/playerInformation/:roomName', (request, response) => {
         const { roomName } = request.params
         const playerArray = []
-        Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).forEach((key) => {
-            playerArray.push(roomTrackerMockDB[roomName].playersReadiedObject[key])
+        Object.keys(waitingRoomMockDB[roomName].playersReadiedObject).forEach((key) => {
+            playerArray.push(waitingRoomMockDB[roomName].playersReadiedObject[key])
         })
         response.json(playerArray)
     })

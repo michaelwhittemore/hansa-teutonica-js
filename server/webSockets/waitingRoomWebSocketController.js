@@ -1,7 +1,7 @@
 import shortUUID from 'short-uuid';
 import { messageAllInRoomFactory } from './webSocketHelpers.js';
 
-export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitingRoomToSocketMap) => {
+export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitingRoomToSocketMap) => {
     const messageAllInRoom = messageAllInRoomFactory(waitingRoomToSocketMap)
     socket.on('message', (data) => {
         const stringData = data.toString()
@@ -24,10 +24,10 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
             type: 'participantId',
             participantId
         }))
-        if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length !== 0) {
+        if (Object.keys(waitingRoomMockDB[roomName].playersReadiedObject).length !== 0) {
             socket.send(JSON.stringify({
                 type: 'playersReadied',
-                playersReadiedObject: roomTrackerMockDB[roomName].playersReadiedObject
+                playersReadiedObject: waitingRoomMockDB[roomName].playersReadiedObject
             }))
         }
 
@@ -48,7 +48,7 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
             playerName,
             roomName,
         } = parsedData;
-        roomTrackerMockDB[roomName].playersReadiedObject[participantId] = {
+        waitingRoomMockDB[roomName].playersReadiedObject[participantId] = {
             playerColor,
             playerName,
             participantId, // not sure if we need this (maybe for removing in the future?)
@@ -65,8 +65,8 @@ export const waitingRoomWebSocketController = (socket, roomTrackerMockDB, waitin
             }
         }, participantId)
 
-        if (Object.keys(roomTrackerMockDB[roomName].playersReadiedObject).length === roomTrackerMockDB[roomName].numberOfPlayers) {
-            roomTrackerMockDB[roomName].isPlaying = true;
+        if (Object.keys(waitingRoomMockDB[roomName].playersReadiedObject).length === waitingRoomMockDB[roomName].numberOfPlayers) {
+            waitingRoomMockDB[roomName].isPlaying = true;
             messageAllInRoom(roomName, {
                 type: 'allReady',
             })
