@@ -14,13 +14,10 @@ import {
 export const gameControllerFactory = () => {
     const gameController = {
         initializeHotseatGame(playerList) {
-            logicBundle.sessionInfo.isHotseatMode = true;
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
-        initializeOnlineGame(playerList, roomName, participantId) {
-            logicBundle.sessionInfo.isHotseatMode = false;
-            logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
+        initializeOnlineGame(playerList, roomName, participantId) {            logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
                 this.playerArray.push(new Player({

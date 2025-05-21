@@ -18,6 +18,8 @@ turnTrackerControllerFactory();
 boardControllerFactory();
 
 const startHotseat = () => {
+    logicBundle.sessionInfo.isHotseatMode = true;
+
     let startingPlayerArray;
     const searchParams = (new URL(location)).searchParams
     if (searchParams.get('resumeGame') && window.localStorage.isSaved) {
@@ -31,12 +33,13 @@ const startHotseat = () => {
     } else {
         startingPlayerArray = playerArrayFromSearchParams(searchParams)
     }
-
     gameController.initializeHotseatGame(startingPlayerArray)
 }
 
 const startOnline = async (roomName) => {
-    console.log('startOnline')
+    logicBundle.sessionInfo.isHotseatMode = false;
+    logicBundle.sessionInfo.roomName = roomName;
+
     // http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz 1
     // http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW 2
     // Note that the above link uses the test data that gets populated on the server
