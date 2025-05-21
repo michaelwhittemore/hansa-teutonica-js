@@ -18,17 +18,20 @@
     * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
     * clean up my todos a bit
 
-    * **HERE!!** Let's get started on capturing cities
-    * 1. Let's just try to refactor validatePlayerIsActivePlayer a little before moving on to anything else
+    *  Let's get started on capturing cities
+    1. Let's make sure that supply/bank is also updated - including different shapes 
     * 6. Handling replacing token will also need to happen - let's focus on the routes without it
-    * 7. THis will also cause issues with the bonus spot token 
+        * **HERE!!** advanceTurn is where the logic happens, specifically the "this.tokensCapturedThisTurn.length > 0" conditional
+        * Note that the other player is being prompted as well
+        * we will need to use isOnlineAction to skip the token placement
+        * we will also need to communicate token placement via messaging, handling it will need refactoring both server and clientWS and in gameController
+    * 7. THis will also cause issues with the bonus spot token - but we address that later
 -------------------
-- seems like captureCity hitting invalid playerId, need to investigate more
 
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
-**IMPORTANT TODO** refactor validatePlayerIsActivePlayer to include the "!playerId && !logicBundle.sessionInfo.isHotseatMode" conditional
 
 
+* tokenUsageInformation may need to be communicated across the tabs? We will see? 
 * Need to look at everywhere where I have a conditional involving isHotseatMode. Many just don't do anything if isHotseatMode is false
 
 **IMPORTANT** it looks like playerId is undefined in many gameController methods - placeWorkerOnNodeAction for example

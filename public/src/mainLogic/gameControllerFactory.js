@@ -158,8 +158,12 @@ export const gameControllerFactory = () => {
             }
         },
         advanceTurn(lastPlayer) {
+            // dev
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
             if (this.tokensCapturedThisTurn.length > 0) {
+                // here! this is where we need to handle stuff for online play
+                // I think we skip "replaceTokens" for online play? Instead we will need a different form
+                // of messaging and handelr
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
                 this.replaceTokens(lastPlayer)
                 return
@@ -176,6 +180,10 @@ export const gameControllerFactory = () => {
             this.saveGame();
         },
         replaceTokens(player) {
+            // here
+            /// dev - maybe we should just check if the player is the current player (i.e. participant id)
+            // if it isn't we return (might need to do something about manipulating the regularTokensArray)
+
             // 2. "Shuffle and Deal" the token stack
             // TODO, check for the regularTokensArray to be empty. Technically the game should end 
             // after the ACTION not the TURN in this case (when the physical piece would be put on the
@@ -311,13 +319,12 @@ export const gameControllerFactory = () => {
             }
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
-
             if (!player) {
                 return
             }
             playerId = player.id;
+
             // Validate that the player has enough supply and that the node is unoccupied
             const playerShapeKey = shape === 'square' ? 'supplySquares' : 'supplyCircles';
             if (player[playerShapeKey] < 1) {
@@ -337,11 +344,9 @@ export const gameControllerFactory = () => {
             player[playerShapeKey] -= 1;
             this.placePieceOnNode(nodeId, shape, player);
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
-            // dev
-            // We don't tell everyone to take the action if our client didn't drive it 
-            // TODO rename isOnlineAction too something more clear - maybe "isClientDriven?" 
-            // (and then we would reverse its truthiness)
+
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('placeWorkerOnNode', {
                     playerId,
                     nodeId,
@@ -727,13 +732,11 @@ export const gameControllerFactory = () => {
             }
         },
         captureCity(cityName, playerId, isOnlineAction = false) {
-            // here! -- should follow the logic we established in placeWorkerOnNode for handling playerID
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
 
             // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
-
             if (!player) {
                 return
             }
@@ -816,7 +819,7 @@ export const gameControllerFactory = () => {
                     cityName,
                 })
             }
-
+            // dev
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId) {
