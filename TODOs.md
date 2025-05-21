@@ -19,10 +19,13 @@
     * clean up my todos a bit
 
     * **HERE!!** Let's get started on capturing cities
-    * also let's remove most of the server logging (or at least where we're dropping whole objects into the logs)
+    * 1. Need to fix the player verification so that this method is actually being called
+    * 2. Then we need to see that I can call it in one player's tab
+    * 3. Then we need to add messaging
+    * 4. See that the messaging is reflected in the server and do pass through
+    * 5. Add the handler to the clientWebSocketControllerFactory.js file and call captureCity (need to use isOnlineAction again)
+    * 6. Handling replacing token will also need to happen - let's focus on the routes without it
 -------------------
-**BUG!** looks like my index changes may have broken loading in players
-* think it's an issue with isHotseatMode not being set
 
 
 

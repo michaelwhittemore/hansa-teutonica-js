@@ -310,6 +310,7 @@ export const gameControllerFactory = () => {
             }
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
+            // dev
             if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
                 playerId = logicBundle.sessionInfo.participantId
             }
@@ -727,16 +728,20 @@ export const gameControllerFactory = () => {
                 failSafe++;
             }
         },
-        captureCity(cityName, playerId) {
+        captureCity(cityName, playerId, isOnlineAction = false) {
             // here! -- should follow the logic we established in placeWorkerOnNode for handling playerID
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
+          if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
+                playerId = logicBundle.sessionInfo.participantId
+            }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
+
             if (!player) {
-                // dev 
                 return
             }
             playerId = player.id;
+
             logicBundle.inputHandlers.clearAllActionSelection();
             const city = this.cityStorageObject[cityName]
 
@@ -1312,7 +1317,6 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
-            // dev
             if (logicBundle.sessionInfo.isHotseatMode) {
                 return activePlayer
             }
