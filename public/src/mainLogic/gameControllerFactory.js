@@ -17,7 +17,8 @@ export const gameControllerFactory = () => {
             this.createPlayerArrayFromNamesAndColors(playerList);
             this.initializeCitiesAndState();
         },
-        initializeOnlineGame(playerList, roomName, participantId) {            logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
+        initializeOnlineGame(playerList, roomName, participantId) {
+            logicBundle.sessionInfo.participantId = participantId; // This is who is actually controlling this client
             this.playerArray = []
             for (let i = 0; i < playerList.length; i++) {
                 this.playerArray.push(new Player({
@@ -67,7 +68,7 @@ export const gameControllerFactory = () => {
 
             const startingTokensArray = optionalParameters?.startingTokensArray ||
                 shuffleArray(STARTING_TOKENS);
-            this.regularTokensArray = optionalParameters?.regularTokensArray || 
+            this.regularTokensArray = optionalParameters?.regularTokensArray ||
                 shuffleArray(REGULAR_TOKENS);
             // it's possible at some point in the far future that there are multiple 
             // board configs (i.e. for three player or alt maps)
@@ -311,9 +312,6 @@ export const gameControllerFactory = () => {
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
             // dev
-            if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
-                playerId = logicBundle.sessionInfo.participantId
-            }
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
 
             if (!player) {
@@ -732,9 +730,8 @@ export const gameControllerFactory = () => {
             // here! -- should follow the logic we established in placeWorkerOnNode for handling playerID
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
-          if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
-                playerId = logicBundle.sessionInfo.participantId
-            }
+
+            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
 
             if (!player) {
@@ -813,6 +810,13 @@ export const gameControllerFactory = () => {
             }
 
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('captureCity', {
+                    playerId,
+                    cityName,
+                })
+            }
+
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId) {
@@ -1318,7 +1322,14 @@ export const gameControllerFactory = () => {
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             if (logicBundle.sessionInfo.isHotseatMode) {
+                // Validation isn't need for hotseat mode
                 return activePlayer
+            }
+            // TODO - maybe instead we should use isOnlineAction?
+            if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
+                // If no playerId has been provided by the clientWebSocketController, 
+                // we assume it's coming from the client 
+                playerId = logicBundle.sessionInfo.participantId
             }
             if (playerId !== activePlayer.id) {
                 console.warn('Player attempting to take an off-turn action')

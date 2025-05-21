@@ -19,14 +19,14 @@
     * clean up my todos a bit
 
     * **HERE!!** Let's get started on capturing cities
-    * 1. Need to fix the player verification so that this method is actually being called
-    * 2. Then we need to see that I can call it in one player's tab
-    * 3. Then we need to add messaging
-    * 4. See that the messaging is reflected in the server and do pass through
-    * 5. Add the handler to the clientWebSocketControllerFactory.js file and call captureCity (need to use isOnlineAction again)
+    * 1. Let's just try to refactor validatePlayerIsActivePlayer a little before moving on to anything else
     * 6. Handling replacing token will also need to happen - let's focus on the routes without it
+    * 7. THis will also cause issues with the bonus spot token 
 -------------------
+- seems like captureCity hitting invalid playerId, need to investigate more
 
+We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
+**IMPORTANT TODO** refactor validatePlayerIsActivePlayer to include the "!playerId && !logicBundle.sessionInfo.isHotseatMode" conditional
 
 
 * Need to look at everywhere where I have a conditional involving isHotseatMode. Many just don't do anything if isHotseatMode is false

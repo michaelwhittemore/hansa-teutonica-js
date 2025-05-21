@@ -54,12 +54,19 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
 
     const handleActionTaken = (actionType, actionDetails) => {
         // dev
+        console.log(actionDetails)
+
         switch (actionType) {
             case 'placeWorkerOnNode':
                 {
-                    console.log(actionDetails)
                     const { nodeId, playerId, shape } = actionDetails;
                     logicBundle.gameController.placeWorkerOnNodeAction(nodeId, shape, playerId, true)
+                    break;
+                }
+            case 'captureCity':
+                {
+                    const { cityName, playerId } = actionDetails;
+                    logicBundle.gameController.captureCity(cityName, playerId, true)
                     break;
                 }
             default:
@@ -69,7 +76,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
 
     const handleJoinedGameSuccess = (regularTokensArray, startingTokensArray) => {
         logicBundle.gameController.initializeCitiesAndState({
-            regularTokensArray, 
+            regularTokensArray,
             startingTokensArray,
         })
     }
