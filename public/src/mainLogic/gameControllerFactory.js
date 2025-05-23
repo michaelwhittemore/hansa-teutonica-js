@@ -180,18 +180,17 @@ export const gameControllerFactory = () => {
             this.saveGame();
         },
         replaceTokens(player) {
-            // here!
             /// dev - maybe we should just check if the player is the current player (i.e. participant id)
             // if it isn't we return (might need to do something about manipulating the regularTokensArray)
             // we will also need to update the UI while the other player is picking
-            if (player.id !== logicBundle.sessionInfo.participantId){
-                console.warn('This was triggered by online turn')
-                return;
-            }
-            // 2. "Shuffle and Deal" the token stack
-            // TODO, check for the regularTokensArray to be empty. Technically the game should end 
-            // after the ACTION not the TURN in this case (when the physical piece would be put on the
-            // "eat stack"), but this works for the moment
+
+            // We want to ensure the token get's popped from the regaulrTokenArray stack
+            // if (player.id !== logicBundle.sessionInfo.participantId){
+            //     console.warn('This was triggered by online turn')
+            //     // actually maybe we DON'T return here, maybe we do it in replaceTokenAtLocation
+            //     return;
+            // }
+
             if (this.regularTokensArray.length === 0) {
                 this.endGame()
                 return;
@@ -200,20 +199,12 @@ export const gameControllerFactory = () => {
             this.tokenPlacementInformation.currentReplacement = currentReplacement;
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
 
-            // 3. Update both turn tracker and the action info area with the piece that is going to be replaces
             logicBundle.turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
             logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement);
-            // The above method sets the actionInfo type to placeNewToken
-            // 4. Un-hide all the token locations on the map (may need to switch from display to visible)
-            logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
-            // 5. Set the selectedAction type to something like 'replacingToken'
-            // 6. disable all the action buttons
-            // 7. add all the tokensCapturedThisTurn to the player's bank and clear the field
 
-            // 35. Need to call advanceTurn(lastPlayer) to actually end the turn (probably after
-            // the final replaceTokenAtLocation)
+            logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
-        replaceTokenAtLocation(routeId, playerId) {
+        replaceTokenAtLocation(routeId, playerId, isOnlineAction = false) {
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -291,13 +282,22 @@ export const gameControllerFactory = () => {
                 gameController.tokenPlacementInformation = {}
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.toggleInputButtons(false)
+                // dev - this is where we should add the socket message
+                // here!
+                // maybe we can use  'playerTookAction' ??
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    // Should only send a message if it's a client driven action
+                    this.webSocketController.playerTookAction('replaceTokenAtLocation', {
+                        playerId,
+                        routeId,
+                    })
+                }
                 this.advanceTurn(player);
 
                 // 16. clear the this.tokenPlacementInformation blob
                 // 17. Clear the selected action
                 // 18. Double check that there's no cleanup steps from resolveAction that are being missed
                 // 16. Call this.advanceTurn(player)
-
             }
         },
         resolveAction(player) {

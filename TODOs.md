@@ -26,7 +26,9 @@
         * we will need to use isOnlineAction to skip the token placement
         * we will also need to communicate token placement via messaging, handling it will need refactoring both server and clientWS and in gameController
         * should clear al the comments from this method
+        * **IMPORTANT** - We use "you" in the UI. This shouldn't happen when it's the other player's turn
     * 7. THis will also cause issues with the bonus spot token - but we address that later
+    * May need to test this with multiple tokens replaced in a turn, let's just give starting player a ton of free actions
 -------------------
 
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method

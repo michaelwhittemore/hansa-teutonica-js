@@ -69,6 +69,12 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.captureCity(cityName, playerId, true)
                     break;
                 }
+            case 'replaceTokenAtLocation':
+                {
+                    const { routeId, playerId } = actionDetails;
+                    logicBundle.gameController.replaceTokenAtLocation(routeId, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }
@@ -90,7 +96,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 actionDetails,
                 roomName,
             })
-        }
+        },
     }
     return webSocketController;
 }
