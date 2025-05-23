@@ -161,9 +161,9 @@ export const gameControllerFactory = () => {
             // dev
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
             if (this.tokensCapturedThisTurn.length > 0) {
-                // here! this is where we need to handle stuff for online play
+                // this is where we need to handle stuff for online play
                 // I think we skip "replaceTokens" for online play? Instead we will need a different form
-                // of messaging and handelr
+                // of messaging and handler
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
                 this.replaceTokens(lastPlayer)
                 return
@@ -180,10 +180,14 @@ export const gameControllerFactory = () => {
             this.saveGame();
         },
         replaceTokens(player) {
-            // here
+            // here!
             /// dev - maybe we should just check if the player is the current player (i.e. participant id)
             // if it isn't we return (might need to do something about manipulating the regularTokensArray)
-
+            // we will also need to update the UI while the other player is picking
+            if (player.id !== logicBundle.sessionInfo.participantId){
+                console.warn('This was triggered by online turn')
+                return;
+            }
             // 2. "Shuffle and Deal" the token stack
             // TODO, check for the regularTokensArray to be empty. Technically the game should end 
             // after the ACTION not the TURN in this case (when the physical piece would be put on the

@@ -25,6 +25,7 @@
         * Note that the other player is being prompted as well
         * we will need to use isOnlineAction to skip the token placement
         * we will also need to communicate token placement via messaging, handling it will need refactoring both server and clientWS and in gameController
+        * should clear al the comments from this method
     * 7. THis will also cause issues with the bonus spot token - but we address that later
 -------------------
 
