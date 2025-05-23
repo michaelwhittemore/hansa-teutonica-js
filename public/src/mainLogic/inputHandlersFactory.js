@@ -62,6 +62,7 @@ export const inputHandlerFactory = () => {
         setUpTokenActionInfo(token) {
             this.clearAllActionSelection();
             this.toggleInputButtons(true)
+            // dev
             this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${TOKEN_READABLE_NAMES[token]}" token.`)
             this.selectedAction = 'placeNewToken';
         },

@@ -10,7 +10,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     });
 
     const joinedWaitingRoom = (socket, roomName) => {
-        // dev - this can also be added to a helper
         if (!waitingRoomToSocketMap[roomName]) {
             waitingRoomToSocketMap[roomName] = {
                 IdsToSockets: {}

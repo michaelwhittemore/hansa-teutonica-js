@@ -158,12 +158,8 @@ export const gameControllerFactory = () => {
             }
         },
         advanceTurn(lastPlayer) {
-            // dev
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
             if (this.tokensCapturedThisTurn.length > 0) {
-                // this is where we need to handle stuff for online play
-                // I think we skip "replaceTokens" for online play? Instead we will need a different form
-                // of messaging and handler
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
                 this.replaceTokens(lastPlayer)
                 return
@@ -180,17 +176,6 @@ export const gameControllerFactory = () => {
             this.saveGame();
         },
         replaceTokens(player) {
-            /// dev - maybe we should just check if the player is the current player (i.e. participant id)
-            // if it isn't we return (might need to do something about manipulating the regularTokensArray)
-            // we will also need to update the UI while the other player is picking
-
-            // We want to ensure the token get's popped from the regaulrTokenArray stack
-            // if (player.id !== logicBundle.sessionInfo.participantId){
-            //     console.warn('This was triggered by online turn')
-            //     // actually maybe we DON'T return here, maybe we do it in replaceTokenAtLocation
-            //     return;
-            // }
-
             if (this.regularTokensArray.length === 0) {
                 this.endGame()
                 return;
@@ -200,6 +185,8 @@ export const gameControllerFactory = () => {
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
 
             logicBundle.turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
+            // HERE! - we use "you" for players whose turn it isn't 
+            // dev
             logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement);
 
             logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
@@ -253,9 +240,6 @@ export const gameControllerFactory = () => {
             // 9. This is where we check the tokensToPlace and have different behavior
             // ----------------Continuing (tokensToPlace > 0)-----------------
 
-            // dev - this is where we should add the socket message
-            // here!
-            // maybe we can use  'playerTookAction' ??
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('replaceTokenAtLocation', {
@@ -817,7 +801,6 @@ export const gameControllerFactory = () => {
                     cityName,
                 })
             }
-            // dev
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId) {

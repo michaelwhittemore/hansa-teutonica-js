@@ -53,9 +53,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
     }
 
     const handleActionTaken = (actionType, actionDetails) => {
-        // dev
         console.log(actionDetails)
-
         switch (actionType) {
             case 'placeWorkerOnNode':
                 {

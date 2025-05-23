@@ -21,11 +21,8 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
         switch (parsedData.type) {
             case 'playerJoinedGame':
                 playerJoinedGameHandler(parsedData, socket);
-                // maybe we alert everyone else? and they log it?
-                // dev, need to have a handler, need to map and need to add the onClosed handler
                 break;
             case 'playerAction':
-                // dev
                 messageAllInRoom(parsedData.roomName, {
                     type: 'playerActionTaken',
                     actionType: parsedData.actionType,
