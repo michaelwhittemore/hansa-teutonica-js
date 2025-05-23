@@ -210,17 +210,13 @@ export const gameControllerFactory = () => {
                 return
             }
             playerId = player.id;
-            // this should be triggered by clicking on a token holder when the input selectedAction is correct
-            // 1. Verification
-            // 2. Check that token is not already there - If it is we return and warn
+
             if (this.routeStorageObject[routeId].token) {
                 console.warn('That location already has a token.');
                 logicBundle.inputHandlers.warnInvalidAction('That location already has a token.')
                 return;
             }
-            // 3. Check that the route is completely empty
-            // TODO consider breaking this logic out into a method if it's used anywhere else (it's
-            // *NOT* the same thing as occurs in checking bump locations)
+
             for (let nodeId in this.routeStorageObject[routeId].routeNodes) {
                 if (this.routeStorageObject[routeId].routeNodes[nodeId].occupied) {
                     console.warn('Route must be unoccupied.')
@@ -228,7 +224,7 @@ export const gameControllerFactory = () => {
                     return;
                 }
             }
-            // 4. Check that at least one city endpoint has an empty spot
+            // Tokens can only be placed on routes where there are open endpoints
             let citiesHaveFreeSpot = false
             this.routeStorageObject[routeId].cities.forEach(cityName => {
                 const city = this.cityStorageObject[cityName];
@@ -241,25 +237,32 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction('City endpoints must have at least one open spot among them.');
                 return;
             }
-            // 6. If the location is valid we need to add to the board.
+
             logicBundle.boardController.addTokenToRoute(routeId, this.tokenPlacementInformation.currentReplacement, 'silver')
-            // 7. We also need to update the route storage object
+
             this.routeStorageObject[routeId].token = this.tokenPlacementInformation.currentReplacement;
             this.routeStorageObject[routeId].tokenColor = 'silver'
-            // 8. We then need to lower the this.tokenPlacementInformation.tokensToPlace
+
             this.tokenPlacementInformation.tokensToPlace--;
-            // 8. Also about the playerBoard token "eat" plate gets decremented
+
             logicBundle.playerBoardAndInformationController.componentBuilders.updateTokenTracker(player,
                 this.tokenPlacementInformation.tokensToPlace);
-            // 8. Should game log that a new token was placed
+
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
             token at ${routeId}.`, player);
             // 9. This is where we check the tokensToPlace and have different behavior
             // ----------------Continuing (tokensToPlace > 0)-----------------
-            // 10. If we keep going we probably call replaceTokens again
-            // 11. Do not hide any token location
-            // 12. I believe that the decrementing should be taken care of in the preceding steps
-            // 13. We keep the selectedAction the same.
+
+            // dev - this is where we should add the socket message
+            // here!
+            // maybe we can use  'playerTookAction' ??
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                // Should only send a message if it's a client driven action
+                this.webSocketController.playerTookAction('replaceTokenAtLocation', {
+                    playerId,
+                    routeId,
+                })
+            }
             if (this.tokenPlacementInformation.tokensToPlace > 0) {
                 this.replaceTokens(player);
                 console.log('There are more tokens to place, repeating the process')
@@ -282,16 +285,7 @@ export const gameControllerFactory = () => {
                 gameController.tokenPlacementInformation = {}
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.toggleInputButtons(false)
-                // dev - this is where we should add the socket message
-                // here!
-                // maybe we can use  'playerTookAction' ??
-                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                    // Should only send a message if it's a client driven action
-                    this.webSocketController.playerTookAction('replaceTokenAtLocation', {
-                        playerId,
-                        routeId,
-                    })
-                }
+
                 this.advanceTurn(player);
 
                 // 16. clear the this.tokenPlacementInformation blob

@@ -12,6 +12,8 @@ export class Player {
         this.supplyCircles = 1;
         this.bankedCircles = 0;
         this.maxActions = 2; // Not to be confused with current actions
+        // this.maxActions = 8; // Just for testing
+
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
         // this.currentTokens = []; // TODO Revert this once I'm done testing
