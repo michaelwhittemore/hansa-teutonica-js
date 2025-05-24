@@ -102,11 +102,7 @@ export const inputHandlerFactory = () => {
 
         },
         handleResupplyButton() {
-            let playerId = undefined
-            if (!logicBundle.sessionInfo.isHotseatMode) {
-                // get the player name from sessionStorage
-            }
-            logicBundle.gameController.resupply(playerId);
+            logicBundle.gameController.resupply();
         },
         clearAllActionSelection() {
             // NOTE: I should *NOT* be using this just to clear action info

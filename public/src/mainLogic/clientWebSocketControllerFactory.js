@@ -73,6 +73,18 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.replaceTokenAtLocation(routeId, playerId, true)
                     break;
                 }
+            case 'resupply':
+                {
+                    const { playerId } = actionDetails;
+                    logicBundle.gameController.resupply(playerId, true);
+                    break;
+                }
+            case 'upgradeAtCity':
+                {
+                    const { playerId, cityName } = actionDetails;
+                    logicBundle.gameController.upgradeAtCity(cityName, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

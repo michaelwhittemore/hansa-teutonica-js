@@ -185,8 +185,8 @@ export const gameControllerFactory = () => {
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
 
             logicBundle.turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
- 
-            const shouldHideTokenText = !logicBundle.sessionInfo.isHotseatMode && player.id !== 
+
+            const shouldHideTokenText = !logicBundle.sessionInfo.isHotseatMode && player.id !==
                 logicBundle.sessionInfo.participantId;
             logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement, shouldHideTokenText);
 
@@ -432,12 +432,13 @@ export const gameControllerFactory = () => {
                 this.resolveAction(player)
             }
         },
-        resupply(playerId) {
+        resupply(playerId, isOnlineAction = false) {
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
             }
             playerId = player.id;
+
             logicBundle.inputHandlers.clearAllActionSelection();
             if (player.bankedCircles === 0 && player.bankedSquares === 0) {
                 console.warn('There is nothing in your bank to resupply with.')
@@ -465,6 +466,12 @@ export const gameControllerFactory = () => {
                 player.bankedSquares -= resuppliedSquares;
             }
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
+            // dev
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('resupply', {
+                    playerId,
+                })
+            }
             this.resolveAction(player)
             // eventually should chose circles vs squares, right now default to all circles, then square
         },
@@ -804,7 +811,7 @@ export const gameControllerFactory = () => {
             }
             this.resolveAction(player);
         },
-        upgradeAtCity(cityName, playerId) {
+        upgradeAtCity(cityName, playerId, isOnlineAction = false) {
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -828,6 +835,15 @@ export const gameControllerFactory = () => {
             };
             // IMPORTANT! WE NEED TO ENSURE THAT THE BOTTOM RESOLUTION THINGS ONLY OCCUR WHEN THE UNLOCK IS VALID
             const wasUnlocked = this.performUnlock(player, city.unlock)
+            // dev - I think this is where we should do messaging - I think we just need the city
+            // here!
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('upgradeAtCity', {
+                    playerId,
+                    cityName
+                })
+            }
+
             if (wasUnlocked) {
                 player.bankedCircles += routeCheckOutcome.circle;
                 player.bankedSquares += routeCheckOutcome.square;

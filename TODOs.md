@@ -14,21 +14,40 @@
 * Need to add installation instructions to the read me
 
 # TODOs #
+http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
+http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
+Note that the above link uses the test data that gets populated on the server
+
 * 5/24
-    * **HERE!** Resupply
-    * 
+    * **HERE!** upgrading
+    * will need to test each case
+    * also need to validate that the playerBoard is being updated
+    * check the logs (the bottom screen game logging)
 
 -------------------
+Online tasks:
+1. Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments
+2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
+we will be using playerId 
+3. Upgrading - intuitively I think this should be the easiest of the remaining actions
+4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
+    **TOKEN LIST** 
+    1. fourActions
+    2. threeActions - these should be pretty easy
+    3. freeUpgrade - let's do the upgrade city side first
+    4. moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
+    5. switchPost
+    6. bonusPost
+5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 
+
+----------------------------------------
+instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
-* tokenUsageInformation may need to be communicated across the tabs? We will see? 
-* Need to look at everywhere where I have a conditional involving isHotseatMode. Many just don't do anything if isHotseatMode is false
+* tokenUsageInformation may need to be communicated across the tabs? We will see?  - this is because it's tied to a property of gameController and not a function parameter
 
-**IMPORTANT** it looks like playerId is undefined in many gameController methods - placeWorkerOnNodeAction for example
-// Would be nice to add "you" to the player's name in the turn tracker
-// isHotseatMode should also have an isOnlineMode (these are just opposites of each other. maybe this is unnecessary)
 
 
 * Online play:
