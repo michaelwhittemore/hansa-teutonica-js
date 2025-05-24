@@ -14,21 +14,14 @@
 * Need to add installation instructions to the read me
 
 # TODOs #
-* 5/16
-    * test with http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz & http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
-    * clean up my todos a bit
+* 5/24
+    * **HERE!** Resupply
+    * 
 
-    *  Let's get started on capturing cities
-    1. Let's make sure that supply/bank is also updated - including different shapes 
-    * 6. Handling replacing token will also need to happen - let's focus on the routes without it
-        * **IMPORTANT** - We use "you" in the UI. This shouldn't happen when it's the other player's turn
-    * 7. THis will also cause issues with the bonus spot token - but we address that later
-
-    After all of this let's do "resupply"
 -------------------
 
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
-
+* Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
 * tokenUsageInformation may need to be communicated across the tabs? We will see? 
 * Need to look at everywhere where I have a conditional involving isHotseatMode. Many just don't do anything if isHotseatMode is false

@@ -1,4 +1,4 @@
-import {isShape, pluralifyText} from "../helpers/helpers.js";
+import { isShape, pluralifyText } from "../helpers/helpers.js";
 import { BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 
@@ -59,11 +59,13 @@ export const inputHandlerFactory = () => {
                 this.additionalInfo = 'circle'
             }
         },
-        setUpTokenActionInfo(token) {
+        setUpTokenActionInfo(token, shouldHideTokenText = false) {
             this.clearAllActionSelection();
             this.toggleInputButtons(true)
-            // dev
-            this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${TOKEN_READABLE_NAMES[token]}" token.`)
+            if (!shouldHideTokenText) {
+                // We don't need to offer any token rules reminders to players who aren't doing the placing
+                this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${TOKEN_READABLE_NAMES[token]}" token.`)
+            }
             this.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {

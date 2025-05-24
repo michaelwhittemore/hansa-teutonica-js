@@ -185,9 +185,10 @@ export const gameControllerFactory = () => {
             const tokensToPlace = this.tokenPlacementInformation.tokensToPlace
 
             logicBundle.turnTrackerController.updateTurnTrackerWithTokenInfo(player, currentReplacement, tokensToPlace)
-            // HERE! - we use "you" for players whose turn it isn't 
-            // dev
-            logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement);
+ 
+            const shouldHideTokenText = !logicBundle.sessionInfo.isHotseatMode && player.id !== 
+                logicBundle.sessionInfo.participantId;
+            logicBundle.inputHandlers.setUpTokenActionInfo(currentReplacement, shouldHideTokenText);
 
             logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
