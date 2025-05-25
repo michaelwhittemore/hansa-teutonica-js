@@ -432,7 +432,6 @@ export const gameControllerFactory = () => {
                     targetNodeId,
                     originNodeId: originNode.nodeId
                 })
-                return;
             }
 
             gameController.moveInformation.movesUsed++;

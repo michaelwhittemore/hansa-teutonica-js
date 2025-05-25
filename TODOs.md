@@ -31,6 +31,8 @@ Online tasks:
     * might make sense to rename nodeId -> targetNodeId for clarity
     * now I need to try 'endMove' and also test different shapes and remove UI
     * Let's make a note of the fact that we can't just sync the state because we use specific references and it breaks stuff
+    * it breaks on the SECOND move
+    * seems like every place I click I set to 'occupied'
 2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
 we will be using playerId 
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
