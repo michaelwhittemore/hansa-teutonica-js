@@ -69,7 +69,6 @@ export const inputHandlerFactory = () => {
             this.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {
-            // dev
             if (inputHandlers.selectedAction === 'move') {
                 document.getElementById('move').innerText = 'Move Pieces'
                 inputHandlers.clearAllActionSelection();
@@ -312,7 +311,6 @@ export const inputHandlerFactory = () => {
                 logicBundle.gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
             },
             move(nodeId) {
-                // dev
                 if (inputHandlers.additionalInfo === 'selectPieceToMove') {
                     logicBundle.gameController.selectPieceToMove(nodeId)
                 } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {

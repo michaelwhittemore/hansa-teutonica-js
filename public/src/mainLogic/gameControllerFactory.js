@@ -382,12 +382,6 @@ export const gameControllerFactory = () => {
             // in the case of online play. This is because the object contains references to specific
             // nodes and consequently it's not as simple as an assignment. Perhaps in the future
             // we could get the nodes by Id and assign them to the moveInformation.
-
-            // here!
-            // dev 
-            // I think we may need to adjust this to optionally take in previous location - also need
-            // to use onlineAction to stop some of the UI stuff
-
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -450,9 +444,6 @@ export const gameControllerFactory = () => {
             }
         },
         endMoveAction(playerId, optionalMovesUsed = false, isOnlineAction = false) {
-            console.warn(playerId, optionalMovesUsed, isOnlineAction)
-            // dev
-            // note that we use gameController.moveInformation.movesUsed, this may hamper the logic
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -461,13 +452,12 @@ export const gameControllerFactory = () => {
 
             logicBundle.inputHandlers.toggleInputButtons(false)
             const movesUsed = optionalMovesUsed || this.moveInformation.movesUsed
-            console.log('movesUsed', movesUsed)
+
             // The player never actually took an action, works for zero or undefined
             if (!movesUsed) {
                 logicBundle.inputHandlers.clearAllActionSelection()
                 return;
             } else {
-                // here
                 logicBundle.logController.addTextToGameLog(
                     `$PLAYER1_NAME moved ${movesUsed} pieces.`, player)
                 if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
