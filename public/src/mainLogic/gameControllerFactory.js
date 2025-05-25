@@ -340,8 +340,6 @@ export const gameControllerFactory = () => {
             this.resolveAction(player)
         },
         placePieceOnNode(nodeId, shape, player) {
-            // dev
-            // console.log('placePieceOnNode', nodeId, shape, player)
             // This just updates the storage node and the game map. It doesn't subtract from player supply
             // It also assumes the target node is empty
             const routeId = getRouteIdFromNodeId(nodeId);
@@ -385,9 +383,6 @@ export const gameControllerFactory = () => {
             // I think we may need to adjust this to optionally take in previous location - also need
             // to use onlineAction to stop some of the UI stuff
 
-            // need to bundle in originNode - maybe we should just share 'gameController.moveInformation'
-            // hmm maybe not gameController.moveInformation
-
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -397,7 +392,7 @@ export const gameControllerFactory = () => {
             const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
 
             let originNode
-            if (originNodeId){
+            if (originNodeId) {
                 const originRouteId = getRouteIdFromNodeId(originNodeId)
                 originNode = gameController.routeStorageObject[originRouteId].routeNodes[originNodeId];
             } else {
@@ -423,16 +418,7 @@ export const gameControllerFactory = () => {
             };
             Object.assign(originNode, clearedProps);
             logicBundle.boardController.clearPieceFromRouteNode(originNode.nodeId)
-            gameController.moveInformation.movesUsed++;
-            if (gameController.moveInformation.movesUsed === player.maxMovement) {
-                console.warn('used up all move actions')
-                this.endMoveAction(playerId)
-                return;
-            }
-            logicBundle.inputHandlers.updateActionInfoText(
-                `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
-            logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
-            // here
+
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('movePieceToLocation', {
@@ -442,9 +428,19 @@ export const gameControllerFactory = () => {
                 })
             }
 
+            gameController.moveInformation.movesUsed++;
+            if (gameController.moveInformation.movesUsed === player.maxMovement) {
+                console.warn('used up all move actions')
+                this.endMoveAction(playerId)
+                return;
+            }
+            logicBundle.inputHandlers.updateActionInfoText(
+                `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
+            logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
         },
         endMoveAction(playerId) {
             // dev
+            // note that we use gameController.moveInformation.movesUsed, this may hamper the logic
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -495,7 +491,6 @@ export const gameControllerFactory = () => {
                 player.bankedSquares -= resuppliedSquares;
             }
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME resupplied ${resuppliedCircles} circles and ${resuppliedSquares} squares.`, player);
-            // dev
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('resupply', {
                     playerId,

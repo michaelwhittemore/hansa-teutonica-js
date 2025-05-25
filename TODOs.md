@@ -20,15 +20,17 @@ Note that the above link uses the test data that gets populated on the server
 
 * 5/24
     * **HERE!** moving own pieces
+    * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo
     * look at google apps. If I really can't get it working, switch to heroku
 
 -------------------
 Online tasks:
 1. Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments
     * the methods are selectPieceToMove and movePieceToLocation - I think movePieceToLocation is the only one that should be messaging
-    * We have an 'end move' option - what happens if I end early??
-    * definitely a fair amount of work to do here
+    * We have an 'end move' option - what happens if I end early?? - probably need messaging here as well
     * might make sense to rename nodeId -> targetNodeId for clarity
+    * now I need to try 'endMove' and also test different shapes and remove UI
+    * the absence of the gameController.moveInformation might mess with state - I'm worried this is a poor design decision. It might make sense to take it in via the messaging and then set in the clientSocket
 2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
 we will be using playerId 
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
