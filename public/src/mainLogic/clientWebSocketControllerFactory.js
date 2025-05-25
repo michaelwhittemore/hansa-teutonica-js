@@ -85,6 +85,14 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.upgradeAtCity(cityName, playerId, true)
                     break;
                 }
+            case 'movePieceToLocation':
+                {
+                    const { playerId, nodeId, originNodeId } = actionDetails;
+                    // dev - this should break as is
+                    console.warn(playerId, nodeId, originNodeId)
+                    logicBundle.gameController.movePieceToLocation(nodeId, playerId, originNodeId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

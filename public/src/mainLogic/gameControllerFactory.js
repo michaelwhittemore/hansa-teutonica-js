@@ -340,6 +340,8 @@ export const gameControllerFactory = () => {
             this.resolveAction(player)
         },
         placePieceOnNode(nodeId, shape, player) {
+            // dev
+            // console.log('placePieceOnNode', nodeId, shape, player)
             // This just updates the storage node and the game map. It doesn't subtract from player supply
             // It also assumes the target node is empty
             const routeId = getRouteIdFromNodeId(nodeId);
@@ -377,7 +379,15 @@ export const gameControllerFactory = () => {
                 gameController.moveInformation.originNode = node;
             }
         },
-        movePieceToLocation(nodeId, playerId) {
+        movePieceToLocation(nodeId, playerId, originNodeId = false, isOnlineAction = false) {
+            // here!
+            // dev 
+            // I think we may need to adjust this to optionally take in previous location - also need
+            // to use onlineAction to stop some of the UI stuff
+
+            // need to bundle in originNode - maybe we should just share 'gameController.moveInformation'
+            // hmm maybe not gameController.moveInformation
+
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -386,13 +396,21 @@ export const gameControllerFactory = () => {
             const routeId = getRouteIdFromNodeId(nodeId)
             const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
 
-            const originNode = gameController.moveInformation.originNode;
+            let originNode
+            if (originNodeId){
+                const originRouteId = getRouteIdFromNodeId(originNodeId)
+                originNode = gameController.routeStorageObject[originRouteId].routeNodes[originNodeId];
+            } else {
+                originNode = gameController.moveInformation.originNode;
+            }
+
             const shape = originNode.shape
             if (targetNode.occupied) {
                 console.warn('This route node is already occupied.')
                 logicBundle.inputHandlers.warnInvalidAction('This route node is already occupied.');
                 return;
             }
+
             this.placePieceOnNode(nodeId, shape, player);
 
             logicBundle.logController.addTextToGameLog(
@@ -414,8 +432,19 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.updateActionInfoText(
                 `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
             logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
+            // here
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                // Should only send a message if it's a client driven action
+                this.webSocketController.playerTookAction('movePieceToLocation', {
+                    playerId,
+                    nodeId,
+                    originNodeId: originNode.nodeId
+                })
+            }
+
         },
         endMoveAction(playerId) {
+            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -485,7 +514,7 @@ export const gameControllerFactory = () => {
             // 1. First verify that another player controls this location - if not warn and return
             const routeId = getRouteIdFromNodeId(nodeId)
             const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-            console.log(node)
+
             if (!node.occupied || node.playerId === playerId) {
                 console.warn('The route node needs to be occupied by a rival player.')
                 logicBundle.inputHandlers.clearAllActionSelection();
@@ -564,7 +593,6 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId) {
-            console.log('trying to place bumped piece')
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
             if (!player) {
                 return
@@ -724,8 +752,6 @@ export const gameControllerFactory = () => {
         captureCity(cityName, playerId, isOnlineAction = false) {
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
-
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -835,8 +861,6 @@ export const gameControllerFactory = () => {
             };
             // IMPORTANT! WE NEED TO ENSURE THAT THE BOTTOM RESOLUTION THINGS ONLY OCCUR WHEN THE UNLOCK IS VALID
             const wasUnlocked = this.performUnlock(player, city.unlock)
-            // dev - I think this is where we should do messaging - I think we just need the city
-            // here!
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('upgradeAtCity', {
                     playerId,
@@ -1260,7 +1284,7 @@ export const gameControllerFactory = () => {
                 // 1. First get the reference to the node
                 const routeId = getRouteIdFromNodeId(nodeId);
                 const node = gameController.routeStorageObject[routeId].routeNodes[nodeId]
-                console.log(node)
+
                 // 2. Verify that the node is empty- if not warn and return
                 if (node.occupied) {
                     console.warn('That node is already occupied.')

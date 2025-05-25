@@ -69,6 +69,7 @@ export const inputHandlerFactory = () => {
             this.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {
+            // dev
             if (inputHandlers.selectedAction === 'move') {
                 document.getElementById('move').innerText = 'Move Pieces'
                 inputHandlers.clearAllActionSelection();
@@ -84,6 +85,8 @@ export const inputHandlerFactory = () => {
             inputHandlers.selectedAction = 'move'
             inputHandlers.additionalInfo = 'selectPieceToMove'
 
+            // The below text should only occur when you're the player - might not even be
+            // a problem as it's tied to an inputHandler method not the gameController
             inputHandlers.updateActionInfoText('Select one of your own pieces to move.')
         },
         handleCaptureCityButton() {
@@ -309,6 +312,7 @@ export const inputHandlerFactory = () => {
                 logicBundle.gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
             },
             move(nodeId) {
+                // dev
                 if (inputHandlers.additionalInfo === 'selectPieceToMove') {
                     logicBundle.gameController.selectPieceToMove(nodeId)
                 } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {

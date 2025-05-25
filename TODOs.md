@@ -19,17 +19,19 @@ http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 Note that the above link uses the test data that gets populated on the server
 
 * 5/24
-    * **HERE!** upgrading
-    * will need to test each case
-    * also need to validate that the playerBoard is being updated
-    * check the logs (the bottom screen game logging)
+    * **HERE!** moving own pieces
+    * look at google apps. If I really can't get it working, switch to heroku
 
 -------------------
 Online tasks:
 1. Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments
+    * the methods are selectPieceToMove and movePieceToLocation - I think movePieceToLocation is the only one that should be messaging
+    * We have an 'end move' option - what happens if I end early??
+    * definitely a fair amount of work to do here
+    * might make sense to rename nodeId -> targetNodeId for clarity
 2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
 we will be using playerId 
-3. Upgrading - intuitively I think this should be the easiest of the remaining actions
+3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 
     1. fourActions
@@ -40,35 +42,17 @@ we will be using playerId
     6. bonusPost
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 
-
+honestly maybe I should use side by side tabs for testing?
 ----------------------------------------
 instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
 * tokenUsageInformation may need to be communicated across the tabs? We will see?  - this is because it's tied to a property of gameController and not a function parameter
+* should probably get rid of "Should only send a message if it's a client driven action"
 
 
 
-* Online play:
-        * Should break this into a few different areas: ~~landing page~~, waiting room, routing, signalling, file structure, and game logic (pretty sure game logic will be the hardest)
-        * Waiting Room:
-            * Thoughts for tackling breaking into the main game logic:
-                * let's try to break logic for both hotseat and online into the main tab?
-                * I guess in the worst case I can create a method to generate the entire HTML body? and then both can call that function
-                * how are we going to handle online saving?
-                * will need a new mainLogic method for dealing with WS communication
-            * add chat
-            * clean up css and general beautification - maybe should see if I can read anything online for making prettier web pages?
-        * Server related to waiting room:
-            * need to account for un-readying and leaving the room - we will tie them to the same method I think (although there's a difference between freeing up waiting room space and a player becoming un-ready)
-        * Building the server
-            * Read up on express best practices and the MDN HTTP docs
-            * I will also need to add the data base. NoSQL might be easier? Regardless, that can probably come later
-        * Will need a different route from hotseat
-        * will need it's own main.js
-        * can we use the same main.html?
-        * I think we still initialize everything the same way?
 ------
 * waiting room chat
 * maybe allow you to start an online game by simply joining a room?
@@ -77,7 +61,9 @@ We still have a lot of copy pasta regarding player turn validation - we should t
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
+* waiting room clean up/beautification, look up any color schemes or general prettification advise
 # Main Game TODOs #
+* add a method to get node by nodeId?
 * endgame points calculation
 * add currentTurn to the turn tracker or the game history or both (as in how many turns have elapsed total)
 * Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op
