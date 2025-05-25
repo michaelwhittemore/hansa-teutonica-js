@@ -30,7 +30,7 @@ Online tasks:
     * We have an 'end move' option - what happens if I end early?? - probably need messaging here as well
     * might make sense to rename nodeId -> targetNodeId for clarity
     * now I need to try 'endMove' and also test different shapes and remove UI
-    * the absence of the gameController.moveInformation might mess with state - I'm worried this is a poor design decision. It might make sense to take it in via the messaging and then set in the clientSocket
+    * Let's make a note of the fact that we can't just sync the state because we use specific references and it breaks stuff
 2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
 we will be using playerId 
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~

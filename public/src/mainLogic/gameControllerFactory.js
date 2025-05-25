@@ -377,7 +377,12 @@ export const gameControllerFactory = () => {
                 gameController.moveInformation.originNode = node;
             }
         },
-        movePieceToLocation(nodeId, playerId, originNodeId = false, isOnlineAction = false) {
+        movePieceToLocation(targetNodeId, playerId, originNodeId = false, isOnlineAction = false) {
+            // We make a deliberate choice not to attempt to sync gameController.moveInformation
+            // in the case of online play. This is because the object contains references to specific
+            // nodes and consequently it's not as simple as an assignment. Perhaps in the future
+            // we could get the nodes by Id and assign them to the moveInformation.
+            
             // here!
             // dev 
             // I think we may need to adjust this to optionally take in previous location - also need
@@ -388,8 +393,8 @@ export const gameControllerFactory = () => {
                 return
             }
             playerId = player.id;
-            const routeId = getRouteIdFromNodeId(nodeId)
-            const targetNode = gameController.routeStorageObject[routeId].routeNodes[nodeId]
+            const routeId = getRouteIdFromNodeId(targetNodeId)
+            const targetNode = gameController.routeStorageObject[routeId].routeNodes[targetNodeId]
 
             let originNode
             if (originNodeId) {
@@ -406,10 +411,10 @@ export const gameControllerFactory = () => {
                 return;
             }
 
-            this.placePieceOnNode(nodeId, shape, player);
+            this.placePieceOnNode(targetNodeId, shape, player);
 
             logicBundle.logController.addTextToGameLog(
-                `$PLAYER1_NAME moved a ${shape} from ${originNode.nodeId} to ${nodeId}`, player)
+                `$PLAYER1_NAME moved a ${shape} from ${originNode.nodeId} to ${targetNodeId}`, player)
             const clearedProps = {
                 occupied: false,
                 shape: undefined,
@@ -423,7 +428,7 @@ export const gameControllerFactory = () => {
                 // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('movePieceToLocation', {
                     playerId,
-                    nodeId,
+                    targetNodeId,
                     originNodeId: originNode.nodeId
                 })
             }

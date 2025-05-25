@@ -87,10 +87,8 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 }
             case 'movePieceToLocation':
                 {
-                    const { playerId, nodeId, originNodeId } = actionDetails;
-                    // dev - this should break as is
-                    console.warn(playerId, nodeId, originNodeId)
-                    logicBundle.gameController.movePieceToLocation(nodeId, playerId, originNodeId, true)
+                    const { playerId, targetNodeId, originNodeId } = actionDetails;
+                    logicBundle.gameController.movePieceToLocation(targetNodeId, playerId, originNodeId, true)
                     break;
                 }
             default:
