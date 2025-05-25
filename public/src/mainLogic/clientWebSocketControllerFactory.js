@@ -91,6 +91,12 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.movePieceToLocation(targetNodeId, playerId, originNodeId, true)
                     break;
                 }
+            case 'endMoveAction':
+                {
+                    const { playerId, movesUsed } = actionDetails;
+                    logicBundle.gameController.endMoveAction(playerId, movesUsed, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

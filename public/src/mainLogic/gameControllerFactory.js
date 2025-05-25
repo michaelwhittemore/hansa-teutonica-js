@@ -440,11 +440,17 @@ export const gameControllerFactory = () => {
                 this.endMoveAction(playerId)
                 return;
             }
-            logicBundle.inputHandlers.updateActionInfoText(
-                `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
-            logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
+            if (!isOnlineAction) {
+                logicBundle.inputHandlers.updateActionInfoText(
+                    `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
+                logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
+            } else {
+                logicBundle.inputHandlers.updateActionInfoText(
+                    `${player.name} is using a move action.`)
+            }
         },
         endMoveAction(playerId, optionalMovesUsed = false, isOnlineAction = false) {
+            console.warn(playerId, optionalMovesUsed, isOnlineAction)
             // dev
             // note that we use gameController.moveInformation.movesUsed, this may hamper the logic
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
@@ -455,7 +461,7 @@ export const gameControllerFactory = () => {
 
             logicBundle.inputHandlers.toggleInputButtons(false)
             const movesUsed = optionalMovesUsed || this.moveInformation.movesUsed
-
+            console.log('movesUsed', movesUsed)
             // The player never actually took an action, works for zero or undefined
             if (!movesUsed) {
                 logicBundle.inputHandlers.clearAllActionSelection()
