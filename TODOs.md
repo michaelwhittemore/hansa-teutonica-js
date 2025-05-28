@@ -19,7 +19,8 @@ http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 Note that the above link uses the test data that gets populated on the server
 
 * 5/28
-    * **HERE!** Bumping rival pieces 
+    * **HERE!** Bumping rival pieces
+        * logic works, but should fix some of the UI
     * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo - will need to edit the html, maybe tie it to page initialization
     * look at google apps. If I really can't get it working, switch to heroku
 
@@ -33,9 +34,6 @@ we will be using playerId
     * will need to change the UI to remove the "Your square has been displaced from Alpha-Zeta-1. You may place 2 squares and 0 circles."
     * looks like placeBumpedPieceOnNode is the other part - see if there's an ending method
     * "Bob has displaced Alice. Alice has 2 squares left to place on adjacent routes." is being removed. I do *not* want this text removed, it's useful information. I should see if this happens on hotseat mode as well
-    * **BUG** second bump not completening online 
-        * think it's related to outOfMoves || outOfPieces, let's try with circles
-        * circles it's the third one, almost certian it's related to the running out of moves
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 
