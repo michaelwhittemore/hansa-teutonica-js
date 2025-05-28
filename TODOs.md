@@ -34,6 +34,8 @@ we will be using playerId
     * looks like placeBumpedPieceOnNode is the other part - see if there's an ending method
     * "Bob has displaced Alice. Alice has 2 squares left to place on adjacent routes." is being removed. I do *not* want this text removed, it's useful information. I should see if this happens on hotseat mode as well
     * **BUG** second bump not completening online 
+        * think it's related to outOfMoves || outOfPieces, let's try with circles
+        * circles it's the third one, almost certian it's related to the running out of moves
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 

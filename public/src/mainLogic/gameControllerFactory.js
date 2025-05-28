@@ -612,6 +612,7 @@ export const gameControllerFactory = () => {
             }
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId, isOnlineAction = false) {
+            console.warn(' called placeBumpedPieceOnNode, isOnlineAction=', isOnlineAction)
             // dev
             // NOTE THAT THE VALIDATION IS DIFFERENT
 
@@ -686,6 +687,16 @@ export const gameControllerFactory = () => {
             } else if (shape === 'square') {
                 this.bumpInformation.squaresToPlace--;
             }
+
+            // dev
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('placeBumpedPieceOnNode', {
+                    bumpedPlayerId: player.id,
+                    nodeId,
+                    shape,
+                })
+            }
+
             // Two situations trigger bump end - out of moves or out of available pieces
             const outOfMoves = (this.bumpInformation.circlesToPlace + this.bumpInformation.squaresToPlace) === 0;
             const outOfPieces = !this.bumpInformation.free && ((player.bankedSquares + player.supplySquares) === 0);
@@ -709,17 +720,6 @@ export const gameControllerFactory = () => {
             })
             // 11. We also should update the player area to show their current bank and supply
             logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player)
-            // here! 
-            // dev - now we need to add messaging for this part
-            console.log('playerId', playerId)
-            console.warn(this.bumpInformation)
-            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                this.webSocketController.playerTookAction('placeBumpedPieceOnNode', {
-                    bumpedPlayerId: player.id,
-                    nodeId,
-                    shape,
-                })
-            }
         },
         checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
             // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO
