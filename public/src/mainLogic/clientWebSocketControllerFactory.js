@@ -101,7 +101,14 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 {
                     const { nodeId, shape, playerId } = actionDetails;
                     // I don't expect this to fully work, but let's see
-                    logicBundle.gameController.bumpPieceFromNode(nodeId, shape, playerId,  true)
+                    logicBundle.gameController.bumpPieceFromNode(nodeId, shape, playerId, true)
+                    break;
+                }
+            case 'placeBumpedPieceOnNode':
+                {
+                    const { nodeId, shape, bumpedPlayerId } = actionDetails;
+                    // this is the next part to test
+                    logicBundle.gameController.placeBumpedPieceOnNode(nodeId, shape, bumpedPlayerId, true)
                     break;
                 }
             default:

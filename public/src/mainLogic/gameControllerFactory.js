@@ -601,6 +601,8 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
             // dev
             // we may need to move where this happens. We should add the online action parameter to the params
+            console.log('this.bumpInformation')
+            console.warn(this.bumpInformation)
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('bumpPieceFromNode', {
                     playerId,
@@ -611,6 +613,14 @@ export const gameControllerFactory = () => {
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId, isOnlineAction = false) {
             // dev
+            // NOTE THAT THE VALIDATION IS DIFFERENT
+
+            // here! 
+            // hmmm looks like this.bumpInformation is actually the same for both (which is what we expect)
+            // seems like the playerId I pass in is wrong? should I be passing in the bumped player?
+
+            // looks like playerId is undefined is the client driven call (which means that we default
+            // to the partcipant Id - maybe next step s to use this.bumpInformation.bumpedPlayer.id)
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
             if (!player) {
                 return
@@ -701,6 +711,15 @@ export const gameControllerFactory = () => {
             logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player)
             // here! 
             // dev - now we need to add messaging for this part
+            console.log('playerId', playerId)
+            console.warn(this.bumpInformation)
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('placeBumpedPieceOnNode', {
+                    bumpedPlayerId: player.id,
+                    nodeId,
+                    shape,
+                })
+            }
         },
         checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
             // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO
@@ -1373,10 +1392,12 @@ export const gameControllerFactory = () => {
             // TODO - maybe instead we should use isOnlineAction?
             if (!playerId && !logicBundle.sessionInfo.isHotseatMode) {
                 // If no playerId has been provided by the clientWebSocketController, 
-                // we assume it's coming from the client 
+                // we assume it's coming from the client
+                console.warn('defaulting to usng particpanty ID')
                 playerId = logicBundle.sessionInfo.participantId
             }
             if (playerId !== activePlayer.id) {
+                // debugger;
                 console.warn('Player attempting to take an off-turn action')
                 logicBundle.inputHandlers.warnInvalidAction('It\'s not your turn.')
                 return false;
