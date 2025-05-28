@@ -599,7 +599,6 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
-            // here!
             // dev
             // we may need to move where this happens. We should add the online action parameter to the params
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
@@ -610,7 +609,7 @@ export const gameControllerFactory = () => {
                 })
             }
         },
-        placeBumpedPieceOnNode(nodeId, shape, playerId) {
+        placeBumpedPieceOnNode(nodeId, shape, playerId, isOnlineAction = false) {
             // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
             if (!player) {
@@ -700,6 +699,8 @@ export const gameControllerFactory = () => {
             })
             // 11. We also should update the player area to show their current bank and supply
             logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player)
+            // here! 
+            // dev - now we need to add messaging for this part
         },
         checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
             // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO

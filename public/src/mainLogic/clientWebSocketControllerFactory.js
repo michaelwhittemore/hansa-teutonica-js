@@ -97,6 +97,13 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.endMoveAction(playerId, movesUsed, true)
                     break;
                 }
+            case 'bumpPieceFromNode':
+                {
+                    const { nodeId, shape, playerId } = actionDetails;
+                    // I don't expect this to fully work, but let's see
+                    logicBundle.gameController.bumpPieceFromNode(nodeId, shape, playerId,  true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }
