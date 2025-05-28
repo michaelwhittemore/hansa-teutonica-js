@@ -511,7 +511,8 @@ export const gameControllerFactory = () => {
             this.resolveAction(player)
             // eventually should chose circles vs squares, right now default to all circles, then square
         },
-        bumpPieceFromNode(nodeId, shape, playerId) {
+        bumpPieceFromNode(nodeId, shape, playerId, isOnlineAction = false) {
+            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -598,8 +599,19 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
+            // here!
+            // dev
+            // we may need to move where this happens. We should add the online action parameter to the params
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('bumpPieceFromNode', {
+                    playerId,
+                    nodeId,
+                    shape,
+                })
+            }
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId) {
+            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
             if (!player) {
                 return

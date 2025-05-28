@@ -18,22 +18,19 @@ http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
 http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 Note that the above link uses the test data that gets populated on the server
 
-* 5/24
-    * **HERE!** moving own pieces
-    * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo
+* 5/28
+    * **HERE!** Bumping rival pieces 
+    * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo - will need to edit the html, maybe tie it to page initialization
     * look at google apps. If I really can't get it working, switch to heroku
 
 -------------------
 Online tasks:
-1. Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments
-    * the methods are selectPieceToMove and movePieceToLocation - I think movePieceToLocation is the only one that should be messaging
-    * We have an 'end move' option - what happens if I end early?? - probably need messaging here as well
-    * might make sense to rename nodeId -> targetNodeId for clarity
-    * now I need to try 'endMove' and also test different shapes and remove UI
-    * looks like the action isn't being taken? will need to investigate the desync later
-    * maybe just tied to ending move early??
+1. ~~Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments~~
 2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
 we will be using playerId 
+    * bumpPieceFromNode is part of the equation, but where do we place the pieces after?
+    * maybe I start with signalling for bumpPieceFromNode - might need to include 'bumpInformation' from the game controller
+    * looks like placeBumpedPieceOnNode is the other part - see if there's an ending method
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 
