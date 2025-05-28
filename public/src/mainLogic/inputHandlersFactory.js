@@ -40,12 +40,11 @@ export const inputHandlerFactory = () => {
             inputHandlers.addShapeSelectionToActionInfo()
         },
         setUpBumpActionInfo(nodeId, shape, squares, circles) {
+            // here! - need to take in an isOnlineAction like thing to determine if we render the text
             // 1. Toggle off all buttons
             this.toggleInputButtons(true)
             // 2. Add some player info to the action info box
             this.updateActionInfoText(`Your ${shape} has been displaced from ${nodeId}. `)
-            // Would like a helper to deal with plurals
-            // takes in a number and a shape. Creates a string with the text and an optional s
             this.updateActionInfoText(` You may place ${pluralifyText('square', squares)} and ${pluralifyText('circle', circles)}.\n`, false)
             // 3. If the player has both shapes left add a button. Otherwise set shape defaults
             if (squares && circles) {

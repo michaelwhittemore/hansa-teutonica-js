@@ -32,8 +32,10 @@ we will be using playerId
 * The two relevant methods are bumpPieceFromNode & placeBumpedPieceOnNode
     * maybe I start with signalling for bumpPieceFromNode - might need to include 'bumpInformation' from the game controller
     * will need to change the UI to remove the "Your square has been displaced from Alpha-Zeta-1. You may place 2 squares and 0 circles."
-    * looks like placeBumpedPieceOnNode is the other part - see if there's an ending method
-    * "Bob has displaced Alice. Alice has 2 squares left to place on adjacent routes." is being removed. I do *not* want this text removed, it's useful information. I should see if this happens on hotseat mode as well
+        * this is tied to setUpBumpActionInfo
+        * maybe we can only call setUpBumpActionInfo when !isOnlineAction
+        * i think the issue is that setUpBumpActionInfo also affects the inputHandler, not just the UI
+
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 

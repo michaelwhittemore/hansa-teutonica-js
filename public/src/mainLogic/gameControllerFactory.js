@@ -596,7 +596,9 @@ export const gameControllerFactory = () => {
             // 12. Then update inputHandler.selectedAction
             logicBundle.inputHandlers.clearAllActionSelection();
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
-
+            // if (!isOnlineAction) {
+            //     logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
+            // }
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, bumpedShape, squaresToPlace, circlesToPlace);
 
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
@@ -697,6 +699,10 @@ export const gameControllerFactory = () => {
             }
             // 10. If they still have any moves left we update the turnTracker and the BumpActionInfo on
             // the inputHandler
+            // if (!isOnlineAction) {
+            //     logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, this.bumpInformation.bumpedShape,
+            //         this.bumpInformation.squaresToPlace, this.bumpInformation.circlesToPlace);
+            // }
             logicBundle.inputHandlers.setUpBumpActionInfo(nodeId, this.bumpInformation.bumpedShape,
                 this.bumpInformation.squaresToPlace, this.bumpInformation.circlesToPlace);
             logicBundle.turnTrackerController.updateTurnTrackerWithBumpInfo({
