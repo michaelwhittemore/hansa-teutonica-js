@@ -27,19 +27,10 @@ Note that the above link uses the test data that gets populated on the server
 -------------------
 Online tasks:
 1. ~~Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments~~
-2. Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that
-we will be using playerId 
-* The two relevant methods are bumpPieceFromNode & placeBumpedPieceOnNode
-    * maybe I start with signalling for bumpPieceFromNode - might need to include 'bumpInformation' from the game controller
-    * will need to change the UI to remove the "Your square has been displaced from Alpha-Zeta-1. You may place 2 squares and 0 circles."
-        * this is tied to setUpBumpActionInfo
-        * maybe we can only call setUpBumpActionInfo when !isOnlineAction
-        * i think the issue is that setUpBumpActionInfo also affects the inputHandler, not just the UI
-        * looks like I caused the opposite of what i wanted
-        * hmmm looks one of them is correct and one isnt????
-
+2. ~~Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that we will be using playerId ~~
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
+    * gameController.tokenActions sub object contains all the token actions, also need to check the buttons
     **TOKEN LIST** 
     1. fourActions
     2. threeActions - these should be pretty easy

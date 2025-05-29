@@ -11,8 +11,6 @@ export const turnTrackerControllerFactory = () => {
             this.resetTurnTimer()
         },
         updateTurnTrackerWithBumpInfo(props) {
-            // dev
-
             document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''
             const { bumpedPlayer, bumpingPlayer, circlesToPlace, squaresToPlace } = props
             const bumpInfoDiv = createDivWithClassAndIdAndStyle(['bumpInfo'])
