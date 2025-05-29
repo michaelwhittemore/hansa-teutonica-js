@@ -242,7 +242,6 @@ export const gameControllerFactory = () => {
             // ----------------Continuing (tokensToPlace > 0)-----------------
 
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('replaceTokenAtLocation', {
                     playerId,
                     routeId,
@@ -329,7 +328,6 @@ export const gameControllerFactory = () => {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${shape} on ${nodeId}`, player)
 
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('placeWorkerOnNode', {
                     playerId,
                     nodeId,
@@ -420,7 +418,6 @@ export const gameControllerFactory = () => {
             logicBundle.boardController.clearPieceFromRouteNode(originNode.nodeId)
 
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                // Should only send a message if it's a client driven action
                 this.webSocketController.playerTookAction('movePieceToLocation', {
                     playerId,
                     targetNodeId,
@@ -1124,7 +1121,7 @@ export const gameControllerFactory = () => {
             }
             logicBundle.inputHandlers.populateTokenMenu(player.currentTokens)
         },
-        useToken(tokenType, playerId, isOnlineAction = false) {
+        useToken(tokenType, playerId) {
             // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
@@ -1133,10 +1130,10 @@ export const gameControllerFactory = () => {
             playerId = player.id;
             switch (tokenType) {
                 case 'threeActions':
-                    this.tokenActions.gainActions(player, 3)
+                    this.tokenActions.gainActions(playerId, 3)
                     break;
                 case 'fourActions':
-                    this.tokenActions.gainActions(player, 4)
+                    this.tokenActions.gainActions(playerId, 4)
                     break;
                 case 'freeUpgrade':
                     this.tokenActions.freeUpgradeSetup(player)
@@ -1153,14 +1150,6 @@ export const gameControllerFactory = () => {
                 default:
                     console.error(`Unknown Token Type: ${tokenType}`)
             }
-            // here!
-            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
-                // Should only send a message if it's a client driven action
-                this.webSocketController.playerTookAction('useToken', {
-                    playerId,
-                    tokenType,
-                })
-            }
         },
         finishTokenUsage(player, tokenType) {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME used a ${TOKEN_READABLE_NAMES[tokenType]} token.`, player)
@@ -1174,7 +1163,12 @@ export const gameControllerFactory = () => {
 
         },
         tokenActions: {
-            gainActions(player, actionsNumber) {
+            gainActions(playerId, actionsNumber, isOnlineAction = false) {
+                // here! - maybe we should siwtch to using playerID
+                const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
+                if (!player) {
+                    return
+                }
                 // dev
                 // need to add validation and socket information (maybe don't need validation given that 
                 // the buttons are only created after validation occurs)
@@ -1182,14 +1176,18 @@ export const gameControllerFactory = () => {
                 player.currentActions += actionsNumber;
                 logicBundle.turnTrackerController.updateTurnTracker(player)
                 gameController.finishTokenUsage(player, actionsNumber === 3 ? 'threeActions' : 'fourActions')
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    gameController.webSocketController.playerTookAction('gainActions', {
+                        playerId,
+                        actionsNumber, 
+                    })
+                }
             },
             freeUpgradeSetup(player) {
                 const availableUpgrades = [];
                 for (let unlockKey in player.unlockArrayIndex) {
                     if (player.unlockArrayIndex[unlockKey] < unlockMapMaxValues[unlockKey] - 1) {
                         availableUpgrades.push(unlockKey)
-                        // Need a method to create all these buttons. The onclick will be
-                        // a gameController method which takes in the kind of upgrade 
                     }
                 }
                 if (availableUpgrades.length === 0) {

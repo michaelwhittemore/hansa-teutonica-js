@@ -18,9 +18,8 @@ http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
 http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 Note that the above link uses the test data that gets populated on the server
 
-* 5/28
-    * **HERE!** Bumping rival pieces
-        * logic works, but should fix some of the UI
+* 5/30
+    * **HERE!** continue with tokens
     * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo - will need to edit the html, maybe tie it to page initialization
     * look at google apps. If I really can't get it working, switch to heroku
 
@@ -32,13 +31,14 @@ Online tasks:
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     * gameController.tokenActions sub object contains all the token actions, also need to check the buttons
     * useToken actually uses the validation
+    * so doing it in gameController.useToken doesn't seem ideal given that some things are set up. - instead it might make sense to tie it to individual actions 
     **TOKEN LIST** 
-    1. ~~fourActions~~
-    2. ~~threeActions - these should be pretty easy~~
-    3. freeUpgrade 
+    1. fourActions
+    2. threeActions - these should be pretty easy - tokenActions.gainActions
+    3. freeUpgrade **HERE!** - we get the message but it doesn't seem to do anything, let's step through the logic - oh it seems that we just set up the bar with this method - maybe useFreeUpgrade
     4. moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
     5. switchPost
-    6. bonusPost
+    6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 
 honestly maybe I should use side by side tabs for testing?
@@ -48,7 +48,6 @@ We still have a lot of copy pasta regarding player turn validation - we should t
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
 * tokenUsageInformation may need to be communicated across the tabs? We will see?  - this is because it's tied to a property of gameController and not a function parameter
-* should probably get rid of "Should only send a message if it's a client driven action"
 
 
 

@@ -109,10 +109,10 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.placeBumpedPieceOnNode(nodeId, shape, bumpedPlayerId, true)
                     break;
                 }
-            case 'useToken':
+            case 'gainActions':
                 {
-                    const { playerId, tokenType } = actionDetails;
-                    logicBundle.gameController.useToken(tokenType, playerId, true)
+                    const { playerId, actionsNumber } = actionDetails;
+                    logicBundle.gameController.tokenActions.gainActions(playerId, actionsNumber, true)
                     break;
                 }
             default:
