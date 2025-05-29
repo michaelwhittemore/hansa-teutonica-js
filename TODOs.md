@@ -35,6 +35,7 @@ we will be using playerId
         * this is tied to setUpBumpActionInfo
         * maybe we can only call setUpBumpActionInfo when !isOnlineAction
         * i think the issue is that setUpBumpActionInfo also affects the inputHandler, not just the UI
+        * looks like I caused the opposite of what i wanted
 
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
