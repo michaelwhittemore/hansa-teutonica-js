@@ -597,12 +597,13 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.clearAllActionSelection();
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
+            const shouldAddText = logicBundle.sessionInfo.isHotseatMode || isOnlineAction;
             logicBundle.inputHandlers.setUpBumpActionInfo({
                 nodeId,
                 shape: bumpedShape,
                 squares: squaresToPlace,
                 circles: circlesToPlace,
-                shouldAddText: !isOnlineAction,
+                shouldAddText,
             });
 
             // nodeId, shape, squares, circles

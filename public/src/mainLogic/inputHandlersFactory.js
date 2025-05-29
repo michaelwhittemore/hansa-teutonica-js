@@ -41,26 +41,27 @@ export const inputHandlerFactory = () => {
         },
         setUpBumpActionInfo(parameters) {
             const { nodeId, shape, squares, circles, shouldAddText } = parameters
-            // here! - need to take in an isOnlineAction like thing to determine if we render the text
             // 1. Toggle off all buttons
             this.toggleInputButtons(true)
             // 2. Add some player info to the action info box
             if (shouldAddText) {
                 this.updateActionInfoText(`Your ${shape} has been displaced from ${nodeId}. `)
                 this.updateActionInfoText(` You may place ${pluralifyText('square', squares)} and ${pluralifyText('circle', circles)}.\n`, false)
+
+                if (squares && circles) {
+                    this.addShapeSelectionToActionInfo()
+                    if (USE_DEFAULT_CLICK_ACTIONS) {
+                        this.additionalInfo = 'square';
+                    }
+                } else if (squares && !circles) {
+                    this.additionalInfo = 'square';
+                } else if (!squares && circles) {
+                    this.additionalInfo = 'circle'
+                }
             }
 
             // 3. If the player has both shapes left add a button. Otherwise set shape defaults
-            if (squares && circles) {
-                this.addShapeSelectionToActionInfo()
-                if (USE_DEFAULT_CLICK_ACTIONS) {
-                    this.additionalInfo = 'square';
-                }
-            } else if (squares && !circles) {
-                this.additionalInfo = 'square';
-            } else if (!squares && circles) {
-                this.additionalInfo = 'circle'
-            }
+
         },
         setUpTokenActionInfo(token, shouldHideTokenText = false) {
             this.clearAllActionSelection();
