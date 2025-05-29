@@ -1160,11 +1160,9 @@ export const gameControllerFactory = () => {
             // need to clear the token information
             gameController.tokenUsageInformation = {};
             logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
-
         },
         tokenActions: {
             gainActions(playerId, actionsNumber, isOnlineAction = false) {
-                // here! - maybe we should siwtch to using playerID
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1179,7 +1177,7 @@ export const gameControllerFactory = () => {
                 if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                     gameController.webSocketController.playerTookAction('gainActions', {
                         playerId,
-                        actionsNumber, 
+                        actionsNumber,
                     })
                 }
             },
@@ -1199,7 +1197,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.populateUpgradeMenuFromToken(availableUpgrades);
 
             },
-            useFreeUpgrade(upgradeType, playerId) {
+            useFreeUpgrade(upgradeType, playerId, isOnlineAction = false) {
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1207,6 +1205,12 @@ export const gameControllerFactory = () => {
                 playerId = player.id;
                 gameController.performUnlock(player, upgradeType)
                 gameController.finishTokenUsage(player, 'freeUpgrade')
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    gameController.webSocketController.playerTookAction('useFreeUpgrade', {
+                        playerId,
+                        upgradeType,
+                    })
+                }
             },
             switchPost() {
                 logicBundle.inputHandlers.clearAllActionSelection();

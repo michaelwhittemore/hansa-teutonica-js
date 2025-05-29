@@ -33,10 +33,10 @@ Online tasks:
     * useToken actually uses the validation
     * so doing it in gameController.useToken doesn't seem ideal given that some things are set up. - instead it might make sense to tie it to individual actions 
     **TOKEN LIST** 
-    1. fourActions
-    2. threeActions - these should be pretty easy - tokenActions.gainActions
-    3. freeUpgrade **HERE!** - we get the message but it doesn't seem to do anything, let's step through the logic - oh it seems that we just set up the bar with this method - maybe useFreeUpgrade
-    4. moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
+    1. ~~fourActions~~
+    2. ~~threeActions - these should be pretty easy - tokenActions.gainActions~~
+    3. ~~freeUpgrade  ~~
+    4. **HERE!** moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
     5. switchPost
     6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"

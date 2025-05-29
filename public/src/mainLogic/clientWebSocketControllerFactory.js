@@ -115,6 +115,12 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.tokenActions.gainActions(playerId, actionsNumber, true)
                     break;
                 }
+            case 'useFreeUpgrade':
+                {
+                    const { playerId, upgradeType } = actionDetails;
+                    logicBundle.gameController.tokenActions.useFreeUpgrade(upgradeType, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }
