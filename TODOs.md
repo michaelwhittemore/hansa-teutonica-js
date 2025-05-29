@@ -31,10 +31,11 @@ Online tasks:
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     * gameController.tokenActions sub object contains all the token actions, also need to check the buttons
+    * useToken actually uses the validation
     **TOKEN LIST** 
-    1. fourActions
-    2. threeActions - these should be pretty easy
-    3. freeUpgrade - let's do the upgrade city side first
+    1. ~~fourActions~~
+    2. ~~threeActions - these should be pretty easy~~
+    3. freeUpgrade 
     4. moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
     5. switchPost
     6. bonusPost

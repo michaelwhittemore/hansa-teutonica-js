@@ -109,6 +109,12 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.placeBumpedPieceOnNode(nodeId, shape, bumpedPlayerId, true)
                     break;
                 }
+            case 'useToken':
+                {
+                    const { playerId, tokenType } = actionDetails;
+                    logicBundle.gameController.useToken(tokenType, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

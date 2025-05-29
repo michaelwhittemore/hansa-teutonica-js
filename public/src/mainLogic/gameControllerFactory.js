@@ -1124,7 +1124,8 @@ export const gameControllerFactory = () => {
             }
             logicBundle.inputHandlers.populateTokenMenu(player.currentTokens)
         },
-        useToken(tokenType, playerId) {
+        useToken(tokenType, playerId, isOnlineAction = false) {
+            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -1152,6 +1153,14 @@ export const gameControllerFactory = () => {
                 default:
                     console.error(`Unknown Token Type: ${tokenType}`)
             }
+            // here!
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                // Should only send a message if it's a client driven action
+                this.webSocketController.playerTookAction('useToken', {
+                    playerId,
+                    tokenType,
+                })
+            }
         },
         finishTokenUsage(player, tokenType) {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME used a ${TOKEN_READABLE_NAMES[tokenType]} token.`, player)
@@ -1166,6 +1175,9 @@ export const gameControllerFactory = () => {
         },
         tokenActions: {
             gainActions(player, actionsNumber) {
+                // dev
+                // need to add validation and socket information (maybe don't need validation given that 
+                // the buttons are only created after validation occurs)
                 console.warn(`${player.name} is gaining ${actionsNumber} actions`)
                 player.currentActions += actionsNumber;
                 logicBundle.turnTrackerController.updateTurnTracker(player)
