@@ -121,6 +121,19 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.tokenActions.useFreeUpgrade(upgradeType, playerId, true)
                     break;
                 }
+            case 'selectMoveThreeLocation':
+                {
+                    const { playerId, nodeId, tokenUsageInformation } = actionDetails;
+                    logicBundle.gameController.tokenActions.selectMoveThreeLocation(nodeId, playerId,
+                        tokenUsageInformation, true)
+                    break;
+                }
+            case 'endMoveThree':
+                {
+                    const { playerId } = actionDetails;
+                    logicBundle.gameController.tokenActions.endMoveThree(playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

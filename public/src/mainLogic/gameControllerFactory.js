@@ -509,7 +509,6 @@ export const gameControllerFactory = () => {
             // eventually should chose circles vs squares, right now default to all circles, then square
         },
         bumpPieceFromNode(nodeId, shape, playerId, isOnlineAction = false) {
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -613,7 +612,6 @@ export const gameControllerFactory = () => {
             }
         },
         placeBumpedPieceOnNode(nodeId, shape, playerId, isOnlineAction = false) {
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.bumpInformation.bumpedPlayer)
             if (!player) {
                 return
@@ -680,7 +678,6 @@ export const gameControllerFactory = () => {
                 this.bumpInformation.squaresToPlace--;
             }
 
-            // dev
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('placeBumpedPieceOnNode', {
                     bumpedPlayerId: player.id,
@@ -1122,7 +1119,6 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.populateTokenMenu(player.currentTokens)
         },
         useToken(tokenType, playerId) {
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -1167,7 +1163,7 @@ export const gameControllerFactory = () => {
                 if (!player) {
                     return
                 }
- 
+
                 console.warn(`${player.name} is gaining ${actionsNumber} actions`)
                 player.currentActions += actionsNumber;
                 logicBundle.turnTrackerController.updateTurnTracker(player)
@@ -1326,13 +1322,20 @@ export const gameControllerFactory = () => {
                 // 4. We need to change the additionalInfo field
                 logicBundle.inputHandlers.additionalInfo = 'selectLocation'
             },
-            selectMoveThreeLocation(nodeId, playerId) {
+            selectMoveThreeLocation(nodeId, playerId,
+                optionalTokenUsageInformation = false, isOnlineAction = false) {
                 // dev 
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
                 }
                 playerId = player.id;
+
+                if (optionalTokenUsageInformation) {
+                    gameController.tokenUsageInformation = optionalTokenUsageInformation;
+                }
+
+
                 console.log('selectMoveThreeLocation', nodeId)
                 // 1. First get the reference to the node
                 const routeId = getRouteIdFromNodeId(nodeId);
@@ -1367,10 +1370,22 @@ export const gameControllerFactory = () => {
                 // 9. Place piece on the new location on boardUI
                 gameController.placePieceOnNode(nodeId, originShape, originPlayer)
 
+                // dev -- I think we do the signaling here!
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    // TODO - I don't know if the spread operator copying is necessary, I think I
+                    // was misdiagnosing a bug
+                    const tokenUsageInformation = { ...gameController.tokenUsageInformation }
+                    gameController.webSocketController.playerTookAction('selectMoveThreeLocation', {
+                        playerId,
+                        nodeId,
+                        tokenUsageInformation,
+                    });
+                }
+
                 // 10. Decrement the gameController.tokenUsageInformation.movesLeft - if
                 // it's zero we call this.endMoveThree
                 gameController.tokenUsageInformation.movesLeft--;
-                if (gameController.tokenUsageInformation.movesLeft === 0) {
+                if (gameController.tokenUsageInformation.movesLeft === 0 && !isOnlineAction) {
                     this.endMoveThree();
                     return;
                 }
@@ -1381,7 +1396,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.additionalInfo = 'selectPiece';
                 gameController.tokenUsageInformation.originLocation = undefined;
             },
-            endMoveThree(playerId) {
+            endMoveThree(playerId, isOnlineAction = false) {
                 // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
@@ -1392,6 +1407,12 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.toggleInputButtons(false)
                 logicBundle.inputHandlers.clearAllActionSelection()
                 // 2. Trigger the finishTokenUsage method
+                // here! - need to do signaling
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    gameController.webSocketController.playerTookAction('endMoveThree', {
+                        playerId,
+                    });
+                }
                 gameController.finishTokenUsage(player, 'moveThree');
             }
         },

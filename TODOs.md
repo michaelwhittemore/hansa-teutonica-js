@@ -37,9 +37,15 @@ Online tasks:
         * tokenActions.moveThree() just sets up inputs
         * I don't think we need to do anything with tokenActions.selectMoveThreePiece
         * **important** the methods that i think we need to use are tokenActions.selectMoveThreeLocation & tokenActions.endMoveThree - instead of endMoveThree maybe we use gameController.finishTokenUsage? - I think endMoveThree still seems more appropriate
+        * let's see if the move part works without messaging (just on Alice's side) - it still works fine, just obviously not reflected on the other player
+        # BUG # desync between the tokenInformation
+            * actually I think it's just an issue with 'endMoveThree' validation
+        * also remember that we should be auto-ending the move three unless they do it early. Only need signaling if it happens early
+        * Will need to add UI to turn tracker. I think **this applies to hotseat** as well, follow the example of bumping rival piece
     5. switchPost
     6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
+6. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces
 
 honestly maybe I should use side by side tabs for testing?
 ----------------------------------------
