@@ -63,8 +63,8 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 }
             case 'captureCity':
                 {
-                    const { cityName, playerId } = actionDetails;
-                    logicBundle.gameController.captureCity(cityName, playerId, true)
+                    const { cityName, playerId, onlineUsedBonusToken } = actionDetails;
+                    logicBundle.gameController.captureCity(cityName, playerId, onlineUsedBonusToken,  true)
                     break;
                 }
             case 'replaceTokenAtLocation':

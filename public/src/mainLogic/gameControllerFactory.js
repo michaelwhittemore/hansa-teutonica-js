@@ -783,7 +783,7 @@ export const gameControllerFactory = () => {
                 failSafe++;
             }
         },
-        captureCity(cityName, playerId, isOnlineAction = false) {
+        captureCity(cityName, playerId, onlineUsedBonusToken = false, isOnlineAction = false) {
             // TODO Eventually we will need to deal with a player who has multiple completed routes to a single city
             // probably use an onclick for a route node. Let's deal with that later
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
@@ -844,7 +844,10 @@ export const gameControllerFactory = () => {
             city.occupants.push(playerId);
             city.openSpotIndex++;
 
-            if (this.tokenUsageInformation.tokenAction === 'bonusPost') {
+            let didUseABonusPost = false;
+            // dev
+            // here! -- need to use the parameter - also need to set it for the messaging
+            if (this.tokenUsageInformation.tokenAction === 'bonusPost' || onlineUsedBonusToken) {
                 console.warn(`Trying to capture ${cityName} with an additional post`)
                 let usedShape;
                 if (player.bankedSquares > 0) {
@@ -860,13 +863,16 @@ export const gameControllerFactory = () => {
                     city.bonusSpotOccupantArray.length - 1)
 
                 gameController.finishTokenUsage(player, 'bonusPost')
+                didUseABonusPost = true;
             }
-
+            // here!
+            // I think we update the messaging and also need to 
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('captureCity', {
                     playerId,
                     cityName,
+                    onlineUsedBonusToken: didUseABonusPost
                 })
             }
             this.resolveAction(player);
@@ -1213,7 +1219,6 @@ export const gameControllerFactory = () => {
             },
             selectedPostToSwitch(cityId, citySpotNumber, playerId, 
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
-                // dev
 
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
@@ -1346,7 +1351,7 @@ export const gameControllerFactory = () => {
             },
             selectMoveThreeLocation(nodeId, playerId,
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
-                    // dev
+
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
