@@ -31,18 +31,10 @@ Online tasks:
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
     **TOKEN LIST** 
     1. ~~fourActions~~
-    2. ~~threeActions - these should be pretty easy - tokenActions.gainActions~~
+    2. ~~threeActions~~
     3. ~~freeUpgrade  ~~
-    4. **HERE!** moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
-        * tokenActions.moveThree() just sets up inputs
-        * I don't think we need to do anything with tokenActions.selectMoveThreePiece
-        * **important** the methods that i think we need to use are tokenActions.selectMoveThreeLocation & tokenActions.endMoveThree - instead of endMoveThree maybe we use gameController.finishTokenUsage? - I think endMoveThree still seems more appropriate
-        * let's see if the move part works without messaging (just on Alice's side) - it still works fine, just obviously not reflected on the other player
-        # BUG # desync between the tokenInformation
-            * actually I think it's just an issue with 'endMoveThree' validation
-        * also remember that we should be auto-ending the move three unless they do it early. Only need signaling if it happens early
-        * Will need to add UI to turn tracker. I think **this applies to hotseat** as well, follow the example of bumping rival piece
-    5. switchPost
+    4. ~~moveThree~~
+    5.  **HERE!** switchPost
     6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 6. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces
@@ -53,7 +45,6 @@ instead of heroku perhaps I should use Google App Engine? looks like it has a fr
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
-* tokenUsageInformation may need to be communicated across the tabs? We will see?  - this is because it's tied to a property of gameController and not a function parameter
 
 
 
@@ -67,9 +58,11 @@ We still have a lot of copy pasta regarding player turn validation - we should t
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 * waiting room clean up/beautification, look up any color schemes or general prettification advise
 # Main Game TODOs #
+* clean up all my steps comments (i.e. where I manually wrote out a long list of steps) - only keep if actually explains the logic and should also remove the numbers
 * add a method to get node by nodeId?
 * endgame points calculation
-* clean up all isnatnces of console.log and console.warn
+* clean up all instances of console.log and console.warn
+* I actually have references to turnTimer in the code. I should probably do something with that
 * add currentTurn to the turn tracker or the game history or both (as in how many turns have elapsed total)
 * Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8

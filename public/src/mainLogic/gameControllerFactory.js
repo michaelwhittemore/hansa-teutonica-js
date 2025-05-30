@@ -1296,11 +1296,12 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.additionalInfo = 'selectPiece'
 
                 logicBundle.inputHandlers.toggleInputButtons(true)
-                logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
+                logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this up to three times');
                 logicBundle.inputHandlers.populateMoveThreeMenu(3)
                 gameController.tokenUsageInformation.movesLeft = 3;
             },
             selectMoveThreePiece(nodeId, playerId) {
+                // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1324,7 +1325,7 @@ export const gameControllerFactory = () => {
             },
             selectMoveThreeLocation(nodeId, playerId,
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
-                // dev 
+
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1370,7 +1371,6 @@ export const gameControllerFactory = () => {
                 // 9. Place piece on the new location on boardUI
                 gameController.placePieceOnNode(nodeId, originShape, originPlayer)
 
-                // dev -- I think we do the signaling here!
                 if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                     // TODO - I don't know if the spread operator copying is necessary, I think I
                     // was misdiagnosing a bug
@@ -1391,13 +1391,19 @@ export const gameControllerFactory = () => {
                 }
                 // 11. Otherwise we update the tokenUI and actionInfo UI texts
                 // 12. Then change the logicBundle.inputHandlers.additionalInfo back to 'selectPiece'
-                logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this three times');
-                logicBundle.inputHandlers.populateMoveThreeMenu(gameController.tokenUsageInformation.movesLeft)
+                const movesLeft = gameController.tokenUsageInformation.movesLeft
+                if (!isOnlineAction) {
+                    logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this up to three times');
+                    logicBundle.inputHandlers.populateMoveThreeMenu(movesLeft)
+                } else {
+                    logicBundle.inputHandlers.updateActionInfoText(
+                        `Waiting on ${player.name}'s Move Three Tradesmen Token. They have ${pluralifyText('move', movesLeft)} left.`);                    
+                }
+
                 logicBundle.inputHandlers.additionalInfo = 'selectPiece';
                 gameController.tokenUsageInformation.originLocation = undefined;
             },
             endMoveThree(playerId, isOnlineAction = false) {
-                // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1407,7 +1413,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.toggleInputButtons(false)
                 logicBundle.inputHandlers.clearAllActionSelection()
                 // 2. Trigger the finishTokenUsage method
-                // here! - need to do signaling
+
                 if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                     gameController.webSocketController.playerTookAction('endMoveThree', {
                         playerId,
