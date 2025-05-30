@@ -1167,9 +1167,7 @@ export const gameControllerFactory = () => {
                 if (!player) {
                     return
                 }
-                // dev
-                // need to add validation and socket information (maybe don't need validation given that 
-                // the buttons are only created after validation occurs)
+ 
                 console.warn(`${player.name} is gaining ${actionsNumber} actions`)
                 player.currentActions += actionsNumber;
                 logicBundle.turnTrackerController.updateTurnTracker(player)
@@ -1329,6 +1327,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.additionalInfo = 'selectLocation'
             },
             selectMoveThreeLocation(nodeId, playerId) {
+                // dev 
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1383,6 +1382,7 @@ export const gameControllerFactory = () => {
                 gameController.tokenUsageInformation.originLocation = undefined;
             },
             endMoveThree(playerId) {
+                // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return

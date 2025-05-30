@@ -29,14 +29,14 @@ Online tasks:
 2. ~~Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that we will be using playerId ~~
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
 4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
-    * gameController.tokenActions sub object contains all the token actions, also need to check the buttons
-    * useToken actually uses the validation
-    * so doing it in gameController.useToken doesn't seem ideal given that some things are set up. - instead it might make sense to tie it to individual actions 
     **TOKEN LIST** 
     1. ~~fourActions~~
     2. ~~threeActions - these should be pretty easy - tokenActions.gainActions~~
     3. ~~freeUpgrade  ~~
     4. **HERE!** moveThree - one of the trickier ones. Need to figure out if we do a message for each or block - I think we do each but need to be aware of the stored token info
+        * tokenActions.moveThree() just sets up inputs
+        * I don't think we need to do anything with tokenActions.selectMoveThreePiece
+        * **important** the methods that i think we need to use are tokenActions.selectMoveThreeLocation & tokenActions.endMoveThree - instead of endMoveThree maybe we use gameController.finishTokenUsage? - I think endMoveThree still seems more appropriate
     5. switchPost
     6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
@@ -63,6 +63,7 @@ We still have a lot of copy pasta regarding player turn validation - we should t
 # Main Game TODOs #
 * add a method to get node by nodeId?
 * endgame points calculation
+* clean up all isnatnces of console.log and console.warn
 * add currentTurn to the turn tracker or the game history or both (as in how many turns have elapsed total)
 * Keyboard shortcuts - will need to track state if you can actually make changes (like to the inputHandler action type), otherwise it's a no-op
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
