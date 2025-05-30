@@ -134,6 +134,13 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                     logicBundle.gameController.tokenActions.endMoveThree(playerId, true)
                     break;
                 }
+            case 'selectedPostToSwitch':
+                {
+                     const { cityId, citySpotNumber, playerId, tokenUsageInformation } = actionDetails;
+                    logicBundle.gameController.tokenActions.selectedPostToSwitch(cityId, citySpotNumber, 
+                        playerId, tokenUsageInformation, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

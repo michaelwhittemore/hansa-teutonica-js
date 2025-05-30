@@ -1211,11 +1211,21 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.selectedAction = 'switchPostSelection';
                 logicBundle.inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.');
             },
-            selectedPostToSwitch(cityId, citySpotNumber, playerId) {
+            selectedPostToSwitch(cityId, citySpotNumber, playerId, 
+                optionalTokenUsageInformation = false, isOnlineAction = false) {
+                // dev
+
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
                 }
+
+                if (optionalTokenUsageInformation) {
+                    console.log('Overwriting with')
+                    console.log(optionalTokenUsageInformation)
+                    gameController.tokenUsageInformation = optionalTokenUsageInformation;
+                }
+
                 playerId = player.id;
                 console.log(cityId, citySpotNumber)
                 // TODO check that the spot is not a bonus spot!
@@ -1274,6 +1284,18 @@ export const gameControllerFactory = () => {
                     logicBundle.inputHandlers.warnInvalidAction('Both trading posts must be owned by different players, one of whom is you.')
                     return;
                 }
+
+                // dev 
+                if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                    console.log(cityId, citySpotNumber, playerId)
+                    gameController.webSocketController.playerTookAction('selectedPostToSwitch', {
+                        playerId,
+                        cityId, 
+                        citySpotNumber,
+                        tokenUsageInformation: gameController.tokenUsageInformation,
+                    })
+                }
+
                 // 1. Need to switch the colors on the board pieces, 
                 logicBundle.boardController.switchPieceColor(`piece-${previousCityId}-${previousSpotNumber}`, `piece-${cityId}-${citySpotNumber}`)
                 // 2. Need to switch the locations in cityStorage
@@ -1301,7 +1323,6 @@ export const gameControllerFactory = () => {
                 gameController.tokenUsageInformation.movesLeft = 3;
             },
             selectMoveThreePiece(nodeId, playerId) {
-                // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1325,7 +1346,7 @@ export const gameControllerFactory = () => {
             },
             selectMoveThreeLocation(nodeId, playerId,
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
-
+                    // dev
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
                 if (!player) {
                     return
@@ -1397,7 +1418,7 @@ export const gameControllerFactory = () => {
                     logicBundle.inputHandlers.populateMoveThreeMenu(movesLeft)
                 } else {
                     logicBundle.inputHandlers.updateActionInfoText(
-                        `Waiting on ${player.name}'s Move Three Tradesmen Token. They have ${pluralifyText('move', movesLeft)} left.`);                    
+                        `Waiting on ${player.name}'s Move Three Tradesmen Token. They have ${pluralifyText('move', movesLeft)} left.`);
                 }
 
                 logicBundle.inputHandlers.additionalInfo = 'selectPiece';

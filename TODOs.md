@@ -34,8 +34,8 @@ Online tasks:
     2. ~~threeActions~~
     3. ~~freeUpgrade  ~~
     4. ~~moveThree~~
-    5.  **HERE!** switchPost
-    6. bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
+    5. ~~switchPost~~ 
+    6. **HERE!** bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 6. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces
 
