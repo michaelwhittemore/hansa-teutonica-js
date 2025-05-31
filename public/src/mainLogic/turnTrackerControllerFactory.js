@@ -4,7 +4,10 @@ import { TOKEN_READABLE_NAMES } from "../helpers/constants.js"
 export const turnTrackerControllerFactory = () => {
     const turnTrackerController = {
         updateTurnTracker(player) {
-            document.getElementById('turnTrackerPlayerName').innerText = player.name
+            const participantIsPlayer = logicBundle.sessionInfo.participantId === player.id
+            document.getElementById('turnTrackerPlayerName').innerText = participantIsPlayer ? 
+                'Your' : `${player.name}'s`;
+            document.getElementById('pronoun').innerText = participantIsPlayer ? 'You' : 'They';
             document.getElementById('turnTrackerPlayerColor').style.color = player.color
             document.getElementById('turnTrackerActions').innerText = pluralifyText('action', player.currentActions)
             document.getElementById('turnTrackerAdditionalInformation').innerHTML = ''

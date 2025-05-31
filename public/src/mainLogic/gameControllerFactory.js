@@ -846,7 +846,6 @@ export const gameControllerFactory = () => {
 
             let didUseABonusPost = false;
             // dev
-            // here! -- need to use the parameter - also need to set it for the messaging
             if (this.tokenUsageInformation.tokenAction === 'bonusPost' || onlineUsedBonusToken) {
                 console.warn(`Trying to capture ${cityName} with an additional post`)
                 let usedShape;
@@ -865,8 +864,7 @@ export const gameControllerFactory = () => {
                 gameController.finishTokenUsage(player, 'bonusPost')
                 didUseABonusPost = true;
             }
-            // here!
-            // I think we update the messaging and also need to 
+
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME captured the city of ${cityName}.`, player);
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('captureCity', {

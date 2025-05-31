@@ -19,8 +19,11 @@ http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 Note that the above link uses the test data that gets populated on the server
 
 * 5/30
-    * **HERE!** continue with tokens
-    * turnTrackerMain - should have something for online play where it check for 'YOU' - can probably use the logicBundle.sessionInfo - will need to edit the html, maybe tie it to page initialization
+    * Let's start with some low hanging fruit. First I should actually list out everything. 
+    * Will need to clean up and prioritize todos
+    * 3-4 player testing I think I just need to follow the example of waitingRoomMockDB (look for uW2d8XHHZn6SPb3vTak3uW and testRoom1), and don't forget to save the URL and use 
+    * At a cross roads here. I think online play is almost fully functional. I think it needs three/four player testing and some cleanup. The biggest thing right now is hosting. I should also list out random online tasks. Off the top of my head, chat, saving, cleanup, using a real DB, hosting, UI for waiting room, adding 'YOU' to the turn tracker, testing 3-4 player. I'd like to wait on the DB until I get hosting done (or at least figure out who will be doing it)
+
     * look at google apps. If I really can't get it working, switch to heroku
 
 -------------------
@@ -28,14 +31,14 @@ Online tasks:
 1. ~~Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments~~
 2. ~~Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that we will be using playerId ~~
 3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
-4. Token usage - this will need some sub categories. Will probably want a separate kind of messaging just for clarity (as it's not a player action). 
+4. Token usage - 
     **TOKEN LIST** 
     1. ~~fourActions~~
     2. ~~threeActions~~
     3. ~~freeUpgrade  ~~
     4. ~~moveThree~~
     5. ~~switchPost~~ 
-    6. **HERE!** bonusPost - maybe we don't do it here?? instead we add a parameter to the capture city method
+    6. ~~bonusPost~~
 5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
 6. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces
 
