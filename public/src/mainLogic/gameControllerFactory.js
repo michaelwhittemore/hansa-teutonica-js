@@ -845,7 +845,6 @@ export const gameControllerFactory = () => {
             city.openSpotIndex++;
 
             let didUseABonusPost = false;
-            // dev
             if (this.tokenUsageInformation.tokenAction === 'bonusPost' || onlineUsedBonusToken) {
                 console.warn(`Trying to capture ${cityName} with an additional post`)
                 let usedShape;
@@ -1288,7 +1287,6 @@ export const gameControllerFactory = () => {
                     return;
                 }
 
-                // dev 
                 if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                     console.log(cityId, citySpotNumber, playerId)
                     gameController.webSocketController.playerTookAction('selectedPostToSwitch', {

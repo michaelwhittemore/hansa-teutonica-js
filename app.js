@@ -41,7 +41,7 @@ waitingRoomMockDB['testRoom1'] = {
   isInUse: true,
   isPlaying: false,
   isFull: false,
-  numberOfPlayers: 3,
+  numberOfPlayers: 4,
   playersWaiting: 1,
   playersReadiedObject: {
     iigJEToZqLT8NCpUukFgfz: {
@@ -56,6 +56,22 @@ waitingRoomMockDB['testRoom1'] = {
     }
   }
 }
+
+// // 3rd player
+// waitingRoomMockDB['testRoom1'].playersReadiedObject['anK3A8RVr9G4nY5z7mhEA2'] = {
+//   playerColor: '#00fa9a',
+//   playerName: 'Claire',
+//   participantId: 'anK3A8RVr9G4nY5z7mhEA2',
+// }
+// // 4th player 
+// waitingRoomMockDB['testRoom1'].playersReadiedObject['vUCLAhoLQkMdVi5xTDMGLp'] = {
+//   playerColor: '#1e90ff',
+//   playerName: 'Phil',
+//   participantId: 'vUCLAhoLQkMdVi5xTDMGLp',
+// }
+
+
+// ----------------------------------------
 
 // Will need a route to clear the room from storage
 setUpRoomRoutes(app, waitingRoomMockDB)

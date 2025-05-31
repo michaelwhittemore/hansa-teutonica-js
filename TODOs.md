@@ -16,38 +16,36 @@
 # TODOs #
 http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
 http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
+http://localhost:3000/onlineGame/testRoom1?participantId=anK3A8RVr9G4nY5z7mhEA2
+http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
+
+
 Note that the above link uses the test data that gets populated on the server
 
 * 5/30
     * Let's start with some low hanging fruit. First I should actually list out everything. 
+    
     * Will need to clean up and prioritize todos
     * 3-4 player testing I think I just need to follow the example of waitingRoomMockDB (look for uW2d8XHHZn6SPb3vTak3uW and testRoom1), and don't forget to save the URL and use 
-    * At a cross roads here. I think online play is almost fully functional. I think it needs three/four player testing and some cleanup. The biggest thing right now is hosting. I should also list out random online tasks. Off the top of my head, chat, saving, cleanup, using a real DB, hosting, UI for waiting room, adding 'YOU' to the turn tracker, testing 3-4 player. I'd like to wait on the DB until I get hosting done (or at least figure out who will be doing it)
+    * At a cross roads here. I think online play is almost fully functional. I think it needs three/four player testing and some cleanup. The biggest thing right now is hosting. I should also list out random online tasks. Off the top of my head, chat, saving, cleanup, reconnection - both for waiting room and for game **IMPORTANT BUT HARD** ,using a real DB, hosting, UI for waiting room, ~~adding 'YOU' to the turn tracker~~, testing 3-4 player. I'd like to wait on the DB until I get hosting done (or at least figure out who will be doing it)
+    * Tasks that aren't necessarily online include turn timer, expanding the map, improving the UI (for example adding shading, updating color scheme, button spacing, adding an on hover effect), End game points, hotkeys, as part of expanding the map I will need to add Coellen and the East-West route
 
     * look at google apps. If I really can't get it working, switch to heroku
 
 -------------------
 Online tasks:
-1. ~~Moving your own pieces - do we message for all pieces or just yours? Might need some minor UI adjustments~~
-2. ~~Bumping rival pieces - I think using the free pieces for off turn player shouldn't be too bad given that we will be using playerId ~~
-3. ~~Upgrading - intuitively I think this should be the easiest of the remaining actions~~
-4. Token usage - 
-    **TOKEN LIST** 
-    1. ~~fourActions~~
-    2. ~~threeActions~~
-    3. ~~freeUpgrade  ~~
-    4. ~~moveThree~~
-    5. ~~switchPost~~ 
-    6. ~~bonusPost~~
-5. Chatting. A whole new feature! - will need to find some data sanitizer on npm (can just do this server side) - but first should be pretty simple to have the case where we do something like "Alice says: Hello world"
-6. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces
+1. Chat - Add it below the player board I think. I think this will be more of a UI challenge than a logic challenge. I think ideally this should be agnostic of the websocket type, should work with either waiting room or the actual game. Remember that the server will need to do sanitizing. 
+2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test??
+3. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home
+4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color)
+
+
 
 honestly maybe I should use side by side tabs for testing?
 ----------------------------------------
 instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
 We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
-
 
 
 
@@ -123,7 +121,7 @@ We still have a lot of copy pasta regarding player turn validation - we should t
 * convert to TS
 * add a very stupid single plyer mode 
 * maybe move things like routes and cities to their own classes
-* refactor to only pass player unless absolutely necessary - using playerId is a pain in the ass and problematic
+* refactor to only pass player unless absolutely necessary - using playerId is a pain in the ass and problematic - turns out it's kinda important for online play as using a player reference can be a problem
 * undo action button 
 * track game logic server side (only for online non-hotseat modes)
 * unit tests for all internal methods
