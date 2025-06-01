@@ -22,12 +22,9 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 5/30
+* 6/1
     * Let's start with some low hanging fruit. First I should actually list out everything. 
     
-    * Will need to clean up and prioritize todos
-    * 3-4 player testing I think I just need to follow the example of waitingRoomMockDB (look for uW2d8XHHZn6SPb3vTak3uW and testRoom1), and don't forget to save the URL and use 
-    * At a cross roads here. I think online play is almost fully functional. I think it needs three/four player testing and some cleanup. The biggest thing right now is hosting. I should also list out random online tasks. Off the top of my head, chat, saving, cleanup, reconnection - both for waiting room and for game **IMPORTANT BUT HARD** ,using a real DB, hosting, UI for waiting room, ~~adding 'YOU' to the turn tracker~~, testing 3-4 player. I'd like to wait on the DB until I get hosting done (or at least figure out who will be doing it)
     * Tasks that aren't necessarily online include turn timer, expanding the map, improving the UI (for example adding shading, updating color scheme, button spacing, adding an on hover effect), End game points, hotkeys, as part of expanding the map I will need to add Coellen and the East-West route
 
     * look at google apps. If I really can't get it working, switch to heroku
@@ -35,16 +32,19 @@ Note that the above link uses the test data that gets populated on the server
 -------------------
 Online tasks:
 1. Chat - Add it below the player board I think. I think this will be more of a UI challenge than a logic challenge. I think ideally this should be agnostic of the websocket type, should work with either waiting room or the actual game. Remember that the server will need to do sanitizing. 
-2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test??
-3. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home
-4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color)
+2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
+3. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters
+4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
+5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
+6. Improve the waiting room UI. - At the very least should line up "There is 1 other player in this room." and the "Your Name" form. Maybe also move the "No Other Players Ready" section more to the left? The empty space looks awkward. Perhaps I should also use a better font and add a background color. This feels like I should google UI basics and maybe read a guide or watch a tutorial
+* Switch to an actual database instead of a JS Object. I should probably wait until I get hosting decided upon incase I want to use Firebase. I should consider something that I can run on my laptop as well, maybe radix? Maybe lowdb, or sqlite, see https://dev.to/forbeslindesay/choosing-a-node-js-database-498f. Maybe postgres?
 
 
 
-honestly maybe I should use side by side tabs for testing?
+honestly maybe I should use side by side tabs for testing? - at least during the two person online scenario 
 ----------------------------------------
-instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
-We still have a lot of copy pasta regarding player turn validation - we should try to move this to its own method
+* instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
+
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
 
