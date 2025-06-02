@@ -19,7 +19,8 @@ import { createDivWithClassAndIdAndStyle } from "./helpers.js"
 2. Rename to 'createChatInput' (it's not really a big controller)
 3. Add to the initializeCitiesAndState. Make sure it's the save agnostic one. Just address hotseat for the moment
 4. Add a gamecontroller method that adds to the game log. Or maybe logControllerFactory.js
-5. CSS, make sure the field is at the bottom of the 
+5. CSS, make sure the field is at the bottom of the div
+6. Don't forget to add helpers.css to the waiting room
 4+ Then we can deal with creating handleChatMessageSend that involve messaging
 */ 
 
