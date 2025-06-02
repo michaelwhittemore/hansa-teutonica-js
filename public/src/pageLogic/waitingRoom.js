@@ -1,4 +1,5 @@
 import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
+import { createChatInput } from "../helpers/createChatInput.js";
 const roomName = new URL(window.location).searchParams.get('roomName')
 let playerColor;
 let participantId; // This value is setup by the server
@@ -224,5 +225,6 @@ const sendSocketMessage = (messageObject) => {
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
+    createChatInput() // delete me!!
 }
 window.onload = start

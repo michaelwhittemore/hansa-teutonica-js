@@ -50,11 +50,18 @@ export const gameControllerFactory = () => {
             }
         },
         initializeCitiesAndState(optionalParameters) {
+            // dev
             // This can be called by an incoming 'joinedGameSuccess' when online
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
             logicBundle.logController.initializeGameLog();
+            // here! maybe initializeGameLog should take in the message? Or alternatively we add it
+            logicBundle.logController.setUpChatInput((e) => {
+                console.warn(e)
+            })
+
+
             this.routeStorageObject = {}
             this.cityStorageObject = {};
             this.moveInformation = {};

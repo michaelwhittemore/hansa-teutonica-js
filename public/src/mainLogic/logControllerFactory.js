@@ -1,5 +1,6 @@
 import { AUTO_SCROLL } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
+import { createChatInput } from "../helpers/createChatInput.js";
 export const logControllerFactory = () => {
     const logController = {
         initializeGameLog() {
@@ -11,6 +12,12 @@ export const logControllerFactory = () => {
             collapseButton.onclick = () => this.toggleGameLog(collapseButton)
             document.getElementById('gameLogContainer').append(collapseButton)
             this.isCollapsed = false;
+        },
+        setUpChatInput(handleChatMessageSend){
+            // dev
+            // remember that handleChatMessageSend is dependant on the web socket and the IS_ONLINE
+            const chatInput = createChatInput(handleChatMessageSend)
+            document.getElementById('gameLog').append(chatInput)
         },
         toggleGameLog(collapseButton) {
             if (!this.isCollapsed) {
