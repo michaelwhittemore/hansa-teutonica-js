@@ -61,7 +61,6 @@ export const gameControllerFactory = () => {
             let handleChatMessageSend;
             if (logicBundle.sessionInfo.isHotseatMode){
                 handleChatMessageSend = (text) => {
-                    console.log('Within handleChatMessageSend')
                     logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME says: "${text}"`, this.getActivePlayer())
                 }
             }

@@ -29,24 +29,19 @@ export const createChatInput = (handleChatMessageSend) => {
     console.log('createChatInput being called')
     // dev - Once I get this bug sorted out I think all the other work should come from 
     // the other functions using handleChatMessageSend
-    // is sendButton being overwrittenm some how?
-    // looks like the button is being removed from the div? Should I 
-
-    //I'm guessing it's the reassignment of the html. Maybe if I just appended??
-    // looks like 'addTextToGameLog' is what breaks it
-    // here! I think I should try with a wrapper around the gamelog instead of appending directly to the gamelog
+   
     const chatInputDiv = createDivWithClassAndIdAndStyle(['chatInputDiv'], 'chatInputDiv');
     const textInputElement = document.createElement('input')
     textInputElement.id = 'textInputElement';
     const sendButton = document.createElement('button')
     sendButton.innerText = 'Send chat message';
     sendButton.onclick = () => {
-        console.log('sendButton.onclick')
         if (textInputElement.value === '') {
             console.error('Tried to send empty chat message.')
             return;
         }
         handleChatMessageSend(textInputElement.value)
+        textInputElement.value = '';
     }
     chatInputDiv.append(textInputElement, sendButton)
     return chatInputDiv;
