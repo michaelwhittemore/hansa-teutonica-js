@@ -15,7 +15,6 @@ export const logControllerFactory = () => {
         },
         setUpChatInput(handleChatMessageSend){
             // dev
-            // remember that handleChatMessageSend is dependant on the web socket and the IS_ONLINE
             const chatInput = createChatInput(handleChatMessageSend)
             document.getElementById('gameLog').append(chatInput)
         },

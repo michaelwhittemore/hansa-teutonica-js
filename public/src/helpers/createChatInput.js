@@ -43,7 +43,7 @@ export const createChatInput = (handleChatMessageSend) => {
         }
         // We will need to call 'handleChatMessageSend'. This will either be websocket based, or
         // just paste direclt in the case of HOtseat
-        console.log(textInputElement.value)
+        console.log('within the inpiut', textInputElement.value)
     }
     chatInputDiv.append(textInputElement, sendButton)
     return chatInputDiv;
