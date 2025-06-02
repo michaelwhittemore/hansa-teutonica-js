@@ -58,11 +58,11 @@ export const gameControllerFactory = () => {
             logicBundle.logController.initializeGameLog();
             // here! maybe initializeGameLog should take in the message? Or alternatively we add it
             // We can set up the gameController method that gets called regardless of the case
-            let handleChatMessageSend = (e) => console.log(e)
+            let handleChatMessageSend;
             if (logicBundle.sessionInfo.isHotseatMode){
                 handleChatMessageSend = (text) => {
                     console.log('Within handleChatMessageSend')
-                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME says: ${text}`, this.getActivePlayer())
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME says: "${text}"`, this.getActivePlayer())
                 }
             }
             logicBundle.logController.setUpChatInput(handleChatMessageSend)

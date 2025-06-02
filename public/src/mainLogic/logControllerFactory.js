@@ -16,7 +16,7 @@ export const logControllerFactory = () => {
         setUpChatInput(handleChatMessageSend){
             // dev
             const chatInput = createChatInput(handleChatMessageSend)
-            document.getElementById('gameLog').append(chatInput)
+            document.getElementById('gameLogWrapper').append(chatInput)
         },
         toggleGameLog(collapseButton) {
             if (!this.isCollapsed) {

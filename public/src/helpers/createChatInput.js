@@ -22,28 +22,31 @@ import { createDivWithClassAndIdAndStyle } from "./helpers.js"
 5. CSS, make sure the field is at the bottom of the div
 6. Don't forget to add helpers.css to the waiting room
 4+ Then we can deal with creating handleChatMessageSend that involve messaging
-*/ 
+*/
 
 
 export const createChatInput = (handleChatMessageSend) => {
-    // HERE! this should return a fairly simple element, just a text entry form with a 'Submit' button
-    // The on-click will call the method that was passed in during initialization 
+    console.log('createChatInput being called')
+    // dev - Once I get this bug sorted out I think all the other work should come from 
+    // the other functions using handleChatMessageSend
+    // is sendButton being overwrittenm some how?
+    // looks like the button is being removed from the div? Should I 
+
+    //I'm guessing it's the reassignment of the html. Maybe if I just appended??
+    // looks like 'addTextToGameLog' is what breaks it
+    // here! I think I should try with a wrapper around the gamelog instead of appending directly to the gamelog
     const chatInputDiv = createDivWithClassAndIdAndStyle(['chatInputDiv'], 'chatInputDiv');
     const textInputElement = document.createElement('input')
     textInputElement.id = 'textInputElement';
     const sendButton = document.createElement('button')
     sendButton.innerText = 'Send chat message';
     sendButton.onclick = () => {
-        if (textInputElement.value === ''){
+        console.log('sendButton.onclick')
+        if (textInputElement.value === '') {
             console.error('Tried to send empty chat message.')
+            return;
         }
-        // need to remove the conditional
-        if (handleChatMessageSend){
-            handleChatMessageSend(textInputElement.value)
-        }
-        // We will need to call 'handleChatMessageSend'. This will either be websocket based, or
-        // just paste direclt in the case of HOtseat
-        console.log('within the inpiut', textInputElement.value)
+        handleChatMessageSend(textInputElement.value)
     }
     chatInputDiv.append(textInputElement, sendButton)
     return chatInputDiv;
