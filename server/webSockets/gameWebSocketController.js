@@ -29,6 +29,14 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
                     actionDetails: parsedData.actionDetails,
                 }, parsedData.participantId)
                 break;
+            case 'chatSent':
+                console.warn('chat sent!!!')
+                messageAllInRoom(parsedData.roomName, {
+                    type: 'chatReceived',
+                    chatText: parsedData.chatText,
+                    chattingPlayerId: parsedData.participantId
+                }, parsedData.participantId)
+                break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)
         }

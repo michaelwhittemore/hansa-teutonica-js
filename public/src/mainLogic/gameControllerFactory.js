@@ -66,7 +66,7 @@ export const gameControllerFactory = () => {
             } else {
                 handleChatMessageSend = (text) => {
                     console.log('trying to send chat message')
-                    this.webSocketController.playerSentChat(text)
+                    this.webSocketController.playerSentChat(text, logicBundle.sessionInfo.participantId)
                 }
             }
             logicBundle.logController.setUpChatInput(handleChatMessageSend)

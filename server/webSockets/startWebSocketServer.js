@@ -2,6 +2,7 @@ import { WebSocketServer } from 'ws';
 import { waitingRoomWebSocketController } from './waitingRoomWebSocketController.js';
 import { gameWebSocketController } from './gameWebSocketController.js';
 
+// It may be possible to have the WSS and the HTTP server running on the same port I should research this
 export const startWebSocketServer = (waitingRoomMockDB, gameRoomMockDB) => {
   const wss = new WebSocketServer({ port: 8080 });
   const waitingRoomToSocketMap = {};

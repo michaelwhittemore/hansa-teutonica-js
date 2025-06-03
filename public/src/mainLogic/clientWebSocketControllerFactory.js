@@ -47,6 +47,9 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
             case 'joinedGameSuccess':
                 handleJoinedGameSuccess(parsedData.shuffledRegularTokens, parsedData.shuffledStartingTokens)
                 break
+            case 'chatReceived':
+                console.warn('INCOMING MESSAGE')
+                break; 
             default:
                 console.error('Unknown Message type:', parsedData.type)
         }
@@ -163,16 +166,15 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 roomName,
             })
         },
-        playerSentChat: (messageText) => {
-            console.warn('Within the playerSentChat in websocket', messageText)
+        playerSentChat: (chatText, participantId) => {
+            console.warn('Within the playerSentChat in websocket', chatText)
             // here! - need to send a message, might need new action type
-            // sendSocketMessage({
-            //     actionType,
-            //     type: 'playerAction',
-            //     participantId,
-            //     actionDetails,
-            //     roomName,
-            // })
+            sendSocketMessage({
+                type: 'chatSent',
+                participantId,
+                roomName,
+                chatText
+            })
         }
     }
     return webSocketController;

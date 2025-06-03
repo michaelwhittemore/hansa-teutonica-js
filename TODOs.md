@@ -49,7 +49,11 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
-
+DOCKER STUFF
+https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
+docker container ls 
+docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
+docker run -p 3000:3000 -p 8080:8080 node-docker
 
 ------
 * waiting room chat
