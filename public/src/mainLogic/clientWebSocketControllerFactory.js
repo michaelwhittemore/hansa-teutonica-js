@@ -163,6 +163,17 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 roomName,
             })
         },
+        playerSentChat: (messageText) => {
+            console.warn('Within the playerSentChat in websocket', messageText)
+            // here! - need to send a message, might need new action type
+            // sendSocketMessage({
+            //     actionType,
+            //     type: 'playerAction',
+            //     participantId,
+            //     actionDetails,
+            //     roomName,
+            // })
+        }
     }
     return webSocketController;
 }

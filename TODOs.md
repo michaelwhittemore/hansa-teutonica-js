@@ -45,6 +45,7 @@ General (not online specific) Tasks:
 honestly maybe I should use side by side tabs for testing? - at least during the two person online scenario 
 ----------------------------------------
 * instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
+* Nigel suggesting https://cloud.google.com/run?hl=en for dockerized 
 
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
