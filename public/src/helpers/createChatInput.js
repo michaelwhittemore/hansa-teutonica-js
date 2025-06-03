@@ -26,10 +26,6 @@ import { createDivWithClassAndIdAndStyle } from "./helpers.js"
 
 
 export const createChatInput = (handleChatMessageSend) => {
-    console.log('createChatInput being called')
-    // dev - Once I get this bug sorted out I think all the other work should come from 
-    // the other functions using handleChatMessageSend
-   
     const chatInputDiv = createDivWithClassAndIdAndStyle(['chatInputDiv'], 'chatInputDiv');
     const textInputElement = document.createElement('input')
     textInputElement.id = 'textInputElement';

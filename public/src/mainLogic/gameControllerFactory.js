@@ -64,10 +64,7 @@ export const gameControllerFactory = () => {
                 }
             } else {
                 handleChatMessageSend = (text) => {
-                    console.log('trying to send chat message')
-                    // dev
                     this.handleChat(logicBundle.sessionInfo.participantId, text)
-                    // logicBundle.logController.addTextToGameLog(`You said: "${text}"`)
                     this.webSocketController.playerSentChat(text, logicBundle.sessionInfo.participantId)
                 }
             }
@@ -177,8 +174,6 @@ export const gameControllerFactory = () => {
             }
         },
         handleChat(senderId, chatText) {
-            console.log('in handleChat')
-            // here!
             // dev
             if (senderId === logicBundle.sessionInfo.participantId) {
                 logicBundle.logController.addTextToGameLog(`You said: "${chatText}"`)

@@ -48,9 +48,6 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 handleJoinedGameSuccess(parsedData.shuffledRegularTokens, parsedData.shuffledStartingTokens)
                 break
             case 'chatReceived':
-                // dev
-                console.log(parsedData.chatText)
-                console.warn('INCOMING MESSAGE')
                 logicBundle.gameController.handleChat(parsedData.senderId, parsedData.chatText)
                 break; 
             default:
