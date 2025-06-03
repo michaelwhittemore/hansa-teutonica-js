@@ -50,7 +50,6 @@ export const gameControllerFactory = () => {
             }
         },
         initializeCitiesAndState(optionalParameters) {
-            // dev
             // This can be called by an incoming 'joinedGameSuccess' when online
             logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
@@ -59,13 +58,16 @@ export const gameControllerFactory = () => {
             // here! maybe initializeGameLog should take in the message? Or alternatively we add it
             // We can set up the gameController method that gets called regardless of the case
             let handleChatMessageSend;
-            if (logicBundle.sessionInfo.isHotseatMode){
+            if (logicBundle.sessionInfo.isHotseatMode) {
                 handleChatMessageSend = (text) => {
-                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME says: "${text}"`, this.getActivePlayer())
+                    logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME said: "${text}"`, this.getActivePlayer())
                 }
             } else {
                 handleChatMessageSend = (text) => {
                     console.log('trying to send chat message')
+                    // dev
+                    this.handleChat(logicBundle.sessionInfo.participantId, text)
+                    // logicBundle.logController.addTextToGameLog(`You said: "${text}"`)
                     this.webSocketController.playerSentChat(text, logicBundle.sessionInfo.participantId)
                 }
             }
@@ -173,6 +175,18 @@ export const gameControllerFactory = () => {
                     return player
                 }
             }
+        },
+        handleChat(senderId, chatText) {
+            console.log('in handleChat')
+            // here!
+            // dev
+            if (senderId === logicBundle.sessionInfo.participantId) {
+                logicBundle.logController.addTextToGameLog(`You said: "${chatText}"`)
+            } else {
+                const sender = this.getPlayerById(senderId)
+                logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME said: "${chatText}"`, sender)
+            }
+            console.log(chatText)
         },
         advanceTurn(lastPlayer) {
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
@@ -1231,7 +1245,7 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.selectedAction = 'switchPostSelection';
                 logicBundle.inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.');
             },
-            selectedPostToSwitch(cityId, citySpotNumber, playerId, 
+            selectedPostToSwitch(cityId, citySpotNumber, playerId,
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
 
                 const player = gameController.validatePlayerIsActivePlayer(playerId, gameController.getActivePlayer());
@@ -1308,7 +1322,7 @@ export const gameControllerFactory = () => {
                     console.log(cityId, citySpotNumber, playerId)
                     gameController.webSocketController.playerTookAction('selectedPostToSwitch', {
                         playerId,
-                        cityId, 
+                        cityId,
                         citySpotNumber,
                         tokenUsageInformation: gameController.tokenUsageInformation,
                     })

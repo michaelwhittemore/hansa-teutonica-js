@@ -34,7 +34,7 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
                 messageAllInRoom(parsedData.roomName, {
                     type: 'chatReceived',
                     chatText: parsedData.chatText,
-                    chattingPlayerId: parsedData.participantId
+                    senderId: parsedData.participantId
                 }, parsedData.participantId)
                 break;
             default:
