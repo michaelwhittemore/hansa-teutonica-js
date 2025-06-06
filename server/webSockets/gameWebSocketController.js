@@ -30,7 +30,7 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
                 }, parsedData.participantId)
                 break;
             case 'chatSent':
-                console.warn('chat sent!!!')
+                // TODO - message sanitation 
                 messageAllInRoom(parsedData.roomName, {
                     type: 'chatReceived',
                     chatText: parsedData.chatText,

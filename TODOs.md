@@ -22,11 +22,22 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/2
-    * Let's start with some low hanging fruit. First I should actually list out everything. 
-    
+* 6/6
+    * Chat - add to waiting room and also add colors to player "You" in the main game, also need to test that everything still works with hotseat
+        * maybe add waiting room chat under the 'otherParticipants' div? 
+            * let's do the left side and add a 'joined' and 'readied' message
+            * think I should use participantSettings div - maybe wrap it?
+            * once I have those 'joined' and 'readied' I can work on the actual chat component
+            * don't forget to call the builder method from helpers - createChatInput.js
+            * I'll need to look at the waiting room websocket
+            * What happens if you try to chat without setting a name? - I think we will say something like "Unnamed Player 1"
+        * ~~still need to test hotseat~~
+        * a~~lso should clear all the comments from the createChatInput file~~
+    * Fix the css for the send chat message so that it's not blocking the messages
+        * I think this means have a separate container
+        * actually it looks like it's already two containers. Maybe just use a different positioning and then the chat box should naturally stack? - it looks fine if I remove 'position: absolute;' but I still need to figure out how to fix it to collapse
 
-    * look at google apps. If I really can't get it working, switch to heroku
+    * look at google apps - remember that docker containers are cheaper 
 
 -------------------
 Online tasks:
@@ -57,6 +68,7 @@ docker run -p 3000:3000 -p 8080:8080 node-docker
 
 ------
 * waiting room chat
+* clicking away from the color picker should close it as a noop
 * maybe allow you to start an online game by simply joining a room?
 * add the ability to cancel the online ready-up 
 * there's a lot of copy paste between the websocket controllers. Maybe I should add some helpers? While I'm at it, maybe give the websocket logic its own folder

@@ -55,6 +55,9 @@ const handleValidRoom = (roomInfo) => {
 
     // We should only set up a websocket with a valid room
     setUpWebSocket();
+    // here!
+    document.getElementById('chatArea').append(createChatInput())
+
 }
 
 const warnInvalidRoom = (warningText) => {
@@ -180,6 +183,8 @@ const handleIncomingMessage = (data) => {
     }
 
     const parsedData = JSON.parse(data);
+    // here!
+    // dev -- need to add messages to the chat log
     switch (parsedData.type) {
         case 'participantId':
             participantId = parsedData.participantId;
@@ -225,6 +230,5 @@ const sendSocketMessage = (messageObject) => {
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
-    createChatInput() // delete me!!
 }
 window.onload = start

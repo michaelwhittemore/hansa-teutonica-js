@@ -2,13 +2,26 @@
     color: red;
     font-style: italic;
 }
-#mainContainer{
+
+#mainContainer {
     display: flex;
 }
-#participantSettings{
+
+#leftSideWrapper {
     width: 50%;
 }
-#readyUpButton{
+
+#participantSettings {
+    height: 100px;
+}
+
+.chatArea{
+    background-color:antiquewhite;
+    border-color: grey;
+    border-style: solid;
+}
+
+#readyUpButton {
     color: #33b249;
     border-color: #33b249;
 }
