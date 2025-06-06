@@ -72,6 +72,26 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
 
     }
 
+    const chatMessageReceived = (parsedData) => {
+        // dev
+        // here!
+
+        // will need to exclude the sender from message all, but leave it for testing right now
+        // We can potentially handle name and color here (they will be optional)
+        const {
+            senderId,
+            chatText,
+            roomName,
+        } = parsedData
+        messageAllInRoom(roomName, {
+            type: 'incomingChat',
+            senderId,
+            chatText,
+
+        })
+
+    }
+
     const messageFromClientHandler = (messageString, socket) => {
         const parsedData = JSON.parse(messageString)
         switch (parsedData.type) {
@@ -83,6 +103,11 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
                 }
             case 'readyNameAndColor':
                 playerReadiedUp(parsedData)
+                break;
+            case 'chatMessage':
+                // dev
+                console.warn(parsedData.chatText)
+                chatMessageReceived(parsedData)
                 break;
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)

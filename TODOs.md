@@ -31,6 +31,8 @@ Note that the above link uses the test data that gets populated on the server
             * don't forget to call the builder method from helpers - createChatInput.js
             * I'll need to look at the waiting room websocket
             * What happens if you try to chat without setting a name? - I think we will say something like "Unnamed Player 1"
+            * need to follow the pattern in the standard game log for making it scrollable and auto jump the messages down - might add a helper function
+            * logControllerFactory.js is what we should be following
         * ~~still need to test hotseat~~
         * a~~lso should clear all the comments from the createChatInput file~~
     * Fix the css for the send chat message so that it's not blocking the messages

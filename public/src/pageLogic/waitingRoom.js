@@ -56,8 +56,17 @@ const handleValidRoom = (roomInfo) => {
     // We should only set up a websocket with a valid room
     setUpWebSocket();
     // here!
-    document.getElementById('chatArea').append(createChatInput())
-
+    // dev - still need to create an on submit method for the chat input
+    // WE MAY HAVE AN ISSUE WITH participantId - never mind
+    const onChatSend = (chatText) => {
+        sendSocketMessage({
+            type: 'chatMessage',
+            chatText,
+            senderId: participantId,
+            roomName,
+        })
+    }
+    document.getElementById('chatArea').append(createChatInput(onChatSend))
 }
 
 const warnInvalidRoom = (warningText) => {
@@ -160,6 +169,19 @@ const togglePlayerReadiedUI = (isReadied) => {
     document.getElementById('playerName').disabled = isReadied;
     document.getElementById('playerColor').disabled = isReadied;
 }
+
+const addTextToChat = (text) => {
+    const timestamp = (new Date()).toLocaleTimeString('en-US')
+    document.getElementById('chatTextHolder').innerHTML += `<br>${timestamp}: ${text}`;
+}
+
+// might want to rename this method and possibly switch to object param
+const createChatMessage = (chatText) => {
+    // here!
+    // dev
+    console.warn('chat text is', chatText)
+    addTextToChat(chatText)
+}
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
@@ -183,8 +205,7 @@ const handleIncomingMessage = (data) => {
     }
 
     const parsedData = JSON.parse(data);
-    // here!
-    // dev -- need to add messages to the chat log
+    // dev 
     switch (parsedData.type) {
         case 'participantId':
             participantId = parsedData.participantId;
@@ -215,6 +236,10 @@ const handleIncomingMessage = (data) => {
             break;
         case 'allReady':
             startGame();
+            break;
+        case 'incomingChat':
+            // dev
+            createChatMessage(parsedData.chatText)
             break;
         default:
             console.error(`Unknown socket message type: ${parsedData.type}`)

@@ -19,6 +19,15 @@
     background-color:antiquewhite;
     border-color: grey;
     border-style: solid;
+    overflow: auto;
+    height: 200px;
+    position: relative;
+
+}
+
+.chatInputDiv{
+    position: absolute;
+    bottom: 0;
 }
 
 #readyUpButton {
