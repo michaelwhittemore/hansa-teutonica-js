@@ -57,8 +57,8 @@ const handleValidRoom = (roomInfo) => {
     setUpWebSocket();
     // here!
     // dev - still need to create an on submit method for the chat input
-    // WE MAY HAVE AN ISSUE WITH participantId - never mind
     const onChatSend = (chatText) => {
+        addTextToChat(`You say: "${chatText}"`)
         sendSocketMessage({
             type: 'chatMessage',
             chatText,
@@ -176,11 +176,20 @@ const addTextToChat = (text) => {
 }
 
 // might want to rename this method and possibly switch to object param
-const createChatMessage = (chatText) => {
+const handleChatMessage = (parsedData) => {
+    console.warn(parsedData)
     // here!
     // dev
-    console.warn('chat text is', chatText)
-    addTextToChat(chatText)
+    // need to add color
+    const { playerName, chatText, playerColor } = parsedData
+
+    let nameSpan;
+    if (playerColor) {
+        nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
+    } else {
+        nameSpan = 'An unnamed player'
+    }
+    addTextToChat(`${nameSpan} says: "${chatText}"`)
 }
 // -----------------------------Web sockets---------------
 
@@ -239,7 +248,7 @@ const handleIncomingMessage = (data) => {
             break;
         case 'incomingChat':
             // dev
-            createChatMessage(parsedData.chatText)
+            handleChatMessage(parsedData)
             break;
         default:
             console.error(`Unknown socket message type: ${parsedData.type}`)

@@ -75,19 +75,35 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     const chatMessageReceived = (parsedData) => {
         // dev
         // here!
+        
 
         // will need to exclude the sender from message all, but leave it for testing right now
         // We can potentially handle name and color here (they will be optional)
+        
         const {
             senderId,
             chatText,
             roomName,
         } = parsedData
+
+        console.log(waitingRoomMockDB[roomName])
+        let playerColor;
+        let playerName;
+        if (waitingRoomMockDB[roomName].playersReadiedObject[senderId]){
+            playerColor = waitingRoomMockDB[roomName].playersReadiedObject[senderId].playerColor;
+            playerName = waitingRoomMockDB[roomName].playersReadiedObject[senderId].playerName;
+        }
+        // need to use the playersReadiedObject
+        // We either get the Name and color directly from waitingRoomMockDB[roomName][senderId]
+        // or we generate a unnamed player ${number}. Oh - we should say you've joined as that player
+        // How do we determine your number?? maybe on join
+
         messageAllInRoom(roomName, {
             type: 'incomingChat',
             senderId,
             chatText,
-
+            playerColor,
+            playerName
         })
 
     }

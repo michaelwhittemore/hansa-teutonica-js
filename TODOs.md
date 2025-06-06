@@ -24,17 +24,11 @@ Note that the above link uses the test data that gets populated on the server
 
 * 6/6
     * Chat - add to waiting room and also add colors to player "You" in the main game, also need to test that everything still works with hotseat
-        * maybe add waiting room chat under the 'otherParticipants' div? 
-            * let's do the left side and add a 'joined' and 'readied' message
-            * think I should use participantSettings div - maybe wrap it?
-            * once I have those 'joined' and 'readied' I can work on the actual chat component
-            * don't forget to call the builder method from helpers - createChatInput.js
-            * I'll need to look at the waiting room websocket
+            * **HERE!!** Need to handle of case of names server side
             * What happens if you try to chat without setting a name? - I think we will say something like "Unnamed Player 1"
             * need to follow the pattern in the standard game log for making it scrollable and auto jump the messages down - might add a helper function
             * logControllerFactory.js is what we should be following
-        * ~~still need to test hotseat~~
-        * a~~lso should clear all the comments from the createChatInput file~~
+
     * Fix the css for the send chat message so that it's not blocking the messages
         * I think this means have a separate container
         * actually it looks like it's already two containers. Maybe just use a different positioning and then the chat box should naturally stack? - it looks fine if I remove 'position: absolute;' but I still need to figure out how to fix it to collapse
