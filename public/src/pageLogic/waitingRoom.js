@@ -1,9 +1,12 @@
 import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
 import { createChatInput } from "../helpers/createChatInput.js";
 const roomName = new URL(window.location).searchParams.get('roomName')
-let playerColor;
+
 let participantId; // This value is setup by the server
 let participants;
+let readiedPlayerName;
+let playerColor;
+
 let socket;
 let otherReadiedPlayers = {};
 
@@ -56,10 +59,7 @@ const handleValidRoom = (roomInfo) => {
 
     // We should only set up a websocket with a valid room
     setUpWebSocket();
-    // here!
-    // dev - still need to create an on submit method for the chat input
-    // perhaps we cna grab our own name and color
-    // can use 'roomInfo.playersWaiting'
+    // dev
     const onChatSend = (chatText) => {
         addTextToChat(`You say: "${chatText}"`)
         sendSocketMessage({
@@ -67,6 +67,8 @@ const handleValidRoom = (roomInfo) => {
             chatText,
             senderId: participantId,
             roomName,
+            playerName: readiedPlayerName ||  participantId,
+            playerColor: playerColor || 'black,'
         })
     }
     document.getElementById('chatArea').append(createChatInput(onChatSend))
@@ -109,6 +111,7 @@ const readyUp = () => {
         }
     })
     if (isValid) {
+        readiedPlayerName = playerName;
         sendSocketMessage({
             type: 'readyNameAndColor',
             playerColor,
@@ -118,6 +121,7 @@ const readyUp = () => {
         })
         togglePlayerReadiedUI(true);
     }
+    
 }
 
 const startGame = () => {
@@ -180,20 +184,11 @@ const addTextToChat = (text) => {
 
 }
 
-// might want to rename this method and possibly switch to object param
 const handleChatMessage = (parsedData) => {
-    console.warn(parsedData)
-    // here!
     // dev
-    // need to add color
     const { playerName, chatText, playerColor } = parsedData
 
-    let nameSpan;
-    if (playerColor) {
-        nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
-    } else {
-        nameSpan = 'An unnamed player'
-    }
+    const  nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
     addTextToChat(`${nameSpan} says: "${chatText}"`)
 }
 // -----------------------------Web sockets---------------
@@ -219,7 +214,6 @@ const handleIncomingMessage = (data) => {
     }
 
     const parsedData = JSON.parse(data);
-    // dev 
     switch (parsedData.type) {
         case 'participantId':
             participantId = parsedData.participantId;
