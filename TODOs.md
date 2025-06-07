@@ -23,11 +23,12 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/6
-    * Chat - add to waiting room and also add colors to player "You" in the main game, also need to test that everything still works with hotseat
-            * **HERE!!** Need to handle of case of names server side
-            * What happens if you try to chat without setting a name? - I think we will say something like "Unnamed Player 1"
+    * Chat - 
+            * **HERE!!** Need to handle of case of names server side - for waiting room
+            * Should it actually be server side? Maybe just passing through would be easiest - so we do the pass through with either name or participant id - still need to finish this!
             * need to follow the pattern in the standard game log for making it scrollable and auto jump the messages down - might add a helper function
             * logControllerFactory.js is what we should be following
+            * **IMPORTANT** need to fix the blocked issue for both - maybe position then beneath the chat area? Make share the parent div uses the correct positioning (I think it's relative)
 
     * Fix the css for the send chat message so that it's not blocking the messages
         * I think this means have a separate container

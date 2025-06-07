@@ -34,6 +34,7 @@ const attemptToJoinRoom = async () => {
 }
 
 const handleValidRoom = (roomInfo) => {
+    console.log(roomInfo)
     document.getElementById('playerInfo').append(createPlayerInputs())
     const colorPicker = createColorPickerWithOnClick((color) => {
         document.getElementById('colorPicker').style.visibility = 'hidden';
@@ -57,6 +58,8 @@ const handleValidRoom = (roomInfo) => {
     setUpWebSocket();
     // here!
     // dev - still need to create an on submit method for the chat input
+    // perhaps we cna grab our own name and color
+    // can use 'roomInfo.playersWaiting'
     const onChatSend = (chatText) => {
         addTextToChat(`You say: "${chatText}"`)
         sendSocketMessage({
@@ -173,6 +176,8 @@ const togglePlayerReadiedUI = (isReadied) => {
 const addTextToChat = (text) => {
     const timestamp = (new Date()).toLocaleTimeString('en-US')
     document.getElementById('chatTextHolder').innerHTML += `<br>${timestamp}: ${text}`;
+    document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight
+
 }
 
 // might want to rename this method and possibly switch to object param
@@ -219,6 +224,8 @@ const handleIncomingMessage = (data) => {
         case 'participantId':
             participantId = parsedData.participantId;
             console.log(`setting participantId as ${participantId}`)
+            addTextToChat(`You've joined the waiting room as "${participantId}". Please enter your name and select your color above.`)
+            // dev
             break;
         case 'totalParticipants':
             participants = parseInt(parsedData.totalParticipants)
