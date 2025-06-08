@@ -24,17 +24,7 @@ Note that the above link uses the test data that gets populated on the server
 
 * 6/6
     * Chat - 
-            * **HERE!!** Need to handle of case of names server side - for waiting room
-            * Should it actually be server side? Maybe just passing through would be easiest - so we do the pass through with either name or participant id - still need to finish this!
-            * we should be setting playerName & playerColor so we can access it
-
-            * logControllerFactory.js is what we should be following
-            * **IMPORTANT** need to fix the blocked issue for both - maybe position then beneath the chat area? Make share the parent div uses the correct positioning (I think it's relative)
-            * looks like 'chatArea' is where we have the positioning css. 
-
-    * Fix the css for the send chat message so that it's not blocking the messages
-        * I think this means have a separate container
-        * actually it looks like it's already two containers. Maybe just use a different positioning and then the chat box should naturally stack? - it looks fine if I remove 'position: absolute;' but I still need to figure out how to fix it to collapse
+    * I have it fixed for the waiting room, now let's move on to the in-game chat
 
     * look at google apps - remember that docker containers are cheaper 
 

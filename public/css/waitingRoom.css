@@ -24,10 +24,10 @@
     position: relative;
 }
 
-.chatInputDiv{
+/* .chatInputDiv{
     position: absolute;
     bottom: 0;
-}
+} */
 
 #readyUpButton {
     color: #33b249;

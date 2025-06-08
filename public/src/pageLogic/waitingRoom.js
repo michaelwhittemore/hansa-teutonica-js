@@ -71,7 +71,7 @@ const handleValidRoom = (roomInfo) => {
             playerColor: playerColor || 'black,'
         })
     }
-    document.getElementById('chatArea').append(createChatInput(onChatSend))
+    document.getElementById('leftSideWrapper').append(createChatInput(onChatSend))
 }
 
 const warnInvalidRoom = (warningText) => {
