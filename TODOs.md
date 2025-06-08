@@ -25,6 +25,7 @@ Note that the above link uses the test data that gets populated on the server
 * 6/6
     * Chat - 
     * I have it fixed for the waiting room, now let's move on to the in-game chat
+    * It's possible I can remove the helpers.css file completely
 
     * look at google apps - remember that docker containers are cheaper 
 
