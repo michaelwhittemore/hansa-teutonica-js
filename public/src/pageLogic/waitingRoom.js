@@ -39,12 +39,22 @@ const attemptToJoinRoom = async () => {
 const handleValidRoom = (roomInfo) => {
     console.log(roomInfo)
     document.getElementById('playerInfo').append(createPlayerInputs())
+
+    document.onclick = (event) => {
+        const colorPicker = document.getElementById('colorPicker')
+        // Note that we use a different approach than the landing page because the button contains a span
+        if (!colorPicker.contains(event.target) && !document.getElementById('playerColor').contains(event.target)) {
+            colorPicker.style.visibility = 'hidden';
+        }
+    }
+
     const colorPicker = createColorPickerWithOnClick((color) => {
         document.getElementById('colorPicker').style.visibility = 'hidden';
         document.getElementById('playerButtonSpan').innerHTML = 'Change Color'
         document.getElementById('playerColor').style.backgroundColor = color
         playerColor = color
     })
+
     colorPicker.style.position = 'absolute';
 
     document.getElementById('playerInfo').append(colorPicker)
@@ -59,7 +69,6 @@ const handleValidRoom = (roomInfo) => {
 
     // We should only set up a websocket with a valid room
     setUpWebSocket();
-    // dev
     const onChatSend = (chatText) => {
         addTextToChat(`You say: "${chatText}"`)
         sendSocketMessage({
@@ -67,7 +76,7 @@ const handleValidRoom = (roomInfo) => {
             chatText,
             senderId: participantId,
             roomName,
-            playerName: readiedPlayerName ||  participantId,
+            playerName: readiedPlayerName || participantId,
             playerColor: playerColor || 'black,'
         })
     }
@@ -121,7 +130,7 @@ const readyUp = () => {
         })
         togglePlayerReadiedUI(true);
     }
-    
+
 }
 
 const startGame = () => {
@@ -152,7 +161,11 @@ const createPlayerInputs = () => {
     playerColorButton.append(playerButtonSpan)
     playerColorButton.id = 'playerColor'
     playerColorButton.onclick = () => {
-        document.getElementById('colorPicker').style.visibility = 'visible'
+        if (document.getElementById('colorPicker').style.visibility === 'hidden') {
+            document.getElementById('colorPicker').style.visibility = 'visible'
+        } else {
+            document.getElementById('colorPicker').style.visibility = 'hidden'
+        }
     }
 
     const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], 'playerError');
@@ -185,10 +198,9 @@ const addTextToChat = (text) => {
 }
 
 const handleChatMessage = (parsedData) => {
-    // dev
     const { playerName, chatText, playerColor } = parsedData
 
-    const  nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
+    const nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
     addTextToChat(`${nameSpan} says: "${chatText}"`)
 }
 // -----------------------------Web sockets---------------
@@ -219,7 +231,6 @@ const handleIncomingMessage = (data) => {
             participantId = parsedData.participantId;
             console.log(`setting participantId as ${participantId}`)
             addTextToChat(`You've joined the waiting room as "${participantId}". Please enter your name and select your color above.`)
-            // dev
             break;
         case 'totalParticipants':
             participants = parseInt(parsedData.totalParticipants)
@@ -248,7 +259,6 @@ const handleIncomingMessage = (data) => {
             startGame();
             break;
         case 'incomingChat':
-            // dev
             handleChatMessage(parsedData)
             break;
         default:

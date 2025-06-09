@@ -25,11 +25,10 @@ Note that the above link uses the test data that gets populated on the server
 * 6/9 
     * look at google apps - remember that docker containers are cheaper 
     * I think that maybe hoverable css wouldn't be too bad? Maybe just for node locations to start with?
-    * clicking away from the color picker should close it as a noop - remember this applies for both waiting room and landing page - looks like we add an onclick to the document and check that the color picker is not an ancestor https://stackoverflow.com/questions/152975/how-do-i-detect-a-click-outside-an-element/3028037#3028037
 
 -------------------
 Online tasks:
-1. ~~Chat - Add it below the player board I think. I think this will be more of a UI challenge than a logic challenge. I think ideally this should be agnostic of the websocket type, should work with either waiting room or the actual game. Remember that the server will need to do sanitizing. ~~
+
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
 3. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters
 4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
@@ -55,7 +54,6 @@ docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time
 docker run -p 3000:3000 -p 8080:8080 node-docker
 
 ------
-* clicking away from the color picker should close it as a noop - remember this applies for both waiting room and landing page
 * maybe allow you to start an online game by simply joining a room?
 * add the ability to cancel the online ready-up 
 * there's a lot of copy paste between the websocket controllers. Maybe I should add some helpers? While I'm at it, maybe give the websocket logic its own folder

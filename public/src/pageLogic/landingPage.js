@@ -248,8 +248,6 @@ const colorOnClick = (color) => {
 
 let colorPickerClose = (event) => {
     const colorPicker = document.getElementById('colorPicker')
-    // dev
-
     if (!colorPicker.contains(event.target) && event.target.className !== 'playerColorButtonClass'){
         colorPicker.style.visibility = 'hidden';
     }
@@ -259,7 +257,6 @@ const start = () => {
     populatePlayerSelection(4)
     populatePlayerSelectionWithDefault();
     bindButtons();
-
     document.getElementById('hotseatConfig').append(createColorPickerWithOnClick(colorOnClick));
     document.onclick = colorPickerClose;
 }
