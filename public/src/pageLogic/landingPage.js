@@ -41,17 +41,23 @@ const createPlayerInfoDiv = (id) => {
     const playerInfoDiv = createDivWithClassAndIdAndStyle(['playerInfo'], `playerInfo-${id}`)
     const playerNameLabel = document.createElement('label')
     playerNameLabel.innerText = `Player ${id} Name: `;
-    playerNameLabel.htmlFor = `playerName-${id}`
+    playerNameLabel.htmlFor = `playerName-${id}`;
     const playerNameInput = document.createElement('input')
     playerNameInput.className = 'playerNameInput'
     playerNameInput.id = `playerName-${id}`
 
     const playerColorButton = document.createElement('button')
     playerColorButton.id = `playerColor-${id}`
+    playerColorButton.classList.add('playerColorButtonClass')
     playerColorButton.innerText = 'Select Color';
     playerColorButton.onclick = () => {
         pickingColorId = id;
-        document.getElementById('colorPicker').style.visibility = 'visible'
+        if (document.getElementById('colorPicker').style.visibility === 'hidden'){
+            document.getElementById('colorPicker').style.visibility = 'visible'
+        } else {
+            document.getElementById('colorPicker').style.visibility = 'hidden'
+        }
+        
     }
 
     const playerErrorDisplay = createDivWithClassAndIdAndStyle(['playerError'], `playerError-${id}`);
@@ -240,10 +246,21 @@ const colorOnClick = (color) => {
     }
 }
 
+let colorPickerClose = (event) => {
+    const colorPicker = document.getElementById('colorPicker')
+    // dev
+
+    if (!colorPicker.contains(event.target) && event.target.className !== 'playerColorButtonClass'){
+        colorPicker.style.visibility = 'hidden';
+    }
+}
+
 const start = () => {
     populatePlayerSelection(4)
     populatePlayerSelectionWithDefault();
     bindButtons();
+
     document.getElementById('hotseatConfig').append(createColorPickerWithOnClick(colorOnClick));
+    document.onclick = colorPickerClose;
 }
 window.onload = start;
