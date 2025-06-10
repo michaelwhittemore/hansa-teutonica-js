@@ -22,15 +22,27 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/9 
+* 6/11
     * look at google apps - remember that docker containers are cheaper 
     * I think that maybe hoverable css wouldn't be too bad? Maybe just for node locations to start with?
+    * I could also begin on the disconnect stuff - maybe it would make sense to work on waiting room before switching to game? I think we should add a localStorage element. That way if you refresh we can see that you're still there? I'm not a hundred percent certain about this
 
 -------------------
 Online tasks:
 
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
-3. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters
+3. Ugh, now I need to figure out whether to use app engine or cloud run. It seems that cloud run is probably the preferred solution https://cloud.google.com/appengine/migration-center/run/compare-gae-with-run. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters, I think I should be using https://cloud.google.com/appengine/docs/standard/nodejs/building-app vs https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
+    **Based on the above I think we want to use https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service as an example**
+    1. ~~Let's start with the gcloud CLI~~
+    2. ~~Read cloud run vs app engine~~
+    3. ~~I was able to get the demo working.~~ 
+    4. I think I can try getting this repo working on cloud run. 
+        * ~~Looks like I will need to figure out how to debug on cloud run. It's conceivable that I should add a 'run' or 'start' command to my package.json - nope, this doesn't work~~
+        * https://cloud.google.com/run/docs/testing/local - local testing would help a lot
+        * I got the local running and am still seeing the 426, need to do https://cloud.google.com/run/docs/tutorials/local-troubleshooting 
+        * figure out how to configure ports as part of the dockerfile instead of the command
+        * maybe use EXPOSE in the dockerfile????
+    5. Once I finish the above I can work on custom domain. I should also look at subdomain
 4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
 5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
 6. Improve the waiting room UI. - At the very least should line up "There is 1 other player in this room." and the "Your Name" form. Maybe also move the "No Other Players Ready" section more to the left? The empty space looks awkward. Perhaps I should also use a better font and add a background color. This feels like I should google UI basics and maybe read a guide or watch a tutorial
@@ -48,6 +60,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
 DOCKER STUFF
+make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 docker container ls 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
@@ -72,7 +85,6 @@ docker run -p 3000:3000 -p 8080:8080 node-docker
 * At some point would like to make the tokens into a more readable form - will need a map and use what ever the rule book calls them on page 8
 * maybe add a nice 'hover' effect to the pieces? like a shadow or border. The color picker came out well
 * Stuff will eventually end up being async. I might need some sort of de-bouncer? Or is that not the correct word?
-* TODO! all methods will need to actually pass in the playerId. Probably give inputHandlers a playerId field
 * will need to replace the gameController reference in the inputHandlers with an API (which either uses signalling or just straight references it via the logic bundle)
 * eventually will need a 'settings' property for things like AUTO_SCROLL and USE_DEFAULT
 * consider using dynamic import https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import vs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import so that I can make main.js *NOT* a module
@@ -101,7 +113,6 @@ docker run -p 3000:3000 -p 8080:8080 node-docker
 * localStorage (this is for saving game state), sessionStorage is for single tabs
 * create a readable form of route id for logging, i.e. "the route between Hamburg and Berlin"
 * check all TODOs
-* For landing page - have a list of valid colors (no text on white background nonsense)
 * Fix the collapsible button and container code to involve less copy-pasta
 * write out a game flow document
 * maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
@@ -111,13 +122,9 @@ docker run -p 3000:3000 -p 8080:8080 node-docker
 * NOTE: when the favicon is requested a 404s, chrome doesn't request it again on subsequent refreshes, need to use cmd+shift+r for hard refresh
 * convert some of my objects to JS maps
 * read https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview MDN guide to brush back up on http knowledge
-* when doing online play we will likely need some sort of player validator. We don't want to update actionInfoDiv.innerText for example when its not the player's turn.
-~~local storage~~
 * potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator
 * eventually, using 'this' is going to be preferable to referencing the gameController object as there may be more than one - will need a lot of clean up
-* resume game,
-* landing page 
 * keyboard short cuts
 * mouse over text for player fields
 * refactor some methods to be separate helper functions 
