@@ -14,7 +14,6 @@ export const logControllerFactory = () => {
             this.isCollapsed = false;
         },
         setUpChatInput(handleChatMessageSend){
-            // dev
             const chatInput = createChatInput(handleChatMessageSend)
             document.getElementById('gameLogWrapper').append(chatInput)
         },

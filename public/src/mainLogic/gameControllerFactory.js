@@ -174,7 +174,6 @@ export const gameControllerFactory = () => {
             }
         },
         handleChat(senderId, chatText) {
-            // dev
             if (senderId === logicBundle.sessionInfo.participantId) {
                 logicBundle.logController.addTextToGameLog(`You said: "${chatText}"`)
             } else {

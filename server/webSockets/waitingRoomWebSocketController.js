@@ -73,13 +73,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     }
 
     const chatMessageReceived = (parsedData) => {
-        // dev
-        // here!
-        
-
-        // will need to exclude the sender from message all, but leave it for testing right now
-        // We can potentially handle name and color here (they will be optional)
-        
         const {
             senderId,
             chatText,
@@ -110,7 +103,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
                 playerReadiedUp(parsedData)
                 break;
             case 'chatMessage':
-                // dev
                 console.warn(parsedData.chatText)
                 chatMessageReceived(parsedData)
                 break;
@@ -122,7 +114,15 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
 
     const socketCloseHandler = (roomName, participantId) => {
         // todo add the closed logic
-        // dev
+        // here!
+        console.warn(waitingRoomMockDB[roomName])
+        // need to delete the socket from waitingRoomToSocketMap
+        // we might not need to send readied players, we already have 'otherReadiedPlayers' on the client side
+        console.warn(waitingRoomToSocketMap[roomName])
+        messageAllInRoom(roomName, {
+            type: 'disconnect',
+            participantId,
+        },)
         console.log('participantId closed their socket', participantId, roomName)
     }
 }

@@ -6,6 +6,7 @@ let participantId; // This value is setup by the server
 let participants;
 let readiedPlayerName;
 let playerColor;
+let isReadied = false;
 
 let socket;
 let otherReadiedPlayers = {};
@@ -61,7 +62,8 @@ const handleValidRoom = (roomInfo) => {
     const readyUpButton = document.createElement('button');
     readyUpButton.id = 'readyUpButton'
     readyUpButton.innerText = 'Ready Up';
-    readyUpButton.onclick = readyUp;
+    // dev
+    readyUpButton.onclick = handleReadyUpButton;
     document.getElementById('playerInfo').append(readyUpButton)
 
     document.getElementById('waitingHeader').innerText =
@@ -90,10 +92,16 @@ const warnInvalidRoom = (warningText) => {
     document.getElementById('backButton').onclick = () => { history.back() };
 }
 
-const readyUp = () => {
-    // TODO this will need a toggle
-    // The unready will be the same as the client disconnecting I think
+const handleReadyUpButton = () => {
+    // dev
+    if (!isReadied){
+        readyUp()
+    } else {
+        unready()
+    }
+}
 
+const readyUp = () => {
     const nameInput = document.getElementById('playerName')
     const playerName = nameInput.value;
     const nameValidation = validateName(playerName);
@@ -129,8 +137,19 @@ const readyUp = () => {
             roomName,
         })
         togglePlayerReadiedUI(true);
+        isReadied = true;
     }
 
+}
+
+const unready = () => {
+    // here!
+    // dev
+    console.log('in unready')
+    // I think there's basically two parts,
+    // 1. we need to reset the UI in the playerInfo to allow the readyup button
+    // to be pressed again, and the name form to be selectable
+    // 2. We need to send a message to the other particpants via websocket
 }
 
 const startGame = () => {
@@ -203,6 +222,17 @@ const handleChatMessage = (parsedData) => {
     const nameSpan = `<span style='color:${playerColor}'>${playerName}</span>`
     addTextToChat(`${nameSpan} says: "${chatText}"`)
 }
+
+const handleDisconnect = (parsedData) => {
+    // here!
+    // dev
+    console.log(parsedData)
+    // check if they were readied
+    addTextToChat(`${parsedData.participantId} disconnected from the waiting room.`)
+    // 1. waitingRoomInfo needs to be updated
+    // 2. The text message needs to be updated to use name/color when applicable - maybe we have a separate 'unready' function
+    // might want to deal with unready first
+}
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
@@ -260,6 +290,10 @@ const handleIncomingMessage = (data) => {
             break;
         case 'incomingChat':
             handleChatMessage(parsedData)
+            break;
+        case 'disconnect':
+            // dev
+            handleDisconnect(parsedData)
             break;
         default:
             console.error(`Unknown socket message type: ${parsedData.type}`)
