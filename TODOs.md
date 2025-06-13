@@ -70,6 +70,7 @@ docker run -p 3000:3000 -p 8080:8080 node-docker
 
 ------
 * maybe allow you to start an online game by simply joining a room?
+* pressing 'enter' should send chat message - also sanitize
 * add the ability to cancel the online ready-up 
 * there's a lot of copy paste between the websocket controllers. Maybe I should add some helpers? While I'm at it, maybe give the websocket logic its own folder
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home

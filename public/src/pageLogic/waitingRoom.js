@@ -149,6 +149,8 @@ const unready = () => {
     // I'm making a deliberate choice not to clear the name and color
     // actually this might cause issues when sending messages - maybe need to use the tag? or maybe just clear the
     // buttons
+    readiedPlayerName = undefined;
+    playerColor = undefined;
     isReadied = false;
     togglePlayerReadiedUI(false)
     sendSocketMessage({
@@ -215,7 +217,7 @@ const togglePlayerReadiedUI = (isReadied) => {
     document.getElementById('readyUpButton').style.borderColor = isReadied ? '#fc3d03' : '';
     document.getElementById('playerName').disabled = isReadied;
     document.getElementById('playerColor').disabled = isReadied;
-    if (!isReadied){
+    if (!isReadied) {
         document.getElementById('playerName').value = '';
         document.getElementById('playerColor').style.backgroundColor = '';
     }
@@ -239,9 +241,14 @@ const handleChatMessage = (parsedData) => {
 const handleUnready = (parsedData) => {
     // here!
     // dev
-    // need to see how we stored info about other players
-    // otherReadiedPlayers
-    // look at otherPlayerDiv for UI
+    const { unreadyPlayerId } = parsedData
+    delete otherReadiedPlayers[unreadyPlayerId]
+    document.getElementById(`otherPlayerDiv-${unreadyPlayerId}`).remove()
+
+    if (Object.keys(otherReadiedPlayers).length === 0) {
+        document.getElementById('otherReadiedPlayerTitle').innerText = 'No Other Players Ready';
+    }
+
 }
 
 const handleDisconnect = (parsedData) => {
@@ -315,7 +322,6 @@ const handleIncomingMessage = (data) => {
             handleUnready(parsedData);
             break;
         case 'disconnect':
-            // dev
             handleDisconnect(parsedData)
             break;
         default:
