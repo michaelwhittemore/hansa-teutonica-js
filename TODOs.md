@@ -47,6 +47,7 @@ Online tasks:
         * figure out how to configure ports as part of the dockerfile instead of the command
         * maybe use EXPOSE in the dockerfile????
         * also might be worth seeing if I can access the shell in the google cloud conatiner
+        * I MIGHT HAVE FIXED IT. it defaulted to 8080 which was also what I was using for my WSS port
     5. Once I finish the above I can work on custom domain. I should also look at subdomain
 4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
 5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
@@ -69,7 +70,7 @@ make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 docker container ls 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run --name myTest -p 3000:3000 -p 8080:8080 node-docker
+docker run --name myTest -p 3000:3000 -p 4080:4080 node-docker
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 
@@ -86,6 +87,7 @@ docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker containe
 * clean up all my steps comments (i.e. where I manually wrote out a long list of steps) - only keep if actually explains the logic and should also remove the numbers
 * add a method to get node by nodeId?
 * endgame points calculation
+* load game fails if there's no local storage
 * clean up all instances of console.log and console.warn
 * I actually have references to turnTimer in the code. I should probably do something with that
 * add currentTurn to the turn tracker or the game history or both (as in how many turns have elapsed total)
