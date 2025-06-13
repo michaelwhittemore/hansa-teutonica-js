@@ -22,7 +22,7 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/11
+* 6/13
     * look at google apps - remember that docker containers are cheaper 
     * I think that maybe hoverable css wouldn't be too bad? Maybe just for node locations to start with?
     * I could also begin on the disconnect stuff - maybe it would make sense to work on waiting room before switching to game? I think we should add a localStorage element. That way if you refresh we can see that you're still there? I'm not a hundred percent certain about this

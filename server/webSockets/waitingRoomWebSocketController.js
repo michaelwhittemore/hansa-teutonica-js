@@ -51,6 +51,7 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             playerName,
             participantId, // not sure if we need this (maybe for removing in the future?)
         }
+        // dev
 
         messageAllInRoom(roomName, {
             type: 'playersReadied',
@@ -70,6 +71,19 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             })
         }
 
+    }
+
+    const unready = (parsedData) => {
+        // note that this function may be called as part of disconnect, 
+        const { roomName, participantId } = parsedData
+        // dev
+
+        delete waitingRoomMockDB[roomName].playersReadiedObject[participantId]
+        messageAllInRoom(roomName, {
+            type: 'playerUnready',
+            unreadyPlayerId: participantId,
+        }, participantId)
+        // we then need to message the other players
     }
 
     const chatMessageReceived = (parsedData) => {
@@ -102,6 +116,9 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             case 'readyNameAndColor':
                 playerReadiedUp(parsedData)
                 break;
+            case 'unready':
+                unready(parsedData);
+                break;
             case 'chatMessage':
                 console.warn(parsedData.chatText)
                 chatMessageReceived(parsedData)
@@ -118,7 +135,7 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
         console.warn(waitingRoomMockDB[roomName])
         // need to delete the socket from waitingRoomToSocketMap
         // we might not need to send readied players, we already have 'otherReadiedPlayers' on the client side
-        console.warn(waitingRoomToSocketMap[roomName])
+        // console.warn(waitingRoomToSocketMap[roomName])
         messageAllInRoom(roomName, {
             type: 'disconnect',
             participantId,

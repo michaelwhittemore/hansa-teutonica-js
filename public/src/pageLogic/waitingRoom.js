@@ -94,7 +94,7 @@ const warnInvalidRoom = (warningText) => {
 
 const handleReadyUpButton = () => {
     // dev
-    if (!isReadied){
+    if (!isReadied) {
         readyUp()
     } else {
         unready()
@@ -146,9 +146,17 @@ const unready = () => {
     // here!
     // dev
     console.log('in unready')
-    // I think there's basically two parts,
-    // 1. we need to reset the UI in the playerInfo to allow the readyup button
-    // to be pressed again, and the name form to be selectable
+    // I'm making a deliberate choice not to clear the name and color
+    // actually this might cause issues when sending messages - maybe need to use the tag? or maybe just clear the
+    // buttons
+    isReadied = false;
+    togglePlayerReadiedUI(false)
+    sendSocketMessage({
+        type: 'unready',
+        participantId,
+        roomName,
+    })
+
     // 2. We need to send a message to the other particpants via websocket
 }
 
@@ -207,6 +215,11 @@ const togglePlayerReadiedUI = (isReadied) => {
     document.getElementById('readyUpButton').style.borderColor = isReadied ? '#fc3d03' : '';
     document.getElementById('playerName').disabled = isReadied;
     document.getElementById('playerColor').disabled = isReadied;
+    if (!isReadied){
+        document.getElementById('playerName').value = '';
+        document.getElementById('playerColor').style.backgroundColor = '';
+    }
+
 }
 
 const addTextToChat = (text) => {
@@ -223,8 +236,15 @@ const handleChatMessage = (parsedData) => {
     addTextToChat(`${nameSpan} says: "${chatText}"`)
 }
 
-const handleDisconnect = (parsedData) => {
+const handleUnready = (parsedData) => {
     // here!
+    // dev
+    // need to see how we stored info about other players
+    // otherReadiedPlayers
+    // look at otherPlayerDiv for UI
+}
+
+const handleDisconnect = (parsedData) => {
     // dev
     console.log(parsedData)
     // check if they were readied
@@ -290,6 +310,9 @@ const handleIncomingMessage = (data) => {
             break;
         case 'incomingChat':
             handleChatMessage(parsedData)
+            break;
+        case 'playerUnready':
+            handleUnready(parsedData);
             break;
         case 'disconnect':
             // dev
