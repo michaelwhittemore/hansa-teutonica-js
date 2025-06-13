@@ -22,12 +22,13 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/13
-    * look at google apps - remember that docker containers are cheaper 
-    * I think that maybe hoverable css wouldn't be too bad? Maybe just for node locations to start with?
+* 6/14
+    * Google cloud run
+        * Still getting 'should upgrade'
     * I could also begin on the disconnect stuff for waiting room
         * Unready logic is done! We call this if the disconnecting player is readied
         * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
+
 -------------------
 Online tasks:
 
@@ -39,10 +40,13 @@ Online tasks:
     3. ~~I was able to get the demo working.~~ 
     4. I think I can try getting this repo working on cloud run. 
         * ~~Looks like I will need to figure out how to debug on cloud run. It's conceivable that I should add a 'run' or 'start' command to my package.json - nope, this doesn't work~~
+        * **HERE** need to get everything running again. I need to understand if there's a difference between what the PORT that the container is running and the one that my node server exposes?
+        * maybe when I test locally it will be more easy to use docker? I think I can set up so I can see the node command line that way https://cloud.google.com/run/docs/testing/local#test_locally
         * https://cloud.google.com/run/docs/testing/local - local testing would help a lot
         * I got the local running and am still seeing the 426, need to do https://cloud.google.com/run/docs/tutorials/local-troubleshooting 
         * figure out how to configure ports as part of the dockerfile instead of the command
         * maybe use EXPOSE in the dockerfile????
+        * also might be worth seeing if I can access the shell in the google cloud conatiner
     5. Once I finish the above I can work on custom domain. I should also look at subdomain
 4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
 5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
@@ -65,7 +69,9 @@ make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 docker container ls 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run -p 3000:3000 -p 8080:8080 node-docker
+docker run --name myTest -p 3000:3000 -p 8080:8080 node-docker
+docker kill myTest
+docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 
 ------
 * maybe allow you to start an online game by simply joining a room?
