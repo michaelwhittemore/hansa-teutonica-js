@@ -25,10 +25,9 @@ Note that the above link uses the test data that gets populated on the server
 * 6/13
     * look at google apps - remember that docker containers are cheaper 
     * I think that maybe hoverable css wouldn't be too bad? Maybe just for node locations to start with?
-    * I could also begin on the disconnect stuff - maybe it would make sense to work on waiting room before switching to game? I think we should add a localStorage element. That way if you refresh we can see that you're still there? I'm not a hundred percent certain about this
-        * Definitely need to alert everyone, let's start with UI just adding a message
-        * remember that the fields in the DB will need to be updated 
-        * Might make sense to deal with waitingRoom "unready" logic first, we will call this anyway
+    * I could also begin on the disconnect stuff for waiting room
+        * Unready logic is done! We call this if the disconnecting player is readied
+        * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
 -------------------
 Online tasks:
 

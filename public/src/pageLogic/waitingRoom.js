@@ -62,7 +62,6 @@ const handleValidRoom = (roomInfo) => {
     const readyUpButton = document.createElement('button');
     readyUpButton.id = 'readyUpButton'
     readyUpButton.innerText = 'Ready Up';
-    // dev
     readyUpButton.onclick = handleReadyUpButton;
     document.getElementById('playerInfo').append(readyUpButton)
 
@@ -93,7 +92,6 @@ const warnInvalidRoom = (warningText) => {
 }
 
 const handleReadyUpButton = () => {
-    // dev
     if (!isReadied) {
         readyUp()
     } else {
@@ -143,12 +141,6 @@ const readyUp = () => {
 }
 
 const unready = () => {
-    // here!
-    // dev
-    console.log('in unready')
-    // I'm making a deliberate choice not to clear the name and color
-    // actually this might cause issues when sending messages - maybe need to use the tag? or maybe just clear the
-    // buttons
     readiedPlayerName = undefined;
     playerColor = undefined;
     isReadied = false;
@@ -158,8 +150,6 @@ const unready = () => {
         participantId,
         roomName,
     })
-
-    // 2. We need to send a message to the other particpants via websocket
 }
 
 const startGame = () => {
@@ -239,8 +229,6 @@ const handleChatMessage = (parsedData) => {
 }
 
 const handleUnready = (parsedData) => {
-    // here!
-    // dev
     const { unreadyPlayerId } = parsedData
     delete otherReadiedPlayers[unreadyPlayerId]
     document.getElementById(`otherPlayerDiv-${unreadyPlayerId}`).remove()
