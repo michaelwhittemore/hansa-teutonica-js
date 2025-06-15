@@ -40,13 +40,10 @@ Online tasks:
     3. ~~I was able to get the demo working.~~ 
     4. I think I can try getting this repo working on cloud run. 
         * ~~Looks like I will need to figure out how to debug on cloud run. It's conceivable that I should add a 'run' or 'start' command to my package.json - nope, this doesn't work~~
-        * **HERE** need to get everything running again. I need to understand if there's a difference between what the PORT that the container is running and the one that my node server exposes?
         * maybe when I test locally it will be more easy to use docker? I think I can set up so I can see the node command line that way https://cloud.google.com/run/docs/testing/local#test_locally
         * https://cloud.google.com/run/docs/testing/local - local testing would help a lot
         * I got the local running and am still seeing the 426, need to do https://cloud.google.com/run/docs/tutorials/local-troubleshooting 
-        * figure out how to configure ports as part of the dockerfile instead of the command
-        * maybe use EXPOSE in the dockerfile????
-        * also might be worth seeing if I can access the shell in the google cloud conatiner
+        * **HERE** issues with WSS vs WS, also maybe docker is caching? Need to look further
         * I MIGHT HAVE FIXED IT. it defaulted to 8080 which was also what I was using for my WSS port
     5. Once I finish the above I can work on custom domain. I should also look at subdomain
 4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
@@ -83,6 +80,7 @@ docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker containe
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 * waiting room clean up/beautification, look up any color schemes or general prettification advise
+* may want to replace 4080 with a port. I guess we get it from the server via http
 # Main Game TODOs #
 * clean up all my steps comments (i.e. where I manually wrote out a long list of steps) - only keep if actually explains the logic and should also remove the numbers
 * add a method to get node by nodeId?

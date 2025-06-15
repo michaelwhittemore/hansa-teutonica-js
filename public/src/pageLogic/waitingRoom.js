@@ -251,7 +251,7 @@ const handleDisconnect = (parsedData) => {
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
-    const url = `ws://${window.location.hostname}:4080/waitingRoom`
+    const url = `wss://${window.location.hostname}:4080/waitingRoom`
     socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({

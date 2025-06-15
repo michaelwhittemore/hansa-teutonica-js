@@ -10,7 +10,8 @@ const __dirname = dirname(__filename);
 const app = express();
 // 
 const PORT = parseInt(process.env.PORT) || 3000;
-
+console.warn('process.env is:')
+console.warn(process.env)
 
 // TODO replace this variable with an actual database
 const waitingRoomMockDB = {};
