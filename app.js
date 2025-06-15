@@ -8,10 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-// 
+
 const PORT = parseInt(process.env.PORT) || 3000;
-console.warn('process.env is:')
-console.warn(process.env)
+// SET env with npx nodemon --env-file=.env app.js
 
 // TODO replace this variable with an actual database
 const waitingRoomMockDB = {};

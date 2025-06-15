@@ -22,14 +22,31 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/14
+* 6/16
     * Google cloud run
         * Still getting 'should upgrade'
     * I could also begin on the disconnect stuff for waiting room
         * Unready logic is done! We call this if the disconnecting player is readied
         * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
 
+    * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
+    * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
+    * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
+    * Let's see if it runs when using wss on gcloud!
 -------------------
+
+**DOCKER STUFF**
+npx nodemon --env-file=.env app.js
+make sure docker application is running
+https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
+docker container ls 
+docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
+docker run --name myTest -p 3000:3000 -p 4080:4080 node-docker
+docker kill myTest
+docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
+
+
+-----------------
 Online tasks:
 
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
@@ -62,14 +79,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
-DOCKER STUFF
-make sure docker application is running
-https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
-docker container ls 
-docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run --name myTest -p 3000:3000 -p 4080:4080 node-docker
-docker kill myTest
-docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
+
 
 ------
 * maybe allow you to start an online game by simply joining a room?

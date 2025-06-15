@@ -19,7 +19,8 @@ import { logicBundle } from "../helpers/logicBundle.js";
 
 // We may need additional parameters such as the logController
 export const clientWebSocketControllerFactory = (participantId, roomName) => {
-    const url = `wss://${window.location.hostname}:4080/onlineGame`
+    // here!
+    const url = `ws://${window.location.hostname}:4080/onlineGame`
     const socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({
