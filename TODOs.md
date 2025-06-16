@@ -35,12 +35,14 @@ Note that the above link uses the test data that gets populated on the server
         * https://cloud.google.com/run/docs/mapping-custom-domains
         * will want to consider subdomain? 
     * I could also begin on the disconnect stuff for waiting room
-        * Unready logic is done! We call this if the disconnecting player is readied
-        * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
-        * I should probably continue with this while I take a break from the online websockets
-        * ~~may want to reconsider the isInUse flag for the room? don't think it actually is very useful~~
-        * after dealing with the server will need to do UI on the client side. maybe send out a message in the text chat?
-        * Should use the span to color helper
+        * Just need to tes
+        * should also test that room becomes empty
+        * do we want the room to get deleted after everyone leaves? That's a tough question
+    * Disconnect for main game
+        * How do I want to approach this? I'm seeing of having a 'pause' where no actions can be taken? 
+        * Maybe we can do this in the same place as validation??
+        * Will need to rebuild the websocket and will need to do online loading
+
     * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
 
 

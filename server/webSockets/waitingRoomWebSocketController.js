@@ -75,14 +75,12 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     const unready = (parsedData) => {
         // note that this function may be called as part of disconnect, 
         const { roomName, participantId } = parsedData
-        // dev
 
         delete waitingRoomMockDB[roomName].playersReadiedObject[participantId]
         messageAllInRoom(roomName, {
             type: 'playerUnready',
             unreadyPlayerId: participantId,
         }, participantId)
-        // we then need to message the other players
     }
 
     const chatMessageReceived = (parsedData) => {
@@ -129,8 +127,7 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     }
 
     const socketCloseHandler = (roomName, participantId) => {
-        // dev
-
+        // TODO: Consider whether it's worth deleting an empty room
         waitingRoomMockDB[roomName].playersWaiting--;
         waitingRoomMockDB[roomName].isFull = false;
 

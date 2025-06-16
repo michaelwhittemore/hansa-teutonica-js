@@ -80,7 +80,7 @@ const handleValidRoom = (roomInfo) => {
             senderId: participantId,
             roomName,
             playerName: readiedPlayerName || participantId,
-            playerColor: playerColor || 'black,'
+            playerColor: (playerColor && isReadied) ? playerColor : 'black',
         })
     }
     document.getElementById('leftSideWrapper').append(createChatInput(onChatSend))
@@ -253,7 +253,6 @@ const handleUnready = (parsedData) => {
 }
 
 const handleDisconnect = (parsedData) => {
-    // dev
     const { participantId, disconnectedName, disconnectedColor, totalParticipants } = parsedData
     let disconnectedSpan = participantId;
     if (disconnectedName) {
