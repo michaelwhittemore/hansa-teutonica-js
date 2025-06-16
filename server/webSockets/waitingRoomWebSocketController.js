@@ -51,7 +51,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             playerName,
             participantId, // not sure if we need this (maybe for removing in the future?)
         }
-        // dev
 
         messageAllInRoom(roomName, {
             type: 'playersReadied',
@@ -135,7 +134,11 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
         waitingRoomMockDB[roomName].playersWaiting--;
         waitingRoomMockDB[roomName].isFull = false;
 
+        let disconnectedName;
+        let disconnectedColor;
         if (waitingRoomMockDB[roomName].playersReadiedObject[participantId]) {
+            disconnectedName = waitingRoomMockDB[roomName].playersReadiedObject[participantId].playerName;
+            disconnectedColor = waitingRoomMockDB[roomName].playersReadiedObject[participantId].playerColor;
             unready({ roomName, participantId });
         }
 
@@ -143,6 +146,9 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
         messageAllInRoom(roomName, {
             type: 'disconnect',
             participantId,
+            disconnectedName,
+            disconnectedColor,
+            totalParticipants: Object.keys(waitingRoomToSocketMap[roomName].IdsToSockets).length
         })
 
         console.log('participantId closed their socket', participantId, roomName)

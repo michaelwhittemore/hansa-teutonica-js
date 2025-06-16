@@ -22,23 +22,28 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/16
+* 6/18
     * Google cloud run
         * Now having issues with websocket, at least I can do purely http plus client stuff
         * I get 'Invalid Sec-WebSocket-Accept header' when using postman - maybe I should add a health check route
-
+            * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
+        * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
+        * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
+        * Let's see if it runs when using wss on gcloud!
+        * https://stackoverflow.com/questions/31338927/how-to-create-securetls-ssl-websocket-server might be worth reading
+    * Maybe before I do the websockets I can get it running in my own domain
+        * https://cloud.google.com/run/docs/mapping-custom-domains
+        * will want to consider subdomain? 
     * I could also begin on the disconnect stuff for waiting room
         * Unready logic is done! We call this if the disconnecting player is readied
         * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
         * I should probably continue with this while I take a break from the online websockets
         * ~~may want to reconsider the isInUse flag for the room? don't think it actually is very useful~~
         * after dealing with the server will need to do UI on the client side. maybe send out a message in the text chat?
+        * Should use the span to color helper
+    * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
 
-    * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
-    * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
-    * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
-    * Let's see if it runs when using wss on gcloud!
-    * https://stackoverflow.com/questions/31338927/how-to-create-securetls-ssl-websocket-server might be worth reading
+
 -------------------
 
 **DOCKER STUFF**
@@ -101,6 +106,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * waiting room clean up/beautification, look up any color schemes or general prettification advise
 * may want to replace 4080 with a port. I guess we get it from the server via http
 # Main Game TODOs #
+* add createColoredSpanWithText to places where I write out the html string
 * clean up all my steps comments (i.e. where I manually wrote out a long list of steps) - only keep if actually explains the logic and should also remove the numbers
 * add a method to get node by nodeId?
 * endgame points calculation

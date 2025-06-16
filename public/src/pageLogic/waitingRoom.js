@@ -1,9 +1,11 @@
-import { createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName, pluralifyText } from "../helpers/helpers.js"
+import {
+    createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName,
+    pluralifyText, createColoredSpanWithText
+} from "../helpers/helpers.js"
 import { createChatInput } from "../helpers/createChatInput.js";
 const roomName = new URL(window.location).searchParams.get('roomName')
 
 let participantId; // This value is setup by the server
-let participants;
 let readiedPlayerName;
 let playerColor;
 let isReadied = false;
@@ -214,6 +216,17 @@ const togglePlayerReadiedUI = (isReadied) => {
 
 }
 
+const updateParticipants = (totalParticipants) => {
+    let participants = parseInt(totalParticipants)
+    if (participants === 1) {
+        document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
+    } else {
+        const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
+            participants - 1)} in this room.`;
+        document.getElementById('waitingRoomInfo').innerText = text;
+    }
+}
+
 const addTextToChat = (text) => {
     const timestamp = (new Date()).toLocaleTimeString('en-US')
     document.getElementById('chatTextHolder').innerHTML += `<br>${timestamp}: ${text}`;
@@ -241,12 +254,13 @@ const handleUnready = (parsedData) => {
 
 const handleDisconnect = (parsedData) => {
     // dev
-    console.log(parsedData)
-    // check if they were readied
-    addTextToChat(`${parsedData.participantId} disconnected from the waiting room.`)
-    // 1. waitingRoomInfo needs to be updated
-    // 2. The text message needs to be updated to use name/color when applicable - maybe we have a separate 'unready' function
-    // might want to deal with unready first
+    const { participantId, disconnectedName, disconnectedColor, totalParticipants } = parsedData
+    let disconnectedSpan = participantId;
+    if (disconnectedName) {
+        disconnectedSpan = createColoredSpanWithText(disconnectedName, disconnectedColor)
+    }
+    addTextToChat(`${disconnectedSpan} disconnected from the waiting room.`);
+    updateParticipants(totalParticipants);
 }
 // -----------------------------Web sockets---------------
 
@@ -278,14 +292,7 @@ const handleIncomingMessage = (data) => {
             addTextToChat(`You've joined the waiting room as "${participantId}". Please enter your name and select your color above.`)
             break;
         case 'totalParticipants':
-            participants = parseInt(parsedData.totalParticipants)
-            if (participants === 1) {
-                document.getElementById('waitingRoomInfo').innerText = 'You are the only one in the waiting room';
-            } else {
-                const text = `There ${participants === 2 ? 'is' : 'are'} ${pluralifyText('other player',
-                    participants - 1)} in this room.`;
-                document.getElementById('waitingRoomInfo').innerText = text;
-            }
+            updateParticipants(parsedData.totalParticipants)
             break;
         case 'playersReadied':
             document.getElementById('otherReadiedPlayerTitle').innerText = 'Other Players Readied:'
