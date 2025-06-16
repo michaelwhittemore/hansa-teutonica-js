@@ -24,15 +24,21 @@ Note that the above link uses the test data that gets populated on the server
 
 * 6/16
     * Google cloud run
-        * Still getting 'should upgrade'
+        * Now having issues with websocket, at least I can do purely http plus client stuff
+        * I get 'Invalid Sec-WebSocket-Accept header' when using postman - maybe I should add a health check route
+
     * I could also begin on the disconnect stuff for waiting room
         * Unready logic is done! We call this if the disconnecting player is readied
         * Will need to update all the fields in both waitingRoomMockDB and waitingRoomToSocketMap
+        * I should probably continue with this while I take a break from the online websockets
+        * ~~may want to reconsider the isInUse flag for the room? don't think it actually is very useful~~
+        * after dealing with the server will need to do UI on the client side. maybe send out a message in the text chat?
 
     * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
     * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
     * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
     * Let's see if it runs when using wss on gcloud!
+    * https://stackoverflow.com/questions/31338927/how-to-create-securetls-ssl-websocket-server might be worth reading
 -------------------
 
 **DOCKER STUFF**
@@ -45,18 +51,21 @@ docker run --name myTest -p 3000:3000 -p 4080:4080 node-docker
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 
-
+-----------------
+**Google Cloud Run**
+gcloud run deploy --source . (while in the parent folder)
+https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
+https://hansa-teutonica-js-872836492319.us-west1.run.app
+* looks like switching to WSS just means it fails silently
+* but also it seems like the code still has WS?? - maybe it's cached? - yep, clearing the cache fixed it
 -----------------
 Online tasks:
 
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
 3. Ugh, now I need to figure out whether to use app engine or cloud run. It seems that cloud run is probably the preferred solution https://cloud.google.com/appengine/migration-center/run/compare-gae-with-run. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters, I think I should be using https://cloud.google.com/appengine/docs/standard/nodejs/building-app vs https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
     **Based on the above I think we want to use https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service as an example**
-    1. ~~Let's start with the gcloud CLI~~
-    2. ~~Read cloud run vs app engine~~
-    3. ~~I was able to get the demo working.~~ 
+
     4. I think I can try getting this repo working on cloud run. 
-        * ~~Looks like I will need to figure out how to debug on cloud run. It's conceivable that I should add a 'run' or 'start' command to my package.json - nope, this doesn't work~~
         * maybe when I test locally it will be more easy to use docker? I think I can set up so I can see the node command line that way https://cloud.google.com/run/docs/testing/local#test_locally
         * https://cloud.google.com/run/docs/testing/local - local testing would help a lot
         * I got the local running and am still seeing the 426, need to do https://cloud.google.com/run/docs/tutorials/local-troubleshooting 

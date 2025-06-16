@@ -130,16 +130,21 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     }
 
     const socketCloseHandler = (roomName, participantId) => {
-        // todo add the closed logic
-        // here!
-        console.warn(waitingRoomMockDB[roomName])
-        // need to delete the socket from waitingRoomToSocketMap
-        // we might not need to send readied players, we already have 'otherReadiedPlayers' on the client side
-        // console.warn(waitingRoomToSocketMap[roomName])
+        // dev
+
+        waitingRoomMockDB[roomName].playersWaiting--;
+        waitingRoomMockDB[roomName].isFull = false;
+
+        if (waitingRoomMockDB[roomName].playersReadiedObject[participantId]) {
+            unready({ roomName, participantId });
+        }
+
+        delete waitingRoomToSocketMap[roomName].IdsToSockets[participantId];
         messageAllInRoom(roomName, {
             type: 'disconnect',
             participantId,
-        },)
+        })
+
         console.log('participantId closed their socket', participantId, roomName)
     }
 }

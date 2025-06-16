@@ -19,7 +19,6 @@ import { logicBundle } from "../helpers/logicBundle.js";
 
 // We may need additional parameters such as the logController
 export const clientWebSocketControllerFactory = (participantId, roomName) => {
-    // here!
     const url = `ws://${window.location.hostname}:4080/onlineGame`
     const socket = new WebSocket(url);
     socket.onopen = () => {
@@ -169,7 +168,6 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
         },
         playerSentChat: (chatText, participantId) => {
             console.warn('Within the playerSentChat in websocket', chatText)
-            // here! - need to send a message, might need new action type
             sendSocketMessage({
                 type: 'chatSent',
                 participantId,

@@ -55,8 +55,7 @@ export const gameControllerFactory = () => {
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
             logicBundle.logController.initializeGameLog();
-            // here! maybe initializeGameLog should take in the message? Or alternatively we add it
-            // We can set up the gameController method that gets called regardless of the case
+
             let handleChatMessageSend;
             if (logicBundle.sessionInfo.isHotseatMode) {
                 handleChatMessageSend = (text) => {

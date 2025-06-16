@@ -50,7 +50,6 @@ export const setUpRoomRoutes = (app, waitingRoomMockDB) => {
             // Happy path, the name doesn't exist
             // May need additional fields
             waitingRoomMockDB[roomName] = {
-                isInUse: true, // may be an unnecessary field
                 isPlaying: false, // Used to differentiate from waiting room
                 isFull: false,
                 numberOfPlayers: parseInt(numberOfPlayers),

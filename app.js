@@ -40,7 +40,6 @@ app.get("/onlineGame/:roomName", (request, response) => {
 
 // ------------------------ TEST VALUES -----------------------
 waitingRoomMockDB['testRoom1'] = {
-  isInUse: true,
   isPlaying: false,
   isFull: false,
   numberOfPlayers: 4,
