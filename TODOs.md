@@ -25,7 +25,7 @@ Note that the above link uses the test data that gets populated on the server
 * 6/18
     * Google cloud run
         * Now having issues with websocket, at least I can do purely http plus client stuff
-        * I get 'Invalid Sec-WebSocket-Accept header' when using postman - maybe I should add a health check route
+        * I get 'Invalid Sec-WebSocket-Accept header' when using postman - maybe I should add a health check route - when I say health check, I mean I should be able to send a massage to ws://${window.location.hostname}:4080/healthCheck and get a simple response back
             * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
         * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
         * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
@@ -33,17 +33,27 @@ Note that the above link uses the test data that gets populated on the server
         * https://stackoverflow.com/questions/31338927/how-to-create-securetls-ssl-websocket-server might be worth reading
     * Maybe before I do the websockets I can get it running in my own domain
         * https://cloud.google.com/run/docs/mapping-custom-domains
+        * maybe I should look at the example linked by https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless (i.e. "The instructions on this page assume you already have a Cloud Run, Cloud Run functions, or App Engine service running. For the example on this page, we have used the Cloud Run Python quickstart to deploy a Cloud Run service in the us-central1 region. The rest of this page shows you how to set up an external Application Load Balancer that uses a serverless NEG backend to route requests to this service." https://cloud.google.com/run/docs/quickstarts) - 34.111.144.222
         * will want to consider subdomain? 
-    * I could also begin on the disconnect stuff for waiting room
-        * Just need to tes
-        * should also test that room becomes empty
-        * do we want the room to get deleted after everyone leaves? That's a tough question
+        * Might be worth asking an LLM 
+        * I'm worried about this being 'serverless' https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless
+        * I'm pretty sure I'm missing some key part of all this. I think maybe I'm deeply confused on how requests are handled? Like what happens if I go to http://example.com/test?
+
+        * **HERE!** TRYING THE LOAD BALANCER
+        * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
+            * https://console.cloud.google.com/security/ccm/list/lbCertificates?inv=1&invt=Ab0YVg&project=hansa-teutonica
+            * 34.111.144.222:443
+            * Maybe I just need to wait on the SSL cert provisioning? 
+
+    
     * Disconnect for main game
         * How do I want to approach this? I'm seeing of having a 'pause' where no actions can be taken? 
         * Maybe we can do this in the same place as validation??
         * Will need to rebuild the websocket and will need to do online loading
+        * I think we will need to fix saving to be the end of an action, not the end of the turn
 
     * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
+        * Let's start with just using the 'span' helper
 
 
 -------------------
@@ -65,7 +75,33 @@ https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-ser
 https://hansa-teutonica-js-872836492319.us-west1.run.app
 * looks like switching to WSS just means it fails silently
 * but also it seems like the code still has WS?? - maybe it's cached? - yep, clearing the cache fixed it
+https://cloud.google.com/run/docs/mapping-custom-domains 
 -----------------
+
+________
+I’m struggling with some rather basic stuff, sorry for the very newbie questions. I’ve been trying to do all this just following the documentation, but I’ve kinda hit a wall. I’m trying to get a simple project up and running. I have it running locally in a docker container on localhost, I just serve some basic JS/HTML/CSS webpages over html. The server runs node with express and uses https://www.npmjs.com/package/ws for web sockets (I’m doing some basic real time communication between the server and the clients). 
+
+I purchased a domain name from IONOS before I decided on using google cloud run. My assumption was that I could just configure the A or AAAA from my domain-dns-settings. 
+
+I set up a simple node server following the example of https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service which I can see successfully running at my .us-west1.run.app URL. 
+
+
+Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless), but it seems like the example is for serverless applications. 
+
+I ran the given gcloud cli commands: 
+```
+gcloud compute addresses create example-ip \ --network-tier=PREMIUM \ --ip-version=IPV4 \ --global
+``` 
+and 
+```
+gcloud compute addresses describe example-ip \
+    --format="get(address)" \
+    --global
+```
+I’ve gotten an IPV4 address, but the corresponding URL just gives me a 401. 
+
+Thanks for any help, I feel like I’m probably misunderstanding some core networking concepts here. 
+_______
 Online tasks:
 
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
@@ -79,7 +115,7 @@ Online tasks:
         * **HERE** issues with WSS vs WS, also maybe docker is caching? Need to look further
         * I MIGHT HAVE FIXED IT. it defaulted to 8080 which was also what I was using for my WSS port
     5. Once I finish the above I can work on custom domain. I should also look at subdomain
-4. Disconnection logic for waiting room. We will need a listener for websocket closing. We will then need to clear the associated socket, decrement the playersWaiting, possibly toggle "isFull", the player if they readied up (remember to differentiate between readied and not readied connections, need to do both), in addition to doing this on the server side, we need to message all other players and have them update their UI's accordingly. Additionally, if the disconnected player was readied up, we will need to make sure to remove them from any storage (I think we store the color).
+
 5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
 6. Improve the waiting room UI. - At the very least should line up "There is 1 other player in this room." and the "Your Name" form. Maybe also move the "No Other Players Ready" section more to the left? The empty space looks awkward. Perhaps I should also use a better font and add a background color. This feels like I should google UI basics and maybe read a guide or watch a tutorial
 * Switch to an actual database instead of a JS Object. I should probably wait until I get hosting decided upon incase I want to use Firebase. I should consider something that I can run on my laptop as well, maybe radix? Maybe lowdb, or sqlite, see https://dev.to/forbeslindesay/choosing-a-node-js-database-498f. Maybe postgres?
@@ -90,8 +126,6 @@ General (not online specific) Tasks:
 
 honestly maybe I should use side by side tabs for testing? - at least during the two person online scenario 
 ----------------------------------------
-* instead of heroku perhaps I should use Google App Engine? looks like it has a free tier
-* Nigel suggesting https://cloud.google.com/run?hl=en for dockerized 
 
 * Should we disable buttons when it's not your turn for online play? I assume we would tie that to advance turn?
 
@@ -100,7 +134,6 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 ------
 * maybe allow you to start an online game by simply joining a room?
 * pressing 'enter' should send chat message - also sanitize
-* add the ability to cancel the online ready-up 
 * there's a lot of copy paste between the websocket controllers. Maybe I should add some helpers? While I'm at it, maybe give the websocket logic its own folder
 * really need to get better at using the node debugger, maybe try to watch something on it when I'm home
 * consider adding a room class to the server (might not make sense when we switch to a real Database)

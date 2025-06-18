@@ -123,7 +123,6 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
             default:
                 console.error(`Unknown socket message type from client: ${parsedData.type}`)
         }
-
     }
 
     const socketCloseHandler = (roomName, participantId) => {
