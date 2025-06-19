@@ -7,12 +7,20 @@ export const startWebSocketServer = (waitingRoomMockDB, gameRoomMockDB) => {
   const waitingRoomToSocketMap = {};
   const gameRoomToSocketMap = {};
   socketServer.on('connection', (ws, request) => {
-    if (request.url === '/waitingRoom') {
-      waitingRoomWebSocketController(ws, waitingRoomMockDB, waitingRoomToSocketMap)
-    } else if (request.url === '/onlineGame') {
-      gameWebSocketController(ws, waitingRoomMockDB, gameRoomToSocketMap, gameRoomMockDB)
-    } else {
-      console.error(`Unknown WebSocket Path: ${request.url}`)
+    switch (request.url) {
+      case '/waitingRoom':
+        waitingRoomWebSocketController(ws, waitingRoomMockDB, waitingRoomToSocketMap)
+        break;
+      case '/onlineGame':
+        gameWebSocketController(ws, waitingRoomMockDB, gameRoomToSocketMap, gameRoomMockDB)
+        break;
+      case '/healthCheck':
+        // dev
+        // todo - this should have it's own file where I can send in messages and get responses
+        ws.send('This is a healthy, successful connection.')
+        break;
+      default:
+        console.error(`Unknown WebSocket Path: ${request.url}`)
     }
   });
 }

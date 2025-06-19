@@ -38,6 +38,10 @@ Note that the above link uses the test data that gets populated on the server
         * Might be worth asking an LLM 
         * I'm worried about this being 'serverless' https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless
         * I'm pretty sure I'm missing some key part of all this. I think maybe I'm deeply confused on how requests are handled? Like what happens if I go to http://example.com/test?
+        * https://cloud.google.com/sdk/gcloud/reference/compute/addresses/create
+
+        * Created [https://www.googleapis.com/compute/v1/projects/hansa-teutonica/regions/us-west1/addresses/testname] - Does the above just let me know what command I've sent? Is it unrelated to by project??
+
 
         * **HERE!** TRYING THE LOAD BALANCER
         * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
@@ -54,6 +58,7 @@ Note that the above link uses the test data that gets populated on the server
 
     * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
         * Let's start with just using the 'span' helper
+        * Also add to README, it's currently outdated
 
 
 -------------------
@@ -85,8 +90,7 @@ I purchased a domain name from IONOS before I decided on using google cloud run.
 
 I set up a simple node server following the example of https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service which I can see successfully running at my .us-west1.run.app URL. 
 
-
-Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless), but it seems like the example is for serverless applications. 
+Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless), but it seems like the example is for serverless applications. I'm looking at the documentation for https://cloud.google.com/sdk/gcloud/reference/compute/addresses/create and it seems like this is the correct way to get a reserved IP address for my application.
 
 I ran the given gcloud cli commands: 
 ```
