@@ -22,11 +22,17 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/18
+* 6/22
+
+    * First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work
+----------------------
+* Broader list
     * Google cloud run
         * Now having issues with websocket, at least I can do purely http plus client stuff
-        * I get 'Invalid Sec-WebSocket-Accept header' when using postman - maybe I should add a health check route - when I say health check, I mean I should be able to send a massage to ws://${window.location.hostname}:4080/healthCheck and get a simple response back
-            * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
+        * Potentially need to do something about https & wss https://stackoverflow.com/questions/54546976/how-to-send-upgrade-handshake-to-websocket-server-from-client-using-ws-npm-mod
+        * I get 'Invalid Sec-WebSocket-Accept header' when using postman 
+        * also might need to use 'handleUpgrade'
+        * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
         * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
         * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
         * Let's see if it runs when using wss on gcloud!
@@ -46,9 +52,13 @@ Note that the above link uses the test data that gets populated on the server
         * **HERE!** TRYING THE LOAD BALANCER
         * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
             * https://console.cloud.google.com/security/ccm/list/lbCertificates?inv=1&invt=Ab0YVg&project=hansa-teutonica
-            * 34.111.144.222:443
+            * 34.111.144.222:443 (https port)
+            * 34.111.144.222:80 (http port)
             * Maybe I just need to wait on the SSL cert provisioning? 
-
+            * Is it possible I need to modify the https://cloud.google.com/load-balancing/docs/ssl-policies-concepts
+            * trying to reach https (34.111.144.222:443) via postman results in an error
+            * maybe I should just switch to firebase hosting? 
+            * 
     
     * Disconnect for main game
         * How do I want to approach this? I'm seeing of having a 'pause' where no actions can be taken? 
@@ -84,25 +94,32 @@ https://cloud.google.com/run/docs/mapping-custom-domains
 -----------------
 
 ________
-I’m struggling with some rather basic stuff, sorry for the very newbie questions. I’ve been trying to do all this just following the documentation, but I’ve kinda hit a wall. I’m trying to get a simple project up and running. I have it running locally in a docker container on localhost, I just serve some basic JS/HTML/CSS webpages over html. The server runs node with express and uses https://www.npmjs.com/package/ws for web sockets (I’m doing some basic real time communication between the server and the clients). 
+I’m struggling with some rather basic stuff, sorry for the very newbie questions. I’ve been trying to do all this just following the documentation, but I’ve kinda hit a wall.
 
-I purchased a domain name from IONOS before I decided on using google cloud run. My assumption was that I could just configure the A or AAAA from my domain-dns-settings. 
+I’m trying to get a simple project up and running. I have it running locally in a docker container on localhost, I just serve some basic JS/HTML/CSS webpages over html. The server runs node with express and uses https://www.npmjs.com/package/ws for web sockets (I’m doing some basic real time communication between the server and the clients). 
+
+I purchased a domain name from IONOS before I decided on using google cloud run. My assumption was that I could just configure the A or AAAA record from my domain-dns-settings. 
 
 I set up a simple node server following the example of https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service which I can see successfully running at my .us-west1.run.app URL. 
 
-Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless), but it seems like the example is for serverless applications. I'm looking at the documentation for https://cloud.google.com/sdk/gcloud/reference/compute/addresses/create and it seems like this is the correct way to get a reserved IP address for my application.
+Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless) and successfully got my load balancer up and running.
 
-I ran the given gcloud cli commands: 
-```
+I ran the given gcloud cli commands:
 gcloud compute addresses create example-ip \ --network-tier=PREMIUM \ --ip-version=IPV4 \ --global
-``` 
-and 
-```
+and
 gcloud compute addresses describe example-ip \
-    --format="get(address)" \
-    --global
-```
-I’ve gotten an IPV4 address, but the corresponding URL just gives me a 401. 
+
+--format="get(address)" \
+
+--global
+
+I’ve gotten an IPV4 address, but trying to reach it doesn't give a response.
+
+I have an active, Google-managed SSL certificate that I can see in the gcp Certificate Manager or via the ‘gcloud compute ssl-certificates describe’ command. 
+
+Out of frustration I added a http, port 80 to my frontend and to my surprise it worked. Given that I couldn’t even my server access until I added the http to my load balancer frontend, is it possible my SSL policy details are wrong? I’m just using the GCP default. If I specify https in my browser it seems to automatically downgrade to http. I verified via postman that trying to access my static IP on port 443 just results in an ECONNRESET. 
+
+Any tips on what I should try next? 
 
 Thanks for any help, I feel like I’m probably misunderstanding some core networking concepts here. 
 _______

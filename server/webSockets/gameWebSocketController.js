@@ -20,7 +20,7 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
             // TODO - main game disconnect. I think we will want to alert other players, who will then 'pause'
             // This may need to be moved somewhere where it's aware of the participant
 
-            // Resuming will be a whole other thing - it will invole the main page, we will need to set a tag of
+            // Resuming will be a whole other thing - it will involve the main page, we will need to set a tag of
             // 'needsToBeResumed' or something like that. It will need to check that the url contains the id of the missing
             // player. 
             console.warn('socket has been closed in main game')
