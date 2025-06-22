@@ -24,7 +24,10 @@ Note that the above link uses the test data that gets populated on the server
 
 * 6/22
 
-    * First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work
+    * ~~First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work~~ - let's see if changing express has any difference, maybe post to the node.js reddit? 
+    * ~~see if health check works with 34.111.144.222~~ - it does not
+    * So there are two big issues I'm running into right now - https and websockets- 
+
 ----------------------
 * Broader list
     * Google cloud run
@@ -58,7 +61,7 @@ Note that the above link uses the test data that gets populated on the server
             * Is it possible I need to modify the https://cloud.google.com/load-balancing/docs/ssl-policies-concepts
             * trying to reach https (34.111.144.222:443) via postman results in an error
             * maybe I should just switch to firebase hosting? 
-            * 
+            * IS IT POSSIBLE THAT THE ISSUE ISN'T THE LOADBALANCER BUT NODE/EXPRESS???
     
     * Disconnect for main game
         * How do I want to approach this? I'm seeing of having a 'pause' where no actions can be taken? 
@@ -69,7 +72,11 @@ Note that the above link uses the test data that gets populated on the server
     * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
         * Let's start with just using the 'span' helper
         * Also add to README, it's currently outdated
-
+--------------------------
+**Firebase Hosting** 
+* https://firebase.google.com/docs/hosting
+* https://cloud.google.com/run/docs/mapping-custom-domains#firebase
+* https://firebase.google.com/docs/hosting/cloud-run#direct_requests_to_container
 
 -------------------
 
