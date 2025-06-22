@@ -27,6 +27,8 @@ Note that the above link uses the test data that gets populated on the server
     * ~~First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work~~ - let's see if changing express has any difference, maybe post to the node.js reddit? 
     * ~~see if health check works with 34.111.144.222~~ - it does not
     * So there are two big issues I'm running into right now - https and websockets- 
+        * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
+        * let's try a node subreddit post if I can't do it myself
 
 ----------------------
 * Broader list

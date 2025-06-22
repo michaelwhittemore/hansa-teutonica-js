@@ -4,6 +4,13 @@ import { dirname } from 'path';
 import { startWebSocketServer } from "./server/webSockets/startWebSocketServer.js";
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
 
+// Testing dedicated http/https servers
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
+
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -81,3 +88,24 @@ startWebSocketServer(waitingRoomMockDB, gameRoomMockDB);
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
+
+// Testing http ---------------------------------------
+const httpServer = http.createServer(app);
+httpServer.listen(80, () => {
+  console.log('HTTP Server running on port 80');
+});
+// Can be accessed on http://localhost:80
+
+
+const key = fs.readFileSync(__dirname + '/server.key')
+const cert = fs.readFileSync(__dirname + '/server.crt')
+// console.log(key, cert)
+
+const httpsServer = https.createServer({
+  key, 
+  cert
+}, app);
+httpsServer.listen(443, () => {
+  console.log('HTTPS Server running on port 443');
+});
+// trying https://localhost:443
