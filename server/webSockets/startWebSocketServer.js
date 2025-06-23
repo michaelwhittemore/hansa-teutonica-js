@@ -1,9 +1,7 @@
-import { WebSocketServer } from 'ws';
 import { waitingRoomWebSocketController } from './waitingRoomWebSocketController.js';
 import { gameWebSocketController } from './gameWebSocketController.js';
 
-export const startWebSocketServer = (waitingRoomMockDB, gameRoomMockDB) => {
-  const socketServer = new WebSocketServer({ port: 4080 });
+export const startWebSocketServer = (socketServer, waitingRoomMockDB, gameRoomMockDB) => {
   const waitingRoomToSocketMap = {};
   const gameRoomToSocketMap = {};
   socketServer.on('connection', (ws, request) => {

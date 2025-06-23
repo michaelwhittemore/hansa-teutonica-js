@@ -3,6 +3,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { startWebSocketServer } from "./server/webSockets/startWebSocketServer.js";
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
+import { WebSocketServer } from 'ws';
+
 
 // Testing dedicated http/https servers
 import http from 'http';
@@ -80,28 +82,23 @@ waitingRoomMockDB['testRoom1'] = {
 
 // ----------------------------------------
 
-// Will need a route to clear the room from storage
 setUpRoomRoutes(app, waitingRoomMockDB)
-startWebSocketServer(waitingRoomMockDB, gameRoomMockDB);
 
-app.listen(PORT, () => {
-  console.log(`Express server running at http://localhost:${PORT}/`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Express server running at http://localhost:${PORT}/`);
+// });
 
 // Testing http/WSS ---------------------------------------
+// HERE!
+// DEV
+// I think we just need to pass in the WebSocketServer to startWebSocketServer. Then we need to attach all the
+// listerners in that file as usual. Also remove ports when mkaijg client requests?? 
+
 const server = http.createServer(app);
-import { WebSocketServer } from 'ws';
-// import WebSocket from 'ws'
 
 const wss = new WebSocketServer({ server: server });
+startWebSocketServer(wss, waitingRoomMockDB, gameRoomMockDB);
 
-wss.on('connection', function connection(ws, request) {
-    ws.on('message', function incoming(message) {
-        console.log(message)
-
-        ws.send('Tobi from thoughtbot fusion team.');
-    });
-});
-
-
-server.listen(9000, () => console.log(`Lisening on port :9000`))
+server.listen(PORT, () => {
+  console.log(`HTTP server running at http://localhost:${PORT}/`);
+})
