@@ -65,6 +65,8 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
 
         if (Object.keys(waitingRoomMockDB[roomName].playersReadiedObject).length === waitingRoomMockDB[roomName].numberOfPlayers) {
             waitingRoomMockDB[roomName].isPlaying = true;
+            console.log(`All players in ${roomName} have readied up and are being sent to game.`)
+            console.log(waitingRoomMockDB[roomName])
             messageAllInRoom(roomName, {
                 type: 'allReady',
             })
@@ -126,6 +128,11 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     }
 
     const socketCloseHandler = (roomName, participantId) => {
+        // All sockets are closed when the players are redirected during the ready-up process
+        if (waitingRoomMockDB[roomName].isPlaying){
+            console.log(`${participantId} closed their socket as part of joining the game.`)
+            return;
+        }
         // TODO: Consider whether it's worth deleting an empty room
         waitingRoomMockDB[roomName].playersWaiting--;
         waitingRoomMockDB[roomName].isFull = false;

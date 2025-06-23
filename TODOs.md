@@ -27,6 +27,9 @@ Note that the above link uses the test data that gets populated on the server
     * let's figure out the difference between `docker build` and `docker compose` - looks like `compose` is intended for multiple docker containers. Might still be useful to me for binding the port and for hot reload with compose watch. There's so trade off with having to add any additional technical layer though
     * binding the 4080 port on docker fixed my local container, still need to figure out gcp binding though
     * **MAYBE NEED A YAML FILE FOR CONFIG INCLUDING PORT BINDING??** - see https://cloud.google.com/run/docs/deploying#yaml - maybe this is worth a reddit question?
+    * MAY HAVE FOUND A BUG WITH STARTING A NEW GAME FROM THE WAITING ROOM, might have something to do with the fact that I reconnected at some point?
+        * let's see if the room shape is the same as the test files?
+        * OH! maybe it's the socket closing logic??? I bet that's it!
     * ~~First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work~~ - let's see if changing express has any difference, maybe post to the node.js reddit? 
     * ~~see if health check works with 34.111.144.222~~ - it does not
     * So there are two big issues I'm running into right now - https and websockets- 
