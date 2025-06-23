@@ -1,4 +1,4 @@
-FROM node:20.19.0
+FROM node:24.2.0-slim
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 RUN npm install

@@ -2,6 +2,8 @@ import { logicBundle } from "../helpers/logicBundle.js";
 
 export const clientWebSocketControllerFactory = (participantId, roomName) => {
     const url = `ws://${window.location.hostname}:4080/onlineGame`
+    // const url = `wss://${window.location.hostname}:4080/onlineGame`
+
     const socket = new WebSocket(url);
     socket.onopen = () => {
         sendSocketMessage({
@@ -31,7 +33,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 break
             case 'chatReceived':
                 logicBundle.gameController.handleChat(parsedData.senderId, parsedData.chatText)
-                break; 
+                break;
             default:
                 console.error('Unknown Message type:', parsedData.type)
         }
@@ -49,7 +51,7 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
             case 'captureCity':
                 {
                     const { cityName, playerId, onlineUsedBonusToken } = actionDetails;
-                    logicBundle.gameController.captureCity(cityName, playerId, onlineUsedBonusToken,  true)
+                    logicBundle.gameController.captureCity(cityName, playerId, onlineUsedBonusToken, true)
                     break;
                 }
             case 'replaceTokenAtLocation':
@@ -121,8 +123,8 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                 }
             case 'selectedPostToSwitch':
                 {
-                     const { cityId, citySpotNumber, playerId, tokenUsageInformation } = actionDetails;
-                    logicBundle.gameController.tokenActions.selectedPostToSwitch(cityId, citySpotNumber, 
+                    const { cityId, citySpotNumber, playerId, tokenUsageInformation } = actionDetails;
+                    logicBundle.gameController.tokenActions.selectedPostToSwitch(cityId, citySpotNumber,
                         playerId, tokenUsageInformation, true)
                     break;
                 }

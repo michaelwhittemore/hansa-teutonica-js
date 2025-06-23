@@ -22,13 +22,19 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/22
-
+* 6/23
+    * compose watch - want to be able to run everything from a docker container without needing to re-run the build commands - might need the example of https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
+    * let's figure out the difference between `docker build` and `docker compose` - looks like `compose` is intended for multiple docker containers. Might still be useful to me for binding the port and for hot reload with compose watch. There's so trade off with having to add any additional technical layer though
+    * binding the 4080 port on docker fixed my local container, still need to figure out gcp binding though
+    * **MAYBE NEED A YAML FILE FOR CONFIG INCLUDING PORT BINDING??** - see https://cloud.google.com/run/docs/deploying#yaml - maybe this is worth a reddit question?
     * ~~First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work~~ - let's see if changing express has any difference, maybe post to the node.js reddit? 
     * ~~see if health check works with 34.111.144.222~~ - it does not
     * So there are two big issues I'm running into right now - https and websockets- 
         * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
         * let's try a node subreddit post if I can't do it myself
+        * it's entirely possible that this is unnecessary outside of local testing as the load handlers should deal with it
+        * WAIT! why does it even matter if I can't use HTTPS? Shouldn't I be able to use unsecured websockets in that case? Let's see about that docker container again
+    * Random, but I want to see if I can set the environment variable via dockerfile instead of command line - while I'm at it look at publish/expose port as well https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/#use-the-docker-cli
 
 ----------------------
 * Broader list
@@ -83,14 +89,20 @@ Note that the above link uses the test data that gets populated on the server
 -------------------
 
 **DOCKER STUFF**
+NOTE THAT 'node-docker' WAS AN IMAGE NAME
 npx nodemon --env-file=.env app.js
 make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
+https://docs.docker.com/get-started/introduction/develop-with-containers/
+* should try following https://github.com/docker/getting-started-todo-app/blob/main/Dockerfile for compose watch
 docker container ls 
+docker ps (short for process status) 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run --name myTest -p 3000:3000 -p 4080:4080 node-docker
+docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/22
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
+it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial
+`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/22` (This the command linked for locally testing GCR with my image name), it then is access via http://localhost:9090/, also I added the 4080 binding and the --name
 
 -----------------
 **Google Cloud Run**
