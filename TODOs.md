@@ -23,24 +23,28 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/23
+    * Compare the messages being exchanged on localhost websocket at that at 34.111.144.222
+        * When doing 'ws://localhost:4080/waitingRoom' I see a 101, but I can also see messages being exchanged
+        * When doing 'ws://34.111.144.222:4080/waitingRoom' I don't even get a status code
+        * maybe I should be using websocketserver noserver? I suspect there's an issue with having two ports, and I should be upgrading instead
+
+----------------------
+* Broader list
+
     * compose watch - want to be able to run everything from a docker container without needing to re-run the build commands - might need the example of https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
     * let's figure out the difference between `docker build` and `docker compose` - looks like `compose` is intended for multiple docker containers. Might still be useful to me for binding the port and for hot reload with compose watch. There's so trade off with having to add any additional technical layer though
     * binding the 4080 port on docker fixed my local container, still need to figure out gcp binding though
+    * SO it seems locally that having the 80 on the same port as the HTTP traffic (i.e. `Express server running at http://localhost:${PORT}/`). Oh! maybe i should look at express and wss module specifically? Surely that's not an uncommon use case
     * **MAYBE NEED A YAML FILE FOR CONFIG INCLUDING PORT BINDING??** - see https://cloud.google.com/run/docs/deploying#yaml - maybe this is worth a reddit question?
-    * MAY HAVE FOUND A BUG WITH STARTING A NEW GAME FROM THE WAITING ROOM, might have something to do with the fact that I reconnected at some point?
-        * let's see if the room shape is the same as the test files?
-        * OH! maybe it's the socket closing logic??? I bet that's it!
-    * ~~First re-run the load balancer build from scratch, then switch to firebase if it still doesn't work~~ - let's see if changing express has any difference, maybe post to the node.js reddit? 
-    * ~~see if health check works with 34.111.144.222~~ - it does not
+
     * So there are two big issues I'm running into right now - https and websockets- 
         * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
         * let's try a node subreddit post if I can't do it myself
         * it's entirely possible that this is unnecessary outside of local testing as the load handlers should deal with it
-        * WAIT! why does it even matter if I can't use HTTPS? Shouldn't I be able to use unsecured websockets in that case? Let's see about that docker container again
+        * WAIT! why does it even matter if I can't use HTTPS? Shouldn't I be able to use unsecured websockets in that case? Let's see about that docker container again - this does matter in the case of https://hansa-teutonica-js-872836492319.us-west1.run.app/ as that uses https. At least it gives an informative error message: `The page at 'https://hansa-teutonica-js-872836492319.us-west1.run.app/waitingRoom?roomName=asd2' was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint 'ws://hansa-teutonica-js-872836492319.us-west1.run.app/waitingRoom'. This request has been blocked; this endpoint must be available over WSS.` 
     * Random, but I want to see if I can set the environment variable via dockerfile instead of command line - while I'm at it look at publish/expose port as well https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/#use-the-docker-cli
 
-----------------------
-* Broader list
+
     * Google cloud run
         * Now having issues with websocket, at least I can do purely http plus client stuff
         * Potentially need to do something about https & wss https://stackoverflow.com/questions/54546976/how-to-send-upgrade-handshake-to-websocket-server-from-client-using-ws-npm-mod
@@ -99,17 +103,18 @@ https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 https://docs.docker.com/get-started/introduction/develop-with-containers/
 * should try following https://github.com/docker/getting-started-todo-app/blob/main/Dockerfile for compose watch
 docker container ls 
+`docker build --tag node-dockerImage-6/23 .` - builds the image (replace the name as you see fit)
 docker ps (short for process status) 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/22
+docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/23
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
-it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial
-`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/22` (This the command linked for locally testing GCR with my image name), it then is access via http://localhost:9090/, also I added the 4080 binding and the --name
+it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial - would need to set up docker compose for it to listen
+`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name), it then is access via http://localhost:9090/, also I added the 80 binding and the --name
 
 -----------------
 **Google Cloud Run**
-gcloud run deploy --source . (while in the parent folder)
+`gcloud run deploy --source .` (while in the parent folder)
 https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
 https://hansa-teutonica-js-872836492319.us-west1.run.app
 * looks like switching to WSS just means it fails silently
@@ -184,7 +189,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * consider adding a room class to the server (might not make sense when we switch to a real Database)
 * refactor the "newRoom" POST route to not use errors (or at least not unless the value fails sanitation)
 * waiting room clean up/beautification, look up any color schemes or general prettification advise
-* may want to replace 4080 with a port. I guess we get it from the server via http
+* may want to replace 80 with a port. I guess we get it from the server via http
 # Main Game TODOs #
 * add createColoredSpanWithText to places where I write out the html string
 * clean up all my steps comments (i.e. where I manually wrote out a long list of steps) - only keep if actually explains the logic and should also remove the numbers
