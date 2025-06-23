@@ -27,6 +27,7 @@ Note that the above link uses the test data that gets populated on the server
         * When doing 'ws://localhost:4080/waitingRoom' I see a 101, but I can also see messages being exchanged
         * When doing 'ws://34.111.144.222:4080/waitingRoom' I don't even get a status code
         * maybe I should be using websocketserver noserver? I suspect there's an issue with having two ports, and I should be upgrading instead
+        * https://thoughtbot.com/blog/up-and-running-with-websocket - let's follow this exmaple, I already have http imported and I think we need to create a server and then pass it in to the WSS constructor - https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen for additonal context
 
 ----------------------
 * Broader list

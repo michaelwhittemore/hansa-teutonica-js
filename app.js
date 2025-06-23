@@ -88,23 +88,20 @@ app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
 
-// Testing http ---------------------------------------
-// const httpServer = http.createServer(app);
-// httpServer.listen(80, () => {
-//   console.log('HTTP Server running on port 80');
-// });
-// // Can be accessed on http://localhost:80
+// Testing http/WSS ---------------------------------------
+const server = http.createServer(app);
+import { WebSocketServer } from 'ws';
+// import WebSocket from 'ws'
+
+const wss = new WebSocketServer({ server: server });
+
+wss.on('connection', function connection(ws, request) {
+    ws.on('message', function incoming(message) {
+        console.log(message)
+
+        ws.send('Tobi from thoughtbot fusion team.');
+    });
+});
 
 
-// const key = fs.readFileSync(__dirname + '/server.key')
-// const cert = fs.readFileSync(__dirname + '/server.crt')
-// // console.log(key, cert)
-
-// const httpsServer = https.createServer({
-//   key, 
-//   cert
-// }, app);
-// httpsServer.listen(443, () => {
-//   console.log('HTTPS Server running on port 443');
-// });
-// // trying https://localhost:443
+server.listen(9000, () => console.log(`Lisening on port :9000`))
