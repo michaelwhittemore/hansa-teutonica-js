@@ -30,6 +30,13 @@ Note that the above link uses the test data that gets populated on the server
         * https://thoughtbot.com/blog/up-and-running-with-websocket - let's follow this example, I already have http imported and I think we need to create a server and then pass it in to the WSS constructor - https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen for additional context
         * This looks like it might actually be working!!! Let's see if I can refactor startWebSocketServer.js to work with it. If so, I guess we see if we can get WS working on cloud eventually - remember that this should solve the https issue (also maybe it will set us up for secure websockets eventually)
         * may want to pass the port to the client? 
+            1. Docker locally (make sure to rebuild image) - and edit commands
+                * docker isn't working because I need to spoecify the port I think. Seems to default to 'ws://localhost/waitingRoom' when using `ws://${window.location.hostname}:80/waitingRoom`
+                    * hmmm it seems to work locally - I'm pretty sure the docker issue was with 9090?
+                    * let's try the non-gcp docker - it works with `docker run --name not-gcp-test -p 80:80 one-port-image` 
+                    * OH! I don't need to hard code the port into the ws - I belive that's something I should be able to get from the browser - will need to test the 9090 situation - should use location.host
+            2. Try it on cloud run either locally 
+
 
 ----------------------
 * Broader list
@@ -109,11 +116,13 @@ docker container ls
 `docker build --tag node-dockerImage-6/23 .` - builds the image (replace the name as you see fit)
 docker ps (short for process status) 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/23
+~~docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/23~~
+docker run --name onePortTest -p 80:80 one-port-image
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial - would need to set up docker compose for it to listen
-`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name), it then is access via http://localhost:9090/, also I added the 80 binding and the --name
+`docker run --name not-gcp-test -p 80:80 one-port-image`
+`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name https://cloud.google.com/run/docs/testing/local#docker), it then is access via http://localhost:9090/, also I added the 80 binding and the --name
 
 -----------------
 **Google Cloud Run**

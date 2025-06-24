@@ -1,7 +1,7 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 
 export const clientWebSocketControllerFactory = (participantId, roomName) => {
-    const url = `ws://${window.location.hostname}:80/onlineGame`
+    const url = `ws://${window.location.host}/onlineGame`
 
     const socket = new WebSocket(url);
     socket.onopen = () => {

@@ -5,7 +5,6 @@ import { startWebSocketServer } from "./server/webSockets/startWebSocketServer.j
 import { setUpRoomRoutes } from "./server/roomRoutes.js";
 import { WebSocketServer } from 'ws';
 
-
 // Testing dedicated http/https servers
 import http from 'http';
 import https from 'https';
@@ -83,10 +82,6 @@ waitingRoomMockDB['testRoom1'] = {
 // ----------------------------------------
 
 setUpRoomRoutes(app, waitingRoomMockDB)
-
-// app.listen(PORT, () => {
-//   console.log(`Express server running at http://localhost:${PORT}/`);
-// });
 
 // Testing http/WSS ---------------------------------------
 // HERE!

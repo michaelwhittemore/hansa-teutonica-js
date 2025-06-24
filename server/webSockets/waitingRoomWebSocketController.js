@@ -104,7 +104,13 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
     }
 
     const messageFromClientHandler = (messageString, socket) => {
-        const parsedData = JSON.parse(messageString)
+        let parsedData;
+        try {
+            parsedData = JSON.parse(messageString)
+        } catch (error) {
+            console.warn('Error in messageFromClientHandler when trying to parse message', error)
+            return;
+        }
         switch (parsedData.type) {
             case 'newConnection':
                 {
@@ -129,7 +135,7 @@ export const waitingRoomWebSocketController = (socket, waitingRoomMockDB, waitin
 
     const socketCloseHandler = (roomName, participantId) => {
         // All sockets are closed when the players are redirected during the ready-up process
-        if (waitingRoomMockDB[roomName].isPlaying){
+        if (waitingRoomMockDB[roomName].isPlaying) {
             console.log(`${participantId} closed their socket as part of joining the game.`)
             return;
         }

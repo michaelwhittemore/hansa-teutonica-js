@@ -17,17 +17,23 @@ export const gameWebSocketController = (socket, waitingRoomMockDB, gameRoomToSoc
     });
 
     socket.on('close', () => {
-            // TODO - main game disconnect. I think we will want to alert other players, who will then 'pause'
-            // This may need to be moved somewhere where it's aware of the participant
+        // TODO - main game disconnect. I think we will want to alert other players, who will then 'pause'
+        // This may need to be moved somewhere where it's aware of the participant
 
-            // Resuming will be a whole other thing - it will involve the main page, we will need to set a tag of
-            // 'needsToBeResumed' or something like that. It will need to check that the url contains the id of the missing
-            // player. 
-            console.warn('socket has been closed in main game')
-        })
+        // Resuming will be a whole other thing - it will involve the main page, we will need to set a tag of
+        // 'needsToBeResumed' or something like that. It will need to check that the url contains the id of the missing
+        // player. 
+        console.warn('socket has been closed in main game')
+    })
 
     const messageFromClientHandler = (messageString, socket) => {
-        const parsedData = JSON.parse(messageString)
+        let parsedData;
+        try {
+            parsedData = JSON.parse(messageString)
+        } catch (error) {
+            console.warn('Error in messageFromClientHandler when trying to parse message', error)
+            return;
+        }
         switch (parsedData.type) {
             case 'playerJoinedGame':
                 playerJoinedGameHandler(parsedData, socket);
