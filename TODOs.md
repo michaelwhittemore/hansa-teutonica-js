@@ -12,6 +12,7 @@
 * Need the ability to save and resume
 * Need to remove the starting 8 tokens from player supply
 * Need to add installation instructions to the read me
+* Need it to run on https on my personal site
 
 # TODOs #
 http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
@@ -23,10 +24,8 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/23
+    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I cam either work on the map, or I can try to do https. I might also consider setting up the docker yaml file so I can do `compose watch`
     * Compare the messages being exchanged on localhost websocket at that at 34.111.144.222
-        * When doing 'ws://localhost:4080/waitingRoom' I see a 101, but I can also see messages being exchanged
-        * When doing 'ws://34.111.144.222:4080/waitingRoom' I don't even get a status code
-        * maybe I should be using websocketserver noserver? I suspect there's an issue with having two ports, and I should be upgrading instead
         * https://thoughtbot.com/blog/up-and-running-with-websocket - let's follow this example, I already have http imported and I think we need to create a server and then pass it in to the WSS constructor - https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen for additional context
         * This looks like it might actually be working!!! Let's see if I can refactor startWebSocketServer.js to work with it. If so, I guess we see if we can get WS working on cloud eventually - remember that this should solve the https issue (also maybe it will set us up for secure websockets eventually)
         * may want to pass the port to the client? 
@@ -36,53 +35,24 @@ Note that the above link uses the test data that gets populated on the server
                     * let's try the non-gcp docker - it works with `docker run --name not-gcp-test -p 80:80 one-port-image` 
                     * OH! I don't need to hard code the port into the ws - I belive that's something I should be able to get from the browser - will need to test the 9090 situation - should use location.host
             2. Try it on cloud run either locally 
+                * maybe need to revert the docker file for `ERROR: gcloud crashed (TypeError): argument of type 'NoneType' is not iterable` ??
+
 
 
 ----------------------
 * Broader list
 
-    * compose watch - want to be able to run everything from a docker container without needing to re-run the build commands - might need the example of https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
-    * let's figure out the difference between `docker build` and `docker compose` - looks like `compose` is intended for multiple docker containers. Might still be useful to me for binding the port and for hot reload with compose watch. There's so trade off with having to add any additional technical layer though
-    * binding the 4080 port on docker fixed my local container, still need to figure out gcp binding though
-    * SO it seems locally that having the 80 on the same port as the HTTP traffic (i.e. `Express server running at http://localhost:${PORT}/`). Oh! maybe i should look at express and wss module specifically? Surely that's not an uncommon use case
-    * **MAYBE NEED A YAML FILE FOR CONFIG INCLUDING PORT BINDING??** - see https://cloud.google.com/run/docs/deploying#yaml - maybe this is worth a reddit question?
+    * compose watch - want to be able to run everything from a docker container without needing to re-run the build commands - might need the example of https://github.com/docker/getting-started-todo-app/blob/main/compose.ym
 
-    * So there are two big issues I'm running into right now - https and websockets- 
+    * My current big issue is https
         * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
         * let's try a node subreddit post if I can't do it myself
         * it's entirely possible that this is unnecessary outside of local testing as the load handlers should deal with it
-        * WAIT! why does it even matter if I can't use HTTPS? Shouldn't I be able to use unsecured websockets in that case? Let's see about that docker container again - this does matter in the case of https://hansa-teutonica-js-872836492319.us-west1.run.app/ as that uses https. At least it gives an informative error message: `The page at 'https://hansa-teutonica-js-872836492319.us-west1.run.app/waitingRoom?roomName=asd2' was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint 'ws://hansa-teutonica-js-872836492319.us-west1.run.app/waitingRoom'. This request has been blocked; this endpoint must be available over WSS.` 
-    * Random, but I want to see if I can set the environment variable via dockerfile instead of command line - while I'm at it look at publish/expose port as well https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/#use-the-docker-cli
 
-
-    * Google cloud run
-        * Now having issues with websocket, at least I can do purely http plus client stuff
-        * Potentially need to do something about https & wss https://stackoverflow.com/questions/54546976/how-to-send-upgrade-handshake-to-websocket-server-from-client-using-ws-npm-mod
-        * I get 'Invalid Sec-WebSocket-Accept header' when using postman 
-        * also might need to use 'handleUpgrade'
-        * maybe try the docker instructions to use SSL? - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https/
-        * might also be worth self-signing an SSL (which is actually TLS) cert and using it with node
-        * as a last resort I could probably have a different wss vs ws depending on env?? - also will need to run client side. Might have a config http request??
-        * Let's see if it runs when using wss on gcloud!
-        * https://stackoverflow.com/questions/31338927/how-to-create-securetls-ssl-websocket-server might be worth reading
-    * Maybe before I do the websockets I can get it running in my own domain
-        * https://cloud.google.com/run/docs/mapping-custom-domains
-        * maybe I should look at the example linked by https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless (i.e. "The instructions on this page assume you already have a Cloud Run, Cloud Run functions, or App Engine service running. For the example on this page, we have used the Cloud Run Python quickstart to deploy a Cloud Run service in the us-central1 region. The rest of this page shows you how to set up an external Application Load Balancer that uses a serverless NEG backend to route requests to this service." https://cloud.google.com/run/docs/quickstarts) - 34.111.144.222
-        * will want to consider subdomain? 
-        * Might be worth asking an LLM 
-        * I'm worried about this being 'serverless' https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless
-        * I'm pretty sure I'm missing some key part of all this. I think maybe I'm deeply confused on how requests are handled? Like what happens if I go to http://example.com/test?
-        * https://cloud.google.com/sdk/gcloud/reference/compute/addresses/create
-
-        * Created [https://www.googleapis.com/compute/v1/projects/hansa-teutonica/regions/us-west1/addresses/testname] - Does the above just let me know what command I've sent? Is it unrelated to by project??
-
-
-        * **HERE!** TRYING THE LOAD BALANCER
         * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
             * https://console.cloud.google.com/security/ccm/list/lbCertificates?inv=1&invt=Ab0YVg&project=hansa-teutonica
             * 34.111.144.222:443 (https port)
             * 34.111.144.222:80 (http port)
-            * Maybe I just need to wait on the SSL cert provisioning? 
             * Is it possible I need to modify the https://cloud.google.com/load-balancing/docs/ssl-policies-concepts
             * trying to reach https (34.111.144.222:443) via postman results in an error
             * maybe I should just switch to firebase hosting? 
@@ -113,25 +83,24 @@ https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 https://docs.docker.com/get-started/introduction/develop-with-containers/
 * should try following https://github.com/docker/getting-started-todo-app/blob/main/Dockerfile for compose watch
 docker container ls 
-`docker build --tag node-dockerImage-6/23 .` - builds the image (replace the name as you see fit)
+`docker build --tag image1 .` - builds the image (replace the name as you see fit)
 docker ps (short for process status) 
 docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time to stop on its own time)
-~~docker run --name myTest -p 3000:3000 -p 4080:4080 node-dockerImage-6/23~~
-docker run --name onePortTest -p 80:80 one-port-image
+docker run --name onePortTest -p 80:80 image1
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial - would need to set up docker compose for it to listen
-`docker run --name not-gcp-test -p 80:80 one-port-image`
-`PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -p 4080:4080 -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name https://cloud.google.com/run/docs/testing/local#docker), it then is access via http://localhost:9090/, also I added the 80 binding and the --name
+`docker run --name not-gcp-test -p 80:80 image1`
 
 -----------------
 **Google Cloud Run**
 `gcloud run deploy --source .` (while in the parent folder)
 https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
 https://hansa-teutonica-js-872836492319.us-west1.run.app
-* looks like switching to WSS just means it fails silently
-* but also it seems like the code still has WS?? - maybe it's cached? - yep, clearing the cache fixed it
 https://cloud.google.com/run/docs/mapping-custom-domains 
+* maybe need to revert the docker file for `ERROR: gcloud crashed (TypeError): argument of type 'NoneType' is not iterable` ??
+* `PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name https://cloud.google.com/run/docs/testing/local#docker), it then is access via http://localhost:9090/, also I added the --name
+
 -----------------
 
 ________
