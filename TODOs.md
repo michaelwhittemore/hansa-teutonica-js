@@ -23,20 +23,11 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/23
-    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I cam either work on the map, or I can try to do https. I might also consider setting up the docker yaml file so I can do `compose watch`
-    * Compare the messages being exchanged on localhost websocket at that at 34.111.144.222
-        * https://thoughtbot.com/blog/up-and-running-with-websocket - let's follow this example, I already have http imported and I think we need to create a server and then pass it in to the WSS constructor - https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen for additional context
-        * This looks like it might actually be working!!! Let's see if I can refactor startWebSocketServer.js to work with it. If so, I guess we see if we can get WS working on cloud eventually - remember that this should solve the https issue (also maybe it will set us up for secure websockets eventually)
-        * may want to pass the port to the client? 
-            1. Docker locally (make sure to rebuild image) - and edit commands
-                * docker isn't working because I need to spoecify the port I think. Seems to default to 'ws://localhost/waitingRoom' when using `ws://${window.location.hostname}:80/waitingRoom`
-                    * hmmm it seems to work locally - I'm pretty sure the docker issue was with 9090?
-                    * let's try the non-gcp docker - it works with `docker run --name not-gcp-test -p 80:80 one-port-image` 
-                    * OH! I don't need to hard code the port into the ws - I belive that's something I should be able to get from the browser - will need to test the 9090 situation - should use location.host
-            2. Try it on cloud run either locally 
-                * maybe need to revert the docker file for `ERROR: gcloud crashed (TypeError): argument of type 'NoneType' is not iterable` ??
-
+* 6/26
+    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer). I might also consider setting up the docker yaml file so I can do `compose watch`. In the longer term, I'd like to switch my website to have hansa as a subdomain
+        * Let's start with `docker compose watch`
+            * need to find the tutorial that had it live updating - I think https://docs.docker.com/get-started/introduction/develop-with-containers/ is what I was thinking ok
+            * let's first read through https://docs.docker.com/compose/intro/compose-application-model/ and then copy-paste the back end from https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
 
 
 ----------------------
@@ -47,7 +38,6 @@ Note that the above link uses the test data that gets populated on the server
     * My current big issue is https
         * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
         * let's try a node subreddit post if I can't do it myself
-        * it's entirely possible that this is unnecessary outside of local testing as the load handlers should deal with it
 
         * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
             * https://console.cloud.google.com/security/ccm/list/lbCertificates?inv=1&invt=Ab0YVg&project=hansa-teutonica
