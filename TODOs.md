@@ -28,6 +28,11 @@ Note that the above link uses the test data that gets populated on the server
         * Let's start with `docker compose watch`
             * need to find the tutorial that had it live updating - I think https://docs.docker.com/get-started/introduction/develop-with-containers/ is what I was thinking ok
             * let's first read through https://docs.docker.com/compose/intro/compose-application-model/ and then copy-paste the back end from https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
+            * looks like I can just use `docker compose watch` and then `docker logs hansa-teutonica-js-server-1`? 
+           **Instructions to run docker compose and watch it:**   
+                1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
+                2. In a new tab, `docker compose logs -f  hansa-server` (Note that "hansa-server" is the name given to the service in compose.yaml)
+
 
 
 ----------------------
