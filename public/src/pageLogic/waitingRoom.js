@@ -264,7 +264,8 @@ const handleDisconnect = (parsedData) => {
 // -----------------------------Web sockets---------------
 
 const setUpWebSocket = () => {
-    const url = `ws://${window.location.host}/waitingRoom`
+    const websocketProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const url = `${websocketProtocol}://${window.location.host}/waitingRoom`
 
     socket = new WebSocket(url);
     socket.onopen = () => {

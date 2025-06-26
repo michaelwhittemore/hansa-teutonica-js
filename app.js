@@ -82,26 +82,7 @@ waitingRoomMockDB['testRoom1'] = {
 // ----------------------------------------
 
 setUpRoomRoutes(app, waitingRoomMockDB)
-
-// Testing http/WSS ---------------------------------------
-// HERE!
-// DEV
 const httpServer = http.createServer(app);
-
-const httpsCredentials = {
-  key: fs.readFileSync(__dirname + '/key.pem'),
-  cert: fs.readFileSync(__dirname + '/cert.pem')
-};
-
-// -------------------
-const httpsServer = https.createServer(httpsCredentials, app)
-// https://localhost:443/
-
-
-httpsServer.listen(443, () => {
-  console.log(`HTTPS server running at https://localhosts:${433}/`);
-})
-// --------------------
 
 const wss = new WebSocketServer({ server: httpServer });
 startWebSocketServer(wss, waitingRoomMockDB, gameRoomMockDB);
@@ -109,3 +90,19 @@ startWebSocketServer(wss, waitingRoomMockDB, gameRoomMockDB);
 httpServer.listen(PORT, () => {
   console.log(`HTTP server running at http://localhost:${PORT}/`);
 })
+
+// Testing https/WSS ---------------------------------------
+// NOTE THAT THIS CURRENTLY BREAKS REMOTE DEPLOYMENT
+// const key = fs.readFileSync(__dirname + '/key.pem');
+// const cert = fs.readFileSync(__dirname + '/cert.pem')
+// const httpsCredentials = { key, cert };
+
+// const httpsServer = https.createServer(httpsCredentials, app)
+// // https://localhost:443/
+
+
+// httpsServer.listen(443, () => {
+//   console.log(`HTTPS server running at https://localhosts:${433}/`);
+// })
+// --------------------
+

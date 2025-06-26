@@ -28,13 +28,16 @@ Note that the above link uses the test data that gets populated on the server
          * Let's try node https and localhost https traffic. looks like maybe I should use mkcert? https://dev.to/josuebustos/https-localhost-for-node-js-1p1k gonna try this example 
          * `mkcert -key-file key.pem -cert-file cert.pem example.com *.example.com localhost`
          * I wonder about the self signed certificate for testing. Maybe I can try that again and see what happens if I disable the port 80 server?
-           
+    * Let's see if I can get https traffic working on docker - I think the current issue is going to be copying the cert. On the other hand, I don't think gitignore affects docker so maybe it should work regardless? Will I need to expose additional ports in the compose?
+    * https://localhost:443/
+    * I'm seeing `localhost unexpectedly closed the connection.` and sometimes oscillates with `The connection was reset.`. If I go to http://localhost:8000/ I get `localhost refused to connect.`
+    * looks like the key and cert are correctly defined in the logs. Maybe there's something wrong with mkcert? Maybe if I switch back to self-signed (openSSL - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https was a useful reddit post)
+    * was also using https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
+    * Note that `wss://hansa-teutonica-js-872836492319.us-west1.run.app/healthCheck` actually works!! This suggests that I don't need an upgrade method on the WSS. I should also consider checking if we're using http or https in the client and adjust the protocol accordingly. Actually let's try that right now. Also does the fact that the us-west1.run.app work suggest that I don't need to do anything additionally for the https node server other than for local testing?? 
 
 
 ----------------------
 * Broader list
-
-    * compose watch - want to be able to run everything from a docker container without needing to re-run the build commands - might need the example of https://github.com/docker/getting-started-todo-app/blob/main/compose.ym
 
     * My current big issue is https
         * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
@@ -85,6 +88,7 @@ it seems that my images mean that my code changes aren't updated? - let's try to
 **Instructions to run docker compose and watch it:** 
     1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
     2. In a new tab, `docker compose logs -f  hansa-server` (Note that "hansa-server" is the name given to the service in compose.yaml)
+    3. Stop with docker compose down 
 
 
 -----------------
@@ -94,6 +98,7 @@ https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-ser
 https://hansa-teutonica-js-872836492319.us-west1.run.app
 https://cloud.google.com/run/docs/mapping-custom-domains 
 * maybe need to revert the docker file for `ERROR: gcloud crashed (TypeError): argument of type 'NoneType' is not iterable` ??
+* `gcloud beta code dev` (currently fails with the above error)
 * `PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name https://cloud.google.com/run/docs/testing/local#docker), it then is access via http://localhost:9090/, also I added the --name
 
 -----------------
