@@ -86,14 +86,26 @@ setUpRoomRoutes(app, waitingRoomMockDB)
 // Testing http/WSS ---------------------------------------
 // HERE!
 // DEV
-// I think we just need to pass in the WebSocketServer to startWebSocketServer. Then we need to attach all the
-// listerners in that file as usual. Also remove ports when mkaijg client requests?? 
+const httpServer = http.createServer(app);
 
-const server = http.createServer(app);
+const httpsCredentials = {
+  key: fs.readFileSync(__dirname + '/key.pem'),
+  cert: fs.readFileSync(__dirname + '/cert.pem')
+};
 
-const wss = new WebSocketServer({ server: server });
+// -------------------
+const httpsServer = https.createServer(httpsCredentials, app)
+// https://localhost:443/
+
+
+httpsServer.listen(443, () => {
+  console.log(`HTTPS server running at https://localhosts:${433}/`);
+})
+// --------------------
+
+const wss = new WebSocketServer({ server: httpServer });
 startWebSocketServer(wss, waitingRoomMockDB, gameRoomMockDB);
 
-server.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`HTTP server running at http://localhost:${PORT}/`);
 })

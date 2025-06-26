@@ -3,6 +3,7 @@ services:
     build: .
     ports:
       - "80:80" # may need to use the port instead?? Hard coding might be wrong approach
+      - "443:433"
     develop: #all the below will need to be changed - maybe just  just the whole things??
       watch:
         - path: . 

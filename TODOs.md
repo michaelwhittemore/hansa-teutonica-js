@@ -24,15 +24,11 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/26
-    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer). I might also consider setting up the docker yaml file so I can do `compose watch`. In the longer term, I'd like to switch my website to have hansa as a subdomain
-        * Let's start with `docker compose watch`
-            * need to find the tutorial that had it live updating - I think https://docs.docker.com/get-started/introduction/develop-with-containers/ is what I was thinking ok
-            * let's first read through https://docs.docker.com/compose/intro/compose-application-model/ and then copy-paste the back end from https://github.com/docker/getting-started-todo-app/blob/main/compose.yml
-            * looks like I can just use `docker compose watch` and then `docker logs hansa-teutonica-js-server-1`? 
-           **Instructions to run docker compose and watch it:**   
-                1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
-                2. In a new tab, `docker compose logs -f  hansa-server` (Note that "hansa-server" is the name given to the service in compose.yaml)
-
+    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer). ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
+         * Let's try node https and localhost https traffic. looks like maybe I should use mkcert? https://dev.to/josuebustos/https-localhost-for-node-js-1p1k gonna try this example 
+         * `mkcert -key-file key.pem -cert-file cert.pem example.com *.example.com localhost`
+         * I wonder about the self signed certificate for testing. Maybe I can try that again and see what happens if I disable the port 80 server?
+           
 
 
 ----------------------
@@ -86,6 +82,10 @@ docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial - would need to set up docker compose for it to listen
 `docker run --name not-gcp-test -p 80:80 image1`
+**Instructions to run docker compose and watch it:** 
+    1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
+    2. In a new tab, `docker compose logs -f  hansa-server` (Note that "hansa-server" is the name given to the service in compose.yaml)
+
 
 -----------------
 **Google Cloud Run**
