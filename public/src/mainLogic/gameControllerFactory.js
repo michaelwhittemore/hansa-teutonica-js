@@ -617,6 +617,8 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.clearAllActionSelection();
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
+            // here! shouldAddText - should only be set when it's an online action, AND the particpantId
+            // is being acted upon
             const shouldAddText = logicBundle.sessionInfo.isHotseatMode || isOnlineAction;
             logicBundle.inputHandlers.setUpBumpActionInfo({
                 nodeId,

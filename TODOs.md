@@ -24,11 +24,14 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/29
-
-
-
     * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
-
+    * should remove the unused load balancer from the GCP console and remove all references to the old static IP address
+    * move all the code into a folder like (/code) so that the compose watch doesn't rebuild when updating "todos"
+    * `Your square has been displaced from Alpha-Beta-0` 
+        * so it correctly doesn't allow you to place if it's not your turn, but I still don't want to show that message
+        * it's tied to setUpBumpActionInfo
+    * still need to test move three after this
+    * Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
 
 
 ----------------------
@@ -154,6 +157,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * ESLINT semi colon - ugh prettier was a hassle, might come back to this
 
 # Stretch Goals (in no particular order) # #
+* switch to a cdn for static assets - apparently it's cheaper and more performant?
 * NOTE: when the favicon is requested a 404s, chrome doesn't request it again on subsequent refreshes, need to use cmd+shift+r for hard refresh
 * convert some of my objects to JS maps
 * read https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview MDN guide to brush back up on http knowledge

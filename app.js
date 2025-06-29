@@ -61,18 +61,18 @@ waitingRoomMockDB['testRoom1'] = {
   }
 }
 
-// // 3rd player
-// waitingRoomMockDB['testRoom1'].playersReadiedObject['anK3A8RVr9G4nY5z7mhEA2'] = {
-//   playerColor: '#00fa9a',
-//   playerName: 'Claire',
-//   participantId: 'anK3A8RVr9G4nY5z7mhEA2',
-// }
-// // 4th player 
-// waitingRoomMockDB['testRoom1'].playersReadiedObject['vUCLAhoLQkMdVi5xTDMGLp'] = {
-//   playerColor: '#1e90ff',
-//   playerName: 'Phil',
-//   participantId: 'vUCLAhoLQkMdVi5xTDMGLp',
-// }
+// 3rd player
+waitingRoomMockDB['testRoom1'].playersReadiedObject['anK3A8RVr9G4nY5z7mhEA2'] = {
+  playerColor: '#00fa9a',
+  playerName: 'Claire',
+  participantId: 'anK3A8RVr9G4nY5z7mhEA2',
+}
+// 4th player 
+waitingRoomMockDB['testRoom1'].playersReadiedObject['vUCLAhoLQkMdVi5xTDMGLp'] = {
+  playerColor: '#1e90ff',
+  playerName: 'Phil',
+  participantId: 'vUCLAhoLQkMdVi5xTDMGLp',
+}
 
 
 // ----------------------------------------
