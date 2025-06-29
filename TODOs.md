@@ -23,59 +23,16 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/28
-    * Once more unto the breach I'm looking at https traffic. I think I'm just going to do the load balancer from scratch again this time. https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#external_fr, the actual guide I will need to follow is https://cloud.google.com/run/docs/mapping-custom-domains#https-load-balancer & https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless 
-        * External static IP address: https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#reserve_new_static
-        * I reserevd a new ip address: 34.36.47.71
-        * `Leave Protocol unchanged. This parameter is ignored.` Huh. This confuses me
-        * I've created the new load balancer. It took a while to propagate, but now it seems to be working
-        * I should also create a new SSL cert I think. 
-        * Now I guess I just wait while the SSL provisions and the changes are propagated.
-        * If this fails I should check IONOS to see if there's issues with my SSL there 
-        * Perhaps my subdomain on SSL is causing the issue? 
-        * https://34.36.47.71:443
-
-
-    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer). ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
+* 6/29
 
 
 
+    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
 
-    * https://localhost:443/
-    * I'm seeing `localhost unexpectedly closed the connection.` and sometimes oscillates with `The connection was reset.`. If I go to http://localhost:8000/ I get `localhost refused to connect.`
-    * looks like the key and cert are correctly defined in the logs. Maybe there's something wrong with mkcert? Maybe if I switch back to self-signed (openSSL - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https was a useful reddit post)
-    * was also using https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
-    * Note that `wss://hansa-teutonica-js-872836492319.us-west1.run.app/healthCheck` actually works!! This suggests that I don't need an upgrade method on the WSS. I should also consider checking if we're using http or https in the client and adjust the protocol accordingly. Actually let's try that right now. Also does the fact that the us-west1.run.app work suggest that I don't need to do anything additionally for the https node server other than for local testing?? 
-    * now button presses aren't working for https locally. was this the case with the mkcrt files?? - no. mkcert works. Also the fact that everything works fine on us-west1 seriously suggests that this whole line of approach is incorrect
-    * I'm seeing responses saying `No, you generally don't need HTTPS on your backend nodes if you're using a load balancer,`. Maybe I should comment all this out and also remove the port from the docker compose file??
-    * I can also consider switching to firebase
-
-
-
-* **TRYING FIREBASE HOSTING**
-    * looks like firestore is the database
-    https://firebase.google.com/docs/hosting/cloud-run
-    https://firebase.google.com/docs/hosting/cloud-run#node.js - this actually looks super promising
 
 
 ----------------------
 * Broader list
-
-    * My current big issue is https
-        * HTTPS node approach - https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
-        * let's try a node subreddit post if I can't do it myself
-
-        * SO MAYBE THE load balancer does work?? Let's follow the example fully. Also will need to do SSL
-            * https://console.cloud.google.com/security/ccm/list/lbCertificates?inv=1&invt=Ab0YVg&project=hansa-teutonica
-            * 34.111.144.222:443 (https port)
-            * 34.111.144.222:80 (http port)
-            * Is it possible I need to modify the https://cloud.google.com/load-balancing/docs/ssl-policies-concepts
-            * trying to reach https (34.111.144.222:443) via postman results in an error
-            * maybe I should just switch to firebase hosting? 
-            * IS IT POSSIBLE THAT THE ISSUE ISN'T THE LOADBALANCER BUT NODE/EXPRESS???
-            * I wonder if there's an issue between the backend and front end of the load balancer? I don't think I fully understand the difference, this is something I should look at
-            * also classic vs global load balancers??
-            * would like to read about network layers
     
     * Disconnect for main game
         * How do I want to approach this? I'm thinking of having a 'pause' where no actions can be taken? 
@@ -87,12 +44,6 @@ Note that the above link uses the test data that gets populated on the server
         * Let's start with just using the 'span' helper
         * Also add to README, it's currently outdated
 --------------------------
-**Firebase Hosting** 
-* https://firebase.google.com/docs/hosting
-* https://cloud.google.com/run/docs/mapping-custom-domains#firebase
-* https://firebase.google.com/docs/hosting/cloud-run#direct_requests_to_container
-
--------------------
 
 **DOCKER STUFF**
 NOTE THAT 'node-docker' WAS AN IMAGE NAME
@@ -128,49 +79,9 @@ https://cloud.google.com/run/docs/mapping-custom-domains
 
 -----------------
 
-________
-I’m struggling with some rather basic stuff, sorry for the very newbie questions. I’ve been trying to do all this just following the documentation, but I’ve kinda hit a wall.
-
-I’m trying to get a simple project up and running. I have it running locally in a docker container on localhost, I just serve some basic JS/HTML/CSS webpages over html. The server runs node with express and uses https://www.npmjs.com/package/ws for web sockets (I’m doing some basic real time communication between the server and the clients). 
-
-I purchased a domain name from IONOS before I decided on using google cloud run. My assumption was that I could just configure the A or AAAA record from my domain-dns-settings. 
-
-I set up a simple node server following the example of https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service which I can see successfully running at my .us-west1.run.app URL. 
-
-Looking at https://cloud.google.com/run/docs/mapping-custom-domains, it seems like the global external Application Load Balancer was my best bet. I tried following the linked documentation (https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless) and successfully got my load balancer up and running.
-
-I ran the given gcloud cli commands:
-gcloud compute addresses create example-ip \ --network-tier=PREMIUM \ --ip-version=IPV4 \ --global
-and
-gcloud compute addresses describe example-ip \
-
---format="get(address)" \
-
---global
-
-I’ve gotten an IPV4 address, but trying to reach it doesn't give a response.
-
-I have an active, Google-managed SSL certificate that I can see in the gcp Certificate Manager or via the ‘gcloud compute ssl-certificates describe’ command. 
-
-Out of frustration I added a http, port 80 to my frontend and to my surprise it worked. Given that I couldn’t even my server access until I added the http to my load balancer frontend, is it possible my SSL policy details are wrong? I’m just using the GCP default. If I specify https in my browser it seems to automatically downgrade to http. I verified via postman that trying to access my static IP on port 443 just results in an ECONNRESET. 
-
-Any tips on what I should try next? 
-
-Thanks for any help, I feel like I’m probably misunderstanding some core networking concepts here. 
-_______
 Online tasks:
 
 2. I *REALLY* need to test with 3+ people. Two people assumes that there's a binary between the actor and the person being acted on. For example, the UI in bumping rival pieces. - Now that I have it what should I test?? - start with standard actions. make sure to include bumping and move three (really anything with direct interaction)
-3. Ugh, now I need to figure out whether to use app engine or cloud run. It seems that cloud run is probably the preferred solution https://cloud.google.com/appengine/migration-center/run/compare-gae-with-run. Try to at least read a little more on hosting a node server on google cloud apps. It might make sense to watch a tutorial at home - https://www.youtube.com/watch?v=JAnB7KyDtH4 for starters, I think I should be using https://cloud.google.com/appengine/docs/standard/nodejs/building-app vs https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
-    **Based on the above I think we want to use https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service as an example**
-
-    4. I think I can try getting this repo working on cloud run. 
-        * maybe when I test locally it will be more easy to use docker? I think I can set up so I can see the node command line that way https://cloud.google.com/run/docs/testing/local#test_locally
-        * https://cloud.google.com/run/docs/testing/local - local testing would help a lot
-        * I got the local running and am still seeing the 426, need to do https://cloud.google.com/run/docs/tutorials/local-troubleshooting 
-        * **HERE** issues with WSS vs WS, also maybe docker is caching? Need to look further
-        * I MIGHT HAVE FIXED IT. it defaulted to 8080 which was also what I was using for my WSS port
-    5. Once I finish the above I can work on custom domain. I should also look at subdomain
 
 5. Disconnection from the main game. I guess at the very least we should inform the other players? Not sure how to handle resuming. I think that we will need to tie that to saving/resuming online. I'm hopeful that it won't actually be too bad as we already store everything. I think it will be fairly close to what happens to saving/loading on hotseat. The fact that we can disconnect mid-turn might be a problem, eventually we should consider switching saving to occur after every action (also what about tokens?)
 6. Improve the waiting room UI. - At the very least should line up "There is 1 other player in this room." and the "Your Name" form. Maybe also move the "No Other Players Ready" section more to the left? The empty space looks awkward. Perhaps I should also use a better font and add a background color. This feels like I should google UI basics and maybe read a guide or watch a tutorial
