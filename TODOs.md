@@ -23,17 +23,39 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/26
+* 6/28
+    * Once more unto the breach I'm looking at https traffic. I think I'm just going to do the load balancer from scratch again this time. https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#external_fr, the actual guide I will need to follow is https://cloud.google.com/run/docs/mapping-custom-domains#https-load-balancer & https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless 
+        * External static IP address: https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#reserve_new_static
+        * I reserevd a new ip address: 34.36.47.71
+        * `Leave Protocol unchanged. This parameter is ignored.` Huh. This confuses me
+        * I've created the new load balancer. It took a while to propagate, but now it seems to be working
+        * I should also create a new SSL cert I think. 
+        * Now I guess I just wait while the SSL provisions and the changes are propagated.
+        * If this fails I should check IONOS to see if there's issues with my SSL there 
+        * Perhaps my subdomain on SSL is causing the issue? 
+        * https://34.36.47.71:443
+
+
     * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer). ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
-         * Let's try node https and localhost https traffic. looks like maybe I should use mkcert? https://dev.to/josuebustos/https-localhost-for-node-js-1p1k gonna try this example 
-         * `mkcert -key-file key.pem -cert-file cert.pem example.com *.example.com localhost`
-         * I wonder about the self signed certificate for testing. Maybe I can try that again and see what happens if I disable the port 80 server?
-    * Let's see if I can get https traffic working on docker - I think the current issue is going to be copying the cert. On the other hand, I don't think gitignore affects docker so maybe it should work regardless? Will I need to expose additional ports in the compose?
+
+
+
+
     * https://localhost:443/
     * I'm seeing `localhost unexpectedly closed the connection.` and sometimes oscillates with `The connection was reset.`. If I go to http://localhost:8000/ I get `localhost refused to connect.`
     * looks like the key and cert are correctly defined in the logs. Maybe there's something wrong with mkcert? Maybe if I switch back to self-signed (openSSL - https://www.reddit.com/r/webdev/comments/v2w9fb/develop_locally_on_https was a useful reddit post)
     * was also using https://dev.to/omergulen/step-by-step-node-express-ssl-certificate-run-https-server-from-scratch-in-5-steps-5b87
     * Note that `wss://hansa-teutonica-js-872836492319.us-west1.run.app/healthCheck` actually works!! This suggests that I don't need an upgrade method on the WSS. I should also consider checking if we're using http or https in the client and adjust the protocol accordingly. Actually let's try that right now. Also does the fact that the us-west1.run.app work suggest that I don't need to do anything additionally for the https node server other than for local testing?? 
+    * now button presses aren't working for https locally. was this the case with the mkcrt files?? - no. mkcert works. Also the fact that everything works fine on us-west1 seriously suggests that this whole line of approach is incorrect
+    * I'm seeing responses saying `No, you generally don't need HTTPS on your backend nodes if you're using a load balancer,`. Maybe I should comment all this out and also remove the port from the docker compose file??
+    * I can also consider switching to firebase
+
+
+
+* **TRYING FIREBASE HOSTING**
+    * looks like firestore is the database
+    https://firebase.google.com/docs/hosting/cloud-run
+    https://firebase.google.com/docs/hosting/cloud-run#node.js - this actually looks super promising
 
 
 ----------------------
@@ -51,9 +73,12 @@ Note that the above link uses the test data that gets populated on the server
             * trying to reach https (34.111.144.222:443) via postman results in an error
             * maybe I should just switch to firebase hosting? 
             * IS IT POSSIBLE THAT THE ISSUE ISN'T THE LOADBALANCER BUT NODE/EXPRESS???
+            * I wonder if there's an issue between the backend and front end of the load balancer? I don't think I fully understand the difference, this is something I should look at
+            * also classic vs global load balancers??
+            * would like to read about network layers
     
     * Disconnect for main game
-        * How do I want to approach this? I'm seeing of having a 'pause' where no actions can be taken? 
+        * How do I want to approach this? I'm thinking of having a 'pause' where no actions can be taken? 
         * Maybe we can do this in the same place as validation??
         * Will need to rebuild the websocket and will need to do online loading
         * I think we will need to fix saving to be the end of an action, not the end of the turn
@@ -245,6 +270,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * add a github link - I'm sure I can find a nice one somewhere online
 * make it so form validation happens real time (as opposed to on submission)
 * I am inconsistent in using 'Id' vs 'ID' in variable names
+* Maybe switch to nginx - seems like a useful application to know 
 
 // npx nodemon app.js (now I don't have to restart it all the time!)
 // collapse all = cmd-k and then cmd-0
