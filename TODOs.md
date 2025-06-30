@@ -26,7 +26,6 @@ Note that the above link uses the test data that gets populated on the server
 * 6/30
     * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
     * should remove the unused load balancer from the GCP console and remove all references to the old static IP address - including bookmarks
-    * move all the code into a folder like (/code) so that the compose watch doesn't rebuild when updating "todos"
     * `Your square has been displaced from Alpha-Beta-0` 
         * so it correctly doesn't allow you to place if it's not your turn, but I still don't want to show that message
         * it's tied to setUpBumpActionInfo
@@ -50,7 +49,7 @@ Note that the above link uses the test data that gets populated on the server
 
 **DOCKER STUFF**
 NOTE THAT 'node-docker' WAS AN IMAGE NAME
-npx nodemon --env-file=.env app.js
+npx nodemon --env-file=.env src/app.js 
 make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 https://docs.docker.com/get-started/introduction/develop-with-containers/
@@ -187,7 +186,6 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * I am inconsistent in using 'Id' vs 'ID' in variable names
 * Maybe switch to nginx - seems like a useful application to know 
 
-// npx nodemon app.js (now I don't have to restart it all the time!)
 // collapse all = cmd-k and then cmd-0
 // unfold all - cmd-k and then cmd-j
 // jump to line number - can click on the goto at the bottom of the page (i.e. "Ln 127, Col 87")

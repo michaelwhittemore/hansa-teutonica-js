@@ -2,12 +2,12 @@
   "name": "hansa-teutonica",
   "version": "1.0.0",
   "description": "Hansa Teutonica with vanilla js",
-  "main": "app.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint",
-    "start": "node app.js"
+    "start": "node src/app.js"
   },
   "repository": {
     "type": "git",

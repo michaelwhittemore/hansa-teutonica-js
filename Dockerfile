@@ -4,4 +4,4 @@ COPY package-lock.json package-lock.json
 RUN npm install
 ENV PORT=80 IS_DOCKER=true
 COPY . .
-CMD [ "node", "app.js" ]
+CMD [ "node", "src/app.js" ]

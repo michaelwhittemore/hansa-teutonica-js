@@ -6,6 +6,6 @@ services:
       - "443:433"
     develop: #all the below will need to be changed - maybe just  just the whole things??
       watch:
-        - path: . 
+        - path: ./src
           action: sync
           target: .
