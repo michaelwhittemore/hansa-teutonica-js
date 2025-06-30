@@ -617,9 +617,9 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.clearAllActionSelection();
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
-            // here! shouldAddText - should only be set when it's an online action, AND the particpantId
-            // is being acted upon
-            const shouldAddText = logicBundle.sessionInfo.isHotseatMode || isOnlineAction;
+            // We don't want a tertiary player to see the text telling them that they've been bumped
+            const shouldAddText = logicBundle.sessionInfo.isHotseatMode || 
+                (isOnlineAction && bumpedPlayerId === logicBundle.sessionInfo.participantId);
             logicBundle.inputHandlers.setUpBumpActionInfo({
                 nodeId,
                 shape: bumpedShape,

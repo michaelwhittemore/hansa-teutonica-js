@@ -24,13 +24,14 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above link uses the test data that gets populated on the server
 
 * 6/30
-    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
+    * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
     * should remove the unused load balancer from the GCP console and remove all references to the old static IP address - including bookmarks
     * `Your square has been displaced from Alpha-Beta-0` 
         * so it correctly doesn't allow you to place if it's not your turn, but I still don't want to show that message
         * it's tied to setUpBumpActionInfo
     * still need to test move three after this
     * Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
+    * Remove - 'this is the landing page'. Maybe add the github link?7
 
 
 ----------------------
@@ -48,7 +49,6 @@ Note that the above link uses the test data that gets populated on the server
 --------------------------
 
 **DOCKER STUFF**
-NOTE THAT 'node-docker' WAS AN IMAGE NAME
 npx nodemon --env-file=.env src/app.js 
 make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
@@ -61,7 +61,6 @@ docker kill CONTAINER_NAME (looks like "docker stop" gives the process some time
 docker run --name onePortTest -p 80:80 image1
 docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
-it seems that my images mean that my code changes aren't updated? - let's try to follow the example of the linked tutorial - would need to set up docker compose for it to listen
 `docker run --name not-gcp-test -p 80:80 image1`
 **Instructions to run docker compose and watch it:** 
     1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
@@ -75,8 +74,6 @@ it seems that my images mean that my code changes aren't updated? - let's try to
 https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service 
 https://hansa-teutonica-js-872836492319.us-west1.run.app
 https://cloud.google.com/run/docs/mapping-custom-domains 
-* maybe need to revert the docker file for `ERROR: gcloud crashed (TypeError): argument of type 'NoneType' is not iterable` ??
-* `gcloud beta code dev` (currently fails with the above error)
 * `PORT=8080 && docker run --name gcpTest -p 9090:${PORT} -e PORT=${PORT} node-dockerImage-6/23` (This the command linked for locally testing GCR with my image name https://cloud.google.com/run/docs/testing/local#docker), it then is access via http://localhost:9090/, also I added the --name
 
 -----------------
