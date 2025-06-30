@@ -23,9 +23,9 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above link uses the test data that gets populated on the server
 
-* 6/29
-    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain
-    * should remove the unused load balancer from the GCP console and remove all references to the old static IP address
+* 6/30
+    * Now that websockets are finally working for unsecured online play, I need to do a lot of clean up. Then I can either work on the map (the actual gameplay one), ~~or I can try to do https (maybe look into the https server again and the upgrade - might need to ask if I need node https server with the loadbalancer)~~. ~~I might also consider setting up the docker yaml file so I can do `compose watch`.~~ In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
+    * should remove the unused load balancer from the GCP console and remove all references to the old static IP address - including bookmarks
     * move all the code into a folder like (/code) so that the compose watch doesn't rebuild when updating "todos"
     * `Your square has been displaced from Alpha-Beta-0` 
         * so it correctly doesn't allow you to place if it's not your turn, but I still don't want to show that message
