@@ -25,17 +25,17 @@ Note that the above link uses the test data that gets populated on the server
 
 * 6/30
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
-    * should remove the unused load balancer from the GCP console and remove all references to the old static IP address - including bookmarks
-    * `Your square has been displaced from Alpha-Beta-0` 
-        * so it correctly doesn't allow you to place if it's not your turn, but I still don't want to show that message
-        * it's tied to setUpBumpActionInfo
-    * still need to test move three after this
-    * Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
+
+    * **HERE!**  Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
+        * this may involve some refactoring of the inputHandler method - i think there's some resetting happening that I don't necessarily want.
+        *  Maybe the turn change method in the main controller should be the one calling the inputHandler? I feel like the input handler shouldn't have to know the state?
+        * let's see where `toggleInputButtons` gets called
     * Remove - 'this is the landing page'. Maybe add the github link?7
 
 
 ----------------------
 * Broader list
+    * Add a database. Perhaps I should research which one is most in demand for developers? This is just for learning after all. 
     
     * Disconnect for main game
         * How do I want to approach this? I'm thinking of having a 'pause' where no actions can be taken? 
