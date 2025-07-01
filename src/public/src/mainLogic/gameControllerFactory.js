@@ -198,9 +198,8 @@ export const gameControllerFactory = () => {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             lastPlayer.currentActions = lastPlayer.maxActions;
-            if (this.shouldEnableInputButtons()) {
-                logicBundle.inputHandlers.toggleInputButtons(false)
-            }
+            const shouldEnableInputButtons = this.shouldEnableInputButtons()
+            logicBundle.inputHandlers.toggleInputButtons(!shouldEnableInputButtons)
             this.saveGame();
         },
         replaceTokens(player) {

@@ -32,7 +32,6 @@ Note that the above links use the test data that gets populated on the server in
         * let's see where `toggleInputButtons` gets called
             * maybe we should have a wrapper that checks if it's online?
         * Now we need to make sure it doesn't affect hotseat, and test with tokens. 
-        * **BUG** - this.shouldEnableInputButtons is not a function - think this results from using the token stuff
     * Remove - 'this is the landing page'. Maybe add the github link?7
 
 
