@@ -1,8 +1,6 @@
 import { messageAllInRoomFactory } from "./webSocketHelpers.js";
-// public/src/helpers/constants.js
-// server/webSockets
-import { REGULAR_TOKENS, STARTING_TOKENS } from "../../public/src/helpers/constants.js"
-import { shuffleArray } from "../../public/src/helpers/helpers.js"
+import { REGULAR_TOKENS, STARTING_TOKENS } from "../../public/js/helpers/constants.js"
+import { shuffleArray } from "../../public/js/helpers/helpers.js"
 // TODO - might need a message queuing system in case people get disconnect or don't join fast enough
 // Frankly I'm dreading all the corner cases, it might make sense to see if the WS npm modules has
 // any built in solutions 
