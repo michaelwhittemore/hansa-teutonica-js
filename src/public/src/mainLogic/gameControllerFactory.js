@@ -182,7 +182,6 @@ export const gameControllerFactory = () => {
             console.log(chatText)
         },
         advanceTurn(lastPlayer) {
-            // here! - need to add the button toggling for other players
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
             if (this.tokensCapturedThisTurn.length > 0) {
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
@@ -314,7 +313,6 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.clearAllActionSelection();
             // TODO The below logicBundle.inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
             // the input handlers? Like clearAllActionSelection?
-            // here! dev
             if (this.shouldEnableInputButtons()) {
                 logicBundle.inputHandlers.toggleInputButtons(false)
             }
@@ -1504,7 +1502,7 @@ export const gameControllerFactory = () => {
             }
         },
         shouldEnableInputButtons() {
-            // here! 
+            // dev
             return logicBundle.sessionInfo.isHotseatMode || 
                 logicBundle.sessionInfo.participantId === this.getActivePlayer().id
         },

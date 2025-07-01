@@ -22,16 +22,17 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 6/30
+* 7/02
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
 
     * **HERE!**  Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
-        * this may involve some refactoring of the inputHandler method - i think there's some resetting happening that I don't necessarily want.
-        *  Maybe the turn change method in the main controller should be the one calling the inputHandler? I feel like the input handler shouldn't have to know the state?
         * TODO - let's create a helper that check if you're the active player
         * let's see where `toggleInputButtons` gets called
             * maybe we should have a wrapper that checks if it's online?
         * Now we need to make sure it doesn't affect hotseat, and test with tokens. 
+        * **BUG** - it's broken with initializeOnlineGame - maybe doesn't know the active player??
+            * looks like currentTurn is undefined there
+            * oh! should tie it to `joinedGameSuccess`
     * Remove - 'this is the landing page'. Maybe add the github link?7
 
 

@@ -138,6 +138,10 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
             regularTokensArray,
             startingTokensArray,
         })
+        // we start with buttons disabled for the non-active players 
+        // (we need to do it after initializeCitiesAndState is called)
+        const shouldEnableInputButtons = logicBundle.gameController.shouldEnableInputButtons()
+        logicBundle.inputHandlers.toggleInputButtons(!shouldEnableInputButtons)
     }
 
     const webSocketController = {
