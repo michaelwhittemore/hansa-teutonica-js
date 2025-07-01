@@ -1,6 +1,6 @@
 import {
     createColorPickerWithOnClick, createDivWithClassAndIdAndStyle, validateName,
-    pluralifyText, createColoredSpanWithText
+    pluralifyText, createColoredSpanWithText, addGitHubLink
 } from "../helpers/helpers.js"
 import { createChatInput } from "../helpers/createChatInput.js";
 const roomName = new URL(window.location).searchParams.get('roomName')
@@ -334,5 +334,6 @@ const sendSocketMessage = (messageObject) => {
 const start = async () => {
     document.getElementById('waitingHeader').innerText = `Attempting to join "${roomName}"`
     await attemptToJoinRoom();
+    addGitHubLink()
 }
 window.onload = start

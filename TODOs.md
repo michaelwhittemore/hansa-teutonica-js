@@ -24,16 +24,7 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/02
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
-
-    * **HERE!**  Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
-        * TODO - let's create a helper that check if you're the active player
-        * let's see where `toggleInputButtons` gets called
-            * maybe we should have a wrapper that checks if it's online?
-        * Now we need to make sure it doesn't affect hotseat, and test with tokens. 
-        * **BUG** - it's broken with initializeOnlineGame - maybe doesn't know the active player??
-            * looks like currentTurn is undefined there
-            * oh! should tie it to `joinedGameSuccess`
-    * Remove - 'this is the landing page'. Maybe add the github link?7
+    * I have two folders named 'src' this is confusing and dumb - maybe assets?
 
 
 ----------------------
@@ -48,7 +39,7 @@ Note that the above links use the test data that gets populated on the server in
 
     * REMINDER THAT I CAN CHECK TODOs if I feel burnt out!
         * Let's start with just using the 'span' helper
-        * Also add to README, it's currently outdated
+        * Also add to README, it's currently outdated - include docker information and description of the stack
 --------------------------
 
 **DOCKER STUFF**

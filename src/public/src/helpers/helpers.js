@@ -282,6 +282,18 @@ export const createColoredSpanWithText = (text, color) => {
     return `<span style="color: ${color}">${text}</span>`
 }
 
+export const addGitHubLink = () => {
+    const linkElement = document.createElement('a')
+    linkElement.href = 'https://github.com/michaelwhittemore/hansa-teutonica-js'
+    const img = document.createElement('img')
+    img.src = '../../images/github-mark.svg'
+    linkElement.append(img)
+    linkElement.style.position = 'absolute';
+    linkElement.style.bottom = '1px';
+    linkElement.style.left = '1px';
+    document.body.append(linkElement)
+}
+
 // TEST, DELETE THIS TODO
 const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')

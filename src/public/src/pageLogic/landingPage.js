@@ -1,5 +1,5 @@
 import { TEST_PLAYERS } from "../helpers/constants.js"
-import { createDivWithClassAndIdAndStyle, validateName, createColorPickerWithOnClick } from "../helpers/helpers.js";
+import { createDivWithClassAndIdAndStyle, validateName, createColorPickerWithOnClick, addGitHubLink } from "../helpers/helpers.js";
 
 let pickingColorId;
 let playerColorArray = []
@@ -259,5 +259,6 @@ const start = () => {
     bindButtons();
     document.getElementById('hotseatConfig').append(createColorPickerWithOnClick(colorOnClick));
     document.onclick = colorPickerClose;
+    addGitHubLink()
 }
 window.onload = start;
