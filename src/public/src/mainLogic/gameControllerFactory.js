@@ -182,6 +182,7 @@ export const gameControllerFactory = () => {
             console.log(chatText)
         },
         advanceTurn(lastPlayer) {
+            // here! - need to add the button toggling for other players
             logicBundle.turnTrackerController.updateTurnTracker(lastPlayer)
             if (this.tokensCapturedThisTurn.length > 0) {
                 this.tokenPlacementInformation.tokensToPlace = this.tokensCapturedThisTurn.length;
@@ -197,6 +198,9 @@ export const gameControllerFactory = () => {
                 logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
             }
             lastPlayer.currentActions = lastPlayer.maxActions;
+            if (this.shouldEnableInputButtons()) {
+                logicBundle.inputHandlers.toggleInputButtons(false)
+            }
             this.saveGame();
         },
         replaceTokens(player) {
@@ -292,8 +296,9 @@ export const gameControllerFactory = () => {
                 this.tokensCapturedThisTurn = [];
                 gameController.tokenPlacementInformation = {}
                 logicBundle.inputHandlers.clearAllActionSelection();
-                logicBundle.inputHandlers.toggleInputButtons(false)
-
+                if (this.shouldEnableInputButtons()) {
+                    logicBundle.inputHandlers.toggleInputButtons(false)
+                }
                 this.advanceTurn(player);
 
                 // 16. clear the this.tokenPlacementInformation blob
@@ -310,11 +315,13 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.clearAllActionSelection();
             // TODO The below logicBundle.inputHandlers.toggleInputButtons maybe should just be tied to cleanup of
             // the input handlers? Like clearAllActionSelection?
-            logicBundle.inputHandlers.toggleInputButtons(false)
+            // here! dev
+            if (this.shouldEnableInputButtons()) {
+                logicBundle.inputHandlers.toggleInputButtons(false)
+            }
             player.currentActions -= 1;
             if (player.currentActions === 0) {
                 this.advanceTurn(player);
-                // return // REMOVE THIS LINE, THIS BREAKS STUFF TODO
             }
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             this.playerArray.forEach(player => {
@@ -471,7 +478,9 @@ export const gameControllerFactory = () => {
             }
             playerId = player.id;
 
-            logicBundle.inputHandlers.toggleInputButtons(false)
+            if (this.shouldEnableInputButtons()) {
+                logicBundle.inputHandlers.toggleInputButtons(false)
+            }
             const movesUsed = optionalMovesUsed || this.moveInformation.movesUsed
 
             // The player never actually took an action, works for zero or undefined
@@ -618,7 +627,7 @@ export const gameControllerFactory = () => {
             logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
 
             // We don't want a tertiary player to see the text telling them that they've been bumped
-            const shouldAddText = logicBundle.sessionInfo.isHotseatMode || 
+            const shouldAddText = logicBundle.sessionInfo.isHotseatMode ||
                 (isOnlineAction && bumpedPlayerId === logicBundle.sessionInfo.participantId);
             logicBundle.inputHandlers.setUpBumpActionInfo({
                 nodeId,
@@ -1458,7 +1467,9 @@ export const gameControllerFactory = () => {
                 }
                 playerId = player.id;
                 // 1. Reset logicBundle.inputHandlers. I think this should clear the token area and re-enable the action buttons
-                logicBundle.inputHandlers.toggleInputButtons(false)
+                if (gameController.shouldEnableInputButtons()) {
+                    logicBundle.inputHandlers.toggleInputButtons(false)
+                }
                 logicBundle.inputHandlers.clearAllActionSelection()
                 // 2. Trigger the finishTokenUsage method
 
@@ -1492,6 +1503,11 @@ export const gameControllerFactory = () => {
             } else {
                 return activePlayer
             }
+        },
+        shouldEnableInputButtons() {
+            // here! 
+            return logicBundle.sessionInfo.isHotseatMode || 
+                logicBundle.sessionInfo.participantId === this.getActivePlayer().id
         },
         saveGame() {
             console.warn('Saving game')

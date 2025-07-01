@@ -20,8 +20,7 @@ http://localhost:3000/onlineGame/testRoom1?participantId=uW2d8XHHZn6SPb3vTak3uW
 http://localhost:3000/onlineGame/testRoom1?participantId=anK3A8RVr9G4nY5z7mhEA2
 http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
-
-Note that the above link uses the test data that gets populated on the server
+Note that the above links use the test data that gets populated on the server in app.js
 
 * 6/30
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
@@ -29,7 +28,11 @@ Note that the above link uses the test data that gets populated on the server
     * **HERE!**  Would like to disable buttons when it's not your turn - I think when I do hot keys they can use a similar flag on the input handler
         * this may involve some refactoring of the inputHandler method - i think there's some resetting happening that I don't necessarily want.
         *  Maybe the turn change method in the main controller should be the one calling the inputHandler? I feel like the input handler shouldn't have to know the state?
+        * TODO - let's create a helper that check if you're the active player
         * let's see where `toggleInputButtons` gets called
+            * maybe we should have a wrapper that checks if it's online?
+        * Now we need to make sure it doesn't affect hotseat, and test with tokens. 
+        * **BUG** - this.shouldEnableInputButtons is not a function - think this results from using the token stuff
     * Remove - 'this is the landing page'. Maybe add the github link?7
 
 
@@ -49,7 +52,7 @@ Note that the above link uses the test data that gets populated on the server
 --------------------------
 
 **DOCKER STUFF**
-npx nodemon --env-file=.env src/app.js 
+`npx nodemon --env-file=.env src/app.js`
 make sure docker application is running
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 https://docs.docker.com/get-started/introduction/develop-with-containers/
