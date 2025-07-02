@@ -1548,12 +1548,10 @@ export const gameControllerFactory = () => {
                 default:
                     console.error('collectedTokens not in expected range')
             }
-            console.log('tokenPoints', tokenPoints)
             // for unlocks I guess we just iterate over 'unlockArrayIndex' and see which one hits the max value]
             // which I need to find - I think we use unlockMapMaxValues
             // Need to double check if it's equal or equal to minus one 
             // remember that keys do *not* grant points
-            console.log(unlockMapMaxValues)
             const scoredAbilities = ['actions', 'purse', 'maxMovement', 'colors']
             // here!
             scoredAbilities.forEach(abilityKey => {
@@ -1562,6 +1560,12 @@ export const gameControllerFactory = () => {
                     abilityPoints += 4;
                 }
             })
+            console.log('abilityPoints', abilityPoints)
+            // let's test using the 'unlock' method in the gameController `performUnlock`
+            // logicBundle.gameController.playerArray[0]
+            // logicBundle.gameController.performUnlock(logicBundle.gameController.playerArray[0], 'purse')
+            // logicBundle.gameController.endGame()
+
 
 
         },
