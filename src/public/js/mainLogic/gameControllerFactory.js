@@ -1503,11 +1503,14 @@ export const gameControllerFactory = () => {
             })
         },
         calculateTotalScore(player){
+            console.warn('calculating score for', player.name)
+            console.log('calculating score for player', player)
+
             // dev
             /*
                 1. 
                 2. Fully developed abilities
-                3. Points for tokens
+                3. 
                 4. Coellen (needs to be implemented)
                 5. Two points per *controlled* city
                 6. network - 
@@ -1515,10 +1518,36 @@ export const gameControllerFactory = () => {
             const prestigePoints = player.currentPoints 
             // grab the link of the array and then use some conditionals (don't bother with a helper, 
             // as we only do this once)
-            // const tokenPoints = 0;
+            let tokenPoints;
+            const collectedTokens = player.currentTokens.length + player.usedTokens.length;
+            console.log('collectedTokens', collectedTokens)
+            switch(true){
+                case collectedTokens === 0:
+                    tokenPoints = 0;
+                    break;
+                case collectedTokens === 1:
+                    tokenPoints = 1;
+                    break;
+                case collectedTokens <= 3:
+                    tokenPoints = 3;
+                    break;
+                case collectedTokens <= 5:
+                    tokenPoints = 6;
+                    break;
+                case collectedTokens <= 7:
+                    tokenPoints = 10;
+                    break;
+                case collectedTokens <= 9:
+                    tokenPoints = 15;
+                    break;
+                case collectedTokens >= 10:
+                    tokenPoints = 21;
+                    break;
+                default:
+                    console.error('collectedTokens not in expected range')
+            }
+            console.log('tokenPoints', tokenPoints)
 
-            console.log('calculating score for player', player)
-            console.log('prestigePoints', prestigePoints)
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             if (logicBundle.sessionInfo.isHotseatMode) {
