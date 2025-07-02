@@ -277,7 +277,6 @@ export const playerArrayFromSearchParams = (params) => {
 
 export const createColoredSpanWithText = (text, color) => {
     // TODO, replace all instances of colored span with this helper
-    // here!
     // this might need to take in an id as well?
     return `<span style="color: ${color}">${text}</span>`
 }

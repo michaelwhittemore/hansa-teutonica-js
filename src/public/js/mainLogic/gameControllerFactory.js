@@ -1479,8 +1479,46 @@ export const gameControllerFactory = () => {
             }
         },
         endGame() {
+            // here! 
+            // dev
+            // I'm 90% sure that this is a feature that should be pretty much equivalent on hotseat and online
+            // I think I can manually trigger it and log the values to the console. 
+            // Maybe for each player we have a 'breakdown object'?? (probably uncessary - just use const for each)
+            // Will likely want a 'calculateTotalScore' function for each player 
+            // It might be worth developing a pre-filled map for testing - would be similar to save/load logic
+            /*
+                1. ~~Current points (described in the manual as Prestige Points from the Prestige Points track)~~
+                2. Fully developed abilities
+                3. Points for tokens
+                4. Coellen (needs to be implemented)
+                5. Two points per *controlled* city
+                6. network - this will be the hardest by far. Need to find each network and see which one is largest.
+                Then sum all the trading posts in the network then multiply by the key value
+            */
             // TODO
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
+            // Will need to break this into a map. Or maybe just give them a 'totalScoreField' and then sort?
+            this.playerArray.forEach(player => {
+                this.calculateTotalScore(player)
+            })
+        },
+        calculateTotalScore(player){
+            // dev
+            /*
+                1. 
+                2. Fully developed abilities
+                3. Points for tokens
+                4. Coellen (needs to be implemented)
+                5. Two points per *controlled* city
+                6. network - 
+            */
+            const prestigePoints = player.currentPoints 
+            // grab the link of the array and then use some conditionals (don't bother with a helper, 
+            // as we only do this once)
+            // const tokenPoints = 0;
+
+            console.log('calculating score for player', player)
+            console.log('prestigePoints', prestigePoints)
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             if (logicBundle.sessionInfo.isHotseatMode) {
@@ -1502,8 +1540,7 @@ export const gameControllerFactory = () => {
             }
         },
         shouldEnableInputButtons() {
-            // dev
-            return logicBundle.sessionInfo.isHotseatMode || 
+            return logicBundle.sessionInfo.isHotseatMode ||
                 logicBundle.sessionInfo.participantId === this.getActivePlayer().id
         },
         saveGame() {

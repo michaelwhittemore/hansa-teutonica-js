@@ -131,7 +131,6 @@ export const inputHandlerFactory = () => {
             document.getElementById('token').onclick = this.handleTokenButton;
         },
         toggleInputButtons(disabled, buttonToExclude = false) {
-            // dev 
             BUTTON_LIST.forEach(buttonName => {
                 if (buttonName !== buttonToExclude) {
                     document.getElementById(buttonName).disabled = disabled;
