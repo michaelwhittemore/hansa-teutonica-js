@@ -1479,7 +1479,6 @@ export const gameControllerFactory = () => {
             }
         },
         endGame() {
-            // here! 
             // dev
             // I'm 90% sure that this is a feature that should be pretty much equivalent on hotseat and online
             // I think I can manually trigger it and log the values to the console. 
@@ -1502,10 +1501,9 @@ export const gameControllerFactory = () => {
                 this.calculateTotalScore(player)
             })
         },
-        calculateTotalScore(player){
+        calculateTotalScore(player) {
             console.warn('calculating score for', player.name)
             console.log('calculating score for player', player)
-
             // dev
             /*
                 1. 
@@ -1515,13 +1513,17 @@ export const gameControllerFactory = () => {
                 5. Two points per *controlled* city
                 6. network - 
             */
-            const prestigePoints = player.currentPoints 
-            // grab the link of the array and then use some conditionals (don't bother with a helper, 
-            // as we only do this once)
-            let tokenPoints;
+            let prestigePoints = 0;
+            let tokenPoints = 0;
+            let abilityPoints = 0;
+            let coellenPoints = 0;
+            let controlledCityPoints = 0;
+            let networkPoints = 0;
+
+            prestigePoints = player.currentPoints
+
             const collectedTokens = player.currentTokens.length + player.usedTokens.length;
-            console.log('collectedTokens', collectedTokens)
-            switch(true){
+            switch (true) {
                 case collectedTokens === 0:
                     tokenPoints = 0;
                     break;
@@ -1547,6 +1549,20 @@ export const gameControllerFactory = () => {
                     console.error('collectedTokens not in expected range')
             }
             console.log('tokenPoints', tokenPoints)
+            // for unlocks I guess we just iterate over 'unlockArrayIndex' and see which one hits the max value]
+            // which I need to find - I think we use unlockMapMaxValues
+            // Need to double check if it's equal or equal to minus one 
+            // remember that keys do *not* grant points
+            console.log(unlockMapMaxValues)
+            const scoredAbilities = ['actions', 'purse', 'maxMovement', 'colors']
+            // here!
+            scoredAbilities.forEach(abilityKey => {
+                if (player.unlockArrayIndex[abilityKey] === unlockMapMaxValues[abilityKey] - 1) {
+                    console.log('Adding for for maxed', abilityKey)
+                    abilityPoints += 4;
+                }
+            })
+
 
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
