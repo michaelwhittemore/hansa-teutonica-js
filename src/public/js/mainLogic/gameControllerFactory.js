@@ -1507,7 +1507,7 @@ export const gameControllerFactory = () => {
             // dev
             /*
                 1. 
-                2. Fully developed abilities
+                2.
                 3. 
                 4. Coellen (needs to be implemented)
                 5. Two points per *controlled* city
@@ -1548,25 +1548,31 @@ export const gameControllerFactory = () => {
                 default:
                     console.error('collectedTokens not in expected range')
             }
-            // for unlocks I guess we just iterate over 'unlockArrayIndex' and see which one hits the max value]
-            // which I need to find - I think we use unlockMapMaxValues
-            // Need to double check if it's equal or equal to minus one 
-            // remember that keys do *not* grant points
+
             const scoredAbilities = ['actions', 'purse', 'maxMovement', 'colors']
-            // here!
+
             scoredAbilities.forEach(abilityKey => {
                 if (player.unlockArrayIndex[abilityKey] === unlockMapMaxValues[abilityKey] - 1) {
-                    console.log('Adding for for maxed', abilityKey)
+                    console.log('Adding for for maxed', abilityKey) // delete this
                     abilityPoints += 4;
                 }
             })
-            console.log('abilityPoints', abilityPoints)
             // let's test using the 'unlock' method in the gameController `performUnlock`
             // logicBundle.gameController.playerArray[0]
             // logicBundle.gameController.performUnlock(logicBundle.gameController.playerArray[0], 'purse')
             // logicBundle.gameController.endGame()
+            // here!
 
-
+            // Now let's do each controlled city. We should use `calculateControllingPlayer` 
+            // iterate over cityStorageObject
+            for (const [cityName, city] of Object.entries(this.cityStorageObject)) {
+                const controllingPlayer = this.calculateControllingPlayer(city)
+                if (controllingPlayer && controllingPlayer.id === player.id){
+                    controlledCityPoints += 2;
+                }
+            }
+            // Will eventually need to create the modal, but I think that could be done either here or in 
+            // the parent 'end game' function. Also remember how tiebreakers work
 
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {

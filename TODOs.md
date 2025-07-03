@@ -26,7 +26,7 @@ Note that the above links use the test data that gets populated on the server in
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
     * Endgame points - Maybe I start with a calculator for each source??
         * ~~Current points (described in the manual as  Prestige Points from the Prestige Points track)~~
-        * Fully developed abilities
+        * ~~Fully developed abilities~~
         * ~~Points for tokens~~
         * Coellen
         * 2 points per *controlled* city
