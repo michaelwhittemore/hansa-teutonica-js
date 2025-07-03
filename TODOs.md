@@ -22,16 +22,18 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/02
-    * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
+* 7/03
+    * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
+    * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
+    
     * Endgame points - Maybe I start with a calculator for each source??
         * ~~Current points (described in the manual as  Prestige Points from the Prestige Points track)~~
         * ~~Fully developed abilities~~
         * ~~Points for tokens~~
         * Coellen
-        * 2 points per *controlled* city
+        * ~~2 points per *controlled* city~~
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
-    * Once we have all these maybe we create and end game scoresheet modal??
+    * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
 
 
 ----------------------

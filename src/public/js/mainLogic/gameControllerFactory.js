@@ -1498,19 +1498,17 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
             // Will need to break this into a map. Or maybe just give them a 'totalScoreField' and then sort?
             this.playerArray.forEach(player => {
-                this.calculateTotalScore(player)
+                player.playerPointObject = this.calculateTotalScore(player)
+                console.warn(this.calculateTotalScore(player))
             })
+            
         },
         calculateTotalScore(player) {
-            console.warn('calculating score for', player.name)
-            console.log('calculating score for player', player)
+            // console.warn('calculating score for', player.name)
+            // console.log('calculating score for player', player)
             // dev
             /*
-                1. 
-                2.
-                3. 
                 4. Coellen (needs to be implemented)
-                5. Two points per *controlled* city
                 6. network - 
             */
             let prestigePoints = 0;
@@ -1565,7 +1563,7 @@ export const gameControllerFactory = () => {
 
             // Now let's do each controlled city. We should use `calculateControllingPlayer` 
             // iterate over cityStorageObject
-            for (const [cityName, city] of Object.entries(this.cityStorageObject)) {
+            for (const city of Object.values(this.cityStorageObject)) {
                 const controllingPlayer = this.calculateControllingPlayer(city)
                 if (controllingPlayer && controllingPlayer.id === player.id){
                     controlledCityPoints += 2;
@@ -1573,7 +1571,18 @@ export const gameControllerFactory = () => {
             }
             // Will eventually need to create the modal, but I think that could be done either here or in 
             // the parent 'end game' function. Also remember how tiebreakers work
-
+            // I guess we need to decide if this returns an object? I'm temnpted to say so. 
+            const playerPointObject = {
+                prestigePoints,
+                tokenPoints,
+                abilityPoints,
+                coellenPoints,
+                controlledCityPoints,
+                networkPoints,
+                totalPoints: prestigePoints + tokenPoints + abilityPoints 
+                    + coellenPoints + controlledCityPoints + networkPoints,
+            }
+            return playerPointObject
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             if (logicBundle.sessionInfo.isHotseatMode) {
