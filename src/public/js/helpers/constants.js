@@ -14,7 +14,7 @@ export const TEST_BOARD_CONFIG_CITIES = {
             [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
         neighborRoutes: [['Beta', 3], ['Zeta', 3]],
         unlock: 'actions',
-        location: [20, 20]
+        location: [20, 60]
     },
     'Beta': {
         name: 'Beta',
@@ -22,7 +22,7 @@ export const TEST_BOARD_CONFIG_CITIES = {
             [['circle', 'grey'], ['square', 'grey']],
         neighborRoutes: [['Gamma', 4]],
         unlock: 'purse',
-        location: [480, 20]
+        location: [480, 60]
     },
     'Gamma': {
         name: 'Gamma',
@@ -42,7 +42,7 @@ export const TEST_BOARD_CONFIG_CITIES = {
         name: 'Epsilon',
         unlock: 'keys',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [900, 20]
+        location: [900, 55]
     },
     'Zeta': {
         name: 'Zeta',

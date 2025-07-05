@@ -65,8 +65,7 @@ export const boardControllerFactory = () => {
             document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
         },
         createCity(cityInformation) {
-            // here!
-            console.log(cityInformation)
+            // dev
             const { name, spotArray, unlock, location, freePoint } = cityInformation;
             const cityDiv = document.createElement('button');
             cityDiv.className = 'city'
@@ -98,17 +97,15 @@ export const boardControllerFactory = () => {
                 }
                 cityPieceAreaDiv.append(citySpotDiv)
             }
-
-            // here!
-            translateElement(cityDiv, location[0], location[1])
-            // cityDiv.style.left = `${location[0]}px`
-            // cityDiv.style.top = `${location[1]}px`
             
-    
             cityDiv.onclick = () => {
                 logicBundle.inputHandlers.cityClickHandler(name)
             }
             this.board.append(cityDiv)
+            // The transform needs to happen afterwards as it calculates based on the current position with 
+            // getBoundingClientRect()
+            translateElement(cityDiv, location[0], location[1])
+
             return cityDiv
         },
         createCityBonusSpotArea(cityName) {
