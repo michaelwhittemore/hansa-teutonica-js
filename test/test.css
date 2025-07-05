@@ -8,6 +8,15 @@
     border-style: solid;
 }
 
+#innerWrapper{
+    background-color: antiquewhite;
+    width: 1000px;
+    height: 1000px;
+    border-width: thin;
+    border-color: rgb(112, 71, 42);
+    border-style: dashed;
+}
+
 .testCity{
     background-color: blue;
     width: 50px;
