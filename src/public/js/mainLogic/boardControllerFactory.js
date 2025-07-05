@@ -102,11 +102,11 @@ export const boardControllerFactory = () => {
         addBonusPieceToCity(city, color, shape, numberOfPiecesAlreadyThere) {
             const bonusBox = document.getElementById(`bonus-${city.cityName}`)
             const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${city.cityName}`], '', { backgroundColor: color })
-            let size = 25;
+            let size = 20;
             if (numberOfPiecesAlreadyThere === 0) {
                 // We only clear if there's no pieces, just the text
                 bonusBox.innerText = ''
-                size = 45;
+                size = 35;
             }
     
             // HTMLCollection do not have iterable methods

@@ -23,10 +23,11 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/06
-    * Before updating the board further, I'd like to clean up the visual experience a little. Let's shrink the big-circle/big-square classes. I need to double check that they're only used by cities. Also will need to test having multiple bonus pieces (look at `addBonusPieceToCity`)
+    * Before updating the board further, I'd like to clean up the visual experience a little. Let's shrink the big-circle/big-square classes.
         * maybe route node and city inner pieces should share the same class?
         * Still need to fix: 
             1. bonus box (looks like it uses hardcoded sizes)
+                * `addBonusPieceToCity` - we hard code the value with style. Let's change the values and see what works
             2. ~~inner city pieces (when filled) - instead of cityPiece maybe use small-circle/small-square~~
             3. ~~bonus point coin~~
             4. ~~still need to fix the squished circle issue~~
