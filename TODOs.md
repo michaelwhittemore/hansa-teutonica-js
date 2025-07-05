@@ -22,14 +22,20 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/03
-    * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
-    * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
+* 7/06
     * My biggest blocker on new cities is the scrolling issue
         * I think the issue with scrolling is that the elements are positioned `absolute` which removes them from the normal flow of the document
         * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
         * Also note that position:relative is positioned relative to its *normal* position. I don't think I understood this, it's not relative to its parent
         * Is it possible this is worth a reddit post??
+        * I think using 'relative' and repositioning is my best approach??
+        * maybe transform?? - look into `transform:translate`
+            * **HERE!!** 
+            * This will require removing a lot of my current logic, but may ultimately make things easier
+            * Let's just start manipulatinbg directly via dev tools
+    * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
+    * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
+
     
     * Endgame points - Maybe I start with a calculator for each source?? - this is on hold until I do more work on the board (I want to get coellen working)
         * ~~Current points (described in the manual as  Prestige Points from the Prestige Points track)~~
