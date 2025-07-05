@@ -28,7 +28,7 @@ Note that the above links use the test data that gets populated on the server in
         * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
         * Also note that position:relative is positioned relative to its *normal* position. I don't think I understood this, it's not relative to its parent
         * Is it possible this is worth a reddit post??
-        * I think using 'relative' and repositioning is my best approach?? - (repositon using translate)
+        * I think using 'relative' and repositioning is my best approach?? - (reposition using translate)
         * It's also possible that maybe I can use an i-frame?? This might create another issue given that I want to manipulate all the buttons inside
         * maybe transform?? - look into `transform:translate`
             * I think this works!

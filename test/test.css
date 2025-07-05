@@ -2,8 +2,10 @@
     background-color: antiquewhite;
     width: 500px;
     height: 500px;
-    overflow: hidden;
-
+    overflow: scroll;
+    border-width: thick;
+    border-color: chocolate;
+    border-style: solid;
 }
 
 .testCity{
