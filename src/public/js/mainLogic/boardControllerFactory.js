@@ -76,7 +76,8 @@ export const boardControllerFactory = () => {
                     logicBundle.inputHandlers.citySpotClickHandler(spotNumber, name)
                 };
                 if (i === 0 && freePoint) {
-                    const freePointDiv = createDivWithClassAndIdAndStyle(['freePoint', 'centeredFlex'], `freePoint-${name}`);
+                    const freePointDiv = createDivWithClassAndIdAndStyle(['freePoint', 'circle', 'small-worker',
+                         'centeredFlex'], `freePoint-${name}`);
                     freePointDiv.innerText = '1'
                     citySpotDiv.append(freePointDiv)
                 }
@@ -127,9 +128,11 @@ export const boardControllerFactory = () => {
             const yIncrement = yDelta / (length + 1)
     
             for (let i = 0; i < length; i++) {
-                const routeNode = document.createElement('button');
-                routeNode.classList.add('routeNode', 'worker-holder');
+                // const routeNode = document.createElement('button');
+                // routeNode.classList.add('routeNode', 'worker-holder');
                 const nodeId = `${id}-${i}`;
+                // might need center flex
+                const routeNode = createDivWithClassAndIdAndStyle(['routeNode', 'worker-holder', 'centeredFlex'], nodeId)
                 routeNode.id = nodeId;
                 routeNode.onclick = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
@@ -182,7 +185,7 @@ export const boardControllerFactory = () => {
                 document.getElementById(`freePoint-${city.cityName}`).remove();
             }
     
-            const playerPieceDiv = createDivWithClassAndIdAndStyle(['cityPiece', targetShape], `piece-${city.cityName}-${city.openSpotIndex}`,
+            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', targetShape], `piece-${city.cityName}-${city.openSpotIndex}`,
                 { backgroundColor: playerColor })
             pieceHolder.append(playerPieceDiv)
         },

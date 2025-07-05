@@ -27,10 +27,11 @@ Note that the above links use the test data that gets populated on the server in
         * maybe route node and city inner pieces should share the same class?
         * Still need to fix: 
             1. bonus box (looks like it uses hardcoded sizes)
-            2. inner city pieces (when filled) - instead of cityPiece maybe use small-circle/small-square
-                * Let's replace 'small-circle/square' with small piece
-            3. bonus point coin
-            4. still need to fix the squished circle issue
+            2. ~~inner city pieces (when filled) - instead of cityPiece maybe use small-circle/small-square~~
+            3. ~~bonus point coin~~
+            4. ~~still need to fix the squished circle issue~~
+            5. ~~Maybe switch to 35x35, works for the coin ~~
+~~
         
 
 
