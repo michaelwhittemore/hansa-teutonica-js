@@ -4,6 +4,19 @@ import { createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCo
  } from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 
+const translateElement = (myElement, x, y) => {
+    // dev
+    // TODO!! - move this to the helper file (maybe even create a new one)
+    // also rename `myElement`
+    const currentBounds = myElement.getBoundingClientRect()
+    const xTarget = x - currentBounds.x
+    const yTarget = y - currentBounds.y
+    console.log(xTarget, yTarget)
+    myElement.style.transform = ` translate(${xTarget}px, ${yTarget}px)`
+    
+    console.log(myElement.getBoundingClientRect())
+}
+
 export const boardControllerFactory = () => {
     const boardController = {
         // Will probably need to load this in from a file, 
@@ -52,6 +65,8 @@ export const boardControllerFactory = () => {
             document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
         },
         createCity(cityInformation) {
+            // here!
+            console.log(cityInformation)
             const { name, spotArray, unlock, location, freePoint } = cityInformation;
             const cityDiv = document.createElement('button');
             cityDiv.className = 'city'
@@ -83,11 +98,12 @@ export const boardControllerFactory = () => {
                 }
                 cityPieceAreaDiv.append(citySpotDiv)
             }
-    
-            // Adding location, will need to do route calculation separately - might want to hard code
-            // some information on sizes to a constant in case I make style changes
-            cityDiv.style.left = `${location[0]}px`
-            cityDiv.style.top = `${location[1]}px`
+
+            // here!
+            translateElement(cityDiv, location[0], location[1])
+            // cityDiv.style.left = `${location[0]}px`
+            // cityDiv.style.top = `${location[1]}px`
+            
     
             cityDiv.onclick = () => {
                 logicBundle.inputHandlers.cityClickHandler(name)

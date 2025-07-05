@@ -46,8 +46,6 @@ const start = () => {
 }
 
 const translateElement = (myElement, x, y) => {
-    // x and y will be the target
-    // This doesn't take the bounding into account yet
     const currentBounds = myElement.getBoundingClientRect()
     const xTarget = x - currentBounds.x
     const yTarget = y - currentBounds.y

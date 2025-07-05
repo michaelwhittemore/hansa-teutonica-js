@@ -26,13 +26,19 @@ Note that the above links use the test data that gets populated on the server in
     * My biggest blocker on new cities is the scrolling issue
         * I think the issue with scrolling is that the elements are positioned `absolute` which removes them from the normal flow of the document
         * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
-        * Also note that position:relative is positioned relative to its *normal* position. I don't think I understood this, it's not relative to its parent
-        * Is it possible this is worth a reddit post??
-        * I think using 'relative' and repositioning is my best approach?? - (reposition using translate)
-        * It's also possible that maybe I can use an i-frame?? This might create another issue given that I want to manipulate all the buttons inside
+    * Now applying the transform logic to the gameboard 
+        * **HERE!!** boardControllerFactory.js is where the logic lives
+            1. Find all instances of `position: absolute;` - anything that isn't the collapse button should switch to relative
+            2. I think these are cities, route nodes, and tokens
+            3. Now I need to start with cities. I think I'll create a new helper file for translation (I can delete it later). I should see where I get the coordinates 
+            4. It seems that in `createCity` we get the location coordinates
+            5. Now let's find the `style left` part and replace it with the transform
+
+
+
         * maybe transform?? - look into `transform:translate`
             * I think this works!
-            * **HERE!!** I think I want them all the have the same starting position. Maybe change the display for the container?
+            * I think I want them all the have the same starting position. Maybe change the display for the container?
                 * Before we go any further, I should verify that overflow works correctly
                 * Oh! Maybe I can get the element's location and use that for the transform?? I think I did something like that earlier
                 * `getBoundingClientRect` I think it was
