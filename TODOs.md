@@ -27,12 +27,15 @@ Note that the above links use the test data that gets populated on the server in
         * I think the issue with scrolling is that the elements are positioned `absolute` which removes them from the normal flow of the document
         * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
     * Now applying the transform logic to the gameboard 
-        * **HERE!!** boardControllerFactory.js is where the logic lives
-            1. Find all instances of `position: absolute;` - anything that isn't the collapse button should switch to relative
-            2. I think these are cities, route nodes, and tokens
-            3. Now I need to start with cities. I think I'll create a new helper file for translation (I can delete it later). I should see where I get the coordinates 
-            4. It seems that in `createCity` we get the location coordinates
-            5. Now let's find the `style left` part and replace it with the transform
+        * boardControllerFactory.js is where the logic lives
+            1. ~~Find all instances of `position: absolute;` - anything that isn't the collapse button should switch to relative~~
+            2. ~~I think these are cities, route nodes, and tokens~~
+            3. ~~Now I need to start with cities. I think I'll create a new helper file for translation (I can delete it later). I should see where I get the coordinates ~~
+            4. ~~It seems that in `createCity` we get the location coordinates~~
+            5. ~~Now let's find the `style left` part and replace it with the transform~~
+            6. **HERE!!** Route nodes, this uses the helpers - may need to remove the offset
+                * offSetCoordinatesForGameBoard is I think what we will need to remove (let's see what happens if I change it to a noop)
+
             6. After all the nodes and tokens are done I'd like to style the board like I do in the test files
             7. Will also need to delete a lot of unused position helpers
         * Hmmm. Is it possible I'm applying an old transform to location prior to passing it to `createCity`?

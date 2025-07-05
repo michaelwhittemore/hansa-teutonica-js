@@ -1,7 +1,6 @@
 import { logicBundle } from "../helpers/logicBundle.js";
-import { createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForGameBoard,
-    offSetCoordinatesForSize,
- } from "../helpers/helpers.js";
+import { createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize,
+    } from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 
 const translateElement = (myElement, x, y) => {
@@ -133,6 +132,7 @@ export const boardControllerFactory = () => {
             }
         },
         createRouteAndTokenFromLocations(routeProperties) {
+            // dev
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
             let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
     
@@ -150,18 +150,19 @@ export const boardControllerFactory = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
                 }
     
-                let [xCoordinate, yCoordinate] = offSetCoordinatesForGameBoard(startX + (xIncrement * (i + 1)),
-                    startY + (yIncrement * (i + 1)))
+                let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
+                    startY + (yIncrement * (i + 1))]
     
                 let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
     
-                routeNode.style.left = x + 'px';
-                routeNode.style.top = y + 'px';
+                // routeNode.style.left = x + 'px';
+                // routeNode.style.top = y + 'px';
     
                 this.board.append(routeNode)
+                translateElement(routeNode, x, y)
             }
-            let [xToken, yToken] = offSetCoordinatesForGameBoard(startX + (xDelta / 2),
-                startY + (yDelta / 2));
+            let [xToken, yToken] = [(startX + (xDelta / 2),
+                startY + (yDelta / 2))];
             this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
         },
         clearTokenFromRouteAndHide(routeId) {

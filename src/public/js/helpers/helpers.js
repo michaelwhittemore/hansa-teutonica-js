@@ -42,11 +42,6 @@ export const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
     return ([x - (width / 2), y - (height / 2)]);
 }
 
-export const offSetCoordinatesForGameBoard = (x, y) => {
-    const gameBoardDomRect = document.getElementById('gameBoard').getBoundingClientRect()
-    return [x - gameBoardDomRect.x, y - gameBoardDomRect.y]
-}
-
 export const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
     return (y2 - y1) / (x2 - x1)
 }
@@ -105,8 +100,6 @@ export const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 
         const yIntersection = center[1] + (slope * innerXDelta)
         const verticalIntersection = [verticalEdge, yIntersection]
-        // const offsetCoordinates1 = offSetCoordinatesForGameBoard(...verticalIntersection);
-        // addPixelAtLocation(...offsetCoordinates1, true)
         return verticalIntersection
     }
 
@@ -119,8 +112,6 @@ export const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
         const innerYDelta = horizontalEdge - center[1];
         const xIntersection = center[0] + (inverseSlope * innerYDelta)
         const horizontalIntersection = [xIntersection, horizontalEdge]
-        // const offsetCoordinates2 = offSetCoordinatesForGameBoard(...horizontalIntersection);
-        // addPixelAtLocation(...offsetCoordinates2, true, 'red')
 
         return horizontalIntersection
     }
@@ -143,8 +134,6 @@ export const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
                 coordinates = horizontalIntersection
             }
         }
-        // const offsetCoordinates = offSetCoordinatesForGameBoard(...coordinates);
-        // addPixelAtLocation(...offsetCoordinates, true, 'green')
         return coordinates;
     }
 

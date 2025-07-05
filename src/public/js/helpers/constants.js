@@ -35,7 +35,7 @@ export const TEST_BOARD_CONFIG_CITIES = {
         name: 'Delta',
         freePoint: true,
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1000, 300],
+        location: [1050, 350],
         neighborRoutes: [['Epsilon', 3]],
     },
     'Epsilon': {
