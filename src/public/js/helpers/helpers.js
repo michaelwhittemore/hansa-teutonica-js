@@ -38,15 +38,17 @@ export const getRouteIdFromNodeId = (nodeId) => {
     return nodeId.slice(0, nodeId.lastIndexOf('-'));
 }
 export const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
-    console.log('params', x,y,height,width)
-    if (Number.isNaN(y)){
-        console.error('NANANANA')
-        // debugger
-    }
-    // dev
     // This function will center an object instead of placing it with the top left at (x,y)
-    console.log('offset for size', [x - (width / 2), y - (height / 2)])
     return ([x - (width / 2), y - (height / 2)]);
+}
+
+export const translateElement = (elementToTranslate, x, y) => {
+    // Note that this function needs to be called after the element has been
+    // appended to the DOM
+    const currentBounds = elementToTranslate.getBoundingClientRect()
+    const xTarget = x - currentBounds.x
+    const yTarget = y - currentBounds.y
+    elementToTranslate.style.transform = `translate(${xTarget}px, ${yTarget}px`
 }
 
 export const calculateSlopeFromCoordinatePairs = (x1, y1, x2, y2) => {
@@ -209,7 +211,7 @@ export const validateName = (nameString) => {
     if (nameString === '') {
         return [false, 'Names may not be empty.']
     }
-    if (nameString.length > 20){
+    if (nameString.length > 20) {
         return [false, 'Names may not be longer than 20 characters.']
     }
     // ^[a-zA-Z0-9\_]*$ 
@@ -263,7 +265,7 @@ export const createColorPickerWithOnClick = (onClickFunction) => {
 
 export const playerArrayFromSearchParams = (params) => {
     const playerArray = []
-    for (let i = 0; i< params.get('playerNumber'); i++){
+    for (let i = 0; i < params.get('playerNumber'); i++) {
         const name = params.get(`playerName-${i}`)
         const color = params.get(`playerColor-${i}`)
         playerArray.push([name, color])

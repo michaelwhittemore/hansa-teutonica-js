@@ -43,11 +43,11 @@ Note that the above links use the test data that gets populated on the server in
                 * pretty sure it's line 159
                 * looks like it's always line 233 in createBoardTokenHolder
                 * found it! I was trying to desctructure from a single expression!
- 
 
             6. After all the nodes and tokens are done I'd like to style the board like I do in the test files
             7. Will also need to delete a lot of unused position helpers - actually maybe it was just the offset? 
             8. Should shrink the cities and their inner pieces a little
+            9. Don't forget to delete the test folder
         * Hmmm. Is it possible I'm applying an old transform to location prior to passing it to `createCity`?
         * oooooh. I think I need to do the transform *AFTER* the city has been appended?
             * Yep! This was it!
