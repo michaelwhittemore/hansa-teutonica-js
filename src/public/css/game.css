@@ -1,4 +1,4 @@
-.big-circle {
+/* .big-circle {
     height: 60px;
     width: 60px;
     border-radius: 50%;
@@ -9,20 +9,18 @@
     height: 60px;
     width: 60px;
     margin: 1px;
+} */
+
+.worker-holder {
+    height: 45px;
+    width: 45px;
 }
 
-.small-circle {
+.small-worker {
     height: 30px;
     width: 30px;
-    border-radius: 50%;
-    margin: 1px;
 }
 
-.small-square {
-    height: 30px;
-    width: 30px;
-    margin: 1px;
-}
 
 .city {
     border: solid;
@@ -61,6 +59,8 @@
 }
 
 .bonusBox {
+    height: 45px;
+    width: 45px;
     background-color: white;
     border: dotted;
     flex-wrap: wrap;
@@ -72,8 +72,6 @@
 }
 
 .routeNode {
-    height: 45px;
-    width: 45px;
     position: relative;
     border: solid;
     display: flex;

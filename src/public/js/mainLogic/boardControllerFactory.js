@@ -67,7 +67,7 @@ export const boardControllerFactory = () => {
             for (let i = 0; i < spotArray.length; i++) {
                 const spotNumber = i;
                 const spotInfo = spotArray[i]
-                const citySpotDiv = createDivWithClassAndIdAndStyle([`big-${spotInfo[0]}`, 'cityPieceHolder'],
+                const citySpotDiv = createDivWithClassAndIdAndStyle([spotInfo[0], 'worker-holder', 'cityPieceHolder'],
                     `${name}-${i}`, { backgroundColor: spotInfo[1] });
     
                 citySpotDiv.onclick = (event) => {
@@ -94,7 +94,7 @@ export const boardControllerFactory = () => {
             return cityDiv
         },
         createCityBonusSpotArea(cityName) {
-            const bonusBox = createDivWithClassAndIdAndStyle(['big-square', 'bonusBox', 'centeredFlex'], `bonus-${cityName}`)
+            const bonusBox = createDivWithClassAndIdAndStyle(['square', 'bonusBox', 'centeredFlex'], `bonus-${cityName}`)
             bonusBox.innerText = 'Bonus trading posts'
             return bonusBox;
         },
@@ -128,7 +128,7 @@ export const boardControllerFactory = () => {
     
             for (let i = 0; i < length; i++) {
                 const routeNode = document.createElement('button');
-                routeNode.className = 'routeNode';
+                routeNode.classList.add('routeNode', 'worker-holder');
                 const nodeId = `${id}-${i}`;
                 routeNode.id = nodeId;
                 routeNode.onclick = () => {
@@ -167,7 +167,7 @@ export const boardControllerFactory = () => {
         addPieceToRouteNode(nodeId, playerColor, shape) {
             this.clearPieceFromRouteNode(nodeId);
             const routeNode = document.getElementById(nodeId);
-            const playerPieceDiv = createDivWithClassAndIdAndStyle([`small-${shape}`], '',
+            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker',shape], '',
                 { backgroundColor: playerColor })
             routeNode.append(playerPieceDiv)
         },
