@@ -51,7 +51,6 @@ export const boardControllerFactory = () => {
             document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
         },
         createCity(cityInformation) {
-            // dev
             const { name, spotArray, unlock, location, freePoint } = cityInformation;
             const cityDiv = document.createElement('button');
             cityDiv.className = 'city'
@@ -119,7 +118,6 @@ export const boardControllerFactory = () => {
             }
         },
         createRouteAndTokenFromLocations(routeProperties) {
-            // dev
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
             let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
     

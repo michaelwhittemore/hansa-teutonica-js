@@ -13,7 +13,6 @@ export const startWebSocketServer = (socketServer, waitingRoomMockDB, gameRoomMo
         gameWebSocketController(ws, waitingRoomMockDB, gameRoomToSocketMap, gameRoomMockDB)
         break;
       case '/healthCheck':
-        // dev
         // todo - this should have it's own file where I can send in messages and get responses
         ws.send('This is a healthy, successful connection.')
         break;

@@ -82,7 +82,8 @@
 
 .board {
     border: dashed;
-    border-color: aqua;
+    background-color: bisque;
+    border-color: chocolate;
     overflow: scroll;
     width: 100%;
     height: 650px;

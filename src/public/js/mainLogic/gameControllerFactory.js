@@ -1479,7 +1479,6 @@ export const gameControllerFactory = () => {
             }
         },
         endGame() {
-            // dev
             // I'm 90% sure that this is a feature that should be pretty much equivalent on hotseat and online
             // I think I can manually trigger it and log the values to the console. 
             // Maybe for each player we have a 'breakdown object'?? (probably uncessary - just use const for each)
@@ -1494,7 +1493,6 @@ export const gameControllerFactory = () => {
                 6. network - this will be the hardest by far. Need to find each network and see which one is largest.
                 Then sum all the trading posts in the network then multiply by the key value
             */
-            // TODO
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
             // Will need to break this into a map. Or maybe just give them a 'totalScoreField' and then sort?
             this.playerArray.forEach(player => {
@@ -1504,9 +1502,6 @@ export const gameControllerFactory = () => {
             
         },
         calculateTotalScore(player) {
-            // console.warn('calculating score for', player.name)
-            // console.log('calculating score for player', player)
-            // dev
             /*
                 4. Coellen (needs to be implemented)
                 6. network - 

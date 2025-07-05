@@ -23,49 +23,13 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/06
-    * My biggest blocker on new cities is the scrolling issue
-        * I think the issue with scrolling is that the elements are positioned `absolute` which removes them from the normal flow of the document
-        * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
     * Now applying the transform logic to the gameboard 
         * boardControllerFactory.js is where the logic lives
-            1. ~~Find all instances of `position: absolute;` - anything that isn't the collapse button should switch to relative~~
-            2. ~~I think these are cities, route nodes, and tokens~~
-            3. ~~Now I need to start with cities. I think I'll create a new helper file for translation (I can delete it later). I should see where I get the coordinates ~~
-            4. ~~It seems that in `createCity` we get the location coordinates~~
-            5. ~~Now let's find the `style left` part and replace it with the transform~~
-            6.  ~~Route nodes, this uses the helpers - may need to remove the offset~~
-            7. **HERE!!** Tokens (both used and unused) - `createBoardTokenHolder`
-                * BUG! I'm seeing some NaN values in `console.log(xTarget, yTarget)`
-                * looks like it's only for the tokens, I wonder if there was an expected offset somewhere
-                * may need to trace where 'createBoardTokenHolder' was called
-                * will need to compare to the old value (again need to commit and then checkout)
-                * before I do that let's see if I can figure out why we get NaN - seems that location is undefined 
-                * pretty sure it's line 159
-                * looks like it's always line 233 in createBoardTokenHolder
-                * found it! I was trying to desctructure from a single expression!
 
-            6. After all the nodes and tokens are done I'd like to style the board like I do in the test files
-            7. Will also need to delete a lot of unused position helpers - actually maybe it was just the offset? 
+            6. **HERE!!** After all the nodes and tokens are done I'd like to style the board like I do in the test files
             8. Should shrink the cities and their inner pieces a little
             9. Don't forget to delete the test folder
-        * Hmmm. Is it possible I'm applying an old transform to location prior to passing it to `createCity`?
-        * oooooh. I think I need to do the transform *AFTER* the city has been appended?
-            * Yep! This was it!
 
-
-
-        * maybe transform?? - look into `transform:translate`
-            * I think this works!
-            * I think I want them all the have the same starting position. Maybe change the display for the container?
-                * Before we go any further, I should verify that overflow works correctly
-                * Oh! Maybe I can get the element's location and use that for the transform?? I think I did something like that earlier
-                * `getBoundingClientRect` I think it was
-                * I do worry my math will run into the same issues as before - namely that the center is not the coordinate, instead it's a shift
-                * will definitely need to write some math with a target destination
-            * This will require removing a lot of my current logic, but may ultimately make things easier
-            * Let's just start manipulating directly via dev tools
-            * eventually it would be nice to maybe rotate the route nodes as well?
-            * maybe even use a fresh page - 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
     * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
 
