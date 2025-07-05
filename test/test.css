@@ -1,0 +1,18 @@
+#testWrapper{
+    background-color: antiquewhite;
+    width: 500px;
+    height: 500px;
+    overflow: hidden;
+
+}
+
+.testCity{
+    background-color: blue;
+    width: 50px;
+    height: 50px;
+}
+
+#city3{
+    background-color: red;
+    transform: translate(600px, 0);
+}

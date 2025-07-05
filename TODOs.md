@@ -28,11 +28,20 @@ Note that the above links use the test data that gets populated on the server in
         * Note that .collapseButton is absolutely positioned, but positioned using `right` and `top` while the cities use 
         * Also note that position:relative is positioned relative to its *normal* position. I don't think I understood this, it's not relative to its parent
         * Is it possible this is worth a reddit post??
-        * I think using 'relative' and repositioning is my best approach??
+        * I think using 'relative' and repositioning is my best approach?? - (repositon using translate)
+        * It's also possible that maybe I can use an i-frame?? This might create another issue given that I want to manipulate all the buttons inside
         * maybe transform?? - look into `transform:translate`
-            * **HERE!!** 
+            * I think this works!
+            * **HERE!!** I think I want them all the have the same starting position. Maybe change the display for the container?
+                * Before we go any further, I should verify that overflow works correctly
+                * Oh! Maybe I can get the element's location and use that for the transform?? I think I did something like that earlier
+                * `getBoundingClientRect` I think it was
+                * I do worry my math will run into the same issues as before - namely that the center is not the coordinate, instead it's a shift
+                * will definitely need to write some math with a target destination
             * This will require removing a lot of my current logic, but may ultimately make things easier
-            * Let's just start manipulatinbg directly via dev tools
+            * Let's just start manipulating directly via dev tools
+            * eventually it would be nice to maybe rotate the route nodes as well?
+            * maybe even use a fresh page - 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
     * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
 
