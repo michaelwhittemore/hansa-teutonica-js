@@ -31,7 +31,7 @@ const start = () => {
     // Will need to use the overflow tag
     // https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate
 
-    // here! - my next step is to create a method to take in the coordinates and apply that to
+    // my next step is to create a method to take in the coordinates and apply that to
     // a transform function - I should also offset the innerWrapper to simulate what actually will happen
 
     // it's not an issue with scroll, it's an issue with my function - I think it doesn't play nice with a pre-transofrm

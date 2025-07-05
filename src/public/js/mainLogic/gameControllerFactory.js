@@ -1555,11 +1555,6 @@ export const gameControllerFactory = () => {
                     abilityPoints += 4;
                 }
             })
-            // let's test using the 'unlock' method in the gameController `performUnlock`
-            // logicBundle.gameController.playerArray[0]
-            // logicBundle.gameController.performUnlock(logicBundle.gameController.playerArray[0], 'purse')
-            // logicBundle.gameController.endGame()
-            // here!
 
             // Now let's do each controlled city. We should use `calculateControllingPlayer` 
             // iterate over cityStorageObject
@@ -1571,7 +1566,7 @@ export const gameControllerFactory = () => {
             }
             // Will eventually need to create the modal, but I think that could be done either here or in 
             // the parent 'end game' function. Also remember how tiebreakers work
-            // I guess we need to decide if this returns an object? I'm temnpted to say so. 
+            // I guess we need to decide if this returns an object? I'm tempted to say so. 
             const playerPointObject = {
                 prestigePoints,
                 tokenPoints,

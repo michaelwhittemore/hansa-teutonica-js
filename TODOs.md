@@ -33,11 +33,21 @@ Note that the above links use the test data that gets populated on the server in
             3. ~~Now I need to start with cities. I think I'll create a new helper file for translation (I can delete it later). I should see where I get the coordinates ~~
             4. ~~It seems that in `createCity` we get the location coordinates~~
             5. ~~Now let's find the `style left` part and replace it with the transform~~
-            6. **HERE!!** Route nodes, this uses the helpers - may need to remove the offset
-                * offSetCoordinatesForGameBoard is I think what we will need to remove (let's see what happens if I change it to a noop)
+            6.  ~~Route nodes, this uses the helpers - may need to remove the offset~~
+            7. **HERE!!** Tokens (both used and unused) - `createBoardTokenHolder`
+                * BUG! I'm seeing some NaN values in `console.log(xTarget, yTarget)`
+                * looks like it's only for the tokens, I wonder if there was an expected offset somewhere
+                * may need to trace where 'createBoardTokenHolder' was called
+                * will need to compare to the old value (again need to commit and then checkout)
+                * before I do that let's see if I can figure out why we get NaN - seems that location is undefined 
+                * pretty sure it's line 159
+                * looks like it's always line 233 in createBoardTokenHolder
+                * found it! I was trying to desctructure from a single expression!
+ 
 
             6. After all the nodes and tokens are done I'd like to style the board like I do in the test files
-            7. Will also need to delete a lot of unused position helpers
+            7. Will also need to delete a lot of unused position helpers - actually maybe it was just the offset? 
+            8. Should shrink the cities and their inner pieces a little
         * Hmmm. Is it possible I'm applying an old transform to location prior to passing it to `createCity`?
         * oooooh. I think I need to do the transform *AFTER* the city has been appended?
             * Yep! This was it!

@@ -10,10 +10,16 @@ const translateElement = (myElement, x, y) => {
     const currentBounds = myElement.getBoundingClientRect()
     const xTarget = x - currentBounds.x
     const yTarget = y - currentBounds.y
-    console.log(xTarget, yTarget)
-    myElement.style.transform = ` translate(${xTarget}px, ${yTarget}px)`
+    if (Number.isNaN(xTarget) || Number.isNaN(yTarget)){
+        // here!
+        // debugger;
+        console.error('NaN detected!', xTarget, yTarget)
+        // I don't think this function is bugged, I think we passed in a NaN value
+        console.log(x,y)
+    }
+    myElement.style.transform = `translate(${xTarget}px, ${yTarget}px`
     
-    console.log(myElement.getBoundingClientRect())
+    // console.log(myElement.getBoundingClientRect())
 }
 
 export const boardControllerFactory = () => {
@@ -150,19 +156,25 @@ export const boardControllerFactory = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
                 }
     
-                let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
+                // here!
+                const arr = [startX + (xIncrement * (i + 1)),
                     startY + (yIncrement * (i + 1))]
-    
+                console.log('arr', arr)
+                let [xCoordinate, yCoordinate] = arr
+                console.log(xCoordinate, yCoordinate)
+                // let xCoordinate, yCoordinate
                 let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
     
                 // routeNode.style.left = x + 'px';
                 // routeNode.style.top = y + 'px';
     
                 this.board.append(routeNode)
+                // dev
                 translateElement(routeNode, x, y)
             }
-            let [xToken, yToken] = [(startX + (xDelta / 2),
-                startY + (yDelta / 2))];
+            let [xToken, yToken] = [startX + (xDelta / 2),
+                startY + (yDelta / 2)];
+                console.log()
             this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
         },
         clearTokenFromRouteAndHide(routeId) {
@@ -213,13 +225,17 @@ export const boardControllerFactory = () => {
             pieceTwo.style.backgroundColor = color1;
         },
         createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
+            // debugger;
+            // dev
             const TOKEN_DISTANCE = 120
             const TOKEN_SIZE = 55
             // These should *NOT* need a click handler - actually will need one when re-adding tokens
             // I think this should be called by createRouteAndTokenFromLocations
             const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
+            console.log(location[1] + (direction[1] * TOKEN_DISTANCE))
             const [x, y] = offSetCoordinatesForSize(location[0] + (direction[0] * TOKEN_DISTANCE),
                 location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
+            console.warn(location)
             tokenDiv.style.left = x + 'px';
             tokenDiv.style.top = y + 'px';
             if (isStartingToken) {
@@ -231,6 +247,9 @@ export const boardControllerFactory = () => {
                 logicBundle.inputHandlers.tokenLocationClickHandler(routeId)
             }
             this.board.append(tokenDiv)
+            // here! 
+            // dev
+            translateElement(tokenDiv, x, y)
             // I'm gonna be super hacky and just use an offset map. 
             // TODO fix this filth to use inverse slope and fixed distances (will still need a binary direction)
         },

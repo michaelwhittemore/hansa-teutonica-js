@@ -38,7 +38,14 @@ export const getRouteIdFromNodeId = (nodeId) => {
     return nodeId.slice(0, nodeId.lastIndexOf('-'));
 }
 export const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
+    console.log('params', x,y,height,width)
+    if (Number.isNaN(y)){
+        console.error('NANANANA')
+        // debugger
+    }
+    // dev
     // This function will center an object instead of placing it with the top left at (x,y)
+    console.log('offset for size', [x - (width / 2), y - (height / 2)])
     return ([x - (width / 2), y - (height / 2)]);
 }
 
