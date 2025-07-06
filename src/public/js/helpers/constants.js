@@ -49,16 +49,18 @@ export const TEST_BOARD_CONFIG_CITIES = {
         freePoint: true,
         unlock: 'maxMovement',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [30, 390],
+        location: [30, 370],
         neighborRoutes: [['Coellen', 3]],
     },
     'Coellen': {
         name: 'Coellen',
         freePoint: true,
         spotArray: [['square', 'grey']],
-        location: [30, 650],
+        location: [30, 630],
     },
 };
+
+export const COELLEN_SPECIAL_LOCATION = [170, 630]
 
 // I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
@@ -71,7 +73,7 @@ export const TOKEN_CONFIG_BY_ROUTES = {
     'Gamma-Delta': [-.6, -.6],
     'Gamma-Zeta': [0, -.6],
     'Delta-Epsilon': [-.7, .1],
-    'Zeta-Coellen': [1,1, true]
+    'Zeta-Coellen': [.5, 0,],
 }
 
 export const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']

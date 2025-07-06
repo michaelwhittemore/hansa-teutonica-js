@@ -3,7 +3,7 @@ import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import {
     FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_CONFIG_BY_ROUTES,
-    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS,
+    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION
 } from "../helpers/constants.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray } from "../helpers/helpers.js";
 import {
@@ -117,7 +117,7 @@ export const gameControllerFactory = () => {
                         const routeId = `${city.name}-${neighborCityName}`
 
                         let tokenValue = false;
-                        if (!TOKEN_CONFIG_BY_ROUTES[routeId]){
+                        if (!TOKEN_CONFIG_BY_ROUTES[routeId]) {
                             console.error(`${routeId} doesn't exist in TOKEN_CONFIG_BY_ROUTES`)
                         }
                         if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
@@ -163,6 +163,8 @@ export const gameControllerFactory = () => {
                     })
                 }
             })
+            // dev 
+            logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
         },
         getActivePlayer() {
             // This works because we're using the index of the player
@@ -1502,7 +1504,7 @@ export const gameControllerFactory = () => {
                 player.playerPointObject = this.calculateTotalScore(player)
                 console.warn(this.calculateTotalScore(player))
             })
-            
+
         },
         calculateTotalScore(player) {
             /*
@@ -1558,7 +1560,7 @@ export const gameControllerFactory = () => {
             // iterate over cityStorageObject
             for (const city of Object.values(this.cityStorageObject)) {
                 const controllingPlayer = this.calculateControllingPlayer(city)
-                if (controllingPlayer && controllingPlayer.id === player.id){
+                if (controllingPlayer && controllingPlayer.id === player.id) {
                     controlledCityPoints += 2;
                 }
             }
@@ -1572,7 +1574,7 @@ export const gameControllerFactory = () => {
                 coellenPoints,
                 controlledCityPoints,
                 networkPoints,
-                totalPoints: prestigePoints + tokenPoints + abilityPoints 
+                totalPoints: prestigePoints + tokenPoints + abilityPoints
                     + coellenPoints + controlledCityPoints + networkPoints,
             }
             return playerPointObject

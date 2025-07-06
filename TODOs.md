@@ -24,10 +24,17 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/06        
     * **Here!** Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
-        * maybe directly below zeta - also shift zeta up a little
-            * need TOKEN_CONFIG_BY_ROUTES to be adjusted
-            * could be worth re-adding the dots in the center of the route for identifying the token location
-        * might be worth creating a `boardMap` file instead of having it in constants
+
+    1. I guess I'll just have it be a big, off-yellow square. I'll use similar components to the city
+        * I'd like it to be sort of rounded corners
+        * give it a nice, golden border
+        * gothic font of some kind
+        * use a min-height/width I think
+        * maybe need to follow city and cityPieceArea
+        * Might make sense to expand the board while working on it, then shrink it back
+    2. Then when I attach an on-click listener to each of those 
+    3. then implement the gameController method
+    4. Then test endgame points
 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
     * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
@@ -47,6 +54,13 @@ Note that the above links use the test data that gets populated on the server in
         * Backend on node running on GCR
         * Minimal modules
         * docker setup instructions
+    
+---------------------
+* # UI Thoughts
+    * perhaps we use a thicker font for city names, and less thick for unlocks
+    * cities change boarder color based on owner
+    * switch to something slightly gothic or cursive. Unfortunately, the default cursive is kinda garish
+    * add a hover effect similar to what we have in the color selector
 
 ----------------------
 * Broader list

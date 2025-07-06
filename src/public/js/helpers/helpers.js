@@ -292,7 +292,7 @@ export const addGitHubLink = () => {
 }
 
 // TEST, DELETE THIS TODO
-const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
+export const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
     testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
 
@@ -307,5 +307,22 @@ const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     }
     document.getElementById('gameBoard').append(testElement)
 
+    return testElement
+}
+
+export const addPixelAtLocationViaTransform = (x, y, isBig = false, color, id = undefined) => {
+    const testElement = document.createElement('div')
+    testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
+
+    testElement.id = 'TEST';
+    if (id) {
+        testElement.id = id
+    }
+
+    if (color) {
+        testElement.style.backgroundColor = color
+    }
+    document.getElementById('gameBoard').append(testElement)
+    translateElement(testElement, x, y)
     return testElement
 }

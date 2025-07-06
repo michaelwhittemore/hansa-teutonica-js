@@ -26,7 +26,7 @@
     justify-content: center;
 }
 
-.freePoint{
+.freePoint {
     background-color: goldenrod;
     text-shadow: 1px 1px 2px black;
     color: whitesmoke;
@@ -141,9 +141,17 @@
 
 .gameLog {
     /* overflow: scroll; */
-    overflow:auto;
+    overflow: auto;
     height: 200px;
     border: solid;
+}
+
+#coellenSpecialArea {
+    border-radius: 30px;
+    height: 100px;
+    width: 200px;
+    background-color: yellow;
+    font-size: 13px;
 }
 
 /* Player Info Board and Components */
@@ -388,7 +396,7 @@
     margin: 1px
 }
 
-.square{
+.square {
     margin: 1px;
 }
 

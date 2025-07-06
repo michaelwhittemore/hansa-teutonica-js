@@ -1,18 +1,18 @@
 import { logicBundle } from "../helpers/logicBundle.js";
-import { createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement
-    } from "../helpers/helpers.js";
+import {
+    createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
+} from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 
 export const boardControllerFactory = () => {
     const boardController = {
-        // Will probably need to load this in from a file, 
         initializeUI(playerArray) {
             this.board = document.getElementById('gameBoard');
             this.board.innerHTML = ''
             this.initializePointTracker(20, playerArray);
             this.pointTrackerInfo = []
             // The rest of the building is done by the game controller as it loads the board data
-    
+
             const collapseButton = document.createElement('button');
             collapseButton.innerText = 'Collapse Board';
             collapseButton.className = 'collapseButton';
@@ -62,14 +62,14 @@ export const boardControllerFactory = () => {
             }
             const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
             cityDiv.append(cityPieceAreaDiv)
-    
+
             cityPieceAreaDiv.append(this.createCityBonusSpotArea(name))
             for (let i = 0; i < spotArray.length; i++) {
                 const spotNumber = i;
                 const spotInfo = spotArray[i]
                 const citySpotDiv = createDivWithClassAndIdAndStyle([spotInfo[0], 'worker-holder', 'cityPieceHolder'],
                     `${name}-${i}`, { backgroundColor: spotInfo[1] });
-    
+
                 citySpotDiv.onclick = (event) => {
                     // We prevent the event from also bubbling up to the city click handler
                     event.stopPropagation();
@@ -77,13 +77,13 @@ export const boardControllerFactory = () => {
                 };
                 if (i === 0 && freePoint) {
                     const freePointDiv = createDivWithClassAndIdAndStyle(['freePoint', 'circle', 'small-worker',
-                         'centeredFlex'], `freePoint-${name}`);
+                        'centeredFlex'], `freePoint-${name}`);
                     freePointDiv.innerText = '1'
                     citySpotDiv.append(freePointDiv)
                 }
                 cityPieceAreaDiv.append(citySpotDiv)
             }
-            
+
             cityDiv.onclick = () => {
                 logicBundle.inputHandlers.cityClickHandler(name)
             }
@@ -108,11 +108,11 @@ export const boardControllerFactory = () => {
                 bonusBox.innerText = ''
                 size = 35;
             }
-    
+
             // HTMLCollection do not have iterable methods
             bonusBox.append(bonusPiece)
             const allPieces = document.getElementsByClassName(`bonus-piece-${city.cityName}`)
-    
+
             for (let i = 0; i < allPieces.length; i++) {
                 allPieces[i].style.height = size + 'px'
                 allPieces[i].style.width = size + 'px'
@@ -121,12 +121,12 @@ export const boardControllerFactory = () => {
         createRouteAndTokenFromLocations(routeProperties) {
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
             let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
-    
+
             const xDelta = endX - startX;
             const yDelta = endY - startY
             const xIncrement = xDelta / (length + 1)
             const yIncrement = yDelta / (length + 1)
-    
+
             for (let i = 0; i < length; i++) {
                 // const routeNode = document.createElement('button');
                 // routeNode.classList.add('routeNode', 'worker-holder');
@@ -139,15 +139,15 @@ export const boardControllerFactory = () => {
                 }
 
                 let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
-                    startY + (yIncrement * (i + 1))]
+                startY + (yIncrement * (i + 1))]
 
                 let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
-    
+
                 this.board.append(routeNode)
                 translateElement(routeNode, x, y)
             }
             let [xToken, yToken] = [startX + (xDelta / 2),
-                startY + (yDelta / 2)];
+            startY + (yDelta / 2)];
             this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
         },
         clearTokenFromRouteAndHide(routeId) {
@@ -170,7 +170,7 @@ export const boardControllerFactory = () => {
         addPieceToRouteNode(nodeId, playerColor, shape) {
             this.clearPieceFromRouteNode(nodeId);
             const routeNode = document.getElementById(nodeId);
-            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker',shape], '',
+            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', shape], '',
                 { backgroundColor: playerColor })
             routeNode.append(playerPieceDiv)
         },
@@ -184,7 +184,7 @@ export const boardControllerFactory = () => {
             if (document.getElementById(`freePoint-${city.cityName}`)) {
                 document.getElementById(`freePoint-${city.cityName}`).remove();
             }
-    
+
             const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', targetShape], `piece-${city.cityName}-${city.openSpotIndex}`,
                 { backgroundColor: playerColor })
             pieceHolder.append(playerPieceDiv)
@@ -198,13 +198,15 @@ export const boardControllerFactory = () => {
             pieceTwo.style.backgroundColor = color1;
         },
         createBoardTokenHolder(location, routeId, direction, isStartingToken, tokenValue) {
+            // addPixelAtLocationViaTransform(location[0], location[1], true) // This is useful for future 
+            // cities, let's not delete it
             const TOKEN_DISTANCE = 120
             const TOKEN_SIZE = 55
 
             const tokenDiv = createDivWithClassAndIdAndStyle(['onBoardToken', 'circle'], `token-${routeId}`)
             const [x, y] = offSetCoordinatesForSize(location[0] + (direction[0] * TOKEN_DISTANCE),
                 location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
-            
+
             if (isStartingToken) {
                 tokenDiv.style.visibility = 'visible'
                 tokenDiv.style.backgroundColor = '#FFC000'
@@ -218,6 +220,30 @@ export const boardControllerFactory = () => {
             translateElement(tokenDiv, x, y)
             // I'm gonna be super hacky and just use an offset map. 
             // TODO fix this filth to use inverse slope and fixed distances (will still need a binary direction)
+        },
+        createCoellenSpecialArea(location) {
+            // here!
+            const coellenSpecialAreaDiv = createDivWithClassAndIdAndStyle(['centeredFlex', 'city'], 'coellenSpecialArea')
+            const textBanner = createDivWithClassAndIdAndStyle(['banner'])
+            textBanner.innerText = 'Coellen-Warburg Special Points'
+            const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
+
+            coellenSpecialAreaDiv.append(textBanner, circleHolder) 
+            const colors = ['grey', 'orange', 'purple', 'black']
+            for (const [index, color] of colors.entries()) {
+                const citySpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'cityPieceHolder'],
+                    `coellenBonus-${index}`, { backgroundColor: color })
+                circleHolder.append(citySpotDiv)
+            }
+
+            // colors.forEach(color => {
+            //     const citySpotDiv = createDivWithClassAndIdAndStyle([spotInfo[0], 'worker-holder', 'cityPieceHolder'],
+            //         `${name}-${i}`, { backgroundColor: spotInfo[1] })
+            // })
+
+
+            document.getElementById('gameBoard').append(coellenSpecialAreaDiv)
+            translateElement(coellenSpecialAreaDiv, location[0], location[1])
         },
     }
     logicBundle.boardController = boardController;
