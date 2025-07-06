@@ -237,8 +237,7 @@ export const boardControllerFactory = () => {
                 const specialPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `specialPointDiv-${index}`);
                 specialPointDiv.innerText = pointValue;
                 specialSpotDiv.append(specialPointDiv)
-                // here! need to add the number 
-                // will need a helper to add piece to the area, and also clear the number
+                
                 specialSpotDiv.onclick = () => {
                     console.warn('You clicked on, DELETE THIS ', color, pointValue)
                     logicBundle.inputHandlers.coellenSpecialAreaClickHandler(index)

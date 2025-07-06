@@ -73,6 +73,7 @@ export const gameControllerFactory = () => {
 
             this.routeStorageObject = {}
             this.cityStorageObject = {};
+            this.coellenSpecialAreaObject = {};
             this.moveInformation = {};
             this.bumpInformation = {};
             this.tokenPlacementInformation = {};
@@ -335,8 +336,6 @@ export const gameControllerFactory = () => {
             }
         },
         handleCoellenSpecialAreaClick(spotNumber, playerId, isOnlineAction = false) {
-            console.log('in game controller', spotNumber)
-
             // dev
             // need to get the point value and check the color and if it's occupied. Will probably need a 
             // new storage object - I'm gonna need to check basically every where we use 
@@ -358,10 +357,27 @@ export const gameControllerFactory = () => {
             Then we call resolve action
             We will also need to account for online actions
             */
-           // here!
+            // here!
+            // let's find all instances of routeStorageObject - ok we did that, but should still initalize it,
+            // actually I think it should only get populated when a player captures it
+            // something like spotNumber : {pointValue, playerOwnerId}
+            const pointValue = COELLEN_SPECIAL_POINTS[spotNumber];
+            const requiredColor = COELLEN_SPECIAL_COLORS[spotNumber];
+            console.log('clicked', spotNumber, pointValue, requiredColor)// DELETE THIS
 
+            if (this.coellenSpecialAreaObject[spotNumber]){
+                console.warn(`The ${pointValue} spot is already occupied.`)
+                logicBundle.inputHandlers.clearAllActionSelection();
+                logicBundle.inputHandlers.warnInvalidAction(`The ${pointValue} spot is already occupied.`)
+                return;
+            } 
+            if(!player.unlockedColors.includes(requiredColor)){
+                console.warn(`You haven't unlocked ${requiredColor}.`)
+                logicBundle.inputHandlers.clearAllActionSelection();
+                logicBundle.inputHandlers.warnInvalidAction(`You haven't unlocked ${requiredColor}.`)
+                return
+            }
 
-           
 
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
@@ -1642,12 +1658,14 @@ export const gameControllerFactory = () => {
             window.localStorage.setItem('playerArray', JSON.stringify(this.playerArray))
             window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
             window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
+            window.localStorage.setItem('coellenSpecialAreaObject', JSON.stringify(this.coellenSpecialAreaObject))
         },
         loadGame() {
             this.playerArray = JSON.parse(window.localStorage.getItem('playerArray'));
             this.initializeCitiesAndState();
             this.cityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'));
             this.routeStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'));
+            this.coellenSpecialAreaObject = JSON.parse(window.localStorage.getItem('coellenSpecialAreaObject'));
             this.regularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'));
             this.currentTurn = window.localStorage.getItem('currentTurn');
             // Point tracker
@@ -1684,6 +1702,13 @@ export const gameControllerFactory = () => {
                     }
                 })
             })
+            // here!
+            // TODO LOAD IN coellenSpecialAreaObject
+            Object.keys(this.coellenSpecialAreaObject).forEach( key =>{
+                // dev
+            })
+
+
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             if (logicBundle.sessionInfo.isHotseatMode) {
