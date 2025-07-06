@@ -49,10 +49,30 @@ export const TEST_BOARD_CONFIG_CITIES = {
         freePoint: true,
         unlock: 'maxMovement',
         spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [30, 450],
+        location: [30, 390],
+        neighborRoutes: [['Coellen', 3]],
     },
-
+    'Coellen': {
+        name: 'Coellen',
+        freePoint: true,
+        spotArray: [['square', 'grey']],
+        location: [30, 650],
+    },
 };
+
+// I don't think it makes sense to tie these to cities
+// Each indicates which direction we're going and if one is a starting location
+// They start off hidden unless they're starting
+// array has x-direction, y-direction, isStarting
+export const TOKEN_CONFIG_BY_ROUTES = {
+    'Alpha-Beta': [0, .6, true],
+    'Alpha-Zeta': [.6, 0, true],
+    'Beta-Gamma': [.5, -.5, true],
+    'Gamma-Delta': [-.6, -.6],
+    'Gamma-Zeta': [0, -.6],
+    'Delta-Epsilon': [-.7, .1],
+    'Zeta-Coellen': [1,1, true]
+}
 
 export const STARTING_TOKENS = ['bonusPost', 'moveThree', 'switchPost']
 export const REGULAR_TOKENS = [
@@ -89,19 +109,6 @@ export const REGULAR_TOKENS_NUMBER_MAP = {
     'freeUpgrade': 2,
     'threeActions': 2,
     'fourActions': 2,
-}
-
-// I don't think it makes sense to tie these to cities
-// Each indicates which direction we're going and if one is a starting location
-// They start off hidden unless they're starting
-// array has x-direction, y-direction, isStarting
-export const TOKEN_CONFIG_BY_ROUTES = {
-    'Alpha-Beta': [0, .6, true],
-    'Alpha-Zeta': [.6, 0, true],
-    'Beta-Gamma': [.5, -.5, true],
-    'Gamma-Delta': [-.6, -.6],
-    'Gamma-Zeta': [0, -.6],
-    'Delta-Epsilon': [-.7, .1],
 }
 
 export const TOKEN_READABLE_NAMES = {

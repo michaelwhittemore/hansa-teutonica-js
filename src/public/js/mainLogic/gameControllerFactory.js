@@ -117,6 +117,9 @@ export const gameControllerFactory = () => {
                         const routeId = `${city.name}-${neighborCityName}`
 
                         let tokenValue = false;
+                        if (!TOKEN_CONFIG_BY_ROUTES[routeId]){
+                            console.error(`${routeId} doesn't exist in TOKEN_CONFIG_BY_ROUTES`)
+                        }
                         if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
                             tokenValue = startingTokensArray.pop()
                         }

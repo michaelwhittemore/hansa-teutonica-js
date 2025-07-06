@@ -22,19 +22,12 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/06
-    * Before updating the board further, I'd like to clean up the visual experience a little. Let's shrink the big-circle/big-square classes.
-        * maybe route node and city inner pieces should share the same class?
-        * Still need to fix: 
-            1. bonus box (looks like it uses hardcoded sizes)
-                * `addBonusPieceToCity` - we hard code the value with style. Let's change the values and see what works
-            2. ~~inner city pieces (when filled) - instead of cityPiece maybe use small-circle/small-square~~
-            3. ~~bonus point coin~~
-            4. ~~still need to fix the squished circle issue~~
-            5. ~~Maybe switch to 35x35, works for the coin ~~
-~~
-        
-
+* 7/06        
+    * **Here!** Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
+        * maybe directly below zeta - also shift zeta up a little
+            * need TOKEN_CONFIG_BY_ROUTES to be adjusted
+            * could be worth re-adding the dots in the center of the route for identifying the token location
+        * might be worth creating a `boardMap` file instead of having it in constants
 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
     * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
@@ -49,6 +42,11 @@ Note that the above links use the test data that gets populated on the server in
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
     * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called i think or the switch-piece token)
+
+    * *Notes For the README*:
+        * Backend on node running on GCR
+        * Minimal modules
+        * docker setup instructions
 
 ----------------------
 * Broader list
