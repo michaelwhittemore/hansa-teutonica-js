@@ -222,29 +222,34 @@ export const boardControllerFactory = () => {
             // TODO fix this filth to use inverse slope and fixed distances (will still need a binary direction)
         },
         createCoellenSpecialArea(location) {
-            // here!
+            // dev
             const coellenSpecialAreaDiv = createDivWithClassAndIdAndStyle(['centeredFlex', 'city'], 'coellenSpecialArea')
             const textBanner = createDivWithClassAndIdAndStyle(['banner'])
             textBanner.innerText = 'Coellen-Warburg Special Points'
             const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
 
             coellenSpecialAreaDiv.append(textBanner, circleHolder) 
+            const points =  [7, 8, 9, 11]
             const colors = ['grey', 'orange', 'purple', 'black']
             for (const [index, color] of colors.entries()) {
-                const citySpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'cityPieceHolder'],
-                    `coellenBonus-${index}`, { backgroundColor: color })
-                circleHolder.append(citySpotDiv)
+                const pointValue = points[index]
+                const specialSpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'cityPieceHolder'],
+                    `coellenBonus-${index}`, { backgroundColor: color });
+                const specialPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `specialPointDiv-${pointValue}`);
+                specialPointDiv.innerText = pointValue;
+                specialSpotDiv.append(specialPointDiv)
+                // here! need to add the number 
+                // will need a helper to add piece to the area, and also clear the number
+                specialSpotDiv.onclick = () => {
+                    console.warn('You clicked on, DELETE THIS ', color, pointValue)
+                }
+                circleHolder.append(specialSpotDiv)
             }
-
-            // colors.forEach(color => {
-            //     const citySpotDiv = createDivWithClassAndIdAndStyle([spotInfo[0], 'worker-holder', 'cityPieceHolder'],
-            //         `${name}-${i}`, { backgroundColor: spotInfo[1] })
-            // })
-
 
             document.getElementById('gameBoard').append(coellenSpecialAreaDiv)
             translateElement(coellenSpecialAreaDiv, location[0], location[1])
         },
+        
     }
     logicBundle.boardController = boardController;
     return boardController;

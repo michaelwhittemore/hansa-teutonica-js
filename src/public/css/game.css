@@ -147,11 +147,18 @@
 }
 
 #coellenSpecialArea {
+    justify-content: space-evenly;
     border-radius: 30px;
-    height: 100px;
+    height: 85px;
     width: 200px;
     background-color: yellow;
     font-size: 13px;
+}
+
+.coellenPoint{
+    text-shadow: 1px 1px 2px chocolate;
+    color: whitesmoke;
+    font-size: 275%;
 }
 
 /* Player Info Board and Components */
@@ -163,7 +170,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    /* will get ride of height and width eventually */
+    /* will get rid of height and width eventually */
 }
 
 .playerInfoBoardBanner {

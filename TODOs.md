@@ -23,17 +23,16 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/06        
-    * **Here!** Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
+    *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
+    * Might make sense to expand the board while working on it, then shrink it back
 
-    1. I guess I'll just have it be a big, off-yellow square. I'll use similar components to the city
-        * I'd like it to be sort of rounded corners
-        * give it a nice, golden border
-        * gothic font of some kind
-        * use a min-height/width I think
-        * maybe need to follow city and cityPieceArea
-        * Might make sense to expand the board while working on it, then shrink it back
-    2. Then when I attach an on-click listener to each of those 
+    1. ~~I guess I'll just have it be a big, off-yellow square. I'll use similar components to the city~~
+    1. Need to add the point values inside! Maybe the same as the coins??
+    2. **Here!** Then when I attach an on-click listener to each of those 
+        * look to the city example - i think it's input handler or game controller
+
     3. then implement the gameController method
+         * Will need to verify route, color, and circle 
     4. Then test endgame points
 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
