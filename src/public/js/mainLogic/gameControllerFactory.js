@@ -356,9 +356,11 @@ export const gameControllerFactory = () => {
             One all those are done we update board
             Then we call resolve action
             We will also need to account for online actions
+            Make sure to return all unsused pieces to the player
+            And clear the route nodes. In general I think we already have helpers for these -`routeCompleted`
+            We will also need to gameLog the action
             */
-            // here!
-            // let's find all instances of routeStorageObject - ok we did that, but should still initalize it,
+            // let's find all instances of routeStorageObject - ok we did that, but should still initialize it,
             // actually I think it should only get populated when a player captures it
             // something like spotNumber : {pointValue, playerOwnerId}
             const pointValue = COELLEN_SPECIAL_POINTS[spotNumber];
@@ -377,7 +379,21 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction(`You haven't unlocked ${requiredColor}.`)
                 return
             }
-
+            const routeCheckOutcome = this.checkIfPlayerControlsARoute(playerId, 'Coellen')
+            if (!routeCheckOutcome) {
+                console.warn('You do not have a completed route to Coellen.')
+                logicBundle.inputHandlers.clearAllActionSelection();
+                logicBundle.inputHandlers.warnInvalidAction('You do not have a completed route to Coellen.');
+                return;
+            };
+            if (routeCheckOutcome.circle === 0){
+                console.warn('You do not have a merchant (circle) in this route.')
+                logicBundle.inputHandlers.clearAllActionSelection();
+                logicBundle.inputHandlers.warnInvalidAction('You do not have a merchant (circle) in this route.');
+                return;
+            }
+            // here!
+            console.log('reached happy path')
 
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
