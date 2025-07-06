@@ -249,8 +249,10 @@ export const inputHandlerFactory = () => {
                 return
             }
             logicBundle.gameController.replaceTokenAtLocation(routeId);
-            // TODO will need to get playerId from the input handler in the case of online play
-
+        },
+        coellenSpecialAreaClickHandler(spotNumber){
+            // dev
+            logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber)
         },
         routeNodeClickHandler(nodeId) {
             switch (inputHandlers.selectedAction) {

@@ -2,7 +2,7 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import {
     createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
 } from "../helpers/helpers.js";
-import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
+import { TOKEN_READABLE_NAMES, COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/constants.js";
 
 export const boardControllerFactory = () => {
     const boardController = {
@@ -229,19 +229,19 @@ export const boardControllerFactory = () => {
             const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
 
             coellenSpecialAreaDiv.append(textBanner, circleHolder) 
-            const points =  [7, 8, 9, 11]
-            const colors = ['grey', 'orange', 'purple', 'black']
-            for (const [index, color] of colors.entries()) {
-                const pointValue = points[index]
+
+            for (const [index, color] of COELLEN_SPECIAL_COLORS.entries()) {
+                const pointValue = COELLEN_SPECIAL_POINTS[index]
                 const specialSpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'cityPieceHolder'],
                     `coellenBonus-${index}`, { backgroundColor: color });
-                const specialPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `specialPointDiv-${pointValue}`);
+                const specialPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `specialPointDiv-${index}`);
                 specialPointDiv.innerText = pointValue;
                 specialSpotDiv.append(specialPointDiv)
                 // here! need to add the number 
                 // will need a helper to add piece to the area, and also clear the number
                 specialSpotDiv.onclick = () => {
                     console.warn('You clicked on, DELETE THIS ', color, pointValue)
+                    logicBundle.inputHandlers.coellenSpecialAreaClickHandler(index)
                 }
                 circleHolder.append(specialSpotDiv)
             }
@@ -249,7 +249,10 @@ export const boardControllerFactory = () => {
             document.getElementById('gameBoard').append(coellenSpecialAreaDiv)
             translateElement(coellenSpecialAreaDiv, location[0], location[1])
         },
-        
+        addPieceToCoellenSpecialArea(points, playerColor){
+            // dev
+            console.warn('TODO ', points, playerColor)
+        }
     }
     logicBundle.boardController = boardController;
     return boardController;

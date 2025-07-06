@@ -2,8 +2,9 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import {
-    FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_CONFIG_BY_ROUTES,
-    TOKEN_READABLE_NAMES, TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION
+    FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_CONFIG_BY_ROUTES, TOKEN_READABLE_NAMES,
+    TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
+    COELLEN_SPECIAL_COLORS
 } from "../helpers/constants.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray } from "../helpers/helpers.js";
 import {
@@ -332,6 +333,36 @@ export const gameControllerFactory = () => {
             if (this.shouldEndGame) {
                 this.endGame()
             }
+        },
+        handleCoellenSpecialAreaClick(spotNumber, playerId, isOnlineAction = false) {
+            console.log('in game controller', spotNumber)
+
+            // dev
+            // need to get the point value and check the color and if it's occupied. Will probably need a 
+            // new storage object - I'm gonna need to check basically every where we use 
+            // need to import the colors and points. also add turn validation. 
+            // maybe move this to other on clicks
+            const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
+            if (!player) {
+                return
+            }
+            playerId = player.id;
+
+            /* Things to validate -
+                1. The spot is empty 
+                    * This will require creating a storage object
+                2. The Player has a full route from coellen to warburg
+                    * I should create the Warburg city
+                3. The player has the correct color
+            One all those are done we update board
+            Then we call resolve action
+            We will also need to account for online actions
+            */
+           // here!
+
+
+           
+
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());

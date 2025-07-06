@@ -27,12 +27,14 @@ Note that the above links use the test data that gets populated on the server in
     * Might make sense to expand the board while working on it, then shrink it back
 
     1. ~~I guess I'll just have it be a big, off-yellow square. I'll use similar components to the city~~
-    1. Need to add the point values inside! Maybe the same as the coins??
+    1. ~~Need to add the point values inside! Maybe the same as the coins??~~
     2. **Here!** Then when I attach an on-click listener to each of those 
         * look to the city example - i think it's input handler or game controller
+        * might make sense to move the color and points array to the const file as I will need to check them
 
     3. then implement the gameController method
          * Will need to verify route, color, and circle 
+    4. Will need to take saving into account - this will require testing
     4. Then test endgame points
 
     * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 

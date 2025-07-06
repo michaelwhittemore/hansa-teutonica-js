@@ -61,6 +61,9 @@ export const TEST_BOARD_CONFIG_CITIES = {
 };
 
 export const COELLEN_SPECIAL_LOCATION = [170, 630]
+export const COELLEN_SPECIAL_POINTS = [7, 8, 9, 11]
+// maybe generalize this? 
+export const COELLEN_SPECIAL_COLORS  = ['grey', 'orange', 'purple', 'black']
 
 // I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
