@@ -371,22 +371,22 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction('You do not have a merchant (circle) in this route.');
                 return;
             }
-            console.log('circles and squares before', player.bankedCircles, player.bankedSquares)
+
             player.bankedCircles += routeCheckOutcome.circle - 1;
             player.bankedSquares += routeCheckOutcome.square;
-            console.log('circles and squares after', player.bankedCircles, player.bankedSquares)
 
-            // TODO - I'M GIVING BONUS STARTING MOVES, REMOVE THIS LATER
             logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, player.color)
             this.coellenSpecialAreaObject[spotNumber] = {
                 ownerId: player.id,
                 pointValue,
+                color: player.color,
             }
             console.log(this.coellenSpecialAreaObject)
             // TODO - this route id is hard coded in, will need to switch it
             this.routeCompleted('Zeta-Coellen', player)
 
-            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME claimed a special points circle in Coellen.`, 
+            logicBundle.logController.addTextToGameLog(
+                `$PLAYER1_NAME claimed a special points circle in Coellen. It will be worth ${pointValue} at the end of the game.`, 
                 player);
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('coellenSpecialCapture', {
@@ -1720,12 +1720,11 @@ export const gameControllerFactory = () => {
                     }
                 })
             })
-            // here!
-            // TODO LOAD IN coellenSpecialAreaObject
-            Object.keys(this.coellenSpecialAreaObject).forEach(key => {
-                // dev
-            })
 
+            Object.keys(this.coellenSpecialAreaObject).forEach(spotNumber => {
+                const { color } = this.coellenSpecialAreaObject[spotNumber]
+                logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, color)
+            })
 
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
