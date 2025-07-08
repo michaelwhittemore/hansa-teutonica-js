@@ -11,8 +11,8 @@ export class Player {
         this.bankedSquares = STARTING_BANK - startingPieces;
         this.supplyCircles = 1;
         this.bankedCircles = 0;
-        this.maxActions = 2; // Not to be confused with current actions
-        // this.maxActions = 4; // Just for testing
+        // this.maxActions = 2; // Not to be confused with current actions
+        this.maxActions = 4; // Just for testing
 
         this.currentActions = this.maxActions;
         this.currentPoints = 0;

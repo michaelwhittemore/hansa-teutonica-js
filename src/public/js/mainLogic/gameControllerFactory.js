@@ -337,43 +337,22 @@ export const gameControllerFactory = () => {
         },
         handleCoellenSpecialAreaClick(spotNumber, playerId, isOnlineAction = false) {
             // dev
-            // need to get the point value and check the color and if it's occupied. Will probably need a 
-            // new storage object - I'm gonna need to check basically every where we use 
-            // need to import the colors and points. also add turn validation. 
-            // maybe move this to other on clicks
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
             }
             playerId = player.id;
 
-            /* Things to validate -
-                1. The spot is empty 
-                    * This will require creating a storage object
-                2. The Player has a full route from coellen to warburg
-                    * I should create the Warburg city
-                3. The player has the correct color
-            One all those are done we update board
-            Then we call resolve action
-            We will also need to account for online actions
-            Make sure to return all unsused pieces to the player
-            And clear the route nodes. In general I think we already have helpers for these -`routeCompleted`
-            We will also need to gameLog the action
-            */
-            // let's find all instances of routeStorageObject - ok we did that, but should still initialize it,
-            // actually I think it should only get populated when a player captures it
-            // something like spotNumber : {pointValue, playerOwnerId}
             const pointValue = COELLEN_SPECIAL_POINTS[spotNumber];
             const requiredColor = COELLEN_SPECIAL_COLORS[spotNumber];
-            console.log('clicked', spotNumber, pointValue, requiredColor)// DELETE THIS
 
-            if (this.coellenSpecialAreaObject[spotNumber]){
+            if (this.coellenSpecialAreaObject[spotNumber]) {
                 console.warn(`The ${pointValue} spot is already occupied.`)
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.warnInvalidAction(`The ${pointValue} spot is already occupied.`)
                 return;
-            } 
-            if(!player.unlockedColors.includes(requiredColor)){
+            }
+            if (!player.unlockedColors.includes(requiredColor)) {
                 console.warn(`You haven't unlocked ${requiredColor}.`)
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.warnInvalidAction(`You haven't unlocked ${requiredColor}.`)
@@ -386,14 +365,36 @@ export const gameControllerFactory = () => {
                 logicBundle.inputHandlers.warnInvalidAction('You do not have a completed route to Coellen.');
                 return;
             };
-            if (routeCheckOutcome.circle === 0){
+            if (routeCheckOutcome.circle === 0) {
                 console.warn('You do not have a merchant (circle) in this route.')
                 logicBundle.inputHandlers.clearAllActionSelection();
                 logicBundle.inputHandlers.warnInvalidAction('You do not have a merchant (circle) in this route.');
                 return;
             }
-            // here!
-            console.log('reached happy path')
+            console.log('circles and squares before', player.bankedCircles, player.bankedSquares)
+            player.bankedCircles += routeCheckOutcome.circle - 1;
+            player.bankedSquares += routeCheckOutcome.square;
+            console.log('circles and squares after', player.bankedCircles, player.bankedSquares)
+
+            // TODO - I'M GIVING BONUS STARTING MOVES, REMOVE THIS LATER
+            logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, player.color)
+            this.coellenSpecialAreaObject[spotNumber] = {
+                ownerId: player.id,
+                pointValue,
+            }
+            console.log(this.coellenSpecialAreaObject)
+            // TODO - this route id is hard coded in, will need to switch it
+            this.routeCompleted('Zeta-Coellen', player)
+
+            logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME claimed a special points circle in Coellen.`, 
+                player);
+            if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
+                this.webSocketController.playerTookAction('coellenSpecialCapture', {
+                    playerId,
+                    spotNumber,
+                })
+            }
+            this.resolveAction(player);
 
         },
         placeWorkerOnNodeAction(nodeId, shape, playerId, isOnlineAction = false) {
@@ -1165,6 +1166,7 @@ export const gameControllerFactory = () => {
 
         },
         routeCompleted(routeId, player) {
+            // dev
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
             // ______________
@@ -1720,7 +1722,7 @@ export const gameControllerFactory = () => {
             })
             // here!
             // TODO LOAD IN coellenSpecialAreaObject
-            Object.keys(this.coellenSpecialAreaObject).forEach( key =>{
+            Object.keys(this.coellenSpecialAreaObject).forEach(key => {
                 // dev
             })
 

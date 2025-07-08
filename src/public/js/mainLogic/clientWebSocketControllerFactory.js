@@ -128,6 +128,12 @@ export const clientWebSocketControllerFactory = (participantId, roomName) => {
                         playerId, tokenUsageInformation, true)
                     break;
                 }
+            case 'coellenSpecialCapture':
+                {
+                    const {playerId, spotNumber } = actionDetails;
+                    logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber, playerId, true)
+                    break;
+                }
             default:
                 console.error('Unknown action type:', actionType)
         }

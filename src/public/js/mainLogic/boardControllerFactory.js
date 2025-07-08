@@ -228,16 +228,16 @@ export const boardControllerFactory = () => {
             textBanner.innerText = 'Coellen-Warburg Special Points'
             const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
 
-            coellenSpecialAreaDiv.append(textBanner, circleHolder) 
+            coellenSpecialAreaDiv.append(textBanner, circleHolder)
 
             for (const [index, color] of COELLEN_SPECIAL_COLORS.entries()) {
                 const pointValue = COELLEN_SPECIAL_POINTS[index]
                 const specialSpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'cityPieceHolder'],
-                    `coellenBonus-${index}`, { backgroundColor: color });
+                    `coellenPieceSpot-${index}`, { backgroundColor: color });
                 const specialPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `specialPointDiv-${index}`);
                 specialPointDiv.innerText = pointValue;
                 specialSpotDiv.append(specialPointDiv)
-                
+
                 specialSpotDiv.onclick = () => {
                     console.warn('You clicked on, DELETE THIS ', color, pointValue)
                     logicBundle.inputHandlers.coellenSpecialAreaClickHandler(index)
@@ -248,9 +248,14 @@ export const boardControllerFactory = () => {
             document.getElementById('gameBoard').append(coellenSpecialAreaDiv)
             translateElement(coellenSpecialAreaDiv, location[0], location[1])
         },
-        addPieceToCoellenSpecialArea(points, playerColor){
+        addPieceToCoellenSpecialArea(specialPointsIndex, playerColor) {
             // dev
-            console.warn('TODO ', points, playerColor)
+            const specialSpotDiv = document.getElementById(`coellenPieceSpot-${specialPointsIndex}`)
+            document.getElementById(`specialPointDiv-${specialPointsIndex}`).remove()
+
+            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', 'circle'],
+                 `coellenSpecialPlayer-${specialPointsIndex}`, { backgroundColor: playerColor })
+            specialSpotDiv.append(playerPieceDiv)
         }
     }
     logicBundle.boardController = boardController;
