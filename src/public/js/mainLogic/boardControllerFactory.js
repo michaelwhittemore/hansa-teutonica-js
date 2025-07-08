@@ -222,7 +222,6 @@ export const boardControllerFactory = () => {
             // TODO fix this filth to use inverse slope and fixed distances (will still need a binary direction)
         },
         createCoellenSpecialArea(location) {
-            // dev
             const coellenSpecialAreaDiv = createDivWithClassAndIdAndStyle(['centeredFlex', 'city'], 'coellenSpecialArea')
             const textBanner = createDivWithClassAndIdAndStyle(['banner'])
             textBanner.innerText = 'Coellen-Warburg Special Points'
@@ -249,7 +248,6 @@ export const boardControllerFactory = () => {
             translateElement(coellenSpecialAreaDiv, location[0], location[1])
         },
         addPieceToCoellenSpecialArea(specialPointsIndex, playerColor) {
-            // dev
             const specialSpotDiv = document.getElementById(`coellenPieceSpot-${specialPointsIndex}`)
             document.getElementById(`specialPointDiv-${specialPointsIndex}`).remove()
 

@@ -251,7 +251,6 @@ export const inputHandlerFactory = () => {
             logicBundle.gameController.replaceTokenAtLocation(routeId);
         },
         coellenSpecialAreaClickHandler(spotNumber){
-            // dev
             logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber)
         },
         routeNodeClickHandler(nodeId) {

@@ -165,7 +165,6 @@ export const gameControllerFactory = () => {
                     })
                 }
             })
-            // dev 
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
         },
         getActivePlayer() {
@@ -336,7 +335,6 @@ export const gameControllerFactory = () => {
             }
         },
         handleCoellenSpecialAreaClick(spotNumber, playerId, isOnlineAction = false) {
-            // dev
             const player = this.validatePlayerIsActivePlayer(playerId, this.getActivePlayer());
             if (!player) {
                 return
@@ -1166,7 +1164,6 @@ export const gameControllerFactory = () => {
 
         },
         routeCompleted(routeId, player) {
-            // dev
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
             // ______________
@@ -1553,10 +1550,10 @@ export const gameControllerFactory = () => {
             // I think I can manually trigger it and log the values to the console. 
             // Maybe for each player we have a 'breakdown object'?? (probably uncessary - just use const for each)
             // Will likely want a 'calculateTotalScore' function for each player 
-            // It might be worth developing a pre-filled map for testing - would be similar to save/load logic
+            // It might be worth building a pre-filled map for testing - would be similar to save/load logic
             /*
                 1. ~~Current points (described in the manual as Prestige Points from the Prestige Points track)~~
-                2. Fully developed abilities
+                2. Fully completed abilities
                 3. Points for tokens
                 4. Coellen (needs to be implemented)
                 5. Two points per *controlled* city
@@ -1573,8 +1570,7 @@ export const gameControllerFactory = () => {
         },
         calculateTotalScore(player) {
             /*
-                4. Coellen (needs to be implemented)
-                6. network - 
+                6. network - TODO
             */
             let prestigePoints = 0;
             let tokenPoints = 0;
@@ -1616,19 +1612,24 @@ export const gameControllerFactory = () => {
 
             scoredAbilities.forEach(abilityKey => {
                 if (player.unlockArrayIndex[abilityKey] === unlockMapMaxValues[abilityKey] - 1) {
-                    console.log('Adding for for maxed', abilityKey) // delete this
                     abilityPoints += 4;
                 }
             })
 
-            // Now let's do each controlled city. We should use `calculateControllingPlayer` 
-            // iterate over cityStorageObject
             for (const city of Object.values(this.cityStorageObject)) {
                 const controllingPlayer = this.calculateControllingPlayer(city)
                 if (controllingPlayer && controllingPlayer.id === player.id) {
                     controlledCityPoints += 2;
                 }
             }
+
+            // HERE!
+            Object.keys(this.coellenSpecialAreaObject).forEach(spotNumber => {
+                const { ownerId, pointValue } = this.coellenSpecialAreaObject[spotNumber]
+                if (ownerId === player.id){
+                    coellenPoints += pointValue;
+                }
+            })
             // Will eventually need to create the modal, but I think that could be done either here or in 
             // the parent 'end game' function. Also remember how tiebreakers work
             // I guess we need to decide if this returns an object? I'm tempted to say so. 

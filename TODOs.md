@@ -22,28 +22,17 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/06        
+* 7/08        
     *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
-    * Might make sense to expand the board while working on it, then shrink it back
 
-    1. ~~I guess I'll just have it be a big, off-yellow square. I'll use similar components to the city~~
-    1. ~~Need to add the point values inside! Maybe the same as the coins??~~
-    2.  ~~Then when I attach an on-click listener to each of those ~~
-    3. ~~then implement the gameController method~~
-
-    3. ~~Still need to do online handling~~
-    4. **Here!** Will need to take saving into account - this will require testing
-    4. Then test endgame points
-
-    * My current big project is Coellen. This will require expanding the map which I have been dreading. It might also require a whole new button? Or perhaps I can just have the user click on the coellen point area? 
-    * The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
+    * **HERE!** The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
 
     
     * Endgame points - Maybe I start with a calculator for each source?? - this is on hold until I do more work on the board (I want to get coellen working)
         * ~~Current points (described in the manual as  Prestige Points from the Prestige Points track)~~
         * ~~Fully developed abilities~~
         * ~~Points for tokens~~
-        * Coellen
+        * ~~Coellen~~
         * ~~2 points per *controlled* city~~
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
