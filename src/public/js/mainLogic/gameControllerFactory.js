@@ -384,7 +384,7 @@ export const gameControllerFactory = () => {
             this.routeCompleted('Zeta-Coellen', player)
 
             logicBundle.logController.addTextToGameLog(
-                `$PLAYER1_NAME claimed a special points circle in Coellen. It will be worth ${pointValue} at the end of the game.`, 
+                `$PLAYER1_NAME claimed a special points circle in Coellen. It will be worth ${pointValue} at the end of the game.`,
                 player);
             if (!logicBundle.sessionInfo.isHotseatMode && !isOnlineAction) {
                 this.webSocketController.playerTookAction('coellenSpecialCapture', {
@@ -1563,10 +1563,27 @@ export const gameControllerFactory = () => {
             console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
             // Will need to break this into a map. Or maybe just give them a 'totalScoreField' and then sort?
             this.playerArray.forEach(player => {
-                player.playerPointObject = this.calculateTotalScore(player)
+                const playerPointObject = this.calculateTotalScore(player)
+                player.playerPointObject = playerPointObject; // may be unnecessary
                 console.warn(this.calculateTotalScore(player))
             })
-
+            // Need to figure out how to deal with tie breakers
+            // Maybe this should have it's own method? It would be easier to unit test if I could pass in
+            // some custom score objects
+            this.determineWinner()
+        },
+        determineWinner() {
+            // here!
+            /*
+                The player who now has the most prestige points wins the game.
+                If there is a tie, the tied player who has developed their Actions
+                ability the least wins. If there is still a tie, the player who scored
+                the most points for their network wins. If there is still a tie, the
+                tied players share the victory
+            */
+            // we should be careful, as this will modify the player array if we sort it, maybe look at 
+            // toSorted https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted
+            // maybe instead of using sort, we use a simple iteration, and get max value
         },
         calculateTotalScore(player) {
             /*
@@ -1623,16 +1640,15 @@ export const gameControllerFactory = () => {
                 }
             }
 
-            // HERE!
             Object.keys(this.coellenSpecialAreaObject).forEach(spotNumber => {
                 const { ownerId, pointValue } = this.coellenSpecialAreaObject[spotNumber]
-                if (ownerId === player.id){
+                if (ownerId === player.id) {
                     coellenPoints += pointValue;
                 }
             })
-            // Will eventually need to create the modal, but I think that could be done either here or in 
-            // the parent 'end game' function. Also remember how tiebreakers work
-            // I guess we need to decide if this returns an object? I'm tempted to say so. 
+
+            // HERE!
+            // Do we want to add additonal info? maybe not, we're using the players after all
             const playerPointObject = {
                 prestigePoints,
                 tokenPoints,
