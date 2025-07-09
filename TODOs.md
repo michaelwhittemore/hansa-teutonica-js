@@ -22,7 +22,7 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/08        
+* 7/10        
     *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
 
     * **HERE!** The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?

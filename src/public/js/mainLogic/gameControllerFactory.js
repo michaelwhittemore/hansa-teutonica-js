@@ -1547,24 +1547,16 @@ export const gameControllerFactory = () => {
         },
         endGame() {
             // I'm 90% sure that this is a feature that should be pretty much equivalent on hotseat and online
-            // I think I can manually trigger it and log the values to the console. 
-            // Maybe for each player we have a 'breakdown object'?? (probably uncessary - just use const for each)
-            // Will likely want a 'calculateTotalScore' function for each player 
             // It might be worth building a pre-filled map for testing - would be similar to save/load logic
             /*
-                1. ~~Current points (described in the manual as Prestige Points from the Prestige Points track)~~
-                2. Fully completed abilities
-                3. Points for tokens
-                4. Coellen (needs to be implemented)
-                5. Two points per *controlled* city
+
                 6. network - this will be the hardest by far. Need to find each network and see which one is largest.
                 Then sum all the trading posts in the network then multiply by the key value
             */
-            console.warn('The game ended but I have not implemented end game point calculations yet. Sorry.')
-            // Will need to break this into a map. Or maybe just give them a 'totalScoreField' and then sort?
+
             this.playerArray.forEach(player => {
                 const playerPointObject = this.calculateTotalScore(player)
-                player.playerPointObject = playerPointObject; // may be unnecessary
+                player.playerPointObject = playerPointObject;
                 console.warn(this.calculateTotalScore(player))
             })
             // Need to figure out how to deal with tie breakers
@@ -1573,9 +1565,17 @@ export const gameControllerFactory = () => {
             const  { winnerArray, victoryType } = this.determineWinner()
             console.log(winnerArray)
             console.log(victoryType)
+            // here! - maybe this should be a helper function? - I think I'm build it here and then move it to the
+            // helpers file
+            this.createEndgameModal(this.playerArray, winnerArray, victoryType)
+        },
+        createEndgameModal(playerArray, winnerArray, victoryType){
+            // here!
+            
         },
         determineWinner() {
             // here!
+            // NOTE THAT NETWORK SCORE DOESN'T EXIST YET - thus I can't thoroughly test the tiebreakers
             /*
                 The player who now has the most prestige points wins the game.
                 If there is a tie, the tied player who has developed their Actions
