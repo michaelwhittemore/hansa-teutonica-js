@@ -1570,7 +1570,9 @@ export const gameControllerFactory = () => {
             // Need to figure out how to deal with tie breakers
             // Maybe this should have it's own method? It would be easier to unit test if I could pass in
             // some custom score objects
-            this.determineWinner()
+            const  { winnerArray, victoryType } = this.determineWinner()
+            console.log(winnerArray)
+            console.log(victoryType)
         },
         determineWinner() {
             // here!
@@ -1581,9 +1583,43 @@ export const gameControllerFactory = () => {
                 the most points for their network wins. If there is still a tie, the
                 tied players share the victory
             */
-            // we should be careful, as this will modify the player array if we sort it, maybe look at 
-            // toSorted https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted
-            // maybe instead of using sort, we use a simple iteration, and get max value
+            let maxScore = 0;
+            this.playerArray.forEach(player => {
+                if (player.playerPointObject.totalPoints > maxScore) {
+                    maxScore = player.playerPointObject.totalPoints;
+                }
+            })
+            let winnerArray = this.playerArray.filter(player => maxScore === player.playerPointObject.totalPoints);
+            if (winnerArray.length === 1) {
+                return { winnerArray, victoryType: 'standard' };
+            }
+            // ------- tie breaker least number of action unlocks
+            let minActions = Number.POSITIVE_INFINITY;
+            winnerArray.forEach(player => {
+                if (player.unlockArrayIndex.actions < minActions) {
+                    minActions = player.unlockArrayIndex.actions;
+                }
+            })
+            winnerArray = winnerArray.filter(player => player.unlockArrayIndex.actions === minActions);
+            if (winnerArray.length === 1) {
+                return { winnerArray, victoryType: 'minActions' } 
+            }
+            // ------- tie breaker network score
+            let maxNetworkScore = 0;
+            winnerArray.forEach(player => {
+                if (player.playerPointObject.networkPoints > maxNetworkScore) {
+                    maxNetworkScore = player.playerPointObject.networkPoints;
+                }
+            })
+            winnerArray = winnerArray.filter(player => player.playerPointObject.networkPoints === maxNetworkScore);
+            if (winnerArray.length === 1) {
+                return { winnerArray, victoryType: 'networkPoints' } 
+            }
+            if (winnerArray.length === 0){
+                console.error('Error: Unable to determine winner.')
+            }
+            return { winnerArray, victoryType: 'multipleWinners' } 
+
         },
         calculateTotalScore(player) {
             /*
