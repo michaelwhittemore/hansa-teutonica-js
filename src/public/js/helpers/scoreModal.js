@@ -1,7 +1,6 @@
 import { createDivWithClassAndIdAndStyle, createColoredSpanWithText } from "./helpers.js";
 
 export const createScoreModal = (playerArray, winnerArray, victoryType) => {
-    // here!
     console.log(playerArray, winnerArray, victoryType)
     // really really should have some dummy data
     const scoreModal = createDivWithClassAndIdAndStyle([], 'scoreModal')
@@ -30,10 +29,37 @@ export const createScoreModal = (playerArray, winnerArray, victoryType) => {
     }
     const scoreBanner = createDivWithClassAndIdAndStyle(['banner'], 'scoreModalBanner')
     scoreBanner.innerHTML = `The game has ended. <br> ${bannerHTML}`;
-    scoreModal.append(scoreBanner)
+    // HERE!
+    // Now we should iterate over all the types of points and create a column for each
+    const scoreTable = document.createElement('table')
+    const headerRow = document.createElement('tr')
 
+    const tableHeaderTextFields = ['Player', 'Prestige Points', 'Tokens', 'Fully Developed Abilities', 'Coellen Special Area',
+        'Controlled Cities', 'Longest Network', 'Total Score']
+    tableHeaderTextFields.forEach(field => {
+        const header = document.createElement('th')
+        header.innerText = field
+        headerRow.append(header)
+    })
+    scoreTable.append(headerRow)
+    scoreModal.append(scoreBanner, scoreTable)
 
-    document.body.append(scoreModal)
+    const scoreKeys = ['prestigePoints', 'tokenPoints','abilityPoints', 'coellenPoints', 'controlledCityPoints',
+        'networkPoints','totalPoints'];
+    playerArray.forEach(player => {
+        const playerRow = document.createElement('tr')
+        const playerNameCell = document.createElement('td');
+        playerNameCell.innerText = player.name
+        playerRow.append(playerNameCell);
+        scoreKeys.forEach(key => {
+            const cell = document.createElement('td')
+            cell.innerText = player.playerPointObject[key];
+            playerRow.append(cell)
+        })
+        scoreTable.append(playerRow)
+    })
+
+    return scoreModal
 }
 
 const fourPlayerWinners = [

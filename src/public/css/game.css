@@ -162,15 +162,16 @@
 }
 
 #scoreModal{
-    top: 0;
+    top: 10%;
     left: 0; 
     right: 0;
     margin-inline: auto; 
-    height: 40%;
-    width: 50%;
+    height: 60%;
+    width: 70%;
     border: solid;
     border-color: chocolate;
     border-width: 5px;
+    border-radius: 30px;
     background-color: whitesmoke;
     position: absolute;
 }

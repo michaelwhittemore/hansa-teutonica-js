@@ -1563,7 +1563,7 @@ export const gameControllerFactory = () => {
 
             const { winnerArray, victoryType } = this.determineWinner()
             // here! 
-            createScoreModal(this.playerArray, winnerArray, victoryType)
+            document.body.append(createScoreModal(this.playerArray, winnerArray, victoryType))
         },
         determineWinner() {
             // NOTE THAT NETWORK SCORE DOESN'T EXIST YET - thus I can't thoroughly test the tiebreakers

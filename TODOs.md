@@ -26,7 +26,8 @@ Note that the above links use the test data that gets populated on the server in
     *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
 
     * **HERE!** My current task is creating the score modal. 
-        * I need to give it a nice border. Should it be rounded? I'm leaning towards no. 
+        * ~~I need to give it a nice border. Should it be rounded? I'm leaning towards no. ~~
+        * should add a margin (vertical) to the banner. Probably give it its own id
         * I need to grab some dummy data for better testing. 
         * I need to then start on a line by line points. I think we will have a 'scoreModal' file.
         * Need to create a table with labels for each field.
