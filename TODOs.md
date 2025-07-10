@@ -28,6 +28,7 @@ Note that the above links use the test data that gets populated on the server in
     * **HERE!** My current task is creating the score modal. 
         * ~~I need to give it a nice border. Should it be rounded? I'm leaning towards no. ~~
         * should add a margin (vertical) to the banner. Probably give it its own id
+        * also need to style the table headers ('th')
         * I need to grab some dummy data for better testing. 
         * I need to then start on a line by line points. I think we will have a 'scoreModal' file.
         * Need to create a table with labels for each field.

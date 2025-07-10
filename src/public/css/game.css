@@ -146,6 +146,8 @@
     border: solid;
 }
 
+/* ---------------------------- Coellen Special Area --------------------------------------*/
+
 #coellenSpecialArea {
     justify-content: space-evenly;
     border-radius: 30px;
@@ -155,25 +157,35 @@
     font-size: 13px;
 }
 
-.coellenPoint{
+.coellenPoint {
     text-shadow: 1px 1px 2px chocolate;
     color: whitesmoke;
     font-size: 275%;
 }
 
-#scoreModal{
+/* ---------------------------- Endgame Score Modal --------------------------------------*/
+#scoreModal {
     top: 10%;
-    left: 0; 
+    left: 0;
     right: 0;
-    margin-inline: auto; 
+    margin-inline: auto;
     height: 60%;
-    width: 70%;
+    width: 80%;
     border: solid;
     border-color: chocolate;
     border-width: 5px;
     border-radius: 30px;
     background-color: whitesmoke;
     position: absolute;
+}
+
+#scoreTable {
+    table-layout: auto;
+    width: 100%;
+}
+
+td {
+    text-align: center;
 }
 
 

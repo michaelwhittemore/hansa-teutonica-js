@@ -32,6 +32,7 @@ export const createScoreModal = (playerArray, winnerArray, victoryType) => {
     // HERE!
     // Now we should iterate over all the types of points and create a column for each
     const scoreTable = document.createElement('table')
+    scoreTable.id = 'scoreTable'
     const headerRow = document.createElement('tr')
 
     const tableHeaderTextFields = ['Player', 'Prestige Points', 'Tokens', 'Fully Developed Abilities', 'Coellen Special Area',
@@ -248,3 +249,7 @@ const fourPlayerWinners = [
         }
     }
 ]
+
+// DELETE ME
+
+document.body.append(createScoreModal(fourPlayerWinners, fourPlayerWinners, 'multipleWinners'))
