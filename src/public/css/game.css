@@ -161,6 +161,18 @@
     font-size: 275%;
 }
 
+#scoreModal{
+    top: 0;
+    left: 0; 
+    right: 0;
+    margin-inline: auto; 
+    height: 40%;
+    width: 50%;
+    background-color: aqua;
+    position: absolute;
+}
+
+
 /* Player Info Board and Components */
 .playerInfoBoard {
     background-color: bisque;

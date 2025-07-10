@@ -6,7 +6,10 @@ import {
     TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
     COELLEN_SPECIAL_COLORS
 } from "../helpers/constants.js";
-import { getRouteIdFromNodeId, pluralifyText, shuffleArray } from "../helpers/helpers.js";
+import {
+    createDivWithClassAndIdAndStyle, getRouteIdFromNodeId, pluralifyText, shuffleArray,
+    createColoredSpanWithText
+} from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
     unlockMovementToValue, unlockKeysToValue, unlockMapMaxValues
@@ -1562,19 +1565,50 @@ export const gameControllerFactory = () => {
             // Need to figure out how to deal with tie breakers
             // Maybe this should have it's own method? It would be easier to unit test if I could pass in
             // some custom score objects
-            const  { winnerArray, victoryType } = this.determineWinner()
+            const { winnerArray, victoryType } = this.determineWinner()
             console.log(winnerArray)
             console.log(victoryType)
             // here! - maybe this should be a helper function? - I think I'm build it here and then move it to the
             // helpers file
-            this.createEndgameModal(this.playerArray, winnerArray, victoryType)
+            this.createScoreModal(this.playerArray, winnerArray, victoryType)
         },
-        createEndgameModal(playerArray, winnerArray, victoryType){
+        createScoreModal(playerArray, winnerArray, victoryType) {
             // here!
-            
+            console.log(playerArray, winnerArray, victoryType)
+            // really really should have some dummy data
+            const scoreModal = createDivWithClassAndIdAndStyle([], 'scoreModal')
+            // so now we need to create a banner - something like 'playerName won/tied by tiebreaker type'
+            let bannerHTML = '';
+            if (winnerArray.length > 1) {
+                // tied
+                winnerArray.forEach((player, index) => {
+                    bannerHTML += createColoredSpanWithText(player.name, player.color)
+                    // Adding commas and 'and'
+                    const playersLeft = winnerArray.length - index - 1;
+                    if (playersLeft > 1) {
+                        bannerHTML += ', '
+                    } else if (playersLeft === 1) {
+                        // todo - shouldn't have a comma if only two
+                        bannerHTML += winnerArray.length === 2 ? ' and ' : ', and '
+                    }
+                })
+                bannerHTML += ' tied!';
+            } else {
+                const winner = winnerArray[0]
+                // need to check the victory type
+                bannerHTML = `${createColoredSpanWithText(winner.name, winner.color)} won`
+                if (victoryType) {
+                    bannerHTML += ` by a ${victoryType} tiebreaker`
+                }
+                bannerHTML += '!';
+            }
+            // TODO - this will need to be part of a banner element
+            scoreModal.innerHTML = bannerHTML;
+
+
+            document.body.append(scoreModal)
         },
         determineWinner() {
-            // here!
             // NOTE THAT NETWORK SCORE DOESN'T EXIST YET - thus I can't thoroughly test the tiebreakers
             /*
                 The player who now has the most prestige points wins the game.
@@ -1591,7 +1625,7 @@ export const gameControllerFactory = () => {
             })
             let winnerArray = this.playerArray.filter(player => maxScore === player.playerPointObject.totalPoints);
             if (winnerArray.length === 1) {
-                return { winnerArray, victoryType: 'standard' };
+                return { winnerArray, victoryType: null };
             }
             // ------- tie breaker least number of action unlocks
             let minActions = Number.POSITIVE_INFINITY;
@@ -1602,7 +1636,7 @@ export const gameControllerFactory = () => {
             })
             winnerArray = winnerArray.filter(player => player.unlockArrayIndex.actions === minActions);
             if (winnerArray.length === 1) {
-                return { winnerArray, victoryType: 'minActions' } 
+                return { winnerArray, victoryType: 'lowest actions unlocked' }
             }
             // ------- tie breaker network score
             let maxNetworkScore = 0;
@@ -1613,12 +1647,12 @@ export const gameControllerFactory = () => {
             })
             winnerArray = winnerArray.filter(player => player.playerPointObject.networkPoints === maxNetworkScore);
             if (winnerArray.length === 1) {
-                return { winnerArray, victoryType: 'networkPoints' } 
+                return { winnerArray, victoryType: 'most network points' }
             }
-            if (winnerArray.length === 0){
+            if (winnerArray.length === 0) {
                 console.error('Error: Unable to determine winner.')
             }
-            return { winnerArray, victoryType: 'multipleWinners' } 
+            return { winnerArray, victoryType: 'multipleWinners' }
 
         },
         calculateTotalScore(player) {
@@ -1683,8 +1717,6 @@ export const gameControllerFactory = () => {
                 }
             })
 
-            // HERE!
-            // Do we want to add additonal info? maybe not, we're using the players after all
             const playerPointObject = {
                 prestigePoints,
                 tokenPoints,
@@ -1801,6 +1833,7 @@ export const gameControllerFactory = () => {
             logicBundle.logController.loadHistoryIntoLogFromLocalStorage()
         }
     }
+
     logicBundle.gameController = gameController;
     return gameController
 }
