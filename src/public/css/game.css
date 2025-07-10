@@ -168,7 +168,10 @@
     margin-inline: auto; 
     height: 40%;
     width: 50%;
-    background-color: aqua;
+    border: solid;
+    border-color: chocolate;
+    border-width: 5px;
+    background-color: whitesmoke;
     position: absolute;
 }
 

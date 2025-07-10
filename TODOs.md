@@ -25,15 +25,14 @@ Note that the above links use the test data that gets populated on the server in
 * 7/10        
     *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
 
-    * **HERE!** The alternative task is creating the endgame modal. I think first we sort by points, then do tie breakers then we create it. I'm not sure which module it should belong to? Perhaps it gets its own file?
-
+    * **HERE!** My current task is creating the score modal. 
+        * I need to give it a nice border. Should it be rounded? I'm leaning towards no. 
+        * I need to grab some dummy data for better testing. 
+        * I need to then start on a line by line points. I think we will have a 'scoreModal' file.
+        * Need to create a table with labels for each field.
+        * The line by line takes in a player score and maybe notes if they had the highest. 
     
-    * Endgame points - Maybe I start with a calculator for each source?? - this is on hold until I do more work on the board (I want to get coellen working)
-        * ~~Current points (described in the manual as  Prestige Points from the Prestige Points track)~~
-        * ~~Fully developed abilities~~
-        * ~~Points for tokens~~
-        * ~~Coellen~~
-        * ~~2 points per *controlled* city~~
+    * Endgame points - 
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
     * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called i think or the switch-piece token)

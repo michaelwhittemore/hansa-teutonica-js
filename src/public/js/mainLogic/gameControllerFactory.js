@@ -6,14 +6,12 @@ import {
     TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
     COELLEN_SPECIAL_COLORS
 } from "../helpers/constants.js";
-import {
-    createDivWithClassAndIdAndStyle, getRouteIdFromNodeId, pluralifyText, shuffleArray,
-    createColoredSpanWithText
-} from "../helpers/helpers.js";
+import { getRouteIdFromNodeId, pluralifyText, shuffleArray, } from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
     unlockMovementToValue, unlockKeysToValue, unlockMapMaxValues
 } from "../helpers/playerFieldsMaps.js";
+import { createScoreModal } from "../helpers/scoreModal.js";
 
 export const gameControllerFactory = () => {
     const gameController = {
@@ -1562,51 +1560,10 @@ export const gameControllerFactory = () => {
                 player.playerPointObject = playerPointObject;
                 console.warn(this.calculateTotalScore(player))
             })
-            // Need to figure out how to deal with tie breakers
-            // Maybe this should have it's own method? It would be easier to unit test if I could pass in
-            // some custom score objects
+
             const { winnerArray, victoryType } = this.determineWinner()
-            console.log(winnerArray)
-            console.log(victoryType)
-            // here! - maybe this should be a helper function? - I think I'm build it here and then move it to the
-            // helpers file
-            this.createScoreModal(this.playerArray, winnerArray, victoryType)
-        },
-        createScoreModal(playerArray, winnerArray, victoryType) {
-            // here!
-            console.log(playerArray, winnerArray, victoryType)
-            // really really should have some dummy data
-            const scoreModal = createDivWithClassAndIdAndStyle([], 'scoreModal')
-            // so now we need to create a banner - something like 'playerName won/tied by tiebreaker type'
-            let bannerHTML = '';
-            if (winnerArray.length > 1) {
-                // tied
-                winnerArray.forEach((player, index) => {
-                    bannerHTML += createColoredSpanWithText(player.name, player.color)
-                    // Adding commas and 'and'
-                    const playersLeft = winnerArray.length - index - 1;
-                    if (playersLeft > 1) {
-                        bannerHTML += ', '
-                    } else if (playersLeft === 1) {
-                        // todo - shouldn't have a comma if only two
-                        bannerHTML += winnerArray.length === 2 ? ' and ' : ', and '
-                    }
-                })
-                bannerHTML += ' tied!';
-            } else {
-                const winner = winnerArray[0]
-                // need to check the victory type
-                bannerHTML = `${createColoredSpanWithText(winner.name, winner.color)} won`
-                if (victoryType) {
-                    bannerHTML += ` by a ${victoryType} tiebreaker`
-                }
-                bannerHTML += '!';
-            }
-            // TODO - this will need to be part of a banner element
-            scoreModal.innerHTML = bannerHTML;
-
-
-            document.body.append(scoreModal)
+            // here! 
+            createScoreModal(this.playerArray, winnerArray, victoryType)
         },
         determineWinner() {
             // NOTE THAT NETWORK SCORE DOESN'T EXIST YET - thus I can't thoroughly test the tiebreakers
