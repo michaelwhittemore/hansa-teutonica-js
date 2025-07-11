@@ -50,7 +50,7 @@ export const createScoreModal = (playerArray, winnerArray, victoryType) => {
     playerArray.forEach(player => {
         const playerRow = document.createElement('tr')
         const playerNameCell = document.createElement('td');
-        playerNameCell.innerText = player.name
+        playerNameCell.innerHTML = createColoredSpanWithText(player.name, player.color)
         playerRow.append(playerNameCell);
         scoreKeys.forEach(key => {
             const cell = document.createElement('td')
@@ -63,6 +63,7 @@ export const createScoreModal = (playerArray, winnerArray, victoryType) => {
     return scoreModal
 }
 
+// Some throwaway data for testing
 const fourPlayerWinners = [
     {
         "id": "player-0",
@@ -249,7 +250,3 @@ const fourPlayerWinners = [
         }
     }
 ]
-
-// DELETE ME
-
-document.body.append(createScoreModal(fourPlayerWinners, fourPlayerWinners, 'multipleWinners'))

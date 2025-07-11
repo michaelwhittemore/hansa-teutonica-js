@@ -2,7 +2,8 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import {
     createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
 } from "../helpers/helpers.js";
-import { TOKEN_READABLE_NAMES, COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/constants.js";
+import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
+import  { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/boardMapData.js";
 
 export const boardControllerFactory = () => {
     const boardController = {

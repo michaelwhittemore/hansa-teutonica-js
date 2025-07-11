@@ -22,21 +22,25 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/10        
-    *  Now that the map has been refactored I can begin adding new cities. I should probably start with coellen. First I'll create the city then the special area
+* 7/11        
+    * Let's start by moving the map related constants to their own file
+    1. Now Let's create an Easternmost city
+    2. Then create the Western most city at Zeta. 
+    3. Then move the Coellen Bonus and add warburg. 
+    4. Then write a graph traversal. I think we can use what I already have
 
-    * **HERE!** My current task is creating the score modal. 
-        * ~~I need to give it a nice border. Should it be rounded? I'm leaning towards no. ~~
-        * should add a margin (vertical) to the banner. Probably give it its own id
-        * also need to style the table headers ('th')
-        * I need to grab some dummy data for better testing. 
-        * I need to then start on a line by line points. I think we will have a 'scoreModal' file.
-        * Need to create a table with labels for each field.
-        * The line by line takes in a player score and maybe notes if they had the highest. 
-    
+
+    *  Now that the map has been refactored I can begin adding new cities. Maybe I should work on east/west now?
+    * I can also test triggering endgame in an online game
+    * Perhaps I should start on my portfolio?
+        * Need to figure out a cheaper hosting solution. Maybe try firebase? 
+    * East-West Cities. Will need to create the city, create the board component, and and a check when ANY city is captured (as a middle one could trigger it)
+
+
+
     * Endgame points - 
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
-    * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. 
+    * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. - I should probably look at some templates
     * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called i think or the switch-piece token)
 
     * *Notes For the README*:

@@ -1,11 +1,9 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
-import {
-    FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_CONFIG_BY_ROUTES, TOKEN_READABLE_NAMES,
-    TEST_BOARD_CONFIG_CITIES, REGULAR_TOKENS, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
-    COELLEN_SPECIAL_COLORS
-} from "../helpers/constants.js";
+import { FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_READABLE_NAMES, REGULAR_TOKENS } from "../helpers/constants.js";
+import { TOKEN_CONFIG_BY_ROUTES, BOARD_CONFIG_CITIES, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
+    COELLEN_SPECIAL_COLORS} from "../helpers/boardMapData.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray, } from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
@@ -90,7 +88,7 @@ export const gameControllerFactory = () => {
                 shuffleArray(REGULAR_TOKENS);
             // it's possible at some point in the far future that there are multiple 
             // board configs (i.e. for three player or alt maps)
-            const boardConfig = TEST_BOARD_CONFIG_CITIES;
+            const boardConfig = BOARD_CONFIG_CITIES;
             // Let's break out the city generation into two loops
             // THe first one populates the cityStorageObject 
             // The second one will create the route
@@ -1562,11 +1560,13 @@ export const gameControllerFactory = () => {
             })
 
             const { winnerArray, victoryType } = this.determineWinner()
-            // here! 
+            // TODO - log the winner, handle online room closing (maybe we just send a a message to the server for 
+            // the time being?)
             document.body.append(createScoreModal(this.playerArray, winnerArray, victoryType))
         },
         determineWinner() {
             // NOTE THAT NETWORK SCORE DOESN'T EXIST YET - thus I can't thoroughly test the tiebreakers
+            // (except by providing my own data)
             /*
                 The player who now has the most prestige points wins the game.
                 If there is a tie, the tied player who has developed their Actions
