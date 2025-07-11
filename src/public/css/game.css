@@ -140,11 +140,23 @@
 }
 
 #eastWestTracker {
-    height: 100px;
-    width: 200px;
+    height: 200px;
+    width: 130px;
     background-color: lightcoral;
     border-color: black;
     border-style: solid;
+}
+
+.eastWestHolder{
+    background-color: goldenrod;
+}
+
+.eastWestLine{
+    /* need to apply a rotational transform and add the color black */
+    margin: 5px;
+    transform: rotate(-45deg);
+    transform-origin: 50px 50px;
+    position: relative;
 }
 
 /* ---------------------------- Coellen Special Area --------------------------------------*/

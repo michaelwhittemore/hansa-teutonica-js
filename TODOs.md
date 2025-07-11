@@ -27,6 +27,7 @@ Note that the above links use the test data that gets populated on the server in
         - **WHILE working on the map** 
             * expand the map dimensions
             * turn on all tokens with the toggle `logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')`
+            * maybe look into autoscroll
     1. ~~Now Let's create an Easternmost city~~
     2. ~~Let's add the color based on `eastWestTerminus`~~
     3. ~~Then move the Coellen Bonus and add warburg. ~~
@@ -34,7 +35,9 @@ Note that the above links use the test data that gets populated on the server in
         * Should have the same background color as the terminus cities
         * follow the coellen example
         * maybe try to style it a little? like how it is on the actual board going down/right with slashes
-    5. Then write a graph traversal. I think we can use what I already have
+        * maybe generalize the `coellenPoint` to `specialPoint` or something like that? Unlockable point?
+    5. Then write the logic to add a piece and give points 
+    5. Then write a graph traversal, it should be called whenever a city is captured. I think we can use what I already have. Then I can use the add piece 
 
 
     *  Now that the map has been refactored I can begin adding new cities. Maybe I should work on east/west now?

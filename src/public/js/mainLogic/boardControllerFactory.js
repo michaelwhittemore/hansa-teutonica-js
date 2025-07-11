@@ -3,7 +3,7 @@ import {
     createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
 } from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
-import { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/boardMapData.js";
+import { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS, EAST_WEST_POINTS } from "../helpers/boardMapData.js";
 
 export const boardControllerFactory = () => {
     const boardController = {
@@ -261,15 +261,39 @@ export const boardControllerFactory = () => {
             specialSpotDiv.append(playerPieceDiv)
         },
         createEastWestPointTracker(location) {
-            console.log('here', location)
             const eastWestPointTrackerDiv = createDivWithClassAndIdAndStyle([], 'eastWestTracker')
 
-
             const textBanner = createDivWithClassAndIdAndStyle(['banner'])
-            textBanner.innerText = 'East West Route Bonus'
-            // const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
+            textBanner.innerText = 'East-West Connection Bonus'
+            // need to replace 'cityPieceArea'
+            const circleHolder = createDivWithClassAndIdAndStyle([], 'eastWestPieceArea')
 
-            eastWestPointTrackerDiv.append(textBanner)
+            // HERE!!
+            // might actually need the index to move each piece towards the right
+            const lineCoordinates = [[15, 15], [35, 0]];
+
+            EAST_WEST_POINTS.forEach((pointValue, index) => {
+                const eastWestSpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'eastWestHolder',
+                    'cityPieceHolder'], `eastWestHolder-${pointValue}`, {
+                    'transform': `translate(${30 * index}px)`,
+                });
+                const eastWestPointDiv = createDivWithClassAndIdAndStyle(['coellenPoint'], `eastWestPoint-${pointValue}`);
+                eastWestPointDiv.innerText = pointValue;
+                eastWestSpotDiv.append(eastWestPointDiv)
+                circleHolder.append(eastWestSpotDiv)
+                if (index < 2) {
+                    const lineElement = document.createElement('hr')
+                    lineElement.classList.add('eastWestLine')
+                    console.log(lineElement.style.transform)
+                    lineElement.style.left = `${lineCoordinates[index][0]}px`
+                    lineElement.style.bottom = `${lineCoordinates[index][1]}px`
+
+                    circleHolder.append(lineElement)
+                } 
+                // I like left: 15px;, bottom: 15px; for the first line
+
+            })
+            eastWestPointTrackerDiv.append(textBanner, circleHolder)
 
             document.getElementById('gameBoard').append(eastWestPointTrackerDiv)
             translateElement(eastWestPointTrackerDiv, location[0], location[1])
