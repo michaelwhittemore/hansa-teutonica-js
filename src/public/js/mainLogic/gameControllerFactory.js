@@ -165,6 +165,8 @@ export const gameControllerFactory = () => {
                 }
             })
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
+                // HERE! DELETE THIS 
+    logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
         getActivePlayer() {
             // This works because we're using the index of the player
@@ -379,8 +381,7 @@ export const gameControllerFactory = () => {
                 color: player.color,
             }
             console.log(this.coellenSpecialAreaObject)
-            // TODO - this route id is hard coded in, will need to switch it
-            this.routeCompleted('Zeta-Coellen', player)
+            this.routeCompleted('Warburg-Coellen', player)
 
             logicBundle.logController.addTextToGameLog(
                 `$PLAYER1_NAME claimed a special points circle in Coellen. It will be worth ${pointValue} at the end of the game.`,

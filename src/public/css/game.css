@@ -26,6 +26,10 @@
     justify-content: center;
 }
 
+.eastWestTerminus {
+    background-color: lightcoral;
+}
+
 .freePoint {
     background-color: goldenrod;
     text-shadow: 1px 1px 2px black;

@@ -3,7 +3,7 @@ import {
     createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
 } from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
-import  { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/boardMapData.js";
+import { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS } from "../helpers/boardMapData.js";
 
 export const boardControllerFactory = () => {
     const boardController = {
@@ -52,9 +52,14 @@ export const boardControllerFactory = () => {
             document.getElementById(`points-${pointTarget}`).append(pointTrackerPiece)
         },
         createCity(cityInformation) {
-            const { name, spotArray, unlock, location, freePoint } = cityInformation;
+            const { name, spotArray, unlock, location, freePoint, eastWestTerminus } = cityInformation;
+            // TODO - this is a button not a div. The name is wrong and in general I don't like it
             const cityDiv = document.createElement('button');
+
             cityDiv.className = 'city'
+            if (eastWestTerminus) {
+                cityDiv.classList.add('eastWestTerminus')
+            }
             // We assume all cities have unique names as identifiers 
             cityDiv.id = name
             cityDiv.innerText = name;
@@ -239,7 +244,6 @@ export const boardControllerFactory = () => {
                 specialSpotDiv.append(specialPointDiv)
 
                 specialSpotDiv.onclick = () => {
-                    console.warn('You clicked on, DELETE THIS ', color, pointValue)
                     logicBundle.inputHandlers.coellenSpecialAreaClickHandler(index)
                 }
                 circleHolder.append(specialSpotDiv)
@@ -253,7 +257,7 @@ export const boardControllerFactory = () => {
             document.getElementById(`specialPointDiv-${specialPointsIndex}`).remove()
 
             const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', 'circle'],
-                 `coellenSpecialPlayer-${specialPointsIndex}`, { backgroundColor: playerColor })
+                `coellenSpecialPlayer-${specialPointsIndex}`, { backgroundColor: playerColor })
             specialSpotDiv.append(playerPieceDiv)
         }
     }

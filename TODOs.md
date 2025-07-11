@@ -24,10 +24,14 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/11        
     * Let's start by moving the map related constants to their own file
-    1. Now Let's create an Easternmost city
-    2. Then create the Western most city at Zeta. 
+        - **WHILE working on the map** 
+            * expand the map dimensions
+            * turn on all tokens with the toggle `logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')`
+    1. ~~Now Let's create an Easternmost city~~
+    2. ~~Let's add the color based on `eastWestTerminus`~~
     3. Then move the Coellen Bonus and add warburg. 
-    4. Then write a graph traversal. I think we can use what I already have
+    4. Then create the eastern most tracker (like first to complete route)
+    5. Then write a graph traversal. I think we can use what I already have
 
 
     *  Now that the map has been refactored I can begin adding new cities. Maybe I should work on east/west now?
