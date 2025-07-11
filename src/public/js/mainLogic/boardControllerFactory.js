@@ -259,7 +259,21 @@ export const boardControllerFactory = () => {
             const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', 'circle'],
                 `coellenSpecialPlayer-${specialPointsIndex}`, { backgroundColor: playerColor })
             specialSpotDiv.append(playerPieceDiv)
-        }
+        },
+        createEastWestPointTracker(location) {
+            console.log('here', location)
+            const eastWestPointTrackerDiv = createDivWithClassAndIdAndStyle([], 'eastWestTracker')
+
+
+            const textBanner = createDivWithClassAndIdAndStyle(['banner'])
+            textBanner.innerText = 'East West Route Bonus'
+            // const circleHolder = createDivWithClassAndIdAndStyle(['cityPieceArea'])
+
+            eastWestPointTrackerDiv.append(textBanner)
+
+            document.getElementById('gameBoard').append(eastWestPointTrackerDiv)
+            translateElement(eastWestPointTrackerDiv, location[0], location[1])
+        },
     }
     logicBundle.boardController = boardController;
     return boardController;

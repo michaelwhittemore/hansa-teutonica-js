@@ -3,7 +3,7 @@ import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import { FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_READABLE_NAMES, REGULAR_TOKENS } from "../helpers/constants.js";
 import { TOKEN_CONFIG_BY_ROUTES, BOARD_CONFIG_CITIES, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
-    COELLEN_SPECIAL_COLORS} from "../helpers/boardMapData.js";
+    COELLEN_SPECIAL_COLORS, EAST_WEST_TRACKER_LOCATION } from "../helpers/boardMapData.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray, } from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
@@ -165,6 +165,8 @@ export const gameControllerFactory = () => {
                 }
             })
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
+            // dev
+            logicBundle.boardController.createEastWestPointTracker(EAST_WEST_TRACKER_LOCATION)
                 // HERE! DELETE THIS 
     logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },

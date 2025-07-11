@@ -29,8 +29,11 @@ Note that the above links use the test data that gets populated on the server in
             * turn on all tokens with the toggle `logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')`
     1. ~~Now Let's create an Easternmost city~~
     2. ~~Let's add the color based on `eastWestTerminus`~~
-    3. Then move the Coellen Bonus and add warburg. 
+    3. ~~Then move the Coellen Bonus and add warburg. ~~
     4. Then create the eastern most tracker (like first to complete route)
+        * Should have the same background color as the terminus cities
+        * follow the coellen example
+        * maybe try to style it a little? like how it is on the actual board going down/right with slashes
     5. Then write a graph traversal. I think we can use what I already have
 
 

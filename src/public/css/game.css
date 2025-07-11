@@ -26,10 +26,6 @@
     justify-content: center;
 }
 
-.eastWestTerminus {
-    background-color: lightcoral;
-}
-
 .freePoint {
     background-color: goldenrod;
     text-shadow: 1px 1px 2px black;
@@ -125,18 +121,6 @@
     margin: 1px;
 }
 
-/* .collapsedContainer {
-    display: none !important;
-    overflow: hidden;
-    background-color: #f1f1f1;
-}
-
-.collapsibleContainer {
-    position: relative;
-    min-height: 30px;
-    min-width: 970px;
-} */
-
 .collapseButton {
     position: absolute;
     top: 10px;
@@ -148,6 +132,19 @@
     overflow: auto;
     height: 200px;
     border: solid;
+}
+
+/* ------------------- EAST WEST POINTS ------------------ */
+.eastWestTerminus {
+    background-color: lightcoral;
+}
+
+#eastWestTracker {
+    height: 100px;
+    width: 200px;
+    background-color: lightcoral;
+    border-color: black;
+    border-style: solid;
 }
 
 /* ---------------------------- Coellen Special Area --------------------------------------*/
