@@ -29,8 +29,7 @@ export const createScoreModal = (playerArray, winnerArray, victoryType) => {
     }
     const scoreBanner = createDivWithClassAndIdAndStyle(['banner'], 'scoreModalBanner')
     scoreBanner.innerHTML = `The game has ended. <br> ${bannerHTML}`;
-    // HERE!
-    // Now we should iterate over all the types of points and create a column for each
+
     const scoreTable = document.createElement('table')
     scoreTable.id = 'scoreTable'
     const headerRow = document.createElement('tr')

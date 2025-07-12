@@ -22,7 +22,9 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/11        
+* 7/13     
+    * Now I need to do the logic for adding pieces to eastWest. We do *not* need an onclick handler
+
     * Let's start by moving the map related constants to their own file
         - **WHILE working on the map** 
             * expand the map dimensions
@@ -32,12 +34,14 @@ Note that the above links use the test data that gets populated on the server in
     2. ~~Let's add the color based on `eastWestTerminus`~~
     3. ~~Then move the Coellen Bonus and add warburg. ~~
     4. Then create the eastern most tracker (like first to complete route)
-        * Should have the same background color as the terminus cities
-        * follow the coellen example
-        * maybe try to style it a little? like how it is on the actual board going down/right with slashes
+        * ~~Should have the same background color as the terminus cities~~
+        * ~~follow the coellen example~~
+        * ~~maybe try to style it a little? like how it is on the actual board going down/right with slashes~~
         * maybe generalize the `coellenPoint` to `specialPoint` or something like that? Unlockable point?
     5. Then write the logic to add a piece and give points 
     5. Then write a graph traversal, it should be called whenever a city is captured. I think we can use what I already have. Then I can use the add piece 
+
+    // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
 
 
     *  Now that the map has been refactored I can begin adding new cities. Maybe I should work on east/west now?

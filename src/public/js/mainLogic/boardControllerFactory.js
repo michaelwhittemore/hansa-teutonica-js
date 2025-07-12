@@ -265,12 +265,10 @@ export const boardControllerFactory = () => {
 
             const textBanner = createDivWithClassAndIdAndStyle(['banner'])
             textBanner.innerText = 'East-West Connection Bonus'
-            // need to replace 'cityPieceArea'
             const circleHolder = createDivWithClassAndIdAndStyle([], 'eastWestPieceArea')
 
-            // HERE!!
-            // might actually need the index to move each piece towards the right
-            const lineCoordinates = [[15, 15], [35, 0]];
+            // offset takes the form of [left px, bottom px]
+            const lineCoordinates = [[17, 17], [35, 0]];
 
             EAST_WEST_POINTS.forEach((pointValue, index) => {
                 const eastWestSpotDiv = createDivWithClassAndIdAndStyle(['circle', 'worker-holder', 'eastWestHolder',
@@ -284,19 +282,23 @@ export const boardControllerFactory = () => {
                 if (index < 2) {
                     const lineElement = document.createElement('hr')
                     lineElement.classList.add('eastWestLine')
-                    console.log(lineElement.style.transform)
                     lineElement.style.left = `${lineCoordinates[index][0]}px`
                     lineElement.style.bottom = `${lineCoordinates[index][1]}px`
 
                     circleHolder.append(lineElement)
                 } 
-                // I like left: 15px;, bottom: 15px; for the first line
-
             })
             eastWestPointTrackerDiv.append(textBanner, circleHolder)
 
             document.getElementById('gameBoard').append(eastWestPointTrackerDiv)
             translateElement(eastWestPointTrackerDiv, location[0], location[1])
+        },
+        addPieceToEastWestPoints(pointValue, playerColor){
+            console.log(pointValue, playerColor)
+            // here!
+            // should be pretty simple. Just delete the points and add the colored circle
+            // FYI, we use the point value, i.e. `eastWestPoint-7` 
+
         },
     }
     logicBundle.boardController = boardController;

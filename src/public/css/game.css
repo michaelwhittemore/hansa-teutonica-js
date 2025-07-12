@@ -159,6 +159,10 @@
     position: relative;
 }
 
+#eastWestPieceArea{
+    margin: 2px;
+}
+
 /* ---------------------------- Coellen Special Area --------------------------------------*/
 
 #coellenSpecialArea {
