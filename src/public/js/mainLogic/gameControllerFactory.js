@@ -2,8 +2,10 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import { Player } from "./PlayerClass.js";
 import { clientWebSocketControllerFactory } from "./clientWebSocketControllerFactory.js";
 import { FIRST_PLAYER_SQUARES, STARTING_TOKENS, TOKEN_READABLE_NAMES, REGULAR_TOKENS } from "../helpers/constants.js";
-import { TOKEN_CONFIG_BY_ROUTES, BOARD_CONFIG_CITIES, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
-    COELLEN_SPECIAL_COLORS, EAST_WEST_TRACKER_LOCATION } from "../helpers/boardMapData.js";
+import {
+    TOKEN_CONFIG_BY_ROUTES, BOARD_CONFIG_CITIES, COELLEN_SPECIAL_LOCATION, COELLEN_SPECIAL_POINTS,
+    COELLEN_SPECIAL_COLORS, EAST_WEST_TRACKER_LOCATION, EAST_WEST_POINTS
+} from "../helpers/boardMapData.js";
 import { getRouteIdFromNodeId, pluralifyText, shuffleArray, } from "../helpers/helpers.js";
 import {
     unlockActionsToValue, unlockPurseToValue, unlockColorsToValue,
@@ -69,10 +71,11 @@ export const gameControllerFactory = () => {
             }
             logicBundle.logController.setUpChatInput(handleChatMessageSend)
 
-
+            // TODO - move these fields into a 'gameState'
             this.routeStorageObject = {}
             this.cityStorageObject = {};
             this.coellenSpecialAreaObject = {};
+            this.eastWestStorageObject = {};
             this.moveInformation = {};
             this.bumpInformation = {};
             this.tokenPlacementInformation = {};
@@ -165,10 +168,9 @@ export const gameControllerFactory = () => {
                 }
             })
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
-            // dev
             logicBundle.boardController.createEastWestPointTracker(EAST_WEST_TRACKER_LOCATION)
-                // HERE! DELETE THIS 
-    logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
+            // dev DELETE THIS (I just wanted to be able to see all the tokens when adding new cities)
+            // logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
         getActivePlayer() {
             // This works because we're using the index of the player
@@ -1165,6 +1167,37 @@ export const gameControllerFactory = () => {
             console.error('We should never reach here')
 
         },
+        eastWestRouteCompleted(player) {
+            // logicBundle.gameController.eastWestRouteCompleted(logicBundle.gameController.playerArray[0])
+
+            // here! 
+            // this will be triggered somewhere in captureCity I believe. We may not need to bother with 
+            // the network check if that player already has completed or there's none left
+            // let's follow this.coellenSpecialAreaObject
+            if (player.hasCompletedEastWestRoute) {
+                console.error(`${player.name} has already completed an East-West route`)
+                return;
+            }
+            const claimedRoutes = Object.keys(this.eastWestStorageObject).length;
+            if (claimedRoutes === 3) {
+                // Maybe this shouldn't be an error? - I guess the idea is we should even do the network in the
+                // city capture function in this case.
+                console.error('East West route already full.')
+                return;
+            }
+            const highestAvailablePoints = EAST_WEST_POINTS[claimedRoutes]
+            console.log('highestAvailablePoints', highestAvailablePoints)
+            // need to start by seeing which one is open
+            // let's add a 'hasCompletedEastWest' field to player class
+            console.log(player)
+            console.log(this.eastWestStorageObject)
+            /* 
+                2. Will need to add points
+                3. Will need to call the boardController method I just implemented. 
+                4. Will need to log it.
+                5. Will need to load in everything during save/loading
+            */
+        },
         routeCompleted(routeId, player) {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
             const route = this.routeStorageObject[routeId]
@@ -1722,6 +1755,8 @@ export const gameControllerFactory = () => {
             window.localStorage.setItem('cityStorageObject', JSON.stringify(this.cityStorageObject))
             window.localStorage.setItem('routeStorageObject', JSON.stringify(this.routeStorageObject))
             window.localStorage.setItem('coellenSpecialAreaObject', JSON.stringify(this.coellenSpecialAreaObject))
+            window.localStorage.setItem('eastWestStorageObject', JSON.stringify(this.eastWestStorageObject))
+
         },
         loadGame() {
             this.playerArray = JSON.parse(window.localStorage.getItem('playerArray'));
@@ -1729,6 +1764,8 @@ export const gameControllerFactory = () => {
             this.cityStorageObject = JSON.parse(window.localStorage.getItem('cityStorageObject'));
             this.routeStorageObject = JSON.parse(window.localStorage.getItem('routeStorageObject'));
             this.coellenSpecialAreaObject = JSON.parse(window.localStorage.getItem('coellenSpecialAreaObject'));
+            this.eastWestStorageObject = JSON.parse(window.localStorage.getItem('eastWestStorageObject'));
+
             this.regularTokensArray = JSON.parse(window.localStorage.getItem('regularTokensArray'));
             this.currentTurn = window.localStorage.getItem('currentTurn');
             // Point tracker
@@ -1765,11 +1802,13 @@ export const gameControllerFactory = () => {
                     }
                 })
             })
-
+            // Coellen
             Object.keys(this.coellenSpecialAreaObject).forEach(spotNumber => {
                 const { color } = this.coellenSpecialAreaObject[spotNumber]
                 logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, color)
             })
+            // East-West
+            // here!
 
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())

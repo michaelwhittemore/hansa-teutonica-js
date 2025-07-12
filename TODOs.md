@@ -24,21 +24,21 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/13     
     * Now I need to do the logic for adding pieces to eastWest. We do *not* need an onclick handler
+    * Now I need to create a gameController method. 
+        1. We will need to add to the game storage what has been claimed and by who
+            - Possibly create a  `gameState` object.
+        2. Will need to add points
+        3. Will need to call the boardController method I just implemented. 
+        4. Will need to load in everything during save/loading
+        4. Will need to log it.
+        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city
 
     * Let's start by moving the map related constants to their own file
         - **WHILE working on the map** 
             * expand the map dimensions
             * turn on all tokens with the toggle `logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')`
             * maybe look into autoscroll
-    1. ~~Now Let's create an Easternmost city~~
-    2. ~~Let's add the color based on `eastWestTerminus`~~
-    3. ~~Then move the Coellen Bonus and add warburg. ~~
-    4. Then create the eastern most tracker (like first to complete route)
-        * ~~Should have the same background color as the terminus cities~~
-        * ~~follow the coellen example~~
-        * ~~maybe try to style it a little? like how it is on the actual board going down/right with slashes~~
-        * maybe generalize the `coellenPoint` to `specialPoint` or something like that? Unlockable point?
-    5. Then write the logic to add a piece and give points 
+
     5. Then write a graph traversal, it should be called whenever a city is captured. I think we can use what I already have. Then I can use the add piece 
 
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
@@ -219,6 +219,6 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * I am inconsistent in using 'Id' vs 'ID' in variable names
 * Maybe switch to nginx - seems like a useful application to know 
 
-// collapse all = cmd-k and then cmd-0
+// collapse all = cmd-k and then cmd-0 (that's a zero)
 // unfold all - cmd-k and then cmd-j
 // jump to line number - can click on the goto at the bottom of the page (i.e. "Ln 127, Col 87")

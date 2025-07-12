@@ -30,5 +30,6 @@ export class Player {
             colors: 0,
             keys: 0,
         }
+        this.hasCompletedEastWestRoute = false;
     }
 }

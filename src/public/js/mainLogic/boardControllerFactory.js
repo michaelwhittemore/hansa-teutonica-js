@@ -294,11 +294,15 @@ export const boardControllerFactory = () => {
             translateElement(eastWestPointTrackerDiv, location[0], location[1])
         },
         addPieceToEastWestPoints(pointValue, playerColor){
-            console.log(pointValue, playerColor)
             // here!
-            // should be pretty simple. Just delete the points and add the colored circle
-            // FYI, we use the point value, i.e. `eastWestPoint-7` 
+            // TODO, there's some copy paste between here, colleen points, and free city points.
+            // Maybe move some logic to shared function?
+            const eastWestHolder = document.getElementById(`eastWestHolder-${pointValue}`)
+            document.getElementById(`eastWestPoint-${pointValue}`).remove()
 
+            const playerPieceDiv = createDivWithClassAndIdAndStyle(['small-worker', 'circle'],
+                `eastWestPlayer-${pointValue}`, { backgroundColor: playerColor })
+            eastWestHolder.append(playerPieceDiv)
         },
     }
     logicBundle.boardController = boardController;
