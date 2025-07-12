@@ -294,7 +294,7 @@ export const boardControllerFactory = () => {
             translateElement(eastWestPointTrackerDiv, location[0], location[1])
         },
         addPieceToEastWestPoints(pointValue, playerColor){
-            // here!
+            // dev
             // TODO, there's some copy paste between here, colleen points, and free city points.
             // Maybe move some logic to shared function?
             const eastWestHolder = document.getElementById(`eastWestHolder-${pointValue}`)

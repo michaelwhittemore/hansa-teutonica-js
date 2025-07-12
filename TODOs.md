@@ -31,7 +31,8 @@ Note that the above links use the test data that gets populated on the server in
         3. Will need to call the boardController method I just implemented. 
         4. Will need to load in everything during save/loading
         4. Will need to log it.
-        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city
+        * **HERE!** currently working on loading in bug on UI
+        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city 
 
     * Let's start by moving the map related constants to their own file
         - **WHILE working on the map** 
@@ -72,7 +73,7 @@ Note that the above links use the test data that gets populated on the server in
 ----------------------
 * Broader list
     * Add a database. Perhaps I should research which one is most in demand for developers? This is just for learning after all. 
-    
+    * should I log if the game will end this turn?
     * Disconnect for main game
         * How do I want to approach this? I'm thinking of having a 'pause' where no actions can be taken? 
         * Maybe we can do this in the same place as validation??

@@ -1170,10 +1170,6 @@ export const gameControllerFactory = () => {
         eastWestRouteCompleted(player) {
             // logicBundle.gameController.eastWestRouteCompleted(logicBundle.gameController.playerArray[0])
 
-            // here! 
-            // this will be triggered somewhere in captureCity I believe. We may not need to bother with 
-            // the network check if that player already has completed or there's none left
-            // let's follow this.coellenSpecialAreaObject
             if (player.hasCompletedEastWestRoute) {
                 console.error(`${player.name} has already completed an East-West route`)
                 return;
@@ -1186,17 +1182,16 @@ export const gameControllerFactory = () => {
                 return;
             }
             const highestAvailablePoints = EAST_WEST_POINTS[claimedRoutes]
-            console.log('highestAvailablePoints', highestAvailablePoints)
-            // need to start by seeing which one is open
-            // let's add a 'hasCompletedEastWest' field to player class
-            console.log(player)
-            console.log(this.eastWestStorageObject)
-            /* 
-                2. Will need to add points
-                3. Will need to call the boardController method I just implemented. 
-                4. Will need to log it.
-                5. Will need to load in everything during save/loading
-            */
+
+            // here! 
+            this.eastWestStorageObject[highestAvailablePoints] = player.color
+            player.hasCompletedEastWestRoute = true;
+
+            this.scorePoints(highestAvailablePoints, player)
+            logicBundle.boardController.addPieceToEastWestPoints(highestAvailablePoints, player.color)
+
+            const pointScoreText = '$PLAYER1_NAME has completed an East-West route.'
+            logicBundle.logController.addTextToGameLog(pointScoreText, player)
         },
         routeCompleted(routeId, player) {
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has completed route ${routeId}`, player)
@@ -1808,8 +1803,9 @@ export const gameControllerFactory = () => {
                 logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, color)
             })
             // East-West
-            // here!
-
+            Object.keys(this.eastWestStorageObject).forEach(pointValue=> {
+                logicBundle.boardController.addPieceToEastWestPoints(pointValue, this.eastWestStorageObject[pointValue])
+            })
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             if (logicBundle.sessionInfo.isHotseatMode) {
