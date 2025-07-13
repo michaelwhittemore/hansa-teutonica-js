@@ -114,8 +114,6 @@ export const gameControllerFactory = () => {
                 }
             })
             Object.keys(boardConfig).forEach(cityKey => {
-                // dev
-                // here!
                 const city = boardConfig[cityKey]
                 if (city.neighborRoutes) {
                     city.neighborRoutes.forEach(routeArray => {
@@ -158,20 +156,10 @@ export const gameControllerFactory = () => {
                         addRoutesToCity(cityKey)
                         addRoutesToCity(neighborCityName)
 
-                        // here!
-                        // this isn't sufficent. We need to follow the example of addRoutesToCity
-                        // console.log(cityKey, neighborCityName)
-                        // this.cityStorageObject[cityKey].neighboringCities.push(neighborCityName)
-                        // Cities should track their neighbors
-                        const addNeighborsToCity = (cityName) => {
-                            // This might not work, I still don't fully remeber what is happening here
-                            const cityToModify = this.cityStorageObject[cityName]
-                            if (!cityToModify.neighboringCities.includes(neighborCityName)) {
-                                cityToModify.neighboringCities.push(neighborCityName)
-                            }
-                        }
-                        addNeighborsToCity(cityKey)
-                        addNeighborsToCity(neighborCityName)
+                        // Notes that this logic assumes that the board config only has one neighborRoute I.E. 
+                        // We have Alpha -> Beta but NOT  Beta -> Alpha
+                        this.cityStorageObject[cityKey].neighboringCities.push(neighborCityName)
+                        this.cityStorageObject[neighborCityName].neighboringCities.push(cityKey)
 
                         for (let i = 0; i < length; i++) {
                             const nodeId = `${routeId}-${i}`
