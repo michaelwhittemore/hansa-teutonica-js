@@ -32,7 +32,7 @@ Note that the above links use the test data that gets populated on the server in
         3. getRouteIdFromNodeId??
         * While I'm at it, I should create a 'landing room/waiting room helper file'
 
-
+    * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
 
 

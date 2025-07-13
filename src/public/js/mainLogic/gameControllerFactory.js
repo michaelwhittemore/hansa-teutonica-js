@@ -1214,6 +1214,7 @@ export const gameControllerFactory = () => {
                 }
                 searchCounter++;
             }
+            console.warn('False at searchCounter = ', searchCounter)
             return false;
         },
         checkIfPlayerIsPresentInCity(playerId, cityName) {
