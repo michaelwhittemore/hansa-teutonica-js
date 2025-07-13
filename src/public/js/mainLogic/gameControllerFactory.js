@@ -1180,47 +1180,43 @@ export const gameControllerFactory = () => {
             // logicBundle.gameController.checkEastWestRouteByPlayerId(logicBundle.gameController.playerArray[0].id)
             console.log(this.cityStorageObject)
             // The below code is correct, but I don't want it for testing
-            // if (!this.checkIfPlayerIsPresentInCity(playerId, 'Arnheim') ||
-            //     !this.checkIfPlayerIsPresentInCity(playerId, 'Stendal')) {
-            //     console.warn('Player not in both Arnheim and Stendal')
-            //     return false;
-            // }
-
-            // dev
-            console.log('in both!')
-            // Now we need to actually do the graph transversal - look to checkThatLocationIsAdjacent
-
-            // Maybe while testing we just return 'true' for all instead of using checkIfPlayerIsPresentInCity
-            /* 1. 
-                Start with Arnheim. 
-                2. Create a list of cities to check (just Arnheim)
-                3. create a list of already check cities
-                3. Check if player controls the current city
-                4. If they do we add all the cities neighbors (if they haven't yet been checked)
-                3. 
-            */
+            if (!this.checkIfPlayerIsPresentInCity(playerId, 'Arnheim') ||
+                !this.checkIfPlayerIsPresentInCity(playerId, 'Stendal')) {
+                console.warn('Player not in both Arnheim and Stendal')
+                return false;
+            }
             // here!
-
             const citiesToCheck = ['Arnheim']
-            const citiesAlreadyCheck = []
-            let failSafe = 0;
-            while(citiesToCheck.length > 0){
-                const currentlyCheckedCity = this.cityStorageObject[citiesToCheck.shift()]
-                console.log(currentlyCheckedCity)
-                // cities should know their neighbors. Let me add that. 
-                // Need to be in `Object.keys(boardConfig).forEach(cityKey => {`
+            const citiesAlreadyChecked = []
+            let searchCounter = 0;
+            while (citiesToCheck.length > 0) {
+                const currentCityName = citiesToCheck.shift()
+                const currentlyCheckedCity = this.cityStorageObject[currentCityName];
+                console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
+                // Need to end at Stendal - 
+                if (currentCityName === 'Stendal'){
+                    console.log('We hit stendal at searchCounter =', searchCounter)
+                    return true
+                }
+                if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)){
+                    currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
+                    if (!citiesAlreadyChecked.includes(neighborCityName) && !citiesToCheck.includes(neighborCityName)) {
+                        citiesToCheck.push(neighborCityName)
+                    }
+                })
+                }
+                citiesAlreadyChecked.push(currentCityName)
 
-
-                if (failSafe > 20){
-                    console.error('Hit failsafe BFS limit, breaking')
+                // This is a fail safe against infinite loops
+                if (searchCounter > 25) {
+                    console.error('Hit searchCounter BFS limit, breaking')
                     break;
                 }
-                failSafe++;
+                searchCounter++;
             }
-
+            return false;
         },
         checkIfPlayerIsPresentInCity(playerId, cityName) {
-            // dev
             const city = this.cityStorageObject[cityName]
             for (const occupant of city.occupants) {
                 if (playerId === occupant) {
