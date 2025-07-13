@@ -832,7 +832,6 @@ export const gameControllerFactory = () => {
             // We are starting from the displaced node and radiating outward, check each un-checked route for 
             // either a matching routeId or a route with an unoccupied node (without finding a match on
             // that iteration number)
-            // dev
             const hasAnUnoccupiedNode = (route) => {
                 let unoccupied = false;
                 for (let nodeId in route.routeNodes) {
@@ -954,6 +953,18 @@ export const gameControllerFactory = () => {
             this.routeCompleted(routeId, player);
             city.occupants.push(playerId);
             city.openSpotIndex++;
+
+            // We don't bother checking if the player has already claimed their points or if all
+            // three spots have already been taken
+            if (!player.hasCompletedEastWestRoute && Object.keys(this.eastWestStorageObject).length < 3) {
+                if (this.checkEastWestRouteByPlayerId(playerId)) {
+                    this.eastWestRouteCompleted(player)
+                }
+            } else {
+                // CAN DELETE THIS ELSE BLOCK
+                console.log('player.hasCompletedEastWestRoute', player.hasCompletedEastWestRoute)
+                console.log('Object.keys(this.eastWestStorageObject).length', Object.keys(this.eastWestStorageObject).length)
+            }
 
             let didUseABonusPost = false;
             if (this.tokenUsageInformation.tokenAction === 'bonusPost' || onlineUsedBonusToken) {
@@ -1178,14 +1189,12 @@ export const gameControllerFactory = () => {
         checkEastWestRouteByPlayerId(playerId) {
             // TODO - This can be moved into the yet-to-be-created helper file (gameControllerHelpers??)
             // logicBundle.gameController.checkEastWestRouteByPlayerId(logicBundle.gameController.playerArray[0].id)
-            console.log(this.cityStorageObject)
-            // The below code is correct, but I don't want it for testing
+
             if (!this.checkIfPlayerIsPresentInCity(playerId, 'Arnheim') ||
                 !this.checkIfPlayerIsPresentInCity(playerId, 'Stendal')) {
-                console.warn('Player not in both Arnheim and Stendal')
                 return false;
             }
-            // here!
+            // dev
             const citiesToCheck = ['Arnheim']
             const citiesAlreadyChecked = []
             let searchCounter = 0;
@@ -1193,17 +1202,17 @@ export const gameControllerFactory = () => {
                 const currentCityName = citiesToCheck.shift()
                 const currentlyCheckedCity = this.cityStorageObject[currentCityName];
                 console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
-                // Need to end at Stendal - 
-                if (currentCityName === 'Stendal'){
+                // Need to end at Stendal
+                if (currentCityName === 'Stendal') {
                     console.log('We hit stendal at searchCounter =', searchCounter)
                     return true
                 }
-                if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)){
+                if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)) {
                     currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
-                    if (!citiesAlreadyChecked.includes(neighborCityName) && !citiesToCheck.includes(neighborCityName)) {
-                        citiesToCheck.push(neighborCityName)
-                    }
-                })
+                        if (!citiesAlreadyChecked.includes(neighborCityName) && !citiesToCheck.includes(neighborCityName)) {
+                            citiesToCheck.push(neighborCityName)
+                        }
+                    })
                 }
                 citiesAlreadyChecked.push(currentCityName)
 
@@ -1774,6 +1783,75 @@ export const gameControllerFactory = () => {
                     + coellenPoints + controlledCityPoints + networkPoints,
             }
             return playerPointObject
+        },
+        findSubNetwork(city, playerId) {
+            // This methods assumes that the player is already present in the city
+            // It might be worth using playerId instead of player??
+            // logicBundle.gameController.findSubNetwork(logicBundle.gameController.cityStorageObject['Alpha'],logicBundle.gameController.playerArray[0].id)
+            if (!this.checkIfPlayerIsPresentInCity(playerId, city.cityName)) {
+                console.error(`${playerId} does not have a post in ${city.cityName}, findSubNetwork should not have been called`);
+                return
+            }
+
+            let totalTradingPosts = 0;
+            const citiesInThisNetwork = []
+            
+            const citiesToCheck = [city.name]
+            const citiesAlreadyChecked = []
+            // I'm worried about if I look at this city in a different route. Intuitively, I don't think this
+            // should be an issue if we have a cities visited in the outer function, but something to consider
+            let searchCounter = 0;
+            while (citiesToCheck.length > 0) {
+                const currentCityName = citiesToCheck.shift()
+                const currentlyCheckedCity = this.cityStorageObject[currentCityName];
+                console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
+
+                if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)) {
+                    // this will need to be different
+                    currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
+                        if (!citiesAlreadyChecked.includes(neighborCityName) && !citiesToCheck.includes(neighborCityName)) {
+                            citiesToCheck.push(neighborCityName)
+                        }
+                    })
+                    citiesInThisNetwork.push(currentCityName)
+                    totalTradingPosts += this.countPlayerTradingPostsInCity(city, playerId)
+                }
+                citiesAlreadyChecked.push(currentCityName)
+
+                // This is a fail safe against infinite loops
+                if (searchCounter > 25) {
+                    console.error('Hit searchCounter BFS limit, breaking')
+                    break;
+                }
+                searchCounter++;
+            }
+            console.log('Ended the search loop', citiesInThisNetwork)
+
+            // here! 
+            // so what will this return? I guess the total subnetwork. And also the number of trading posts involved
+            // Remember that the actual score is based on the number of trading posts. I guess will need yet another
+            // helper for it.
+
+            // Remember to add to citiesInThisNetwork to some kind of checked citiesArray in calculateTotalScore
+            // Or maybe we have a 'calculateLargestNetwork' function
+            console.log('totalTradingPosts', totalTradingPosts)
+        },
+        countPlayerTradingPostsInCity(city, playerId) {
+            console.log(city, playerId)
+            let bonusTradingPosts = 0;
+            city.bonusSpotOccupantArray.forEach(bonusIdArr => {
+                if (bonusIdArr[0] === playerId){
+                    bonusTradingPosts++;
+                }
+            })
+            let standardTradingPosts = 0;
+            city.occupants.forEach(occupantId => {
+                if (occupantId === playerId){
+                    standardTradingPosts++;
+                }
+            })
+            console.log('bonusTradingPosts',bonusTradingPosts, 'standardTradingPosts', standardTradingPosts)
+            return bonusTradingPosts + standardTradingPosts;
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
             if (logicBundle.sessionInfo.isHotseatMode) {

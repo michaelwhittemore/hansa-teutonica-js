@@ -9,13 +9,11 @@ export class Player {
         this.name = name;
         // this.supplySquares = startingPieces;
         this.supplySquares = 50; // Just for testing
-
         this.bankedSquares = STARTING_BANK - startingPieces;
         this.supplyCircles = 1;
         this.bankedCircles = 0;
         // this.maxActions = 2; // Not to be confused with current actions
         this.maxActions = 50; // Just for testing
-
         this.currentActions = this.maxActions;
         this.currentPoints = 0;
         // this.currentTokens = []; // TODO Revert this once I'm done testing

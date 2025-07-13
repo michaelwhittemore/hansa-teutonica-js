@@ -23,14 +23,12 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/13     
-    * Now I need to do the logic for adding pieces to eastWest. We do *not* need an onclick handler
-    * Now I need to create a gameController method. 
-        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city **HERE!** 
-    * Methods to move to gameControllerHelpers (remember that will need to remove 'this' and pass in cityStorageObject because we will no longer have direct access. Maybe use param object??). It's also possible that instead we should have a 'helpers' property of the gameController. That way I don't need to pass in the route/city storage every time
-        1. checkIfPlayerIsPresentInCity
-        2. checkEastWestRoute
-        3. getRouteIdFromNodeId??
-        * While I'm at it, I should create a 'landing room/waiting room helper file'
+    * I think we're officially done with the East-West route points
+    * **HERE!** Starting on network points while I'm fresh on the bfs algorithm
+        * We will need to call this as part of this.endGame (specifically calculateTotalScore)
+        * Where do we start, given that the player could have multiple network?
+            * I think we iterate through the cityStorage and check using checkIfPlayerIsPresentInCity
+            * We will have two separate arrays of already checked cities, one within the helper and one outside it to prevent us from checking the network a second time
 
     * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
