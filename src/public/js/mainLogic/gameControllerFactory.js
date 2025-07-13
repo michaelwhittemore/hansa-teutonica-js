@@ -110,9 +110,12 @@ export const gameControllerFactory = () => {
                     ownElement: cityDiv,
                     routes: [],
                     freePoint: !!city.freePoint,
+                    neighboringCities: [],
                 }
             })
             Object.keys(boardConfig).forEach(cityKey => {
+                // dev
+                // here!
                 const city = boardConfig[cityKey]
                 if (city.neighborRoutes) {
                     city.neighborRoutes.forEach(routeArray => {
@@ -154,6 +157,22 @@ export const gameControllerFactory = () => {
                         }
                         addRoutesToCity(cityKey)
                         addRoutesToCity(neighborCityName)
+
+                        // here!
+                        // this isn't sufficent. We need to follow the example of addRoutesToCity
+                        // console.log(cityKey, neighborCityName)
+                        // this.cityStorageObject[cityKey].neighboringCities.push(neighborCityName)
+                        // Cities should track their neighbors
+                        const addNeighborsToCity = (cityName) => {
+                            // This might not work, I still don't fully remeber what is happening here
+                            const cityToModify = this.cityStorageObject[cityName]
+                            if (!cityToModify.neighboringCities.includes(neighborCityName)) {
+                                cityToModify.neighboringCities.push(neighborCityName)
+                            }
+                        }
+                        addNeighborsToCity(cityKey)
+                        addNeighborsToCity(neighborCityName)
+
                         for (let i = 0; i < length; i++) {
                             const nodeId = `${routeId}-${i}`
                             this.routeStorageObject[routeId].routeNodes[nodeId] = {
@@ -1179,7 +1198,6 @@ export const gameControllerFactory = () => {
             //     return false;
             // }
 
-            // here!
             // dev
             console.log('in both!')
             // Now we need to actually do the graph transversal - look to checkThatLocationIsAdjacent
@@ -1193,10 +1211,18 @@ export const gameControllerFactory = () => {
                 4. If they do we add all the cities neighbors (if they haven't yet been checked)
                 3. 
             */
+            // here!
+
             const citiesToCheck = ['Arnheim']
             const citiesAlreadyCheck = []
             let failSafe = 0;
             while(citiesToCheck.length > 0){
+                const currentlyCheckedCity = this.cityStorageObject[citiesToCheck.shift()]
+                console.log(currentlyCheckedCity)
+                // cities should know their neighbors. Let me add that. 
+                // Need to be in `Object.keys(boardConfig).forEach(cityKey => {`
+
+
                 if (failSafe > 20){
                     console.error('Hit failsafe BFS limit, breaking')
                     break;
