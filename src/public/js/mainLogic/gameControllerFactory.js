@@ -1199,7 +1199,7 @@ export const gameControllerFactory = () => {
             const citiesAlreadyChecked = []
             let searchCounter = 0;
             while (citiesToCheck.length > 0) {
-                const currentCityName = citiesToCheck.shift()
+                const currentCityName = citiesToCheck.pop()
                 const currentlyCheckedCity = this.cityStorageObject[currentCityName];
                 console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
                 // Need to end at Stendal
@@ -1784,28 +1784,28 @@ export const gameControllerFactory = () => {
             }
             return playerPointObject
         },
-        findSubNetwork(city, playerId) {
+        findSubNetwork(startingCity, playerId) {
             // This methods assumes that the player is already present in the city
             // It might be worth using playerId instead of player??
             // logicBundle.gameController.findSubNetwork(logicBundle.gameController.cityStorageObject['Alpha'],logicBundle.gameController.playerArray[0].id)
-            if (!this.checkIfPlayerIsPresentInCity(playerId, city.cityName)) {
-                console.error(`${playerId} does not have a post in ${city.cityName}, findSubNetwork should not have been called`);
+            if (!this.checkIfPlayerIsPresentInCity(playerId, startingCity.cityName)) {
+                console.error(`${playerId} does not have a post in ${startingCity.cityName}, findSubNetwork should not have been called`);
                 return
             }
 
             let totalTradingPosts = 0;
             const citiesInThisNetwork = []
             
-            const citiesToCheck = [city.name]
+            const citiesToCheck = [startingCity.cityName]
             const citiesAlreadyChecked = []
             // I'm worried about if I look at this city in a different route. Intuitively, I don't think this
             // should be an issue if we have a cities visited in the outer function, but something to consider
             let searchCounter = 0;
             while (citiesToCheck.length > 0) {
-                const currentCityName = citiesToCheck.shift()
+                const currentCityName = citiesToCheck.pop()
                 const currentlyCheckedCity = this.cityStorageObject[currentCityName];
                 console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
-
+                // debugger;
                 if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)) {
                     // this will need to be different
                     currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
@@ -1814,7 +1814,7 @@ export const gameControllerFactory = () => {
                         }
                     })
                     citiesInThisNetwork.push(currentCityName)
-                    totalTradingPosts += this.countPlayerTradingPostsInCity(city, playerId)
+                    totalTradingPosts += this.countPlayerTradingPostsInCity(currentlyCheckedCity, playerId)
                 }
                 citiesAlreadyChecked.push(currentCityName)
 
@@ -1826,12 +1826,6 @@ export const gameControllerFactory = () => {
                 searchCounter++;
             }
             console.log('Ended the search loop', citiesInThisNetwork)
-
-            // here! 
-            // so what will this return? I guess the total subnetwork. And also the number of trading posts involved
-            // Remember that the actual score is based on the number of trading posts. I guess will need yet another
-            // helper for it.
-
             // Remember to add to citiesInThisNetwork to some kind of checked citiesArray in calculateTotalScore
             // Or maybe we have a 'calculateLargestNetwork' function
             console.log('totalTradingPosts', totalTradingPosts)
