@@ -25,33 +25,19 @@ Note that the above links use the test data that gets populated on the server in
 * 7/13     
     * Now I need to do the logic for adding pieces to eastWest. We do *not* need an onclick handler
     * Now I need to create a gameController method. 
-        1. We will need to add to the game storage what has been claimed and by who
-            - Possibly create a  `gameState` object.
-        2. Will need to add points
-        3. Will need to call the boardController method I just implemented. 
-        4. Will need to load in everything during save/loading
-        4. Will need to log it.
-        * **HERE!** currently working on loading in bug on UI
-        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city 
+        4. Finally we will need to actually trigger this method. This will involve calling the graph traversal while capturing a city **HERE!** 
+    * Methods to move to gameControllerHelpers (remember that will need to remove 'this' and pass in cityStorageObject because we will no longer have direct access. Maybe use param object??). It's also possible that instead we should have a 'helpers' property of the gameController. That way I don't need to pass in the route/city storage every time
+        1. checkIfPlayerIsPresentInCity
+        2. checkEastWestRoute
+        3. getRouteIdFromNodeId??
+        * While I'm at it, I should create a 'landing room/waiting room helper file'
 
-    * Let's start by moving the map related constants to their own file
-        - **WHILE working on the map** 
-            * expand the map dimensions
-            * turn on all tokens with the toggle `logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')`
-            * maybe look into autoscroll
-
-    5. Then write a graph traversal, it should be called whenever a city is captured. I think we can use what I already have. Then I can use the add piece 
 
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
 
 
-    *  Now that the map has been refactored I can begin adding new cities. Maybe I should work on east/west now?
-    * I can also test triggering endgame in an online game
     * Perhaps I should start on my portfolio?
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 
-    * East-West Cities. Will need to create the city, create the board component, and and a check when ANY city is captured (as a middle one could trigger it)
-
-
 
     * Endgame points - 
         * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value

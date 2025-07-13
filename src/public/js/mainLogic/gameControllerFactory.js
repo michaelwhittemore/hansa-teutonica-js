@@ -825,6 +825,7 @@ export const gameControllerFactory = () => {
             // We are starting from the displaced node and radiating outward, check each un-checked route for 
             // either a matching routeId or a route with an unoccupied node (without finding a match on
             // that iteration number)
+            // dev
             const hasAnUnoccupiedNode = (route) => {
                 let unoccupied = false;
                 for (let nodeId in route.routeNodes) {
@@ -1167,6 +1168,53 @@ export const gameControllerFactory = () => {
             console.error('We should never reach here')
 
         },
+        checkEastWestRouteByPlayerId(playerId) {
+            // TODO - This can be moved into the yet-to-be-created helper file (gameControllerHelpers??)
+            // logicBundle.gameController.checkEastWestRouteByPlayerId(logicBundle.gameController.playerArray[0].id)
+            console.log(this.cityStorageObject)
+            // The below code is correct, but I don't want it for testing
+            // if (!this.checkIfPlayerIsPresentInCity(playerId, 'Arnheim') ||
+            //     !this.checkIfPlayerIsPresentInCity(playerId, 'Stendal')) {
+            //     console.warn('Player not in both Arnheim and Stendal')
+            //     return false;
+            // }
+
+            // here!
+            // dev
+            console.log('in both!')
+            // Now we need to actually do the graph transversal - look to checkThatLocationIsAdjacent
+
+            // Maybe while testing we just return 'true' for all instead of using checkIfPlayerIsPresentInCity
+            /* 1. 
+                Start with Arnheim. 
+                2. Create a list of cities to check (just Arnheim)
+                3. create a list of already check cities
+                3. Check if player controls the current city
+                4. If they do we add all the cities neighbors (if they haven't yet been checked)
+                3. 
+            */
+            const citiesToCheck = ['Arnheim']
+            const citiesAlreadyCheck = []
+            let failSafe = 0;
+            while(citiesToCheck.length > 0){
+                if (failSafe > 20){
+                    console.error('Hit failsafe BFS limit, breaking')
+                    break;
+                }
+                failSafe++;
+            }
+
+        },
+        checkIfPlayerIsPresentInCity(playerId, cityName) {
+            // dev
+            const city = this.cityStorageObject[cityName]
+            for (const occupant of city.occupants) {
+                if (playerId === occupant) {
+                    return true
+                }
+            }
+            return false
+        },
         eastWestRouteCompleted(player) {
             // logicBundle.gameController.eastWestRouteCompleted(logicBundle.gameController.playerArray[0])
 
@@ -1183,7 +1231,6 @@ export const gameControllerFactory = () => {
             }
             const highestAvailablePoints = EAST_WEST_POINTS[claimedRoutes]
 
-            // here! 
             this.eastWestStorageObject[highestAvailablePoints] = player.color
             player.hasCompletedEastWestRoute = true;
 
@@ -1803,7 +1850,7 @@ export const gameControllerFactory = () => {
                 logicBundle.boardController.addPieceToCoellenSpecialArea(spotNumber, color)
             })
             // East-West
-            Object.keys(this.eastWestStorageObject).forEach(pointValue=> {
+            Object.keys(this.eastWestStorageObject).forEach(pointValue => {
                 logicBundle.boardController.addPieceToEastWestPoints(pointValue, this.eastWestStorageObject[pointValue])
             })
             // Turn tracker
