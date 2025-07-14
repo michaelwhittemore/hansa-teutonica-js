@@ -25,6 +25,10 @@ Note that the above links use the test data that gets populated on the server in
 * 7/13     
     * I think we're officially done with the East-West route points
     * **HERE!** Starting on network points while I'm fresh on the bfs algorithm
+        * Need to test with multiple routes. 
+        * Need to add the outer logic for calling `findSubNetwork` within `calculateTotalScore` - remember that this only happens if the city hasn't already been checked before
+        * Need to actually return the network size (I don't think we will do keys in this method, we will use `calculateTotalScore` instead)
+
         * We will need to call this as part of this.endGame (specifically calculateTotalScore)
         * Where do we start, given that the player could have multiple network?
             * I think we iterate through the cityStorage and check using checkIfPlayerIsPresentInCity
@@ -33,6 +37,7 @@ Note that the above links use the test data that gets populated on the server in
     * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
 
+    * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
 
     * Perhaps I should start on my portfolio?
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 

@@ -1772,6 +1772,20 @@ export const gameControllerFactory = () => {
                 }
             })
 
+            // already have networkPoints, this is what is increased if we get a new max
+            let mostTradingPosts = 0;
+            const checkedCities = []; // Use array.concat or push with spread op
+            for (const [cityName, city] of Object.entries(this.cityStorageObject)) {
+                if (!checkedCities.includes(cityName) && this.checkIfPlayerIsPresentInCity(player.id, cityName)) {
+                    // here!
+                    const {citiesInThisNetwork, totalTradingPosts} = this.findSubNetwork(city, player.id)
+                    mostTradingPosts = Math.max(totalTradingPosts, mostTradingPosts);
+                    citiesInThisNetwork.push(...citiesInThisNetwork)
+                    console.log(citiesInThisNetwork, totalTradingPosts)
+                }
+            }
+            console.warn('AFTER THE LOOP mostTradingPosts', mostTradingPosts)
+
             const playerPointObject = {
                 prestigePoints,
                 tokenPoints,
@@ -1786,7 +1800,6 @@ export const gameControllerFactory = () => {
         },
         findSubNetwork(startingCity, playerId) {
             // This methods assumes that the player is already present in the city
-            // It might be worth using playerId instead of player??
             // logicBundle.gameController.findSubNetwork(logicBundle.gameController.cityStorageObject['Alpha'],logicBundle.gameController.playerArray[0].id)
             if (!this.checkIfPlayerIsPresentInCity(playerId, startingCity.cityName)) {
                 console.error(`${playerId} does not have a post in ${startingCity.cityName}, findSubNetwork should not have been called`);
@@ -1795,7 +1808,7 @@ export const gameControllerFactory = () => {
 
             let totalTradingPosts = 0;
             const citiesInThisNetwork = []
-            
+
             const citiesToCheck = [startingCity.cityName]
             const citiesAlreadyChecked = []
             // I'm worried about if I look at this city in a different route. Intuitively, I don't think this
@@ -1805,10 +1818,9 @@ export const gameControllerFactory = () => {
                 const currentCityName = citiesToCheck.pop()
                 const currentlyCheckedCity = this.cityStorageObject[currentCityName];
                 console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
-                // debugger;
                 if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)) {
-                    // this will need to be different
                     currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
+                        // We only add it to check if it hasn't been previously checked and we haven't already queued it
                         if (!citiesAlreadyChecked.includes(neighborCityName) && !citiesToCheck.includes(neighborCityName)) {
                             citiesToCheck.push(neighborCityName)
                         }
@@ -1825,26 +1837,26 @@ export const gameControllerFactory = () => {
                 }
                 searchCounter++;
             }
-            console.log('Ended the search loop', citiesInThisNetwork)
-            // Remember to add to citiesInThisNetwork to some kind of checked citiesArray in calculateTotalScore
-            // Or maybe we have a 'calculateLargestNetwork' function
-            console.log('totalTradingPosts', totalTradingPosts)
+            return {
+                citiesInThisNetwork,
+                totalTradingPosts,
+            }
         },
         countPlayerTradingPostsInCity(city, playerId) {
             console.log(city, playerId)
             let bonusTradingPosts = 0;
             city.bonusSpotOccupantArray.forEach(bonusIdArr => {
-                if (bonusIdArr[0] === playerId){
+                if (bonusIdArr[0] === playerId) {
                     bonusTradingPosts++;
                 }
             })
             let standardTradingPosts = 0;
             city.occupants.forEach(occupantId => {
-                if (occupantId === playerId){
+                if (occupantId === playerId) {
                     standardTradingPosts++;
                 }
             })
-            console.log('bonusTradingPosts',bonusTradingPosts, 'standardTradingPosts', standardTradingPosts)
+            console.log('bonusTradingPosts', bonusTradingPosts, 'standardTradingPosts', standardTradingPosts)
             return bonusTradingPosts + standardTradingPosts;
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
