@@ -1,18 +1,14 @@
 # Play Test Ready Checklist #
 * Map replicates the actual gameboard (i.e. has all the same routes and cities)
-* Endgame points are calculated and winners are reported
-    * need to check all sources of endgame points
-* Stendal to Arnheim (The east-west route)
-    * Will need a component to communicate winners 
-    * Will need a route traversal method when either of these cities are taken
-* Coellen special city points
+* ~~Endgame points are calculated and winners are reported~~
+* ~~Stendal to Arnheim (The east-west route)~~
+* ~~Coellen special city points~~
     * Maybe make it collapsible if I'm running out of space? 
-    * Need an option when clicking on the city
 * Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
-* Need the ability to save and resume
+~~* Need the ability to save and resume (locally)~~
 * Need to remove the starting 8 tokens from player supply
 * Need to add installation instructions to the read me
-* Need it to run on https on my personal site
+~~* Need it to run on https on my personal site~~
 
 # TODOs #
 http://localhost:3000/onlineGame/testRoom1?participantId=iigJEToZqLT8NCpUukFgfz
@@ -22,17 +18,11 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/13     
-    * I think we're officially done with the East-West route points
-    * **HERE!** Starting on network points while I'm fresh on the bfs algorithm
-        * Need to test with multiple routes. 
-        * Need to add the outer logic for calling `findSubNetwork` within `calculateTotalScore` - remember that this only happens if the city hasn't already been checked before
-        * Need to actually return the network size (I don't think we will do keys in this method, we will use `calculateTotalScore` instead)
-
-        * We will need to call this as part of this.endGame (specifically calculateTotalScore)
-        * Where do we start, given that the player could have multiple network?
-            * I think we iterate through the cityStorage and check using checkIfPlayerIsPresentInCity
-            * We will have two separate arrays of already checked cities, one within the helper and one outside it to prevent us from checking the network a second time
+* 7/15
+    * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
+        * I would like to add more cities and make the routes/unlocks/names correct
+        * Then it's just play testing and UI (until eventually working on disconnect logic)
+        * I would also like to have the room removed from the server when the game ends
 
     * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
     // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
@@ -42,8 +32,6 @@ Note that the above links use the test data that gets populated on the server in
     * Perhaps I should start on my portfolio?
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 
 
-    * Endgame points - 
-        * network - this will be the hardest by far. Need to find each network and see which one is largest. Then sum all the trading posts in the network then multiply by the key value
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. - I should probably look at some templates
     * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called i think or the switch-piece token)
 

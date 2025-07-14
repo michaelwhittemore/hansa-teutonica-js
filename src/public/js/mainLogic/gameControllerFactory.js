@@ -177,7 +177,7 @@ export const gameControllerFactory = () => {
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
             logicBundle.boardController.createEastWestPointTracker(EAST_WEST_TRACKER_LOCATION)
             // dev DELETE THIS (I just wanted to be able to see all the tokens when adding new cities)
-            // logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
+            logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
         getActivePlayer() {
             // This works because we're using the index of the player
@@ -1187,14 +1187,11 @@ export const gameControllerFactory = () => {
 
         },
         checkEastWestRouteByPlayerId(playerId) {
-            // TODO - This can be moved into the yet-to-be-created helper file (gameControllerHelpers??)
             // logicBundle.gameController.checkEastWestRouteByPlayerId(logicBundle.gameController.playerArray[0].id)
-
             if (!this.checkIfPlayerIsPresentInCity(playerId, 'Arnheim') ||
                 !this.checkIfPlayerIsPresentInCity(playerId, 'Stendal')) {
                 return false;
             }
-            // dev
             const citiesToCheck = ['Arnheim']
             const citiesAlreadyChecked = []
             let searchCounter = 0;
@@ -1711,9 +1708,6 @@ export const gameControllerFactory = () => {
 
         },
         calculateTotalScore(player) {
-            /*
-                6. network - TODO
-            */
             let prestigePoints = 0;
             let tokenPoints = 0;
             let abilityPoints = 0;
@@ -1772,20 +1766,18 @@ export const gameControllerFactory = () => {
                 }
             })
 
-            // already have networkPoints, this is what is increased if we get a new max
             let mostTradingPosts = 0;
-            const checkedCities = []; // Use array.concat or push with spread op
+            const checkedCities = [];
             for (const [cityName, city] of Object.entries(this.cityStorageObject)) {
                 if (!checkedCities.includes(cityName) && this.checkIfPlayerIsPresentInCity(player.id, cityName)) {
-                    // here!
                     const {citiesInThisNetwork, totalTradingPosts} = this.findSubNetwork(city, player.id)
                     mostTradingPosts = Math.max(totalTradingPosts, mostTradingPosts);
                     checkedCities.push(...citiesInThisNetwork)
                     console.log(citiesInThisNetwork, totalTradingPosts)
                 }
             }
-            console.warn('AFTER THE LOOP mostTradingPosts', mostTradingPosts)
 
+            networkPoints = mostTradingPosts * player.keys;
             const playerPointObject = {
                 prestigePoints,
                 tokenPoints,
