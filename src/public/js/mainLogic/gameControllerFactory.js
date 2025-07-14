@@ -1780,7 +1780,7 @@ export const gameControllerFactory = () => {
                     // here!
                     const {citiesInThisNetwork, totalTradingPosts} = this.findSubNetwork(city, player.id)
                     mostTradingPosts = Math.max(totalTradingPosts, mostTradingPosts);
-                    citiesInThisNetwork.push(...citiesInThisNetwork)
+                    checkedCities.push(...citiesInThisNetwork)
                     console.log(citiesInThisNetwork, totalTradingPosts)
                 }
             }
@@ -1817,7 +1817,7 @@ export const gameControllerFactory = () => {
             while (citiesToCheck.length > 0) {
                 const currentCityName = citiesToCheck.pop()
                 const currentlyCheckedCity = this.cityStorageObject[currentCityName];
-                console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
+                // console.warn(`At ${currentCityName}, citiesToCheck = ${citiesToCheck} and citiesAlreadyChecked = ${citiesAlreadyChecked}`)
                 if (this.checkIfPlayerIsPresentInCity(playerId, currentCityName)) {
                     currentlyCheckedCity.neighboringCities.forEach(neighborCityName => {
                         // We only add it to check if it hasn't been previously checked and we haven't already queued it
@@ -1843,7 +1843,6 @@ export const gameControllerFactory = () => {
             }
         },
         countPlayerTradingPostsInCity(city, playerId) {
-            console.log(city, playerId)
             let bonusTradingPosts = 0;
             city.bonusSpotOccupantArray.forEach(bonusIdArr => {
                 if (bonusIdArr[0] === playerId) {
@@ -1856,7 +1855,6 @@ export const gameControllerFactory = () => {
                     standardTradingPosts++;
                 }
             })
-            console.log('bonusTradingPosts', bonusTradingPosts, 'standardTradingPosts', standardTradingPosts)
             return bonusTradingPosts + standardTradingPosts;
         },
         validatePlayerIsActivePlayer(playerId, activePlayer) {
