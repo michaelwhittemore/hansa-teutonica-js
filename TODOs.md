@@ -20,12 +20,17 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/15
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
-        * I would like to add more cities and make the routes/unlocks/names correct
+        * **HERE!** I would like to add more cities and make the routes/unlocks/names correct
         * Then it's just play testing and UI (until eventually working on disconnect logic)
         * I would also like to have the room removed from the server when the game ends
 
+    * The rule book uses `desk` - maybe that is more clear than `playerBoard`??
     * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
-    // https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
+        - 4 per player color (wooden disks)
+        - 27 per player color (wooden cubes)
+        - Need to account for tokens 
+        - Maybe increase the size of the bank/supply? remove some padding in the desk
+    * https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
 
     * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
 

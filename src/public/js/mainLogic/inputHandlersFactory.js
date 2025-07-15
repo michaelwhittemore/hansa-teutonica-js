@@ -270,6 +270,7 @@ export const inputHandlerFactory = () => {
                 case 'tokenMove':
                     this.nodeActions.moveToken(nodeId)
                     break
+                    // here! - let's fix the console error 
                 default:
                     if (inputHandlers.selectedAction) {
                         console.error('We should not be hitting default with a selected action')
