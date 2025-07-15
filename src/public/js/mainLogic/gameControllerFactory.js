@@ -994,6 +994,8 @@ export const gameControllerFactory = () => {
                     onlineUsedBonusToken: didUseABonusPost
                 })
             }
+            logicBundle.boardController.updateCityBorderColor(cityName, this.calculateControllingPlayer(city).color);
+
             this.resolveAction(player);
         },
         upgradeAtCity(cityName, playerId, isOnlineAction = false) {
@@ -1495,6 +1497,9 @@ export const gameControllerFactory = () => {
                 // 2. Need to switch the locations in cityStorage
                 gameController.cityStorageObject[previousCityId].occupants[previousSpotNumber] = occupantTwo;
                 gameController.cityStorageObject[cityId].occupants[citySpotNumber] = occupantOne;
+                // It's possible that the city controlling player may have changed
+                logicBundle.boardController.updateCityBorderColor(cityId, gameController.calculateControllingPlayer(city).color)
+
                 // 3. Call the token used function
                 gameController.finishTokenUsage(player, 'switchPost')
                 // I will really need a cancel button to prevent a soft lock
@@ -1913,7 +1918,9 @@ export const gameControllerFactory = () => {
                     logicBundle.boardController.addBonusPieceToCity(city, this.getPlayerById(idAndShape[0]).color,
                         idAndShape[1], index)
                 })
+                logicBundle.boardController.updateCityBorderColor(cityName, this.calculateControllingPlayer(city).color);
             })
+
             // Routes
             Object.keys(this.routeStorageObject).forEach(routeId => {
                 // This is also where we will need to do tokens (but not in the routeNode loop)

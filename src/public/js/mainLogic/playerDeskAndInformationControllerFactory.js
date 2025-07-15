@@ -9,7 +9,7 @@ export const playerDeskAndInformationControllerFactory = () => {
         initializePlayerInfoDesks(playerArray) {
             this.playerDesksObj = {}
             playerArray.forEach(player => {
-                const playerInfoDesk = this.createInfoBoardForPlayer(player)
+                const playerInfoDesk = this.createInfoDeskForPlayer(player)
                 document.getElementById('playerDeskArea').append(playerInfoDesk)
                 this.playerDesksObj[player.id] = playerInfoDesk;
             })
@@ -45,11 +45,11 @@ export const playerDeskAndInformationControllerFactory = () => {
             }
             this.isCollapsed = !this.isCollapsed
         },
-        createInfoBoardForPlayer(player) {
+        createInfoDeskForPlayer(player) {
             const playerInfoDesk = document.createElement('div')
             playerInfoDesk.style.borderColor = player.color
             playerInfoDesk.className = 'playerInfoDesk'
-            playerInfoDesk.id = `${player.id}-infoBoard`
+            playerInfoDesk.id = `${player.id}-infoDesk`
 
             const playerBanner = document.createElement('div');
             playerBanner.className = 'playerInfoDeskBanner'

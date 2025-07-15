@@ -100,6 +100,10 @@ export const boardControllerFactory = () => {
 
             return cityDiv
         },
+        updateCityBorderColor(cityId, playerColor){
+            // This is used to indicate the controlling player
+            document.getElementById(cityId).style.borderColor = playerColor
+        },
         createCityBonusSpotArea(cityName) {
             const bonusBox = createDivWithClassAndIdAndStyle(['square', 'bonusBox', 'centeredFlex'], `bonus-${cityName}`)
             bonusBox.innerText = 'Bonus trading posts'

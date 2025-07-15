@@ -7,7 +7,7 @@
 * Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
 ~~* Need the ability to save and resume (locally)~~
 * Need to remove the starting 8 tokens from player supply
-* Need to add installation instructions to the read me
+~~* Need to add installation instructions to the read me~~
 ~~* Need it to run on https on my personal site~~
 
 # TODOs #
@@ -36,6 +36,7 @@ Note that the above links use the test data that gets populated on the server in
 
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. - I should probably look at some templates
     * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called I think or the switch-piece token)
+        - This will also need to take loading into account
 
     * *Notes For the README*:
         * Backend on node running on GCR
@@ -54,7 +55,7 @@ Note that the above links use the test data that gets populated on the server in
         * technically same with keys. 
         * Center the desk elements - playerDeskArea
     * perhaps we use a thicker font for city names, and less thick for unlocks
-    * cities change boarder color based on owner
+    * cities change border color based on owner
     * switch to something slightly gothic or cursive. Unfortunately, the default cursive is kinda garish
     * add a hover effect similar to what we have in the color selector
     * Fix squishing when the supply/bank is full
