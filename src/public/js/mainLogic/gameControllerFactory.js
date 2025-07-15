@@ -53,7 +53,7 @@ export const gameControllerFactory = () => {
         },
         initializeCitiesAndState(optionalParameters) {
             // This can be called by an incoming 'joinedGameSuccess' when online
-            logicBundle.playerDeskAndInformationController.initializePlayerInfoBoards(this.playerArray)
+            logicBundle.playerDeskAndInformationController.initializePlayerInfoDesks(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
             logicBundle.logController.initializeGameLog();
@@ -177,7 +177,7 @@ export const gameControllerFactory = () => {
             logicBundle.boardController.createCoellenSpecialArea(COELLEN_SPECIAL_LOCATION);
             logicBundle.boardController.createEastWestPointTracker(EAST_WEST_TRACKER_LOCATION)
             // dev DELETE THIS (I just wanted to be able to see all the tokens when adding new cities)
-            // logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
+            logicBundle.boardController.toggleAllTokenLocations(Object.keys(this.routeStorageObject), 'visible')
         },
         getActivePlayer() {
             // This works because we're using the index of the player

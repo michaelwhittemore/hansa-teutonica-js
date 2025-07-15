@@ -6,12 +6,12 @@ import { unlockActionsToValue, unlockColorsToValue, unlockKeysToValue, unlockMov
 export const playerDeskAndInformationControllerFactory = () => {
 
     const playerDeskAndInformationController = {
-        initializePlayerInfoBoards(playerArray) {
+        initializePlayerInfoDesks(playerArray) {
             this.playerDesksObj = {}
             playerArray.forEach(player => {
-                const playerInfoBoard = this.createInfoBoardForPlayer(player)
-                document.getElementById('playerDeskArea').append(playerInfoBoard)
-                this.playerDesksObj[player.id] = playerInfoBoard;
+                const playerInfoDesk = this.createInfoBoardForPlayer(player)
+                document.getElementById('playerDeskArea').append(playerInfoDesk)
+                this.playerDesksObj[player.id] = playerInfoDesk;
             })
 
             let currentViewingPlayer;
@@ -31,7 +31,7 @@ export const playerDeskAndInformationControllerFactory = () => {
             collapseButton.innerText = 'Collapse Player Board';
             collapseButton.className = 'collapseButton';
             collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
-            document.getElementById('playerInfoBoardContainer').append(collapseButton)
+            document.getElementById('playerInfoDeskContainer').append(collapseButton)
             this.isCollapsed = false;
         },
         togglePlayerInfo(collapseButton) {
@@ -46,27 +46,27 @@ export const playerDeskAndInformationControllerFactory = () => {
             this.isCollapsed = !this.isCollapsed
         },
         createInfoBoardForPlayer(player) {
-            const playerInfoBoard = document.createElement('div')
-            playerInfoBoard.style.borderColor = player.color
-            playerInfoBoard.className = 'playerInfoBoard'
-            playerInfoBoard.id = `${player.id}-infoBoard`
+            const playerInfoDesk = document.createElement('div')
+            playerInfoDesk.style.borderColor = player.color
+            playerInfoDesk.className = 'playerInfoDesk'
+            playerInfoDesk.id = `${player.id}-infoBoard`
 
             const playerBanner = document.createElement('div');
-            playerBanner.className = 'playerInfoBoardBanner'
+            playerBanner.className = 'playerInfoDeskBanner'
             playerBanner.style.color = player.color;
             playerBanner.innerText = player.name;
-            playerInfoBoard.append(playerBanner)
+            playerInfoDesk.append(playerBanner)
 
-            playerInfoBoard.append(this.componentBuilders.createKeysTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createTokenTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createActionTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createColorTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createMovesTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createPurseTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createSupplyTracker(player))
-            playerInfoBoard.append(this.componentBuilders.createBankTracker(player));
+            playerInfoDesk.append(this.componentBuilders.createKeysTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createTokenTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createActionTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createColorTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createMovesTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createPurseTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createSupplyTracker(player))
+            playerInfoDesk.append(this.componentBuilders.createBankTracker(player));
 
-            return playerInfoBoard
+            return playerInfoDesk
         },
         unlockPieceFromBoard(player, index, unlock) {
             const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
