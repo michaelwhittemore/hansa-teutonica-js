@@ -24,7 +24,7 @@ Note that the above links use the test data that gets populated on the server in
         * Then it's just play testing and UI (until eventually working on disconnect logic)
         * I would also like to have the room removed from the server when the game ends
 
-    * The rule book uses `desk` - maybe that is more clear than `playerBoard`??
+    * The rule book uses `desk` - maybe that is more clear than `playerDesk`??
     * Random, but would like to see what happens if bank or supply are as full as possible. Make sure there's no squishing
         - 4 per player color (wooden disks)
         - 27 per player color (wooden cubes)
@@ -176,7 +176,7 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * NOTE: when the favicon is requested a 404s, chrome doesn't request it again on subsequent refreshes, need to use cmd+shift+r for hard refresh
 * convert some of my objects to JS maps
 * read https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview MDN guide to brush back up on http knowledge
-* potentially add an overarching UI controller which is in charge of gameboard, playerBoard, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
+* potentially add an overarching UI controller which is in charge of gameboard, playerDesk, turnTracker, pointTracker, gameLog, ---- this would mainly be in charge of things like ending turns and initializing and resuming
 * add an end game calculator
 * eventually, using 'this' is going to be preferable to referencing the gameController object as there may be more than one - will need a lot of clean up
 * keyboard short cuts

@@ -3,7 +3,7 @@ import { playerArrayFromSearchParams } from '../helpers/helpers.js'
 import { inputHandlerFactory } from '../mainLogic/inputHandlersFactory.js';
 import { gameControllerFactory } from '../mainLogic/gameControllerFactory.js';
 import { turnTrackerControllerFactory } from '../mainLogic/turnTrackerControllerFactory.js';
-import { playerBoardAndInformationControllerFactory } from '../mainLogic/playerBoardAndInformationControllerFactory.js'
+import { playerDeskAndInformationControllerFactory } from '../mainLogic/playerDeskAndInformationControllerFactory.js'
 import { logControllerFactory } from '../mainLogic/logControllerFactory.js';
 import { boardControllerFactory } from '../mainLogic/boardControllerFactory.js';
 
@@ -13,7 +13,7 @@ import { logicBundle } from '../helpers/logicBundle.js'; // This is just for eas
 const gameController = gameControllerFactory();
 logControllerFactory();
 inputHandlerFactory()
-playerBoardAndInformationControllerFactory()
+playerDeskAndInformationControllerFactory()
 turnTrackerControllerFactory();
 boardControllerFactory();
 

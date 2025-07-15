@@ -69,7 +69,7 @@
     border-color: black;
 }
 
-.playerBoardArea {
+.playerDeskArea {
     border: solid;
     border-color: black;
 }
@@ -236,7 +236,7 @@ td {
     flex-direction: row;
     align-items: center;
 } */
-#playerBoardAreaIncludingButton {
+#playerDeskAreaIncludingButton {
     display: flex;
     flex-direction: row;
     align-items: center;

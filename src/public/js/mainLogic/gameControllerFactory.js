@@ -53,7 +53,7 @@ export const gameControllerFactory = () => {
         },
         initializeCitiesAndState(optionalParameters) {
             // This can be called by an incoming 'joinedGameSuccess' when online
-            logicBundle.playerBoardAndInformationController.initializePlayerInfoBoards(this.playerArray)
+            logicBundle.playerDeskAndInformationController.initializePlayerInfoBoards(this.playerArray)
             logicBundle.turnTrackerController.updateTurnTracker(this.playerArray[0])
             this.currentTurn = 0;
             logicBundle.logController.initializeGameLog();
@@ -212,7 +212,7 @@ export const gameControllerFactory = () => {
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             if (logicBundle.sessionInfo.isHotseatMode) {
                 // This is fine, don't need to focus on other players
-                logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
+                logicBundle.playerDeskAndInformationController.focusOnPlayerDesk(this.getActivePlayer(), this.playerArray)
             }
             lastPlayer.currentActions = lastPlayer.maxActions;
             const shouldEnableInputButtons = this.shouldEnableInputButtons()
@@ -277,7 +277,7 @@ export const gameControllerFactory = () => {
 
             this.tokenPlacementInformation.tokensToPlace--;
 
-            logicBundle.playerBoardAndInformationController.componentBuilders.updateTokenTracker(player,
+            logicBundle.playerDeskAndInformationController.componentBuilders.updateTokenTracker(player,
                 this.tokenPlacementInformation.tokensToPlace);
 
             logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME placed a ${this.tokenPlacementInformation.currentReplacement}
@@ -340,7 +340,7 @@ export const gameControllerFactory = () => {
             }
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             this.playerArray.forEach(player => {
-                logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player)
+                logicBundle.playerDeskAndInformationController.componentBuilders.updateSupplyAndBank(player)
             })
             if (this.shouldEndGame) {
                 this.endGame()
@@ -824,7 +824,7 @@ export const gameControllerFactory = () => {
                 squaresToPlace: this.bumpInformation.squaresToPlace,
             })
             // 11. We also should update the player area to show their current bank and supply
-            logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player)
+            logicBundle.playerDeskAndInformationController.componentBuilders.updateSupplyAndBank(player)
         },
         checkThatLocationIsAdjacent(bumpedNodeId, targetNodeId) {
             // TODO Maybe we eventually move this out of the boardController and pass in the map instead? TODO
@@ -1050,7 +1050,7 @@ export const gameControllerFactory = () => {
                     player.unlockArrayIndex.purse++;
                     player.purse = unlockPurseToValue[player.unlockArrayIndex.purse];
                     logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their resupply. They now have ${player.purse}.`, player)
-                    logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
+                    logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.purse, unlock)
                     break;
                 case 'actions':
                     {
@@ -1069,7 +1069,7 @@ export const gameControllerFactory = () => {
                             logicBundle.turnTrackerController.updateTurnTracker(player)
                         }
                         logicBundle.logController.addTextToGameLog(actionUpgradeText, player);
-                        logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
+                        logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.actions, unlock)
                         break;
                     }
                 case 'colors':
@@ -1080,7 +1080,7 @@ export const gameControllerFactory = () => {
                     player.unlockArrayIndex.colors++;
                     player.unlockedColors.push(unlockColorsToValue[player.unlockArrayIndex.colors]);
                     logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their available colors. They can now place pieces on ${player.unlockedColors.slice(-1)}.`, player)
-                    logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, unlock)
+                    logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.colors, unlock)
                     break;
                 case 'maxMovement':
                     if (player.unlockArrayIndex.maxMovement === unlockMovementToValue.length - 1) {
@@ -1090,7 +1090,7 @@ export const gameControllerFactory = () => {
                     player.unlockArrayIndex.maxMovement++;
                     player.maxMovement = unlockMovementToValue[player.unlockArrayIndex.maxMovement];
                     logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their maximum movement. They now have ${player.maxMovement}.`, player)
-                    logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, unlock)
+                    logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.maxMovement, unlock)
                     break;
                 case 'keys':
                     if (player.unlockArrayIndex.keys === unlockKeysToValue.length - 1) {
@@ -1100,7 +1100,7 @@ export const gameControllerFactory = () => {
                     player.unlockArrayIndex.keys++;
                     player.keys = unlockKeysToValue[player.unlockArrayIndex.keys];
                     logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has upgraded their route multiplier. They now have ${player.keys}.`, player)
-                    logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, unlock)
+                    logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player, player.unlockArrayIndex.keys, unlock)
                     break;
                 default:
                     console.error('we should not hit the default')
@@ -1116,7 +1116,7 @@ export const gameControllerFactory = () => {
                 logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has unlocked a square for their supply.`, player)
                 player.supplySquares++
             }
-            logicBundle.playerBoardAndInformationController.componentBuilders.updateSupplyAndBank(player);
+            logicBundle.playerDeskAndInformationController.componentBuilders.updateSupplyAndBank(player);
             // lets us know that an upgrade was validated and occurred
             return true
         },
@@ -1266,8 +1266,8 @@ export const gameControllerFactory = () => {
                 this.tokensCapturedThisTurn.push(tokenKind);
                 logicBundle.logController.addTextToGameLog(`$PLAYER1_NAME has claimed a ${tokenKind} token.`, player)
                 player.currentTokens.push(tokenKind);
-                logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
-                logicBundle.playerBoardAndInformationController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn.length)
+                logicBundle.playerDeskAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
+                logicBundle.playerDeskAndInformationController.componentBuilders.updateTokenTracker(player, this.tokensCapturedThisTurn.length)
                 // Clear after adding the token otherwise we lose the reference
                 logicBundle.boardController.clearTokenFromRouteAndHide(routeId)
                 this.routeStorageObject[routeId].token = false;
@@ -1351,7 +1351,7 @@ export const gameControllerFactory = () => {
             player.usedTokens.push(tokenType)
             // need to clear the token information
             gameController.tokenUsageInformation = {};
-            logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
+            logicBundle.playerDeskAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
         },
         tokenActions: {
             gainActions(playerId, actionsNumber, isOnlineAction = false) {
@@ -1941,20 +1941,20 @@ export const gameControllerFactory = () => {
             // Turn tracker
             logicBundle.turnTrackerController.updateTurnTracker(this.getActivePlayer())
             if (logicBundle.sessionInfo.isHotseatMode) {
-                logicBundle.playerBoardAndInformationController.focusOnPlayerBoard(this.getActivePlayer(), this.playerArray)
+                logicBundle.playerDeskAndInformationController.focusOnPlayerDesk(this.getActivePlayer(), this.playerArray)
             }
             // Player board
             this.playerArray.forEach(player => {
                 Object.keys(player.unlockArrayIndex).forEach(unlockKey => {
                     if (player.unlockArrayIndex[unlockKey] > 0) {
                         for (let index = 1; index <= player.unlockArrayIndex[unlockKey]; index++) {
-                            logicBundle.playerBoardAndInformationController.unlockPieceFromBoard(player,
+                            logicBundle.playerDeskAndInformationController.unlockPieceFromBoard(player,
                                 index, unlockKey)
                         }
                     }
                 })
 
-                logicBundle.playerBoardAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
+                logicBundle.playerDeskAndInformationController.componentBuilders.updateTokensInSupplyAndBank(player)
             })
             // Game log
             logicBundle.logController.loadHistoryIntoLogFromLocalStorage()

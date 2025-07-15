@@ -3,15 +3,15 @@ import { TOKEN_READABLE_NAMES } from "../helpers/constants.js"
 import { logicBundle } from "../helpers/logicBundle.js";
 import { unlockActionsToValue, unlockColorsToValue, unlockKeysToValue, unlockMovementToValue, unlockPurseToValue } from "../helpers/playerFieldsMaps.js";
 
-export const playerBoardAndInformationControllerFactory = () => {
+export const playerDeskAndInformationControllerFactory = () => {
 
-    const playerBoardAndInformationController = {
+    const playerDeskAndInformationController = {
         initializePlayerInfoBoards(playerArray) {
-            this.playerBoardsObj = {}
+            this.playerDesksObj = {}
             playerArray.forEach(player => {
                 const playerInfoBoard = this.createInfoBoardForPlayer(player)
-                document.getElementById('playerBoardArea').append(playerInfoBoard)
-                this.playerBoardsObj[player.id] = playerInfoBoard;
+                document.getElementById('playerDeskArea').append(playerInfoBoard)
+                this.playerDesksObj[player.id] = playerInfoBoard;
             })
 
             let currentViewingPlayer;
@@ -22,10 +22,10 @@ export const playerBoardAndInformationControllerFactory = () => {
                 // have access to the game controller
                 currentViewingPlayer = logicBundle.gameController.getPlayerById(logicBundle.sessionInfo.participantId)
             }
-            this.focusOnPlayerBoard(currentViewingPlayer, playerArray)
+            this.focusOnPlayerDesk(currentViewingPlayer, playerArray)
             // Need to set the focused player before creating buttons
-            document.getElementById('playerBoardAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
-            document.getElementById('playerBoardAreaIncludingButton').append(this.createArrowButton('right', playerArray))
+            document.getElementById('playerDeskAreaIncludingButton').prepend(this.createArrowButton('left', playerArray))
+            document.getElementById('playerDeskAreaIncludingButton').append(this.createArrowButton('right', playerArray))
 
             const collapseButton = document.createElement('button');
             collapseButton.innerText = 'Collapse Player Board';
@@ -35,12 +35,12 @@ export const playerBoardAndInformationControllerFactory = () => {
             this.isCollapsed = false;
         },
         togglePlayerInfo(collapseButton) {
-            // Need to move buttons to append to the playerBoardAreaIncludingButton
+            // Need to move buttons to append to the playerDeskAreaIncludingButton
             if (!this.isCollapsed) {
-                document.getElementById('playerBoardAreaIncludingButton').classList.add('collapsedContainer')
+                document.getElementById('playerDeskAreaIncludingButton').classList.add('collapsedContainer')
                 collapseButton.innerText = 'Expand Player Board'
             } else {
-                document.getElementById('playerBoardAreaIncludingButton').classList.remove('collapsedContainer')
+                document.getElementById('playerDeskAreaIncludingButton').classList.remove('collapsedContainer')
                 collapseButton.innerText = 'Collapse Player Board'
             }
             this.isCollapsed = !this.isCollapsed
@@ -72,13 +72,13 @@ export const playerBoardAndInformationControllerFactory = () => {
             const divId = `${player.id}-${unlock}Div-${index}-shape-locked`
             document.getElementById(divId).remove();
         },
-        focusOnPlayerBoard(player, playerArray) {
+        focusOnPlayerDesk(player, playerArray) {
             this.focusedPlayerIndex = player.index;
-            for (let playerId in this.playerBoardsObj) {
+            for (let playerId in this.playerDesksObj) {
                 if (player.id === playerId) {
-                    this.playerBoardsObj[playerId].style.display = ''
+                    this.playerDesksObj[playerId].style.display = ''
                 } else {
-                    this.playerBoardsObj[playerId].style.display = 'none'
+                    this.playerDesksObj[playerId].style.display = 'none'
                 }
             }
             for (let arrowButton of document.getElementsByClassName('arrowButton')) {
@@ -107,7 +107,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             arrowButton.style.borderColor = playerArray[targetPlayerIndex].color;
 
             arrowButton.onclick = () => {
-                this.focusOnPlayerBoard(playerArray[targetPlayerIndex], playerArray)
+                this.focusOnPlayerDesk(playerArray[targetPlayerIndex], playerArray)
             }
 
         },
@@ -377,7 +377,7 @@ export const playerBoardAndInformationControllerFactory = () => {
             },
         },
     }
-    logicBundle.playerBoardAndInformationController = playerBoardAndInformationController
-    return playerBoardAndInformationController;
+    logicBundle.playerDeskAndInformationController = playerDeskAndInformationController
+    return playerDeskAndInformationController;
     
 }
