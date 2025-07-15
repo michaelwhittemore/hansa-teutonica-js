@@ -94,7 +94,7 @@ docker kill myTest
 docker exec -it $CONTAINER_NAME sh (this runs a shell inside the docker container)
 `docker run --name not-gcp-test -p 80:80 image1`
 **Instructions to run docker compose and watch it:** 
-    1. ` docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
+    1. `docker compose watch` (Make sure it succeeds, may need to remove if the port is being shared by the old one)
     2. In a new tab, `docker compose logs -f  hansa-server` (Note that "hansa-server" is the name given to the service in compose.yaml)
     3. Stop with docker compose down 
 

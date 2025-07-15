@@ -61,7 +61,7 @@
     overflow: scroll;
     width: 100%;
     height: 650px;
-    display: none; /* just while doing desk, here!*/
+    /* display: none; just while doing desk, here! */
     /* may need to deal with scrolling issues later*/
 }
 
@@ -71,6 +71,9 @@
 }
 
 .playerDeskArea {
+    /* HERE! justify-content: space-evenly; this is being overwritten by #playerDeskAreaIncludingButton*/
+    /* justify-content: space-evenly;
+    display: grid; */
     border: solid;
     border-color: black;
 }
@@ -232,11 +235,6 @@ td {
     font-size: 30px;
 }
 
-/* #playerInfoDeskContainer{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-} */
 #playerDeskAreaIncludingButton {
     display: flex;
     flex-direction: row;
