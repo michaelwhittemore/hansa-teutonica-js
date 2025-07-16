@@ -58,13 +58,14 @@ export const boardControllerFactory = () => {
 
             cityDiv.className = 'city'
             if (eastWestTerminus) {
-                cityDiv.classList.add('eastWestTerminus')
+                cityDiv.classList.add('eastWestTerminus');
             }
             // We assume all cities have unique names as identifiers 
             cityDiv.id = name
             cityDiv.innerText = name;
             if (unlock) {
-                cityDiv.innerText += `\n Unlocks: ${unlock}`
+                cityDiv.innerText += `\n Unlocks: ${unlock}`;
+                cityDiv.classList.add('unlockCity')
             }
             const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
             cityDiv.append(cityPieceAreaDiv)
@@ -111,22 +112,14 @@ export const boardControllerFactory = () => {
         },
         addBonusPieceToCity(city, color, shape, numberOfPiecesAlreadyThere) {
             const bonusBox = document.getElementById(`bonus-${city.cityName}`)
-            const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonus-piece-${city.cityName}`], '', { backgroundColor: color })
-            let size = 20;
+            const bonusPiece = createDivWithClassAndIdAndStyle([shape, `bonusPiece`], '', { backgroundColor: color })
+
             if (numberOfPiecesAlreadyThere === 0) {
                 // We only clear if there's no pieces, just the text
                 bonusBox.innerText = ''
-                size = 35;
             }
-
-            // HTMLCollection do not have iterable methods
             bonusBox.append(bonusPiece)
-            const allPieces = document.getElementsByClassName(`bonus-piece-${city.cityName}`)
 
-            for (let i = 0; i < allPieces.length; i++) {
-                allPieces[i].style.height = size + 'px'
-                allPieces[i].style.width = size + 'px'
-            }
         },
         createRouteAndTokenFromLocations(routeProperties) {
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
