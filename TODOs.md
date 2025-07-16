@@ -20,17 +20,16 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/17
     * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location)
-        * VERY MUCH NEED TO FIX THE ROUTE SPACING AND SHRINK ROUTE NODES FURTHER
-        * probably start by adjusting routeNode (will also need to do pieces)
-            - Then we can adjust cities
-        * let's look at the git blame for `small-worker`
-        * will need to fix the bonus box again, also maybe free point??
-            - addBonusPieceToCity has some custom styles. This seems bad, let's switch to CSS
+        * potentially fix the route spacing
+            - Currently we have more spacing between the route nodes and the cities than between each route node
+            - Note that offSetCoordinatesForSize is no longer accurate (the default values I mean)
+            - look at `findEdgeIntersectionPointFromRects`
+        * **HERE!** Now I'd like to readjust all the cities locations
+            * we could always consider some manual route node adjustments??
+        * Will need to add back in Coellen and East-West areas
         * ~~Need to follow the example of East-West cities and add yellow backgrounds to unlock cities~~
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
-        * **HERE!** I would like to add more cities and make the routes/unlocks/names correct
-            - I think my blocker for this is finding the map online 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
             - Also I have a *LOT* of outstanding 'todos'
         * I would also like to have the room removed from the server when the game ends
@@ -40,6 +39,7 @@ Note that the above links use the test data that gets populated on the server in
     * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
     * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
+    * I think I want to increase the sizes of my fail safes given that we may have too many cities for the loop
 
     * Perhaps I should start on my portfolio?
         * Am thinking of using Vue

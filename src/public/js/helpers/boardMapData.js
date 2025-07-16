@@ -6,39 +6,39 @@ export const BOARD_CONFIG_CITIES = {
         spotArray: [['square', 'grey'], ['circle', 'orange']],
         neighborRoutes: [['Emden', 3]],
         unlock: 'maxMovement',
-        location: [20, 110]
+        location: [20, 100]
     },
     'Emden': {
         name: 'Emden',
         spotArray: [['circle', 'grey'], ['square', 'purple']],
         neighborRoutes: [['Stade', 3]],
-        location: [400, 80]
+        location: [340, 80]
     },
     'Stade': {
         name: 'Stade',
         spotArray: [['circle', 'grey'],],
         neighborRoutes: [['Hamburg', 3]],
         unlock: 'colors',
-        location: [760, 60]
+        location: [650, 80]
     },
     'Hamburg': {
         name: 'Hamburg',
         spotArray: [['circle', 'grey'], ['square', 'orange'], ['square', 'black']],
         neighborRoutes: [['Lübeck', 3], ['Bremen', 4]],
-        location: [1060, 50]
+        location: [1000, 60]
     },
     'Lübeck': {
         name: 'Lübeck',
         freePoint: true,
         spotArray: [['square', 'grey'], ['square', 'purple']],
         unlock: 'purse',
-        location: [1425, 150]
+        location: [1340, 110]
     },
     'Osnabrück': {
         name: 'Osnabrück',
         spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'black']],
         neighborRoutes: [['Emden', 3], ['Bremen', 3]],
-        location: [375, 380],
+        location: [318, 330],
     },
     'Kampen': {
         name: 'Kampen',
@@ -50,19 +50,19 @@ export const BOARD_CONFIG_CITIES = {
         name: 'Arnheim',
         eastWestTerminus: true,
         spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'black']],
-        location: [30, 520],
+        location: [30, 460],
         neighborRoutes: [['Duisburg', 3], ['Munster', 3]],
     },
     'Duisburg': {
         name: 'Duisburg',
         spotArray: [['square', 'grey']],
-        location: [20, 785],
+        location: [20, 685],
         neighborRoutes: [['Dortmund', 2]]
     },
     'Munster': {
         name: 'Munster',
         spotArray: [['square', 'grey'], ['circle', 'orange']],
-        location: [475, 570],
+        location: [410, 560],
     },
     'Bremen': {
         name: 'Bremen',
@@ -109,7 +109,7 @@ export const BOARD_CONFIG_CITIES = {
     'Dortmund': {
         name: 'Dortmund',
         spotArray: [['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
-        location: [300, 785],
+        location: [250, 665],
         neighborRoutes: [['Paderborn', 3]],
     },
     'Paderborn': {

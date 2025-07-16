@@ -136,6 +136,7 @@ export const gameControllerFactory = () => {
                             element1: this.cityStorageObject[cityKey].ownElement,
                             element2: this.cityStorageObject[neighborCityName].ownElement,
                             tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
+                            // here! - This is another disabled
                             // isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2], here!
                             tokenValue,
                         })

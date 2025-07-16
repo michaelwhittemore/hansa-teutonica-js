@@ -1,6 +1,6 @@
 import { logicBundle } from "../helpers/logicBundle.js";
 import {
-    createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement,
+    createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement, addPixelAtLocationViaTransform
 } from "../helpers/helpers.js";
 import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
 import { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS, EAST_WEST_POINTS } from "../helpers/boardMapData.js";
@@ -125,16 +125,20 @@ export const boardControllerFactory = () => {
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
             let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
+            // HERE! - let's see if I can find my line drawing helper
+            // looks like it's `drawLine`, it's called in calculatePathBetweenElements
             const xDelta = endX - startX;
             const yDelta = endY - startY
+            // hmmm - let's draw a pixel at the intersection
             const xIncrement = xDelta / (length + 1)
             const yIncrement = yDelta / (length + 1)
+            // I feel like there should just be elements + 1 number of equal divisions?
+            // Is that not what I'm already doing? maybe draw a line for each??
+            // What happens if I remove the offset coordinates??
+
 
             for (let i = 0; i < length; i++) {
-                // const routeNode = document.createElement('button');
-                // routeNode.classList.add('routeNode', 'worker-holder');
                 const nodeId = `${id}-${i}`;
-                // might need center flex
                 const routeNode = createDivWithClassAndIdAndStyle(['routeNode', 'worker-holder', 'centeredFlex'], nodeId)
                 routeNode.id = nodeId;
                 routeNode.onclick = () => {
@@ -143,8 +147,10 @@ export const boardControllerFactory = () => {
 
                 let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
                 startY + (yIncrement * (i + 1))]
+                // here!
+                addPixelAtLocationViaTransform(xCoordinate, yCoordinate)
 
-                let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate)
+                let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate, 36.5, 36.5)
 
                 this.board.append(routeNode)
                 translateElement(routeNode, x, y)

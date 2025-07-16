@@ -37,7 +37,10 @@ export const getRandomArrayElementAndModify = (array) => {
 export const getRouteIdFromNodeId = (nodeId) => {
     return nodeId.slice(0, nodeId.lastIndexOf('-'));
 }
-export const offSetCoordinatesForSize = (x, y, height = 45, width = 45) => {
+export const offSetCoordinatesForSize = (x, y, height, width) => {
+    if (!height || !width){
+        console.error('removed the defaults from offSetCoordinatesForSize as they were potentially messing up positions')
+    }
     // This function will center an object instead of placing it with the top left at (x,y)
     return ([x - (width / 2), y - (height / 2)]);
 }
@@ -158,12 +161,15 @@ export const findEdgeIntersectionPointFromRects = (rect1, rect2) => {
 }
 
 export const calculatePathBetweenElements = (element1, element2) => {
-    // drawLine(element1, element2);
+    // drawLine(element1, element2); // This will draw a line between the center of the cities
 
     const domRect1 = element1.getBoundingClientRect()
     const domRect2 = element2.getBoundingClientRect()
 
     const [target1, target2] = findEdgeIntersectionPointFromRects(domRect1, domRect2)
+    // here!
+    addPixelAtLocationViaTransform(target1[0], target1[1], false, 'red')
+    addPixelAtLocationViaTransform(target2[0], target2[1], false, 'red')
     return {
         startX: target1[0],
         startY: target1[1],
@@ -291,7 +297,7 @@ export const addGitHubLink = () => {
     document.body.append(linkElement)
 }
 
-// TEST, DELETE THIS TODO
+// Note that this function may no longer work - transform is generally prefered
 export const addPixelAtLocation = (x, y, isBig = false, color, id = undefined) => {
     const testElement = document.createElement('div')
     testElement.className = isBig ? 'testBigPixel' : 'testSinglePixel';
