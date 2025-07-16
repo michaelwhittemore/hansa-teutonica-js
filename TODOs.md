@@ -21,11 +21,14 @@ Note that the above links use the test data that gets populated on the server in
 * 7/15
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * **HERE!** I would like to add more cities and make the routes/unlocks/names correct
+            - I think my blocker for this is finding the map online 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
             - Also I have a *LOT* of outstanding 'todos'
         * I would also like to have the room removed from the server when the game ends
 
     * https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
+    * It's in Japanese, but so far the best image I can find online https://i.gzn.jp/img/2021/01/30/hansa-teutonica-bigbox/b01.jpg. Maybe I should check the steam community page for screenshots??
+    * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
     * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
 
@@ -35,14 +38,7 @@ Note that the above links use the test data that gets populated on the server in
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 
 
     * I should work on expanding the map (the actual gameplay one),In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. - I should probably look at some templates
-    * Oh! Maybe you should be able to hover over the city to get info? Like who controls it. Alternatively, maybe the border-color changes to match the controlling player (this happens when the capture city method is called I think or the switch-piece token)
-        - This will also need to take loading into account
 
-    * *Notes For the README*:
-        * Backend on node running on GCR
-        * Minimal modules
-        * docker setup instructions
-    
 ---------------------
 * # UI Thoughts
     * Style the board scrollbar
@@ -53,16 +49,17 @@ Note that the above links use the test data that gets populated on the server in
         * Also maybe a border??
         * `actionsDiv` should be centered
         * technically same with keys. 
-        * Center the desk elements - playerDeskArea
+        * ~~Center the desk elements - playerDeskArea~~
+        * Fix squishing when the supply/bank is full
+            - 4 per player color (wooden disks)
+            - 27 per player color (wooden cubes)
+            - Need to account for tokens 
+            - Maybe increase the size of the bank/supply? remove some padding in the desk
     * perhaps we use a thicker font for city names, and less thick for unlocks
     * cities change border color based on owner
     * switch to something slightly gothic or cursive. Unfortunately, the default cursive is kinda garish
     * add a hover effect similar to what we have in the color selector
-    * Fix squishing when the supply/bank is full
-        - 4 per player color (wooden disks)
-        - 27 per player color (wooden cubes)
-        - Need to account for tokens 
-        - Maybe increase the size of the bank/supply? remove some padding in the desk
+
         * UI related - maybe we want to automatically start scrolled to the top? To avoid elements being mispositioned? Also maybe we specify the height of the gameBoard? This will probably be worth stack overflow/reddit. The height is already set. The idea is I don't want it to infitently scroll (not literally, it's just way too much right now) because of the elements before they are transformed? I wonder if switching from `transform: translate` to `left/top` would solve the issue? might be worth a simple test case - looks like maybe scrollHeight?? https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
 
 ----------------------
