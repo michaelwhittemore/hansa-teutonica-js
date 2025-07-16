@@ -18,7 +18,10 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/15
+* 7/17
+    * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location)
+        * VERY MUCH NEED TO FIX THE ROUTE SPACING AND SHRINK ROUTE NODES FURTHER
+
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * **HERE!** I would like to add more cities and make the routes/unlocks/names correct
             - I think my blocker for this is finding the map online 

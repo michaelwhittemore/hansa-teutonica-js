@@ -1,89 +1,132 @@
 // location is a coordinates x, y offset from the origin in the top right
 export const BOARD_CONFIG_CITIES = {
-    'Alpha': {
-        name: 'Alpha',
-        spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange']],
-        neighborRoutes: [['Beta', 3], ['Arnheim', 3]],
-        unlock: 'actions',
-        location: [20, 60]
-    },
-    'Beta': {
-        name: 'Beta',
-        spotArray: [['circle', 'grey'], ['square', 'grey']],
-        neighborRoutes: [['Gamma', 4]],
-        unlock: 'purse',
-        location: [480, 60]
-    },
-    'Gamma': {
-        name: 'Gamma',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        neighborRoutes: [['Delta', 3], ['Arnheim', 3]],
-        unlock: 'colors',
-        location: [600, 500]
-    },
-    'Delta': {
-        name: 'Delta',
+    'Groningen': {
+        name: 'Groningen',
         freePoint: true,
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [1000, 350],
-        neighborRoutes: [['Epsilon', 3], ['Stendal', 3]],
+        spotArray: [['square', 'grey'], ['circle', 'orange']],
+        neighborRoutes: [['Emden', 3]],
+        unlock: 'maxMovement',
+        location: [20, 110]
     },
-    'Stendal': {
-        name: 'Stendal',
-        eastWestTerminus: true,
-        spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
-        location: [1300, 550],
+    'Emden': {
+        name: 'Emden',
+        spotArray: [['circle', 'grey'], ['square', 'purple']],
+        neighborRoutes: [['Stade', 3]],
+        location: [400, 80]
     },
-    'Epsilon': {
-        name: 'Epsilon',
-        unlock: 'keys',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [900, 55]
+    'Stade': {
+        name: 'Stade',
+        spotArray: [['circle', 'grey'],],
+        neighborRoutes: [['Hamburg', 3]],
+        unlock: 'colors',
+        location: [760, 60]
+    },
+    'Hamburg': {
+        name: 'Hamburg',
+        spotArray: [['circle', 'grey'], ['square', 'orange'], ['square', 'black']],
+        neighborRoutes: [['Lübeck', 3], ['Bremen', 4]],
+        location: [1060, 50]
+    },
+    'Lübeck': {
+        name: 'Lübeck',
+        freePoint: true,
+        spotArray: [['square', 'grey'], ['square', 'purple']],
+        unlock: 'purse',
+        location: [1425, 220]
+    },
+    'Osnabrück': {
+        name: 'Osnabrück',
+        spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'black']],
+        neighborRoutes: [['Emden', 3], ['Bremen', 3]],
+        location: [375, 380],
+    },
+    'Kampen': {
+        name: 'Kampen',
+        spotArray: [['circle', 'orange'], ['square', 'black']],
+        neighborRoutes: [['Osnabrück', 3], ['Arnheim', 3]],
+        location: [30, 240],
     },
     'Arnheim': {
         name: 'Arnheim',
         eastWestTerminus: true,
-        freePoint: true,
-        unlock: 'maxMovement',
-        spotArray: [['square', 'grey'], ['circle', 'purple']],
-        location: [30, 370],
-        neighborRoutes: [['Coellen', 3]],
+        spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'black']],
+        location: [30, 520],
+        neighborRoutes: [['Duisburg', 3], ['Munster', 3]],
     },
-    'Coellen': {
-        name: 'Coellen',
-        freePoint: true,
+    'Duisburg': {
+        name: 'Duisburg',
         spotArray: [['square', 'grey']],
-        location: [120, 670],
+        location: [20, 785],
     },
-    'Warburg': {
-        name: 'Warburg',
-        freePoint: true,
-        spotArray: [['square', 'grey']],
-        location: [500, 670],
-        neighborRoutes: [['Coellen', 4]],
+    'Munster': {
+        name: 'Munster',
+        spotArray: [['square', 'grey'], ['circle', 'orange']],
+        location: [475, 570],
     },
+    'Bremen': {
+        name: 'Bremen',
+        spotArray: [['circle', 'grey'], ['square', 'purple']],
+        location: [630, 190]
+    },
+    'Minden': {
+        name: 'Minden',
+        spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'purple'], ['square', 'black']],
+        location: [720, 430],
+        neighborRoutes: [['Munster', 3], ['Bremen', 3]],
+    },
+
+    // 'Stendal': {
+    //     name: 'Stendal',
+    //     eastWestTerminus: true,
+    //     spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
+    //     location: [1300, 550],
+    // },
+    // 'Epsilon': {
+    //     name: 'Epsilon',
+    //     unlock: 'keys',
+    //     spotArray: [['square', 'grey'], ['circle', 'purple']],
+    //     location: [900, 55]
+    // },
+    // 'Coellen': {
+    //     name: 'Coellen',
+    //     freePoint: true,
+    //     spotArray: [['square', 'grey']],
+    //     location: [120, 670],
+    // },
+    // 'Warburg': {
+    //     name: 'Warburg',
+    //     freePoint: true,
+    //     spotArray: [['square', 'grey']],
+    //     location: [500, 670],
+    //     neighborRoutes: [['Coellen', 4]],
+    // },
 };
 
-export const COELLEN_SPECIAL_LOCATION = [250, 560]
+// export const COELLEN_SPECIAL_LOCATION = [250, 560]
+export const COELLEN_SPECIAL_LOCATION = [250, 960] // putting at bottom of the map atm
+
 export const COELLEN_SPECIAL_POINTS = [7, 8, 9, 11]
 export const COELLEN_SPECIAL_COLORS = ['grey', 'orange', 'purple', 'black']
 
-export const EAST_WEST_TRACKER_LOCATION = [1350, 300]
-export const EAST_WEST_POINTS = [7,4,2]
+// export const EAST_WEST_TRACKER_LOCATION = [1350, 300]
+export const EAST_WEST_TRACKER_LOCATION = [1350, 1300]
+
+export const EAST_WEST_POINTS = [7, 4, 2]
 
 // I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
 // They start off hidden unless they're starting
 // array has x-direction, y-direction, isStarting
+
+// TODO - WILL NEED TO COMPLETELY REDO THIS, ALSO FIX THE STARTING TOKEN LOCATIONS
 export const TOKEN_CONFIG_BY_ROUTES = {
-    'Alpha-Beta': [0, .6, true],
-    'Alpha-Arnheim': [.6, 0, true],
-    'Beta-Gamma': [.5, -.5, true],
+    'Groningen-Emden': [0, .6, true],
+    'Groningen-Arnheim': [.6, 0, true],
+    'Emden-Gamma': [.5, -.5, true],
     'Gamma-Delta': [-.6, -.6],
     'Gamma-Arnheim': [0, -.6],
     'Delta-Epsilon': [-.7, .1],
     'Arnheim-Coellen': [.5, 0],
     'Delta-Stendal': [-.5, .5],
     'Warburg-Coellen': [0, .5,],
-
 }

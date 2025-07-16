@@ -158,7 +158,8 @@ export const boardControllerFactory = () => {
             }
             let [xToken, yToken] = [startX + (xDelta / 2),
             startY + (yDelta / 2)];
-            this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
+            // here! - removing this to prevent token issues while rebuilidng the board
+            // this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
         },
         clearTokenFromRouteAndHide(routeId) {
             const tokenDiv = document.getElementById(`token-${routeId}`);
