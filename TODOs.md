@@ -21,6 +21,9 @@ Note that the above links use the test data that gets populated on the server in
 * 7/17
     * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location)
         * VERY MUCH NEED TO FIX THE ROUTE SPACING AND SHRINK ROUTE NODES FURTHER
+        * probably start by adjusting routeNode (will also need to do pieces)
+            - Then we can adjust cities
+        * Need to follow the example of East-West cities and add yellow backgrounds to unlock cities
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * **HERE!** I would like to add more cities and make the routes/unlocks/names correct
@@ -45,6 +48,7 @@ Note that the above links use the test data that gets populated on the server in
 ---------------------
 * # UI Thoughts
     * Style the board scrollbar
+    * Add dashes between route nodes (which will require angular calculation)
     * Player Desk UI: 
         * ~~`Liber Sophiae`, `Privilegium`, and `Resupply` don't line up~~
         - Fixed that but maybe they should all be the same height?? 

@@ -32,7 +32,7 @@ export const BOARD_CONFIG_CITIES = {
         freePoint: true,
         spotArray: [['square', 'grey'], ['square', 'purple']],
         unlock: 'purse',
-        location: [1425, 220]
+        location: [1425, 150]
     },
     'Osnabrück': {
         name: 'Osnabrück',
@@ -57,6 +57,7 @@ export const BOARD_CONFIG_CITIES = {
         name: 'Duisburg',
         spotArray: [['square', 'grey']],
         location: [20, 785],
+        neighborRoutes: [['Dortmund', 2]]
     },
     'Munster': {
         name: 'Munster',
@@ -66,44 +67,110 @@ export const BOARD_CONFIG_CITIES = {
     'Bremen': {
         name: 'Bremen',
         spotArray: [['circle', 'grey'], ['square', 'purple']],
-        location: [630, 190]
+        location: [630, 190],
+        neighborRoutes: [['Hannover', 3]],
     },
     'Minden': {
         name: 'Minden',
         spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'purple'], ['square', 'black']],
         location: [720, 430],
-        neighborRoutes: [['Munster', 3], ['Bremen', 3]],
+        neighborRoutes: [['Munster', 3], ['Bremen', 3], ['Hannover', 3], ['Paderborn', 3]],
     },
-
-    // 'Stendal': {
-    //     name: 'Stendal',
-    //     eastWestTerminus: true,
-    //     spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
-    //     location: [1300, 550],
-    // },
-    // 'Epsilon': {
-    //     name: 'Epsilon',
-    //     unlock: 'keys',
-    //     spotArray: [['square', 'grey'], ['circle', 'purple']],
-    //     location: [900, 55]
-    // },
-    // 'Coellen': {
-    //     name: 'Coellen',
-    //     freePoint: true,
-    //     spotArray: [['square', 'grey']],
-    //     location: [120, 670],
-    // },
-    // 'Warburg': {
-    //     name: 'Warburg',
-    //     freePoint: true,
-    //     spotArray: [['square', 'grey']],
-    //     location: [500, 670],
-    //     neighborRoutes: [['Coellen', 4]],
-    // },
+    'Hannover': {
+        name: 'Hannover',
+        spotArray: [['square', 'grey'], ['square', 'purple']],
+        location: [900, 250],
+        neighborRoutes: [['Lüneburg', 3]],
+    },
+    'Lüneburg': {
+        name: 'Lüneburg',
+        spotArray: [['circle', 'orange'], ['square', 'black']],
+        location: [1200, 200],
+        neighborRoutes: [['Perleberg', 3]],
+    },
+    'Perleberg': {
+        name: 'Perleberg',
+        spotArray: [['square', 'grey'], ['square', 'purple'], ['circle', 'black']],
+        location: [1470, 350],
+        neighborRoutes: [['Stendal', 3]],
+    },
+    'Stendal': {
+        name: 'Stendal',
+        eastWestTerminus: true,
+        spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
+        location: [1400, 550],
+    },
+    'Brunswiek': {
+        name: 'Brunswiek',
+        spotArray: [['square', 'orange']],
+        location: [1200, 450],
+        neighborRoutes: [['Minden', 4], ['Stendal', 4]],
+    },
+    'Dortmund': {
+        name: 'Dortmund',
+        spotArray: [['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
+        location: [300, 785],
+        neighborRoutes: [['Paderborn', 3]],
+    },
+    'Paderborn': {
+        name: 'Paderborn',
+        spotArray: [['square', 'grey'], ['circle', 'black']],
+        location: [720, 700],
+        neighborRoutes: [['Warburg', 3], ['Hildesheim', 3] ],
+    },
+    'Warburg': {
+        name: 'Warburg',
+        spotArray: [['square', 'orange'], ['square', 'purple']],
+        location: [500, 900],
+        neighborRoutes: [['Coellen', 4], ['Göttingen', 3]],
+    },
+    'Coellen': {
+        name: 'Coellen',
+        freePoint: true,
+        spotArray: [['square', 'grey'], ['square', 'purple']],
+        location: [30, 910],
+    },
+    'Göttingen': {
+        name: 'Göttingen',
+        unlock: 'actions',
+        spotArray: [['square', 'grey'], ['circle', 'grey'], ['square', 'purple']],
+        location: [800, 850],
+        neighborRoutes: [['Quedlinburg', 3]],
+    },
+    'Quedlinburg': {
+        name: 'Quedlinburg',
+        spotArray: [['circle', 'orange'], ['circle', 'purple']],
+        location: [1200, 800],
+        neighborRoutes: [['Halle', 4]],
+    },
+    'Halle': {
+        name: 'Halle',
+        freePoint: true,
+        unlock: 'keys',
+        spotArray: [['square', 'grey'], ['square', 'orange']],
+        location: [1500, 850],
+    },
+    'Hildesheim': {
+        name: 'Hildesheim',
+        spotArray: [['square', 'grey'], ['circle', 'black']],
+        location: [1000, 620],
+    },
+    'Goslar': {
+        name: 'Goslar',
+        spotArray: [['square', 'grey'], ['circle', 'black']],
+        location: [1300, 620],
+        neighborRoutes: [['Quedlinburg', 3], ['Hildesheim', 3]],
+    },
+    'Magdeburg': {
+        name: 'Magdeburg',
+        spotArray: [['circle', 'grey'], ['square', 'orange']],
+        location: [1500, 720],
+        neighborRoutes: [['Goslar', 2], ['Stendal', 3]],
+    },
 };
 
 // export const COELLEN_SPECIAL_LOCATION = [250, 560]
-export const COELLEN_SPECIAL_LOCATION = [250, 960] // putting at bottom of the map atm
+export const COELLEN_SPECIAL_LOCATION = [250, 1260] // putting at bottom of the map atm
 
 export const COELLEN_SPECIAL_POINTS = [7, 8, 9, 11]
 export const COELLEN_SPECIAL_COLORS = ['grey', 'orange', 'purple', 'black']
