@@ -101,7 +101,7 @@ export const boardControllerFactory = () => {
 
             return cityDiv
         },
-        updateCityBorderColor(cityId, playerColor){
+        updateCityBorderColor(cityId, playerColor) {
             // This is used to indicate the controlling player
             document.getElementById(cityId).style.borderColor = playerColor
         },
@@ -130,12 +130,13 @@ export const boardControllerFactory = () => {
             const xDelta = endX - startX;
             const yDelta = endY - startY
             // hmmm - let's draw a pixel at the intersection
-            const xIncrement = xDelta / (length + 1)
-            const yIncrement = yDelta / (length + 1)
+            // const xIncrement = xDelta / (length + 1)
+            // const yIncrement = yDelta / (length + 1)
             // I feel like there should just be elements + 1 number of equal divisions?
             // Is that not what I'm already doing? maybe draw a line for each??
             // What happens if I remove the offset coordinates??
-
+            const xIncrement = xDelta / (length)
+            const yIncrement = yDelta / (length)
 
             for (let i = 0; i < length; i++) {
                 const nodeId = `${id}-${i}`;
@@ -145,10 +146,14 @@ export const boardControllerFactory = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
                 }
 
-                let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
-                startY + (yIncrement * (i + 1))]
+                // let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
+                // startY + (yIncrement * (i + 1))]
+                // let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i)),
+                // startY + (yIncrement * (i))]
+                let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + .5)),
+                startY + (yIncrement * (i + .5))]
                 // here!
-                addPixelAtLocationViaTransform(xCoordinate, yCoordinate)
+                // addPixelAtLocationViaTransform(xCoordinate, yCoordinate)
 
                 let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate, 36.5, 36.5)
 
@@ -290,14 +295,14 @@ export const boardControllerFactory = () => {
                     lineElement.style.bottom = `${lineCoordinates[index][1]}px`
 
                     circleHolder.append(lineElement)
-                } 
+                }
             })
             eastWestPointTrackerDiv.append(textBanner, circleHolder)
 
             document.getElementById('gameBoard').append(eastWestPointTrackerDiv)
             translateElement(eastWestPointTrackerDiv, location[0], location[1])
         },
-        addPieceToEastWestPoints(pointValue, playerColor){
+        addPieceToEastWestPoints(pointValue, playerColor) {
             // TODO, there's some copy paste between here, colleen points, and free city points.
             // Maybe move some logic to shared function?
             const eastWestHolder = document.getElementById(`eastWestHolder-${pointValue}`)

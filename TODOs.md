@@ -18,27 +18,23 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/17
-    * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location)
-        * potentially fix the route spacing
-            - Currently we have more spacing between the route nodes and the cities than between each route node
-            - Note that offSetCoordinatesForSize is no longer accurate (the default values I mean)
-            - look at `findEdgeIntersectionPointFromRects`
+* 7/18
+    * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location) - Now we have resized and fixed space distribution we can go back to adjusting locations
+
         * **HERE!** Now I'd like to readjust all the cities locations
-            * we could always consider some manual route node adjustments??
         * Will need to add back in Coellen and East-West areas
-        * ~~Need to follow the example of East-West cities and add yellow backgrounds to unlock cities~~
+        * Would like to add the line segments between the routes
+        * Remove the `unlocks: ` from the city string, also maybe use the real ability name map?
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
             - Also I have a *LOT* of outstanding 'todos'
         * I would also like to have the room removed from the server when the game ends
 
-    * https://store.steampowered.com/app/1351910/Tabletopia__Hansa_Teutonica__Expansions/ has useful board pics
-    * It's in Japanese, but so far the best image I can find online https://i.gzn.jp/img/2021/01/30/hansa-teutonica-bigbox/b01.jpg. Maybe I should check the steam community page for screenshots??
     * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
     * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
+        * I don't mind console errors, but this seems to affect the ability to click on other locations
     * I think I want to increase the sizes of my fail safes given that we may have too many cities for the loop
 
     * Perhaps I should start on my portfolio?

@@ -38,7 +38,7 @@ export const BOARD_CONFIG_CITIES = {
         name: 'Osnabrück',
         spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'black']],
         neighborRoutes: [['Emden', 3], ['Bremen', 3]],
-        location: [318, 330],
+        location: [300, 320],
     },
     'Kampen': {
         name: 'Kampen',
@@ -62,18 +62,18 @@ export const BOARD_CONFIG_CITIES = {
     'Munster': {
         name: 'Munster',
         spotArray: [['square', 'grey'], ['circle', 'orange']],
-        location: [410, 560],
+        location: [410, 590],
     },
     'Bremen': {
         name: 'Bremen',
         spotArray: [['circle', 'grey'], ['square', 'purple']],
-        location: [630, 190],
+        location: [630, 200],
         neighborRoutes: [['Hannover', 3]],
     },
     'Minden': {
         name: 'Minden',
         spotArray: [['square', 'grey'], ['square', 'orange'], ['square', 'purple'], ['square', 'black']],
-        location: [720, 430],
+        location: [700, 430],
         neighborRoutes: [['Munster', 3], ['Bremen', 3], ['Hannover', 3], ['Paderborn', 3]],
     },
     'Hannover': {
@@ -109,26 +109,26 @@ export const BOARD_CONFIG_CITIES = {
     'Dortmund': {
         name: 'Dortmund',
         spotArray: [['circle', 'grey'], ['square', 'orange'], ['square', 'purple']],
-        location: [250, 665],
+        location: [250, 690],
         neighborRoutes: [['Paderborn', 3]],
     },
     'Paderborn': {
         name: 'Paderborn',
         spotArray: [['square', 'grey'], ['circle', 'black']],
-        location: [720, 700],
+        location: [670, 700],
         neighborRoutes: [['Warburg', 3], ['Hildesheim', 3] ],
     },
     'Warburg': {
         name: 'Warburg',
         spotArray: [['square', 'orange'], ['square', 'purple']],
-        location: [500, 900],
+        location: [400, 900],
         neighborRoutes: [['Coellen', 4], ['Göttingen', 3]],
     },
     'Coellen': {
         name: 'Coellen',
         freePoint: true,
         spotArray: [['square', 'grey'], ['square', 'purple']],
-        location: [30, 910],
+        location: [30, 850],
     },
     'Göttingen': {
         name: 'Göttingen',
@@ -153,7 +153,7 @@ export const BOARD_CONFIG_CITIES = {
     'Hildesheim': {
         name: 'Hildesheim',
         spotArray: [['square', 'grey'], ['circle', 'black']],
-        location: [1000, 620],
+        location: [970, 620],
     },
     'Goslar': {
         name: 'Goslar',
