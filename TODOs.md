@@ -7,6 +7,7 @@
 * Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
 ~~* Need the ability to save and resume (locally)~~
 * Need to remove the starting 8 tokens from player supply
+    * Just reset all the player fields (tokens, starting supply, and maxActions)
 ~~* Need to add installation instructions to the read me~~
 ~~* Need it to run on https on my personal site~~
 
@@ -22,8 +23,7 @@ Note that the above links use the test data that gets populated on the server in
     * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location) - Now we have resized and fixed space distribution we can go back to adjusting locations
 
         * **HERE!** re-adding token maps
-            * Maybe tokens (on board) should on-hover display their routes? That would fix the issue of 
-
+            * Maybe tokens (on board) should on-hover display their routes? That would fix the issue of unclear tokens
         * Would like to add the line segments between the routes
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 

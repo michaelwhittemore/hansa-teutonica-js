@@ -340,7 +340,7 @@ export const playerDeskAndInformationControllerFactory = () => {
                 const tokenInSupplyDivText = createDivWithClassAndIdAndStyle(['textNode'],
                     `supply-tokens-text-${player.id}`)
                 tokenInSupplyDiv.append(tokenInSupplyDivText)
-                const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
+                const tokenInSupplyTooltip = createDivWithClassAndIdAndStyle(['deskTooltipText'],
                     `supply-tokens-tooltip-${player.id}`)
                 tokenInSupplyDiv.append(tokenInSupplyTooltip)
                 supplyDiv.append(tokenInSupplyDiv)
@@ -361,7 +361,7 @@ export const playerDeskAndInformationControllerFactory = () => {
                 const tokenInBankDivText = createDivWithClassAndIdAndStyle(['textNode'],
                     `bank-tokens-text-${player.id}`)
                 tokenInBankDiv.append(tokenInBankDivText)
-                const tokenInBankTooltip = createDivWithClassAndIdAndStyle(['tooltipText'],
+                const tokenInBankTooltip = createDivWithClassAndIdAndStyle(['deskTooltipText'],
                     `bank-tokens-tooltip-${player.id}`)
                 tokenInBankDiv.append(tokenInBankTooltip)
                 bankDiv.append(tokenInBankDiv)

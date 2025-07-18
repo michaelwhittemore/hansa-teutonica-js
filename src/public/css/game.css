@@ -54,6 +54,7 @@
     flex-wrap: wrap;
     font-size: 70%;
 }
+
 .bonusPiece {
     height: 15px;
     width: 15px;
@@ -78,7 +79,7 @@
     border-color: chocolate;
     overflow: scroll;
     width: 100%;
-    height: 750px;
+    height: 700px;
     /* Should un-comment this TODO here! */
     /* height: 100%; */
     /* display: none; just while doing desk*/
@@ -416,7 +417,7 @@ td {
     visibility: hidden;
 }
 
-.tooltipText {
+.deskTooltipText {
     visibility: hidden;
     position: absolute;
     z-index: 1;
@@ -430,7 +431,7 @@ td {
     font-size: 13px;
 }
 
-.tooltip:hover .tooltipText {
+.tooltip:hover .deskTooltipText {
     visibility: visible;
 }
 
@@ -448,6 +449,7 @@ td {
     margin: 2px;
 }
 
+/* ---------------------------------------------- Tokens on game board -------------------------------*/
 .onBoardToken {
     height: 45px;
     width: 45px;
@@ -458,6 +460,23 @@ td {
     font-size: 55%;
     align-items: center;
     text-align: center;
+}
+
+.tokenToolTip {
+    visibility: hidden;
+    left: 105%;
+    bottom: 50%;
+    font-size: 10px;
+    background-color: black;
+    color: silver;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+}
+.onBoardToken:hover .tokenToolTip {
+    visibility: visible;
 }
 
 /* Utility Classes */

@@ -155,13 +155,15 @@ export const boardControllerFactory = () => {
         clearTokenFromRouteAndHide(routeId) {
             const tokenDiv = document.getElementById(`token-${routeId}`);
             tokenDiv.style.backgroundColor = 'silver'
-            tokenDiv.innerText = '';
+            const tokenDivText = document.getElementById(`token-text-${routeId}`);
+            tokenDivText.innerText = '';
             tokenDiv.style.visibility = 'hidden'
         },
         addTokenToRoute(routeId, tokenKind, color) {
             const tokenDiv = document.getElementById(`token-${routeId}`);
             tokenDiv.style.backgroundColor = color;
-            tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenKind];
+            const tokenDivText = document.getElementById(`token-text-${routeId}`);
+            tokenDivText.innerText = TOKEN_READABLE_NAMES[tokenKind];
             tokenDiv.style.visibility = 'visible'
         },
         toggleAllTokenLocations(routes, visibilityStatus = 'visible') {
@@ -209,14 +211,21 @@ export const boardControllerFactory = () => {
             const [x, y] = offSetCoordinatesForSize(location[0] + (direction[0] * TOKEN_DISTANCE),
                 location[1] + (direction[1] * TOKEN_DISTANCE), TOKEN_SIZE, TOKEN_SIZE)
 
+            const tokenDivText = createDivWithClassAndIdAndStyle([], `token-text-${routeId}`)
+            tokenDiv.append(tokenDivText);
             if (isStartingToken) {
                 tokenDiv.style.visibility = 'visible'
                 tokenDiv.style.backgroundColor = '#FFC000'
-                tokenDiv.innerText = TOKEN_READABLE_NAMES[tokenValue]
+                tokenDivText.innerText = TOKEN_READABLE_NAMES[tokenValue]
             }
+
             tokenDiv.onclick = () => {
                 logicBundle.inputHandlers.tokenLocationClickHandler(routeId)
             }
+            const tokenToolTip = createDivWithClassAndIdAndStyle(['tokenToolTip'])
+            tokenToolTip.innerText = routeId
+            tokenDiv.append(tokenToolTip)
+
             this.board.append(tokenDiv)
 
             translateElement(tokenDiv, x, y)
