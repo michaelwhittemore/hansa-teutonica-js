@@ -853,7 +853,7 @@ export const gameControllerFactory = () => {
             while (true) {
                 routesToChecks = routesToChecksNext;
                 routesToChecksNext = [];
-                if (failSafe > 15) {
+                if (failSafe > 35) {
                     console.error('Infinite loop in checkThatLocationIsAdjacent, breaking out')
                     return;
                 }
@@ -1217,7 +1217,7 @@ export const gameControllerFactory = () => {
                 citiesAlreadyChecked.push(currentCityName)
 
                 // This is a fail safe against infinite loops
-                if (searchCounter > 25) {
+                if (searchCounter > 35) {
                     console.error('Hit searchCounter BFS limit, breaking')
                     break;
                 }
@@ -1829,7 +1829,7 @@ export const gameControllerFactory = () => {
                 citiesAlreadyChecked.push(currentCityName)
 
                 // This is a fail safe against infinite loops
-                if (searchCounter > 25) {
+                if (searchCounter > 35) {
                     console.error('Hit searchCounter BFS limit, breaking')
                     break;
                 }
