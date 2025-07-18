@@ -21,13 +21,9 @@ Note that the above links use the test data that gets populated on the server in
 * 7/18
     * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location) - Now we have resized and fixed space distribution we can go back to adjusting locations
 
-        * **HERE!** Now I'd like to readjust all the cities locations
-        * ~~Will need to add back in Coellen and East-West areas~~
-            * East-West should be shrunk
-            * see `#eastWestTracker`
-            * also shrink coellen at least a little
+        * **HERE!** re-adding token maps
+
         * Would like to add the line segments between the routes
-        * ~~Remove the `unlocks: ` from the city string, also maybe use the real ability name map?~~
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 

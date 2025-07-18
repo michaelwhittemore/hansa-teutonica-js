@@ -22,6 +22,8 @@
     display: flex;
     position: relative;
     flex-direction: column;
+    /* border-radius: 5%; */
+    /* the rounding ended up looking awkward */
 }
 
 .cityPieceArea {
@@ -447,13 +449,13 @@ td {
 }
 
 .onBoardToken {
-    height: 55px;
-    width: 55px;
+    height: 45px;
+    width: 45px;
     position: relative;
     background-color: silver;
     display: flex;
     visibility: hidden;
-    font-size: 60%;
+    font-size: 55%;
     align-items: center;
     text-align: center;
 }

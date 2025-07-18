@@ -19,7 +19,7 @@ export const BOARD_CONFIG_CITIES = {
         spotArray: [['circle', 'grey'],],
         neighborRoutes: [['Hamburg', 3]],
         unlock: 'colors',
-        location: [650, 80]
+        location: [650, 50]
     },
     'Hamburg': {
         name: 'Hamburg',
@@ -116,7 +116,7 @@ export const BOARD_CONFIG_CITIES = {
         name: 'Paderborn',
         spotArray: [['square', 'grey'], ['circle', 'black']],
         location: [670, 700],
-        neighborRoutes: [['Warburg', 3], ['Hildesheim', 3] ],
+        neighborRoutes: [['Warburg', 3], ['Hildesheim', 3]],
     },
     'Warburg': {
         name: 'Warburg',
@@ -183,14 +183,50 @@ export const EAST_WEST_POINTS = [7, 4, 2]
 // array has x-direction, y-direction, isStarting
 
 // TODO - WILL NEED TO COMPLETELY REDO THIS, ALSO FIX THE STARTING TOKEN LOCATIONS
+// export const TOKEN_CONFIG_BY_ROUTES = {
+//     'Groningen-Emden': [0, .6, true],
+//     'Groningen-Arnheim': [.6, 0, true],
+//     'Emden-Gamma': [.5, -.5, true],
+//     'Gamma-Delta': [-.6, -.6],
+//     'Gamma-Arnheim': [0, -.6],
+//     'Delta-Epsilon': [-.7, .1],
+//     'Arnheim-Coellen': [.5, 0],
+//     'Delta-Stendal': [-.5, .5],
+//     'Warburg-Coellen': [0, .5,],
+// }
+
 export const TOKEN_CONFIG_BY_ROUTES = {
-    'Groningen-Emden': [0, .6, true],
-    'Groningen-Arnheim': [.6, 0, true],
-    'Emden-Gamma': [.5, -.5, true],
-    'Gamma-Delta': [-.6, -.6],
-    'Gamma-Arnheim': [0, -.6],
-    'Delta-Epsilon': [-.7, .1],
-    'Arnheim-Coellen': [.5, 0],
-    'Delta-Stendal': [-.5, .5],
-    'Warburg-Coellen': [0, .5,],
+    'Emden-Stade': [0, 0],
+    'Stade-Hamburg': [0, 0],
+    'Hamburg-Lübeck': [0, 0],
+    'Hamburg-Bremen': [0, 0],
+    'Osnabrück-Emden': [0, 0],
+    'Osnabrück-Bremen': [0, 0, true],
+    'Kampen-Osnabrück': [0, 0],
+    'Kampen-Arnheim': [0, 0],
+    'Arnheim-Duisburg': [0, 0],
+    'Arnheim-Munster': [0, 0],
+    'Duisburg-Dortmund': [0, 0],
+    'Bremen-Hannover': [0, 0],
+    'Minden-Munster': [0, 0],
+    'Minden-Bremen': [0, 0],
+    'Minden-Hannover': [0, 0],
+    'Minden-Paderborn': [0, 0],
+    'Hannover-Lüneburg': [0, 0],
+    'Lüneburg-Perleberg': [0, 0, true],
+    'Perleberg-Stendal': [0, 0],
+    'Brunswiek-Minden': [0, 0],
+    'Brunswiek-Stendal': [0, 0],
+    'Dortmund-Paderborn': [0, 0],
+    'Paderborn-Warburg': [0, 0],
+    'Paderborn-Hildesheim': [0, 0],
+    'Warburg-Göttingen': [0, 0],
+    'Göttingen-Quedlinburg': [0, 0],
+    'Quedlinburg-Halle': [0, 0],
+    'Goslar-Quedlinburg': [0, 0],
+    'Goslar-Hildesheim': [0, 0, true],
+    'Magdeburg-Goslar': [0, 0],
+    'Magdeburg-Stendal': [0, 0],
+    'Groningen-Emden': [0, 0],
+    'Warburg-Coellen': [0, 0]
 }

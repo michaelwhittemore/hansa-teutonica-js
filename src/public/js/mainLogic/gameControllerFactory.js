@@ -113,6 +113,7 @@ export const gameControllerFactory = () => {
                     neighboringCities: [],
                 }
             })
+
             Object.keys(boardConfig).forEach(cityKey => {
                 const city = boardConfig[cityKey]
                 if (city.neighborRoutes) {
@@ -125,10 +126,9 @@ export const gameControllerFactory = () => {
                         if (!TOKEN_CONFIG_BY_ROUTES[routeId]) {
                             console.error(`${routeId} doesn't exist in TOKEN_CONFIG_BY_ROUTES`)
                         }
-                        // here!
-                        // if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
-                        //     tokenValue = startingTokensArray.pop()
-                        // }
+                        if (TOKEN_CONFIG_BY_ROUTES[routeId][2]) {
+                            tokenValue = startingTokensArray.pop()
+                        }
                         logicBundle.boardController.createRouteAndTokenFromLocations({
                             length: routeArray[1],
                             id: routeId,
@@ -136,8 +136,7 @@ export const gameControllerFactory = () => {
                             element1: this.cityStorageObject[cityKey].ownElement,
                             element2: this.cityStorageObject[neighborCityName].ownElement,
                             tokenDirection: TOKEN_CONFIG_BY_ROUTES[routeId],
-                            // here! - This is another disabled
-                            // isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2], here!
+                            isStartingToken: !!TOKEN_CONFIG_BY_ROUTES[routeId][2],
                             tokenValue,
                         })
 
