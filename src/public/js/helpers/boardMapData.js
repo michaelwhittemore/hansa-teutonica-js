@@ -32,7 +32,7 @@ export const BOARD_CONFIG_CITIES = {
         freePoint: true,
         spotArray: [['square', 'grey'], ['square', 'purple']],
         unlock: 'purse',
-        location: [1340, 110]
+        location: [1340, 90]
     },
     'Osnabrück': {
         name: 'Osnabrück',
@@ -85,7 +85,7 @@ export const BOARD_CONFIG_CITIES = {
     'Lüneburg': {
         name: 'Lüneburg',
         spotArray: [['circle', 'orange'], ['square', 'black']],
-        location: [1200, 200],
+        location: [1200, 180],
         neighborRoutes: [['Perleberg', 3]],
     },
     'Perleberg': {
@@ -103,7 +103,7 @@ export const BOARD_CONFIG_CITIES = {
     'Brunswiek': {
         name: 'Brunswiek',
         spotArray: [['square', 'orange']],
-        location: [1200, 450],
+        location: [1100, 450],
         neighborRoutes: [['Minden', 4], ['Stendal', 4]],
     },
     'Dortmund': {
@@ -169,15 +169,12 @@ export const BOARD_CONFIG_CITIES = {
     },
 };
 
-// export const COELLEN_SPECIAL_LOCATION = [250, 560]
-export const COELLEN_SPECIAL_LOCATION = [250, 1260] // putting at bottom of the map atm
+export const COELLEN_SPECIAL_LOCATION = [100, 755]
 
 export const COELLEN_SPECIAL_POINTS = [7, 8, 9, 11]
 export const COELLEN_SPECIAL_COLORS = ['grey', 'orange', 'purple', 'black']
 
-// export const EAST_WEST_TRACKER_LOCATION = [1350, 300]
-export const EAST_WEST_TRACKER_LOCATION = [1350, 1300]
-
+export const EAST_WEST_TRACKER_LOCATION = [1250, 290]
 export const EAST_WEST_POINTS = [7, 4, 2]
 
 // I don't think it makes sense to tie these to cities

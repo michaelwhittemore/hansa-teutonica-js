@@ -167,7 +167,6 @@ export const calculatePathBetweenElements = (element1, element2) => {
     const domRect2 = element2.getBoundingClientRect()
 
     const [target1, target2] = findEdgeIntersectionPointFromRects(domRect1, domRect2)
-    // here!
     // addPixelAtLocationViaTransform(target1[0], target1[1], false, 'red')
     // addPixelAtLocationViaTransform(target2[0], target2[1], false, 'red')
     return {

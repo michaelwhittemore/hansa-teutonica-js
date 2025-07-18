@@ -12,6 +12,11 @@
     background-color: palegoldenrod;
 }
 
+.unlockTextSpan {
+    font-size: 85%;
+    font-style: italic;
+}
+
 .city {
     border: solid;
     display: flex;
@@ -155,11 +160,15 @@
 }
 
 #eastWestTracker {
-    height: 200px;
-    width: 130px;
+    height: 180px;
+    width: 110px;
     background-color: lightcoral;
     border-color: black;
     border-style: solid;
+}
+
+.eastWestBanner {
+    font-size: 80%;
 }
 
 .eastWestHolder {
@@ -182,9 +191,9 @@
 
 #coellenSpecialArea {
     justify-content: space-evenly;
-    border-radius: 30px;
-    height: 85px;
-    width: 200px;
+    border-radius: 25px;
+    height: 75px;
+    width: 190px;
     background-color: yellow;
     font-size: 13px;
 }
@@ -192,7 +201,7 @@
 .coellenPoint {
     text-shadow: 1px 1px 2px chocolate;
     color: whitesmoke;
-    font-size: 275%;
+    font-size: 250%;
 }
 
 /* ---------------------------- Endgame Score Modal --------------------------------------*/

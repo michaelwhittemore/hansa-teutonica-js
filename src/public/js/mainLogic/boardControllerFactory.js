@@ -2,7 +2,7 @@ import { logicBundle } from "../helpers/logicBundle.js";
 import {
     createDivWithClassAndIdAndStyle, calculatePathBetweenElements, offSetCoordinatesForSize, translateElement, addPixelAtLocationViaTransform
 } from "../helpers/helpers.js";
-import { TOKEN_READABLE_NAMES } from "../helpers/constants.js";
+import { TOKEN_READABLE_NAMES, ABILITIES_READABLE_NAME } from "../helpers/constants.js";
 import { COELLEN_SPECIAL_POINTS, COELLEN_SPECIAL_COLORS, EAST_WEST_POINTS } from "../helpers/boardMapData.js";
 
 export const boardControllerFactory = () => {
@@ -64,7 +64,7 @@ export const boardControllerFactory = () => {
             cityDiv.id = name
             cityDiv.innerText = name;
             if (unlock) {
-                cityDiv.innerText += `\n Unlocks: ${unlock}`;
+                cityDiv.innerHTML += `<br> <span class="unlockTextSpan">${ABILITIES_READABLE_NAME[unlock]}</span>`
                 cityDiv.classList.add('unlockCity')
             }
             const cityPieceAreaDiv = createDivWithClassAndIdAndStyle(['cityPieceArea'])
@@ -125,16 +125,9 @@ export const boardControllerFactory = () => {
             const { length, id, element1, element2, tokenDirection, isStartingToken, tokenValue } = routeProperties
             let { startX, startY, endX, endY } = calculatePathBetweenElements(element1, element2)
 
-            // HERE! - let's see if I can find my line drawing helper
-            // looks like it's `drawLine`, it's called in calculatePathBetweenElements
             const xDelta = endX - startX;
             const yDelta = endY - startY
-            // hmmm - let's draw a pixel at the intersection
-            // const xIncrement = xDelta / (length + 1)
-            // const yIncrement = yDelta / (length + 1)
-            // I feel like there should just be elements + 1 number of equal divisions?
-            // Is that not what I'm already doing? maybe draw a line for each??
-            // What happens if I remove the offset coordinates??
+
             const xIncrement = xDelta / (length)
             const yIncrement = yDelta / (length)
 
@@ -146,13 +139,8 @@ export const boardControllerFactory = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
                 }
 
-                // let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + 1)),
-                // startY + (yIncrement * (i + 1))]
-                // let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i)),
-                // startY + (yIncrement * (i))]
                 let [xCoordinate, yCoordinate] = [startX + (xIncrement * (i + .5)),
                 startY + (yIncrement * (i + .5))]
-                // here!
                 // addPixelAtLocationViaTransform(xCoordinate, yCoordinate)
 
                 let [x, y] = offSetCoordinatesForSize(xCoordinate, yCoordinate, 36.5, 36.5)
@@ -162,7 +150,7 @@ export const boardControllerFactory = () => {
             }
             let [xToken, yToken] = [startX + (xDelta / 2),
             startY + (yDelta / 2)];
-            // here! - removing this to prevent token issues while rebuilidng the board
+            // here! - removing this to prevent token issues while rebuilding the board
             // this.createBoardTokenHolder([xToken, yToken], id, tokenDirection, isStartingToken, tokenValue)
         },
         clearTokenFromRouteAndHide(routeId) {
@@ -272,7 +260,7 @@ export const boardControllerFactory = () => {
         createEastWestPointTracker(location) {
             const eastWestPointTrackerDiv = createDivWithClassAndIdAndStyle([], 'eastWestTracker')
 
-            const textBanner = createDivWithClassAndIdAndStyle(['banner'])
+            const textBanner = createDivWithClassAndIdAndStyle(['banner', 'eastWestBanner'])
             textBanner.innerText = 'East-West Connection Bonus'
             const circleHolder = createDivWithClassAndIdAndStyle([], 'eastWestPieceArea')
 

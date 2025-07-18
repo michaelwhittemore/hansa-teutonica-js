@@ -44,6 +44,14 @@ export const TOKEN_READABLE_NAMES = {
     moveThree: 'Move Three Tradesmen',
 }
 
+export const ABILITIES_READABLE_NAME = {
+    'actions': 'Actions',
+    'purse': 'Bank',
+    'maxMovement': 'Movement',
+    'colors': 'Colors',
+    'keys': 'Keys',
+}
+
 // TEST VARIABLES 
 export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
 
