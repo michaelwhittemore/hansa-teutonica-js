@@ -148,7 +148,7 @@ export const BOARD_CONFIG_CITIES = {
         freePoint: true,
         unlock: 'keys',
         spotArray: [['square', 'grey'], ['square', 'orange']],
-        location: [1500, 850],
+        location: [1500, 870],
     },
     'Hildesheim': {
         name: 'Hildesheim',
@@ -164,7 +164,7 @@ export const BOARD_CONFIG_CITIES = {
     'Magdeburg': {
         name: 'Magdeburg',
         spotArray: [['circle', 'grey'], ['square', 'orange']],
-        location: [1500, 720],
+        location: [1500, 770],
         neighborRoutes: [['Goslar', 2], ['Stendal', 3]],
     },
 };
@@ -177,25 +177,11 @@ export const COELLEN_SPECIAL_COLORS = ['grey', 'orange', 'purple', 'black']
 export const EAST_WEST_TRACKER_LOCATION = [1250, 290]
 export const EAST_WEST_POINTS = [7, 4, 2]
 
-// I don't think it makes sense to tie these to cities
 // Each indicates which direction we're going and if one is a starting location
 // They start off hidden unless they're starting
 // array has x-direction, y-direction, isStarting
-
-// TODO - WILL NEED TO COMPLETELY REDO THIS, ALSO FIX THE STARTING TOKEN LOCATIONS
-// export const TOKEN_CONFIG_BY_ROUTES = {
-//     'Groningen-Emden': [0, .6, true],
-//     'Groningen-Arnheim': [.6, 0, true],
-//     'Emden-Gamma': [.5, -.5, true],
-//     'Gamma-Delta': [-.6, -.6],
-//     'Gamma-Arnheim': [0, -.6],
-//     'Delta-Epsilon': [-.7, .1],
-//     'Arnheim-Coellen': [.5, 0],
-//     'Delta-Stendal': [-.5, .5],
-//     'Warburg-Coellen': [0, .5,],
-// }
-
 export const TOKEN_CONFIG_BY_ROUTES = {
+    'Groningen-Emden': [0, -0.32],
     'Emden-Stade': [0, 0.45],
     'Stade-Hamburg': [-0.3, 0.35],
     'Hamburg-Lübeck': [0.3, -0.3],
@@ -212,21 +198,20 @@ export const TOKEN_CONFIG_BY_ROUTES = {
     'Minden-Bremen': [-0.32, 0.2],
     'Minden-Hannover': [0.4, 0.25],
     'Minden-Paderborn': [-0.33, 0],
-    'Hannover-Lüneburg': [0, 0],
-    'Lüneburg-Perleberg': [0, 0, true],
-    'Perleberg-Stendal': [0, 0],
-    'Brunswiek-Minden': [0, 0],
-    'Brunswiek-Stendal': [0, 0],
-    'Dortmund-Paderborn': [0, 0],
-    'Paderborn-Warburg': [0, 0],
-    'Paderborn-Hildesheim': [0, 0],
-    'Warburg-Göttingen': [0, 0],
-    'Göttingen-Quedlinburg': [0, 0],
-    'Quedlinburg-Halle': [0, 0],
-    'Goslar-Quedlinburg': [0, 0],
-    'Goslar-Hildesheim': [0, 0, true],
-    'Magdeburg-Goslar': [0, 0],
-    'Magdeburg-Stendal': [0, 0],
-    'Groningen-Emden': [0, 0],
-    'Warburg-Coellen': [0, 0]
+    'Hannover-Lüneburg': [-0.1, -0.32],
+    'Lüneburg-Perleberg': [0.3, -0.3, true],
+    'Perleberg-Stendal': [-0.35, 0],
+    'Brunswiek-Minden': [0, 0.4],
+    'Brunswiek-Stendal': [-0.2, 0.35],
+    'Dortmund-Paderborn': [0, -0.32],
+    'Paderborn-Warburg': [-0.25, -0.25],
+    'Paderborn-Hildesheim': [0.29, 0.4],
+    'Warburg-Göttingen': [0.1, -0.36],
+    'Göttingen-Quedlinburg': [0.1, -0.32],
+    'Quedlinburg-Halle': [-0.2, 0.36],
+    'Goslar-Quedlinburg': [-0.33, 0],
+    'Goslar-Hildesheim': [0, -0.31, true],
+    'Magdeburg-Goslar': [-0.1, 0.22],
+    'Magdeburg-Stendal': [0.4, 0],
+    'Warburg-Coellen': [0.1, -0.33]
 }

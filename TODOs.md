@@ -22,6 +22,7 @@ Note that the above links use the test data that gets populated on the server in
     * Let's start with the cities (names, unlocks, and spaces) and then we can do the route (token start and starting location) - Now we have resized and fixed space distribution we can go back to adjusting locations
 
         * **HERE!** re-adding token maps
+            * Maybe tokens (on board) should on-hover display their routes? That would fix the issue of 
 
         * Would like to add the line segments between the routes
 
