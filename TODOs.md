@@ -3,7 +3,6 @@
 * ~~Endgame points are calculated and winners are reported~~
 * ~~Stendal to Arnheim (The east-west route)~~
 * ~~Coellen special city points~~
-    * Maybe make it collapsible if I'm running out of space? 
 * Need a settings drop down (Change clicks default) - maybe differentiate between "player" and "client" - client has access to settings, player is a game state concept
 ~~* Need the ability to save and resume (locally)~~
 * Need to remove the starting 8 tokens from player supply
@@ -22,7 +21,14 @@ Note that the above links use the test data that gets populated on the server in
 * 7/20
     * **HERE!**
         * Let's address the `additionalTradingPost` token bug. (might affect other tokens?)
+            * It seems like we don't clear it, maybe I should log the inputhandlers?
+            * It also seems to happen with switch posts
+            * This even happens when using the `captureCity` button.
+                - Ahhh. This is in `routeNodeClickHandler`, it specifically expects a route node related input I think
+                - The main question is: is it safe to just clear the inputHandlers.selectedAction?
+                - Should we log something in the `warningText` area
         * Then take a look at either TODOs or UI thoughts
+        * Really need to clean up the action selection/button/warning text area
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
@@ -45,6 +51,10 @@ Note that the above links use the test data that gets populated on the server in
 ---------------------
 * # UI Thoughts
     * Style the board scrollbar
+    * The button area has been very neglected (as in player actions)
+        * Buttons should have spacing. 
+        * We shouldn't shift up and down when error or additional context is added
+        * I believe this is the domain of the `actionBar` which I haven't really thought about since I started this project
     * Add dashes between route nodes (which will require angular calculation)
     * bonus trading post has a border, maybe add the same to the city pieces so they line up??
     * Player Desk UI: 
@@ -64,6 +74,7 @@ Note that the above links use the test data that gets populated on the server in
     * ~~cities change border color based on owner~~
     * switch to something slightly gothic or cursive. Unfortunately, the default cursive is kinda garish
     * add a hover effect similar to what we have in the color selector
+    * The background-color should be fixed, white is pretty hard to read
     * UI related - maybe we want to automatically start scrolled to the top? To avoid elements being mispositioned? Also maybe we specify the height of the gameBoard? This will probably be worth stack overflow/reddit. The height is already set. The idea is I don't want it to infinitely scroll (not literally, it's just way too much right now) because of the elements before they are transformed? I wonder if switching from `transform: translate` to `left/top` would solve the issue? might be worth a simple test case - looks like maybe scrollHeight?? https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
 
 ----------------------

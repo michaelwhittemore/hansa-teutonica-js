@@ -254,6 +254,9 @@ export const inputHandlerFactory = () => {
             logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber)
         },
         routeNodeClickHandler(nodeId) {
+            // dev 
+            // I'm going to temporarily keep this here just in case we get issues in the future
+            console.log('inputHandlers.selectedAction:', inputHandlers.selectedAction)
             switch (inputHandlers.selectedAction) {
                 case 'move':
                     this.nodeActions.move(nodeId)
@@ -270,10 +273,13 @@ export const inputHandlerFactory = () => {
                 case 'tokenMove':
                     this.nodeActions.moveToken(nodeId)
                     break
-                    // here! - let's fix the console error 
                 default:
                     if (inputHandlers.selectedAction) {
+                        // dev - will need to monitor the fact we call clearAllActionSelection here - 
+                        // there may be unforeseen consequences
                         console.error('We should not be hitting default with a selected action')
+                        this.clearAllActionSelection();
+                        this.warnInvalidAction('Invalid action on a route node.')
                         return
                     }
                     if (USE_DEFAULT_CLICK_ACTIONS) {
