@@ -111,9 +111,9 @@ export const inputHandlerFactory = () => {
             logicBundle.gameController.resupply();
         },
         clearAllActionSelection() {
-            console.log('here!')
             // NOTE: I should *NOT* be using this just to clear action info
             // TODO - break this into a state and a UI function (i.e.) clearActionsUI and clearInputHandler state
+            // It's possible it makes sense to have a setToState method instead?
             document.getElementById('move').innerText = 'Move Pieces'
             inputHandlers.selectedAction = undefined;
             inputHandlers.selectedLocation = undefined;
@@ -155,7 +155,7 @@ export const inputHandlerFactory = () => {
             const tokenMenuDiv = document.getElementById('tokenMenu');
 
             // potentially bad practice to modify the display like this?
-            tokenMenuDiv.style.display = 'block'; 
+            tokenMenuDiv.style.display = 'block';
             const tokenButtonsCreated = {};
             tokenArray.forEach(tokenType => {
                 if (!tokenButtonsCreated[tokenType]) {
@@ -184,9 +184,10 @@ export const inputHandlerFactory = () => {
         },
         populateUpgradeMenuFromToken(upgrades) {
             const tokenMenuDiv = document.getElementById('tokenMenu');
-            tokenMenuDiv.innerHTML = 'Select an upgrade: '
+            tokenMenuDiv.innerHTML = 'Select a free upgrade: '
             upgrades.forEach(upgrade => {
                 const button = document.createElement('button');
+                button.classList.add('tokenButton')
                 button.innerText = upgrade
                 // onclick with the type of upgrade
                 button.onclick = () => {
@@ -194,6 +195,15 @@ export const inputHandlerFactory = () => {
                 }
                 tokenMenuDiv.append(button)
             })
+            const cancelTokenButton = document.createElement('button')
+            
+            cancelTokenButton.innerText = 'Cancel';
+            cancelTokenButton.classList.add('cancelButton')
+            cancelTokenButton.onclick = () => {
+                this.clearAllActionSelection();
+            }
+            tokenMenuDiv.append(cancelTokenButton)
+            console.log(cancelTokenButton)
         },
         populateMoveThreeMenu(movesLeft) {
             const tokenMenuDiv = document.getElementById('tokenMenu');

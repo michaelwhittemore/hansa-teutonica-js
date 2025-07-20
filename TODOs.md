@@ -27,11 +27,13 @@ Note that the above links use the test data that gets populated on the server in
                 1. Warn invalid action `warningText`
                 2. `actionInfo` Does *NOT* move, we should follow its example
                 3. ~~`tokenMenu` - this is what I was thinking about replacing action menu with ~~ 
-                4. The develop one free ability should follow the same logic
+                4. The develop one free ability should follow the same logic. `Select an upgrade: ` also should use the same styling and map to readable ability names
+                    - need to add a cancel button to this too 
 
         * Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
+        * Let's do a two person playtest, try to play the game to its natural end
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
             - Also I have a *LOT* of outstanding 'todos'
         * I would also like to have the room removed from the server when the game ends
@@ -42,6 +44,7 @@ Note that the above links use the test data that gets populated on the server in
         * Am thinking of using Vue
         * I'll need to link to the subdomain
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 
+        * Maybe Netlify? I think I just want a SPA
 
      * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
