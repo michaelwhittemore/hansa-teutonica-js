@@ -1951,7 +1951,7 @@ export const gameControllerFactory = () => {
             if (logicBundle.sessionInfo.isHotseatMode) {
                 logicBundle.playerDeskAndInformationController.focusOnPlayerDesk(this.getActivePlayer(), this.playerArray)
             }
-            // Player board
+            // Player Desk
             this.playerArray.forEach(player => {
                 Object.keys(player.unlockArrayIndex).forEach(unlockKey => {
                     if (player.unlockArrayIndex[unlockKey] > 0) {

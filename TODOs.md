@@ -19,7 +19,7 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/20
-    * **HERE!**
+    * 
         * Then take a look at either TODOs or UI thoughts
         * Really need to clean up the action selection/button/warning text area
             * The fact it can be shifted and isn't a set size feels terrible
@@ -27,9 +27,14 @@ Note that the above links use the test data that gets populated on the server in
                 1. Warn invalid action `warningText`
                 2. `actionInfo` Does *NOT* move, we should follow its example
                 3. `tokenMenu` - this is what I was thinking about replacing action menu with 
-            * Maybe for tokens we can replace the action button menu (plus add a cancel)
+            * **HERE!** Maybe for tokens we can replace the action button menu (plus add a cancel) - We will need to hide the actions buttons
+                - `populateTokenMenu` hide the actions
+                - add cancel
+                - find where we clear the token menu (looks like it might just be in `clearAllActionSelection`)
             * Note that `actionInfo`, `tokenMenu`, and `warningText` are all part of main.html
             * Should I start by styling the buttons first?
+            * Should this whole area be inside of a container?
+        * Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
@@ -192,7 +197,6 @@ honestly maybe I should use side by side tabs for testing? - at least during the
 * check all TODOs
 * Fix the collapsible button and container code to involve less copy-pasta
 * write out a game flow document
-* maybe rename 'board' --> 'map' in the case of the main game board? I keep confusing it with player board
 * ESLINT semi colon - ugh prettier was a hassle, might come back to this
 
 # Stretch Goals (in no particular order) # #

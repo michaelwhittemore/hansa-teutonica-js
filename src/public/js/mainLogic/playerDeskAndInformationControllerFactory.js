@@ -28,7 +28,7 @@ export const playerDeskAndInformationControllerFactory = () => {
             document.getElementById('playerDeskAreaIncludingButton').append(this.createArrowButton('right', playerArray))
 
             const collapseButton = document.createElement('button');
-            collapseButton.innerText = 'Collapse Player Board';
+            collapseButton.innerText = 'Collapse Player Desk';
             collapseButton.className = 'collapseButton';
             collapseButton.onclick = () => this.togglePlayerInfo(collapseButton)
             document.getElementById('playerInfoDeskContainer').append(collapseButton)
@@ -38,10 +38,10 @@ export const playerDeskAndInformationControllerFactory = () => {
             // Need to move buttons to append to the playerDeskAreaIncludingButton
             if (!this.isCollapsed) {
                 document.getElementById('playerDeskAreaIncludingButton').classList.add('collapsedContainer')
-                collapseButton.innerText = 'Expand Player Board'
+                collapseButton.innerText = 'Expand Player Desk'
             } else {
                 document.getElementById('playerDeskAreaIncludingButton').classList.remove('collapsedContainer')
-                collapseButton.innerText = 'Collapse Player Board'
+                collapseButton.innerText = 'Collapse Player Desk'
             }
             this.isCollapsed = !this.isCollapsed
         },

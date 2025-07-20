@@ -120,6 +120,8 @@ export const inputHandlerFactory = () => {
             document.getElementById('actionInfo').innerHTML = ''
             document.getElementById('warningText').innerHTML = ''
             document.getElementById('tokenMenu').innerHTML = ''
+            // here!
+            document.getElementById('actionBar').style.display = 'flex';
         },
         bindInputHandlers() {
             document.getElementById('place').onclick = this.handlePlaceButton;
@@ -151,11 +153,13 @@ export const inputHandlerFactory = () => {
             const tokenMenuDiv = document.getElementById('tokenMenu');
             tokenMenuDiv.innerText = 'Select a token to use: '
             const tokenButtonsCreated = {};
+            // here!
             tokenArray.forEach(tokenType => {
                 if (!tokenButtonsCreated[tokenType]) {
                     tokenButtonsCreated[tokenType] = 1;
                     const button = document.createElement('button');
                     button.id = tokenType
+                    button.classList.add('tokenButton')
                     button.innerText = TOKEN_READABLE_NAMES[tokenType]
                     button.onclick = () => {
                         logicBundle.gameController.useToken(tokenType);
@@ -166,6 +170,14 @@ export const inputHandlerFactory = () => {
                     document.getElementById(tokenType).innerText = `${TOKEN_READABLE_NAMES[tokenType]} (x${tokenButtonsCreated[tokenType]})`
                 }
             })
+            const cancelTokenButton = document.createElement('button')
+            cancelTokenButton.innerText = 'Cancel';
+            cancelTokenButton.classList.add('cancelButton')
+            cancelTokenButton.onclick = () => {
+                this.clearAllActionSelection();
+            }
+            document.getElementById('actionBar').style.display = 'none'
+            tokenMenuDiv.append(cancelTokenButton)
         },
         populateUpgradeMenuFromToken(upgrades) {
             const tokenMenuDiv = document.getElementById('tokenMenu');
@@ -250,7 +262,7 @@ export const inputHandlerFactory = () => {
             }
             logicBundle.gameController.replaceTokenAtLocation(routeId);
         },
-        coellenSpecialAreaClickHandler(spotNumber){
+        coellenSpecialAreaClickHandler(spotNumber) {
             logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber)
         },
         routeNodeClickHandler(nodeId) {

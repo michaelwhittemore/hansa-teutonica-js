@@ -99,7 +99,15 @@
 /* -------------- Action info and turn tracker ------------------------------------------ */
 /* ---- I should move these below all the board CSS */
 .actionButton{
-    /* background-color: aqua; */
+    margin: 2px;
+}
+
+.tokenButton{
+    margin: 2px;
+}
+
+.cancelButton{
+    background-color: red;
     margin: 2px;
 }
 
