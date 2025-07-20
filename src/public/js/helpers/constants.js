@@ -53,5 +53,5 @@ export const ABILITIES_READABLE_NAME = {
 }
 
 // TEST VARIABLES 
-export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree']
+export const TEST_FREE_TOKENS = ['threeActions', 'freeUpgrade', 'threeActions', 'fourActions', 'bonusPost', 'bonusPost', 'switchPost', 'moveThree', 'freeUpgrade', 'freeUpgrade']
 

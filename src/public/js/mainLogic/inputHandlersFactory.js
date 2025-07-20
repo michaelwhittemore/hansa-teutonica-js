@@ -111,7 +111,9 @@ export const inputHandlerFactory = () => {
             logicBundle.gameController.resupply();
         },
         clearAllActionSelection() {
+            console.log('here!')
             // NOTE: I should *NOT* be using this just to clear action info
+            // TODO - break this into a state and a UI function (i.e.) clearActionsUI and clearInputHandler state
             document.getElementById('move').innerText = 'Move Pieces'
             inputHandlers.selectedAction = undefined;
             inputHandlers.selectedLocation = undefined;
@@ -120,7 +122,8 @@ export const inputHandlerFactory = () => {
             document.getElementById('actionInfo').innerHTML = ''
             document.getElementById('warningText').innerHTML = ''
             document.getElementById('tokenMenu').innerHTML = ''
-            // here!
+            // dev
+            document.getElementById('tokenMenu').style.display = 'none'
             document.getElementById('actionBar').style.display = 'flex';
         },
         bindInputHandlers() {
@@ -149,11 +152,11 @@ export const inputHandlerFactory = () => {
             actionInfoDiv.innerText += text;
         },
         populateTokenMenu(tokenArray) {
-            // TODO -  make sure tokenMenu is being cleared elsewhere
             const tokenMenuDiv = document.getElementById('tokenMenu');
-            tokenMenuDiv.innerText = 'Select a token to use: '
+
+            // potentially bad practice to modify the display like this?
+            tokenMenuDiv.style.display = 'block'; 
             const tokenButtonsCreated = {};
-            // here!
             tokenArray.forEach(tokenType => {
                 if (!tokenButtonsCreated[tokenType]) {
                     tokenButtonsCreated[tokenType] = 1;
@@ -266,7 +269,6 @@ export const inputHandlerFactory = () => {
             logicBundle.gameController.handleCoellenSpecialAreaClick(spotNumber)
         },
         routeNodeClickHandler(nodeId) {
-            // dev 
             // I'm going to temporarily keep this here just in case we get issues in the future
             console.log('inputHandlers.selectedAction:', inputHandlers.selectedAction)
             switch (inputHandlers.selectedAction) {
@@ -287,7 +289,7 @@ export const inputHandlerFactory = () => {
                     break
                 default:
                     if (inputHandlers.selectedAction) {
-                        // dev - will need to monitor the fact we call clearAllActionSelection here - 
+                        // we will need to monitor the fact we call clearAllActionSelection here - 
                         // there may be unforeseen consequences
                         console.error('We should not be hitting default with a selected action')
                         this.clearAllActionSelection();

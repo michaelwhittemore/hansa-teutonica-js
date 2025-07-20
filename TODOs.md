@@ -26,14 +26,9 @@ Note that the above links use the test data that gets populated on the server in
             * Let's try and figure out all the situations that cause it to be re-sized
                 1. Warn invalid action `warningText`
                 2. `actionInfo` Does *NOT* move, we should follow its example
-                3. `tokenMenu` - this is what I was thinking about replacing action menu with 
-            * **HERE!** Maybe for tokens we can replace the action button menu (plus add a cancel) - We will need to hide the actions buttons
-                - `populateTokenMenu` hide the actions
-                - add cancel
-                - find where we clear the token menu (looks like it might just be in `clearAllActionSelection`)
-            * Note that `actionInfo`, `tokenMenu`, and `warningText` are all part of main.html
-            * Should I start by styling the buttons first?
-            * Should this whole area be inside of a container?
+                3. ~~`tokenMenu` - this is what I was thinking about replacing action menu with ~~ 
+                4. The develop one free ability should follow the same logic
+
         * Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
