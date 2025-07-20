@@ -19,17 +19,12 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/20
-    * 
+    * **HERE!** 
+        * let's continue with TODOs
+            * style the buttons (maybe different fonts or italicize for actions/tokens)
+            * Would like to try getting rid of the really weird board scaling issue - try switching transform to position - nope that doesn't work
+            * maybe start with some test pages?
         * Then take a look at either TODOs or UI thoughts
-        * Really need to clean up the action selection/button/warning text area
-            * The fact it can be shifted and isn't a set size feels terrible
-            * Let's try and figure out all the situations that cause it to be re-sized
-                1. Warn invalid action `warningText`
-                2. `actionInfo` Does *NOT* move, we should follow its example
-                3. ~~`tokenMenu` - this is what I was thinking about replacing action menu with ~~ 
-                4. The develop one free ability should follow the same logic. `Select an upgrade: ` also should use the same styling and map to readable ability names
-                    - need to add a cancel button to this too 
-
         * Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 

@@ -1,5 +1,5 @@
 import { isShape, pluralifyText } from "../helpers/helpers.js";
-import { BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES } from "../helpers/constants.js";
+import { BUTTON_LIST, USE_DEFAULT_CLICK_ACTIONS, TOKEN_READABLE_NAMES, ABILITIES_READABLE_NAME } from "../helpers/constants.js";
 import { logicBundle } from "../helpers/logicBundle.js";
 
 
@@ -30,7 +30,7 @@ export const inputHandlerFactory = () => {
                 return;
             }
             inputHandlers.selectedAction = 'place'
-            inputHandlers.updateActionInfoText("Select a kind of piece to place and a location")
+            inputHandlers.updateActionInfoText('Select a kind of piece to place and a location');
             inputHandlers.addShapeSelectionToActionInfo()
         },
         handleBumpButton() {
@@ -122,7 +122,6 @@ export const inputHandlerFactory = () => {
             document.getElementById('actionInfo').innerHTML = ''
             document.getElementById('warningText').innerHTML = ''
             document.getElementById('tokenMenu').innerHTML = ''
-            // dev
             document.getElementById('tokenMenu').style.display = 'none'
             document.getElementById('actionBar').style.display = 'flex';
         },
@@ -152,6 +151,7 @@ export const inputHandlerFactory = () => {
             actionInfoDiv.innerText += text;
         },
         populateTokenMenu(tokenArray) {
+            this.clearAllActionSelection();
             const tokenMenuDiv = document.getElementById('tokenMenu');
 
             // potentially bad practice to modify the display like this?
@@ -188,7 +188,7 @@ export const inputHandlerFactory = () => {
             upgrades.forEach(upgrade => {
                 const button = document.createElement('button');
                 button.classList.add('tokenButton')
-                button.innerText = upgrade
+                button.innerText = ABILITIES_READABLE_NAME[upgrade]
                 // onclick with the type of upgrade
                 button.onclick = () => {
                     logicBundle.gameController.tokenActions.useFreeUpgrade(upgrade)
@@ -219,9 +219,11 @@ export const inputHandlerFactory = () => {
         },
         addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
             const actionInfoDiv = document.getElementById('actionInfo')
+            // here! looks like there's still some shifting, maybe just switch these to shapes?
             if (useSquare) {
                 const squareButton = document.createElement('button');
-                squareButton.innerText = 'Square'
+                squareButton.classList.add('actionButton')
+                squareButton.innerText = 'Square';
                 squareButton.onclick = () => {
                     inputHandlers.additionalInfo = 'square'
                 }
@@ -230,6 +232,7 @@ export const inputHandlerFactory = () => {
             if (useCircle) {
                 const circleButton = document.createElement('button');
                 circleButton.innerText = 'Circle'
+                circleButton.classList.add('actionButton')
                 circleButton.onclick = () => {
                     inputHandlers.additionalInfo = 'circle'
                 }
