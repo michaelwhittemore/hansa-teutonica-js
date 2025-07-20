@@ -20,24 +20,21 @@ Note that the above links use the test data that gets populated on the server in
 
 * 7/20
     * **HERE!**
-        * Let's address the `additionalTradingPost` token bug. (might affect other tokens?)
-            * It seems like we don't clear it, maybe I should log the inputhandlers?
-            * It also seems to happen with switch posts
-            * This even happens when using the `captureCity` button.
-                - Ahhh. This is in `routeNodeClickHandler`, it specifically expects a route node related input I think
-                - The main question is: is it safe to just clear the inputHandlers.selectedAction?
-                - Should we log something in the `warningText` area
         * Then take a look at either TODOs or UI thoughts
         * Really need to clean up the action selection/button/warning text area
+            * The fact it can be shifted and isn't a set size feels terrible
+            * Let's try and figure out all the situations that cause it to be re-sized
+                1. Warn invalid action `warningText`
+                2. `actionInfo` Does *NOT* move, we should follow its example
+                3. `tokenMenu` - this is what I was thinking about replacing action menu with 
+            * Maybe for tokens we can replace the action button menu (plus add a cancel)
+            * Note that `actionInfo`, `tokenMenu`, and `warningText` are all part of main.html
+            * Should I start by styling the buttons first?
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Then it's just play testing and UI (until eventually working on disconnect logic) 
             - Also I have a *LOT* of outstanding 'todos'
         * I would also like to have the room removed from the server when the game ends
-
-
-    * **BUG** looks like we get a console error when trying to use an `additionalTradingPost` while clicking a route node
-    * I don't mind console errors, but this seems to affect the ability to click on other locations
 
 
     * In the longer term, I'd like to switch my website to have hansa as a subdomain. Building a polished main website is an important todo for me, although it's beyond the scope of this project. - I should probably look at some templates
@@ -55,6 +52,8 @@ Note that the above links use the test data that gets populated on the server in
         * Buttons should have spacing. 
         * We shouldn't shift up and down when error or additional context is added
         * I believe this is the domain of the `actionBar` which I haven't really thought about since I started this project
+        * Shouldn't delete / re-add the warning. 
+        * Maybe tokens and actions and action clarification (like shapes) should have different styling?
     * Add dashes between route nodes (which will require angular calculation)
     * bonus trading post has a border, maybe add the same to the city pieces so they line up??
     * Player Desk UI: 

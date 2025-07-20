@@ -79,7 +79,7 @@
     border-color: chocolate;
     overflow: scroll;
     width: 100%;
-    height: 700px;
+    height: 680px;
     /* Should un-comment this TODO here! */
     /* height: 100%; */
     /* display: none; just while doing desk*/
@@ -96,12 +96,15 @@
     border-color: black;
 }
 
-#turnTracker {
-    font-weight: bold;
+/* -------------- Action info and turn tracker ------------------------------------------ */
+/* ---- I should move these below all the board CSS */
+.actionButton{
+    /* background-color: aqua; */
+    margin: 2px;
 }
 
-.playerBox {
-    border: dotted;
+#turnTracker {
+    font-weight: bold;
 }
 
 .actionBar {
