@@ -219,7 +219,6 @@ export const inputHandlerFactory = () => {
         },
         addShapeSelectionToActionInfo(useSquare = true, useCircle = true) {
             const actionInfoDiv = document.getElementById('actionInfo')
-            // here! looks like there's still some shifting, maybe just switch these to shapes?
             if (useSquare) {
                 const squareButton = document.createElement('button');
                 squareButton.classList.add('actionButton')

@@ -84,6 +84,7 @@
     height: 670px;
     /* Should un-comment this TODO here! */
     /* height: 100%; */
+    display: none;
     /* display: none; just while doing desk*/
 
 }
@@ -307,7 +308,7 @@ td {
 
 .keysDiv {
     height: 70px;
-    width: 35px;
+    width: 45px;
     margin: 2px;
 }
 
@@ -320,7 +321,13 @@ td {
     height: 90px;
     width: 70px;
     margin: 2px;
+}
+
+.deskIndividualUnlock{
     background-color: wheat;
+    display: grid;
+    justify-items: center;
+    padding: 2px;
 }
 
 .tokenTracker {
@@ -386,7 +393,6 @@ td {
     height: 90px;
     width: 70px;
     margin: 2px;
-    background-color: wheat;
 }
 
 .unlockableShape {

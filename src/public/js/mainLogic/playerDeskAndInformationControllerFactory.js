@@ -117,8 +117,7 @@ export const playerDeskAndInformationControllerFactory = () => {
                 keysTracker.className = 'keysTracker';
                 keysTracker.id = `${player.id}-keysTracker`;
                 for (let i = 0; i < unlockKeysToValue.length; i++) {
-                    const keysDiv = document.createElement('div');
-                    keysDiv.className = 'keysDiv';
+                    const keysDiv =createDivWithClassAndIdAndStyle(['keysDiv','deskIndividualUnlock'])
                     keysDiv.innerText = `Key ${unlockKeysToValue[i]}`
                     keysDiv.append(this.createUnlockableShape({
                         locked: i > 0,
@@ -136,12 +135,12 @@ export const playerDeskAndInformationControllerFactory = () => {
                 actionTracker.id = `${player.id}-actionTracker`;
                 for (let i = 0; i < unlockActionsToValue.length; i++) {
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.classList.add('actionsDiv')
-                    // TODO center content better
-                    // Might need a innerText utility class
-                    // actionsDiv.classList.add('actionsDiv', 'centeredFlex')
+                    actionsDiv.classList.add('actionsDiv', 'deskIndividualUnlock')
 
-                    actionsDiv.innerText = `Actiones ${unlockActionsToValue[i]}`
+                    // here! - let's add a text component and the shape
+                    const actionsDivText = createDivWithClassAndIdAndStyle(['actionsDivText']);
+                    actionsDivText.innerText = `Actiones ${unlockActionsToValue[i]}`
+                    actionsDiv.append(actionsDivText)
                     actionsDiv.append(this.createUnlockableShape({
                         locked: i > 0,
                         color: player.color,
@@ -206,9 +205,8 @@ export const playerDeskAndInformationControllerFactory = () => {
                 purseTracker.className = 'purseTracker';
                 purseTracker.id = `${player.id}-purseTracker`;
                 for (let i = 0; i < unlockPurseToValue.length; i++) {
-                    const purseDiv = document.createElement('div');
-                    purseDiv.classList.add('purseDiv')
-
+                    const purseDiv=createDivWithClassAndIdAndStyle(['purseDiv', 'deskIndividualUnlock'])
+                    // here! let's center the text
                     purseDiv.innerText = `Resupply ${unlockPurseToValue[i]}`
                     purseDiv.append(this.createUnlockableShape({
                         locked: i > 0,
