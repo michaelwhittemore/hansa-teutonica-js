@@ -60,6 +60,7 @@ Note that the above links use the test data that gets populated on the server in
 * # UI Thoughts
     * ~~Style the board scrollbar~~
         * Could still style the primary one. Maybe once I've picked out some background colors?
+    * Let's try for a background color #78909C or #CFD8DC, we will make #F0F0F0 our competent color
     * The button area has been very neglected (as in player actions)
         * ~~Buttons should have spacing. ~~
         * ~~We shouldn't shift up and down when error or additional context is added~~

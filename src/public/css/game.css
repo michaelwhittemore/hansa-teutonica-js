@@ -1,3 +1,6 @@
+body{
+    background-color: #CFD8DC;
+}
 .worker-holder {
     height: 35px;
     width: 35px;
@@ -97,6 +100,7 @@
 .playerDeskArea {
     border: solid;
     border-color: black;
+    background-color: #F0F0F0;
 }
 
 /* -------------- Action info and turn tracker ------------------------------------------ */
@@ -147,6 +151,7 @@
 }
 
 .pointPieceContainer {
+    background-color: #F0F0F0;
     height: 33px;
     width: 33px;
     font-size: 12px;
@@ -172,6 +177,7 @@
 
 .gameLog {
     /* overflow: scroll; */
+    background-color: #F0F0F0;
     overflow: auto;
     height: 200px;
     border: solid;
