@@ -18,14 +18,13 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/20
-    * **HERE!** 
-        * let's continue with TODOs
-            * style the buttons (maybe different fonts or italicize for actions/tokens)
-            * Would like to try getting rid of the really weird board scaling issue - try switching transform to position - nope that doesn't work
-            * maybe start with some test pages?
-        * Then take a look at either TODOs or UI thoughts
-        * Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
+* 7/21
+    * I Should start by going over these goals and organizing them **HERE!** 
+        1. Style the buttons (maybe different fonts or italicize for actions/tokens)
+        2. Create a quick demo of the scroll height issue with JS
+        3. Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
+        4. Then either back to UI or actually get started on the Vue portfolio
+
 
     * I think I'm actually done with Endgame points. I'm very close to having the game in a playable state 
         * Let's do a two person playtest, try to play the game to its natural end
@@ -43,16 +42,28 @@ Note that the above links use the test data that gets populated on the server in
 
      * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
+-------------------------
+* # Scroll Height Issue
+    * Would like to try getting rid of the really weird board scaling issue - try switching transform to position - nope that doesn't work
+     - I wonder if switching the direction of the elements would work?
+                    - grid seems to break everything? 
+            * maybe start with some test pages?
+            * Should create a jsfiddle (or equivalent) I guess we just add a iteration for maybe 10 or so elements
+            * Make my use case clear, i.e. have specific positioning requirements 
+            * iFrames don't seem right as I do a lot of state communication between the board and the rest of the page - honestly I'm not sure iFrames would even fix it based on what I've seen with my test page (actually maybe if I had no overflow on my Iframe body?)
+            * make sure to note about the dynamic resizing
+            * I don't want to use absolute as I want the elements to be tied to the parent (I collapse it and want to preserve the scrollablity of it)
+     * maybe we want to automatically start scrolled to the top? To avoid elements being mispositioned? - probably as part of loading in the board - hmmm it looks like it will be the page, not the board that needs to be scrolled
+     * maybe we specify the height of the gameBoard? This will probably be worth stack overflow/reddit. The height is already set. The idea is I don't want it to infinitely scroll (not literally, it's just way too much right now) because of the elements before they are transformed? I wonder if switching from `transform: translate` to `left/top` would solve the issue? might be worth a simple test case - looks like maybe scrollHeight?? https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight. So that is NOT sufficient. I wonder if an iframe makese any sense??
+     * I wonder if repositioning each element after it's been created before the next element is added matters??
 ---------------------
 * # UI Thoughts
-    * Style the board scrollbar
+    * ~~Style the board scrollbar~~
+        * Could still style the primary one. Maybe once I've picked out some background colors?
     * The button area has been very neglected (as in player actions)
-        * Buttons should have spacing. 
-        * We shouldn't shift up and down when error or additional context is added
-        * I believe this is the domain of the `actionBar` which I haven't really thought about since I started this project
-        * Shouldn't delete / re-add the warning. 
+        * ~~Buttons should have spacing. ~~
+        * ~~We shouldn't shift up and down when error or additional context is added~~
         * Maybe tokens and actions and action clarification (like shapes) should have different styling?
-    * Add dashes between route nodes (which will require angular calculation)
     * bonus trading post has a border, maybe add the same to the city pieces so they line up??
     * Player Desk UI: 
         * ~~`Liber Sophiae`, `Privilegium`, and `Resupply` don't line up~~
@@ -70,9 +81,12 @@ Note that the above links use the test data that gets populated on the server in
     * ~~perhaps we use a thicker font for city names, and less thick for unlocks~~
     * ~~cities change border color based on owner~~
     * switch to something slightly gothic or cursive. Unfortunately, the default cursive is kinda garish
-    * add a hover effect similar to what we have in the color selector
-    * The background-color should be fixed, white is pretty hard to read
-    * UI related - maybe we want to automatically start scrolled to the top? To avoid elements being mispositioned? Also maybe we specify the height of the gameBoard? This will probably be worth stack overflow/reddit. The height is already set. The idea is I don't want it to infinitely scroll (not literally, it's just way too much right now) because of the elements before they are transformed? I wonder if switching from `transform: translate` to `left/top` would solve the issue? might be worth a simple test case - looks like maybe scrollHeight?? https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
+    * add a hover effect similar to what we have in the color selector - i.e. we will be highlighting your selection - maybe go from a light border to a darker boarder?
+    * The background-color should be fixed, white is pretty hard to read (for the entire page i mean)
+    * fix the awkward popup for tokens
+    * Add dashes between route nodes (which will require angular calculation) - alternatively, just use squares. We could do a simple line builder function between two points
+
+
 
 ----------------------
 * Broader list
