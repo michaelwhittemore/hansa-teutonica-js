@@ -100,20 +100,20 @@
 
 /* -------------- Action info and turn tracker ------------------------------------------ */
 /* ---- I should move these below all the board CSS */
-.actionButton{
+.actionButton {
     margin: 2px;
 }
 
-.tokenButton{
+.tokenButton {
     margin: 2px;
 }
 
-#tokenMenu{
+#tokenMenu {
     padding: 5px;
     display: none;
 }
 
-.cancelButton{
+.cancelButton {
     background-color: red;
     margin: 2px;
 }
@@ -494,15 +494,24 @@ td {
     position: absolute;
     z-index: 1;
 }
+
 .onBoardToken:hover .tokenToolTip {
     visibility: visible;
 }
 
-/* Utility Classes */
+/* ------------------------------ Utility Classes ---------------------------------*/
 .centeredFlex {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.hoverable {
+    border-color: black;
+}
+
+.hoverable:hover{
+    border-color: grey;
 }
 
 .circle {
@@ -531,7 +540,6 @@ td {
     font-weight: bold;
     width: 100%;
 }
-
 
 .testSinglePixel {
     height: 5px;

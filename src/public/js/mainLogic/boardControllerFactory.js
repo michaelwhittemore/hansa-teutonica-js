@@ -133,7 +133,8 @@ export const boardControllerFactory = () => {
 
             for (let i = 0; i < length; i++) {
                 const nodeId = `${id}-${i}`;
-                const routeNode = createDivWithClassAndIdAndStyle(['routeNode', 'worker-holder', 'centeredFlex'], nodeId)
+                const routeNode = createDivWithClassAndIdAndStyle(['routeNode', 'worker-holder', 'centeredFlex', 'hoverable'],
+                    nodeId)
                 routeNode.id = nodeId;
                 routeNode.onclick = () => {
                     logicBundle.inputHandlers.routeNodeClickHandler(nodeId)
