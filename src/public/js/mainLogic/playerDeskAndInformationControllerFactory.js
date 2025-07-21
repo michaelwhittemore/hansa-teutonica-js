@@ -189,7 +189,9 @@ export const playerDeskAndInformationControllerFactory = () => {
                 for (let i = 0; i < unlockMovementToValue.length; i++) {
                     const maxMovementDiv = document.createElement('div');
                     maxMovementDiv.className = 'maxMovementDiv';
-                    maxMovementDiv.innerText = `${unlockMovementToValue[i]}`
+                    const maxMovementDivText = createDivWithClassAndIdAndStyle([])
+                    maxMovementDivText.innerText = `${unlockMovementToValue[i]}`;
+                    maxMovementDiv.append(maxMovementDivText)
                     maxMovementDiv.append(this.createUnlockableShape({
                         locked: i > 0,
                         color: player.color,

@@ -84,7 +84,7 @@
     height: 670px;
     /* Should un-comment this TODO here! */
     /* height: 100%; */
-    display: none;
+    /* display: none; */
     /* display: none; just while doing desk*/
 
 }
@@ -323,7 +323,7 @@ td {
     margin: 2px;
 }
 
-.deskIndividualUnlock{
+.deskIndividualUnlock {
     background-color: wheat;
     display: grid;
     justify-items: center;
@@ -370,6 +370,7 @@ td {
 .movesTracker {
     display: flex;
     margin: 10px;
+    height: 120px;
     width: 31%;
     background-color: wheat;
     flex-wrap: wrap;
@@ -377,6 +378,8 @@ td {
 }
 
 .maxMovementDiv {
+    display: grid;
+    justify-items: center;
     height: 70px;
     width: 50px;
     margin: 2px;
@@ -421,6 +424,7 @@ td {
 .supplyArea {
     height: 120px;
     width: 45%;
+    margin: 4px;
     background-color: aquamarine;
     border: solid;
 }
@@ -428,6 +432,7 @@ td {
 .bankArea {
     height: 120px;
     width: 45%;
+    margin: 4px;
     background-color: peachpuff;
     border: solid;
 }
@@ -516,7 +521,7 @@ td {
     border-color: black;
 }
 
-.hoverable:hover{
+.hoverable:hover {
     border-color: grey;
 }
 

@@ -68,10 +68,11 @@ Note that the above links use the test data that gets populated on the server in
     * Player Desk UI: 
         * ~~`Liber Sophiae`, `Privilegium`, and `Resupply` don't line up~~
         - Fixed that but maybe they should all be the same height?? 
+            - At the very least, colors and moves should
         - ~~give them inner padding I think - or maybe actually just redistribute space around the elements - `justify-content: space-evenly`~~
         * Also maybe a border??
-        * `actionsDiv` should be centered
-        * technically same with keys. 
+        * ~~`actionsDiv` should be centered~~
+        * ~~technically same with keys. ~~
         * ~~Center the desk elements - playerDeskArea~~
         * Fix squishing when the supply/bank is full
             - 4 per player color (wooden disks)
