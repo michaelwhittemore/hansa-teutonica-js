@@ -65,7 +65,6 @@ Note that the above links use the test data that gets populated on the server in
         * ~~Buttons should have spacing. ~~
         * ~~We shouldn't shift up and down when error or additional context is added~~
         * Maybe tokens and actions and action clarification (like shapes) should have different styling?
-    * bonus trading post has a border, maybe add the same to the city pieces so they line up??
     * Player Desk UI: 
         * ~~`Liber Sophiae`, `Privilegium`, and `Resupply` don't line up~~
         - Fixed that but maybe they should all be the same height?? 
