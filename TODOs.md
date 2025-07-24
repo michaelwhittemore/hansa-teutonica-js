@@ -1,5 +1,5 @@
 # Play Test Ready Checklist #
-* Map replicates the actual gameboard (i.e. has all the same routes and cities)
+* ~~Map replicates the actual gameboard (i.e. has all the same routes and cities)~~
 * ~~Endgame points are calculated and winners are reported~~
 * ~~Stendal to Arnheim (The east-west route)~~
 * ~~Coellen special city points~~
@@ -18,7 +18,7 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 
 Note that the above links use the test data that gets populated on the server in app.js
 
-* 7/21
+* 7/25
     * I Should start by going over these goals and organizing them **HERE!** 
         1. Style the buttons (maybe different fonts or italicize for actions/tokens)
         2. Create a quick demo of the scroll height issue with JS
@@ -39,6 +39,7 @@ Note that the above links use the test data that gets populated on the server in
         * I'll need to link to the subdomain
         * Need to figure out a cheaper hosting solution. Maybe try firebase? 
         * Maybe Netlify? I think I just want a SPA
+        * Pretty sure I'm going with Netlify
 
      * https://i0.wp.com/opinionatedgamers.com/wp-content/uploads/2021/02/pxl_20210227_230002949.jpg?ssl=1 looks like it might be sufficient
 
