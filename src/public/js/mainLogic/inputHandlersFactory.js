@@ -6,6 +6,11 @@ import { logicBundle } from "../helpers/logicBundle.js";
 export const inputHandlerFactory = () => {
 
     const inputHandlers = {
+        state: {
+            selectedAction: undefined,
+            selectedLocation: undefined,
+            additionalInfo: undefined,
+        },
         verifyPlayersTurn() {
             // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUT HANDLER SHOULD TELL YOU TO WAIT
             // IT SHOULDN'T BE THE gameController's responsibility (I think??)
@@ -17,7 +22,7 @@ export const inputHandlerFactory = () => {
         handleUpgradeButton() {
             inputHandlers.clearAllActionSelection();
 
-            inputHandlers.selectedAction = 'upgrade'
+            this.selectedAction = 'upgrade'
             inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
         },
         handleTokenButton() {
@@ -29,13 +34,13 @@ export const inputHandlerFactory = () => {
             if (!inputHandlers.verifyPlayersTurn()) {
                 return;
             }
-            inputHandlers.selectedAction = 'place'
+            this.selectedAction = 'place'
             inputHandlers.updateActionInfoText('Select a kind of piece to place and a location');
             inputHandlers.addShapeSelectionToActionInfo()
         },
         handleBumpButton() {
             inputHandlers.clearAllActionSelection();
-            inputHandlers.selectedAction = 'selectPieceToBump'
+            this.selectedAction = 'selectPieceToBump'
             inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
             inputHandlers.addShapeSelectionToActionInfo()
         },
@@ -73,7 +78,7 @@ export const inputHandlerFactory = () => {
             this.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {
-            if (inputHandlers.selectedAction === 'move') {
+            if (this.selectedAction === 'move') {
                 document.getElementById('move').innerText = 'Move Pieces'
                 inputHandlers.clearAllActionSelection();
                 logicBundle.gameController.endMoveAction();
@@ -85,7 +90,7 @@ export const inputHandlerFactory = () => {
 
             document.getElementById('move').innerText = 'End Move Action';
 
-            inputHandlers.selectedAction = 'move'
+            this.selectedAction = 'move'
             inputHandlers.additionalInfo = 'selectPieceToMove'
 
             // The below text should only occur when you're the player - might not even be
@@ -95,15 +100,15 @@ export const inputHandlerFactory = () => {
         handleCaptureCityButton() {
             inputHandlers.clearAllActionSelection();
 
-            inputHandlers.selectedAction = 'capture';
-            if (!inputHandlers.selectedLocation) {
+            this.selectedAction = 'capture';
+            if (!this.state.selectedLocation) {
                 inputHandlers.updateActionInfoText('Select a city to capture');
             } else {
                 let playerId = undefined
                 if (!logicBundle.sessionInfo.isHotseatMode) {
                     // get the player name from sessionStorage
                 }
-                logicBundle.gameController.captureCity(inputHandlers.selectedLocation, playerId)
+                logicBundle.gameController.captureCity(this.state.selectedLocation, playerId)
             }
 
         },
@@ -115,8 +120,8 @@ export const inputHandlerFactory = () => {
             // TODO - break this into a state and a UI function (i.e.) clearActionsUI and clearInputHandler state
             // It's possible it makes sense to have a setToState method instead?
             document.getElementById('move').innerText = 'Move Pieces'
-            inputHandlers.selectedAction = undefined;
-            inputHandlers.selectedLocation = undefined;
+            this.selectedAction = undefined;
+            this.state.selectedLocation = undefined;
             inputHandlers.additionalInfo = undefined;
 
             document.getElementById('actionInfo').innerHTML = ''
@@ -243,27 +248,27 @@ export const inputHandlerFactory = () => {
             document.getElementById('warningText').innerText = warningText
         },
         cityClickHandler(cityId) {
-            if (!inputHandlers.selectedAction) {
+            if (!this.selectedAction) {
                 if (USE_DEFAULT_CLICK_ACTIONS) {
-                    inputHandlers.selectedLocation = cityId;
-                    inputHandlers.selectedAction = 'capture';
+                    this.state.selectedLocation = cityId;
+                    this.selectedAction = 'capture';
                 } else {
                     // TODO handle no selected action on city click (presumably warn and clear)
                     return;
                 }
             };
-            if (inputHandlers.selectedAction === 'capture') {
+            if (this.selectedAction === 'capture') {
                 // Might need to pass in player ID
                 logicBundle.gameController.captureCity(cityId, undefined)
             }
-            if (inputHandlers.selectedAction === 'upgrade') {
+            if (this.selectedAction === 'upgrade') {
                 // Might need to pass in player ID
                 logicBundle.gameController.upgradeAtCity(cityId, undefined)
             }
 
         },
         citySpotClickHandler(spotNumber, cityId) {
-            if (inputHandlers.selectedAction !== 'switchPostSelection') {
+            if (this.selectedAction !== 'switchPostSelection') {
                 this.cityClickHandler(cityId)
                 return;
             }
@@ -282,8 +287,8 @@ export const inputHandlerFactory = () => {
         },
         routeNodeClickHandler(nodeId) {
             // I'm going to temporarily keep this here just in case we get issues in the future
-            console.log('inputHandlers.selectedAction:', inputHandlers.selectedAction)
-            switch (inputHandlers.selectedAction) {
+            console.log('this.selectedAction:', this.selectedAction)
+            switch (this.selectedAction) {
                 case 'move':
                     this.nodeActions.move(nodeId)
                     break;
@@ -300,7 +305,7 @@ export const inputHandlerFactory = () => {
                     this.nodeActions.moveToken(nodeId)
                     break
                 default:
-                    if (inputHandlers.selectedAction) {
+                    if (this.selectedAction) {
                         // we will need to monitor the fact we call clearAllActionSelection here - 
                         // there may be unforeseen consequences
                         console.error('We should not be hitting default with a selected action')

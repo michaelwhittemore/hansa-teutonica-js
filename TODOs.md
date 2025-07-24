@@ -19,10 +19,17 @@ http://localhost:3000/onlineGame/testRoom1?participantId=vUCLAhoLQkMdVi5xTDMGLp
 Note that the above links use the test data that gets populated on the server in app.js
 
 * 7/25
-    * I Should start by going over these goals and organizing them **HERE!** 
+    * I Should start by going over these goals and organizing them  
+        -  **HERE!** Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
+            * Starting with inputHandlers. 
+                * Do we have any states besides `selectedAction`?
+                * ~~`selectedLocation`~~ & `additionalInfo`
+                * SEEMS LIKE I BROKE THE CIRCLE PLACE SELECTION??
+                1. First we need to initialize the `state` I think
+
         1. Style the buttons (maybe different fonts or italicize for actions/tokens)
         2. Create a quick demo of the scroll height issue with JS
-        3. Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
+
         4. Then either back to UI or actually get started on the Vue portfolio
 
 
