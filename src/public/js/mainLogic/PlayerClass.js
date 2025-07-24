@@ -9,10 +9,10 @@ export class Player {
         this.name = name;
         this.supplySquares = startingPieces;
         // this.supplySquares = 31; // Just for testing
-        this.maxActions = 2;
-        // this.maxActions = 5; // Just for testing
-        this.currentTokens = [];
-        // this.currentTokens = [...TEST_FREE_TOKENS] // Just for testing
+        // this.maxActions = 2;
+        this.maxActions = 5; // Just for testing
+        // this.currentTokens = [];
+        this.currentTokens = [...TEST_FREE_TOKENS] // Just for testing
         this.bankedSquares = STARTING_BANK - startingPieces;
         this.supplyCircles = 1;
         this.bankedCircles = 0;

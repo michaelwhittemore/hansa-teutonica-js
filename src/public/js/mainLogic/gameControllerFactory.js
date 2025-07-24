@@ -477,7 +477,7 @@ export const gameControllerFactory = () => {
                     gameController.moveInformation.movesUsed = 0;
                 }
 
-                logicBundle.inputHandlers.additionalInfo = 'selectLocationToMoveTo'
+                logicBundle.inputHandlers.state.additionalInfo = 'selectLocationToMoveTo'
                 logicBundle.inputHandlers.updateActionInfoText(`You have a selected a ${node.shape}. Select an unoccupied route node to move there.`)
                 gameController.moveInformation.originNode = node;
             }
@@ -541,7 +541,7 @@ export const gameControllerFactory = () => {
             if (!isOnlineAction) {
                 logicBundle.inputHandlers.updateActionInfoText(
                     `Select one of your own pieces to move. You have ${player.maxMovement - gameController.moveInformation.movesUsed} left.`)
-                logicBundle.inputHandlers.additionalInfo = 'selectPieceToMove';
+                logicBundle.inputHandlers.state.additionalInfo = 'selectPieceToMove';
             } else {
                 logicBundle.inputHandlers.updateActionInfoText(
                     `${player.name} is using a move action.`)
@@ -700,7 +700,7 @@ export const gameControllerFactory = () => {
             })
             // 12. Then update inputHandler.selectedAction
             logicBundle.inputHandlers.clearAllActionSelection();
-            logicBundle.inputHandlers.selectedAction = 'placeBumpedPiece';
+            logicBundle.inputHandlers.state.selectedAction = 'placeBumpedPiece';
 
             // We don't want a tertiary player to see the text telling them that they've been bumped
             const shouldAddText = logicBundle.sessionInfo.isHotseatMode ||
@@ -1407,7 +1407,7 @@ export const gameControllerFactory = () => {
             },
             switchPost() {
                 logicBundle.inputHandlers.clearAllActionSelection();
-                logicBundle.inputHandlers.selectedAction = 'switchPostSelection';
+                logicBundle.inputHandlers.state.selectedAction = 'switchPostSelection';
                 logicBundle.inputHandlers.updateActionInfoText('Select two spots in the same city to exchange. You must own one of them.');
             },
             selectedPostToSwitch(cityId, citySpotNumber, playerId,
@@ -1508,14 +1508,14 @@ export const gameControllerFactory = () => {
             },
             bonusPost() {
                 logicBundle.inputHandlers.clearAllActionSelection();
-                logicBundle.inputHandlers.selectedAction = 'capture';
+                logicBundle.inputHandlers.state.selectedAction = 'capture';
                 gameController.tokenUsageInformation.tokenAction = 'bonusPost';
                 logicBundle.inputHandlers.updateActionInfoText('Select a city to capture. You will receive a bonus trading post.');
             },
             moveThree() {
                 logicBundle.inputHandlers.clearAllActionSelection();
-                logicBundle.inputHandlers.selectedAction = 'tokenMove';
-                logicBundle.inputHandlers.additionalInfo = 'selectPiece'
+                logicBundle.inputHandlers.state.selectedAction = 'tokenMove';
+                logicBundle.inputHandlers.state.additionalInfo = 'selectPiece'
 
                 logicBundle.inputHandlers.toggleInputButtons(true)
                 logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this up to three times');
@@ -1542,7 +1542,7 @@ export const gameControllerFactory = () => {
                 // 3. We need to update the action info UI
                 logicBundle.inputHandlers.updateActionInfoText(`You selected the piece at ${nodeId}. Select an empty spot to move it to.`)
                 // 4. We need to change the additionalInfo field
-                logicBundle.inputHandlers.additionalInfo = 'selectLocation'
+                logicBundle.inputHandlers.state.additionalInfo = 'selectLocation'
             },
             selectMoveThreeLocation(nodeId, playerId,
                 optionalTokenUsageInformation = false, isOnlineAction = false) {
@@ -1611,7 +1611,7 @@ export const gameControllerFactory = () => {
                     return;
                 }
                 // 11. Otherwise we update the tokenUI and actionInfo UI texts
-                // 12. Then change the logicBundle.inputHandlers.additionalInfo back to 'selectPiece'
+                // 12. Then change the logicBundle.inputHandlers.state.additionalInfo back to 'selectPiece'
                 const movesLeft = gameController.tokenUsageInformation.movesLeft
                 if (!isOnlineAction) {
                     logicBundle.inputHandlers.updateActionInfoText('Select an opposing piece and a location to move it to. You can do this up to three times');
@@ -1621,7 +1621,7 @@ export const gameControllerFactory = () => {
                         `Waiting on ${player.name}'s Move Three Tradesmen Token. They have ${pluralifyText('move', movesLeft)} left.`);
                 }
 
-                logicBundle.inputHandlers.additionalInfo = 'selectPiece';
+                logicBundle.inputHandlers.state.additionalInfo = 'selectPiece';
                 gameController.tokenUsageInformation.originLocation = undefined;
             },
             endMoveThree(playerId, isOnlineAction = false) {

@@ -4,8 +4,12 @@ import { logicBundle } from "../helpers/logicBundle.js";
 
 
 export const inputHandlerFactory = () => {
-
     const inputHandlers = {
+        state: {
+            selectedAction: undefined,
+            selectedLocation: undefined,
+            additionalInfo: undefined,
+        },
         verifyPlayersTurn() {
             // THE LOGIC IS THAT IN NON-HOTSEAT PLAY THE INPUT HANDLER SHOULD TELL YOU TO WAIT
             // IT SHOULDN'T BE THE gameController's responsibility (I think??)
@@ -17,7 +21,7 @@ export const inputHandlerFactory = () => {
         handleUpgradeButton() {
             inputHandlers.clearAllActionSelection();
 
-            inputHandlers.selectedAction = 'upgrade'
+            inputHandlers.state.selectedAction = 'upgrade'
             inputHandlers.updateActionInfoText("Select a city corresponding to an upgrade.", true)
         },
         handleTokenButton() {
@@ -29,13 +33,13 @@ export const inputHandlerFactory = () => {
             if (!inputHandlers.verifyPlayersTurn()) {
                 return;
             }
-            inputHandlers.selectedAction = 'place'
+            inputHandlers.state.selectedAction = 'place'
             inputHandlers.updateActionInfoText('Select a kind of piece to place and a location');
             inputHandlers.addShapeSelectionToActionInfo()
         },
         handleBumpButton() {
             inputHandlers.clearAllActionSelection();
-            inputHandlers.selectedAction = 'selectPieceToBump'
+            inputHandlers.state.selectedAction = 'selectPieceToBump'
             inputHandlers.updateActionInfoText('Select a shape to replace your rivals with, then select their piece.')
             inputHandlers.addShapeSelectionToActionInfo()
         },
@@ -51,12 +55,12 @@ export const inputHandlerFactory = () => {
                 if (squares && circles) {
                     this.addShapeSelectionToActionInfo()
                     if (USE_DEFAULT_CLICK_ACTIONS) {
-                        this.additionalInfo = 'square';
+                        this.state.additionalInfo = 'square';
                     }
                 } else if (squares && !circles) {
-                    this.additionalInfo = 'square';
+                    this.state.additionalInfo = 'square';
                 } else if (!squares && circles) {
-                    this.additionalInfo = 'circle'
+                    this.state.additionalInfo = 'circle'
                 }
             }
 
@@ -70,10 +74,10 @@ export const inputHandlerFactory = () => {
                 // We don't need to offer any token rules reminders to players who aren't doing the placing
                 this.updateActionInfoText(`You must choose a completely unoccupied route to place your "${TOKEN_READABLE_NAMES[token]}" token.`)
             }
-            this.selectedAction = 'placeNewToken';
+            this.state.selectedAction = 'placeNewToken';
         },
         handleMoveButton() {
-            if (inputHandlers.selectedAction === 'move') {
+            if (inputHandlers.state.selectedAction === 'move') {
                 document.getElementById('move').innerText = 'Move Pieces'
                 inputHandlers.clearAllActionSelection();
                 logicBundle.gameController.endMoveAction();
@@ -85,8 +89,8 @@ export const inputHandlerFactory = () => {
 
             document.getElementById('move').innerText = 'End Move Action';
 
-            inputHandlers.selectedAction = 'move'
-            inputHandlers.additionalInfo = 'selectPieceToMove'
+            inputHandlers.state.selectedAction = 'move'
+            inputHandlers.state.additionalInfo = 'selectPieceToMove'
 
             // The below text should only occur when you're the player - might not even be
             // a problem as it's tied to an inputHandler method not the gameController
@@ -95,15 +99,15 @@ export const inputHandlerFactory = () => {
         handleCaptureCityButton() {
             inputHandlers.clearAllActionSelection();
 
-            inputHandlers.selectedAction = 'capture';
-            if (!inputHandlers.selectedLocation) {
+            inputHandlers.state.selectedAction = 'capture';
+            if (!inputHandlers.state.selectedLocation) {
                 inputHandlers.updateActionInfoText('Select a city to capture');
             } else {
                 let playerId = undefined
                 if (!logicBundle.sessionInfo.isHotseatMode) {
                     // get the player name from sessionStorage
                 }
-                logicBundle.gameController.captureCity(inputHandlers.selectedLocation, playerId)
+                logicBundle.gameController.captureCity(inputHandlers.state.selectedLocation, playerId)
             }
 
         },
@@ -115,9 +119,9 @@ export const inputHandlerFactory = () => {
             // TODO - break this into a state and a UI function (i.e.) clearActionsUI and clearInputHandler state
             // It's possible it makes sense to have a setToState method instead?
             document.getElementById('move').innerText = 'Move Pieces'
-            inputHandlers.selectedAction = undefined;
-            inputHandlers.selectedLocation = undefined;
-            inputHandlers.additionalInfo = undefined;
+            inputHandlers.state.selectedAction = undefined;
+            inputHandlers.state.selectedLocation = undefined;
+            inputHandlers.state.additionalInfo = undefined;
 
             document.getElementById('actionInfo').innerHTML = ''
             document.getElementById('warningText').innerHTML = ''
@@ -224,7 +228,7 @@ export const inputHandlerFactory = () => {
                 squareButton.classList.add('actionButton')
                 squareButton.innerText = 'Square';
                 squareButton.onclick = () => {
-                    inputHandlers.additionalInfo = 'square'
+                    inputHandlers.state.additionalInfo = 'square'
                 }
                 actionInfoDiv.append(squareButton);
             }
@@ -233,7 +237,7 @@ export const inputHandlerFactory = () => {
                 circleButton.innerText = 'Circle'
                 circleButton.classList.add('actionButton')
                 circleButton.onclick = () => {
-                    inputHandlers.additionalInfo = 'circle'
+                    inputHandlers.state.additionalInfo = 'circle'
                 }
                 actionInfoDiv.append(circleButton);
             }
@@ -243,27 +247,27 @@ export const inputHandlerFactory = () => {
             document.getElementById('warningText').innerText = warningText
         },
         cityClickHandler(cityId) {
-            if (!inputHandlers.selectedAction) {
+            if (!inputHandlers.state.selectedAction) {
                 if (USE_DEFAULT_CLICK_ACTIONS) {
-                    inputHandlers.selectedLocation = cityId;
-                    inputHandlers.selectedAction = 'capture';
+                    inputHandlers.state.selectedLocation = cityId;
+                    inputHandlers.state.selectedAction = 'capture';
                 } else {
                     // TODO handle no selected action on city click (presumably warn and clear)
                     return;
                 }
             };
-            if (inputHandlers.selectedAction === 'capture') {
+            if (inputHandlers.state.selectedAction === 'capture') {
                 // Might need to pass in player ID
                 logicBundle.gameController.captureCity(cityId, undefined)
             }
-            if (inputHandlers.selectedAction === 'upgrade') {
+            if (inputHandlers.state.selectedAction === 'upgrade') {
                 // Might need to pass in player ID
                 logicBundle.gameController.upgradeAtCity(cityId, undefined)
             }
 
         },
         citySpotClickHandler(spotNumber, cityId) {
-            if (inputHandlers.selectedAction !== 'switchPostSelection') {
+            if (inputHandlers.state.selectedAction !== 'switchPostSelection') {
                 this.cityClickHandler(cityId)
                 return;
             }
@@ -271,7 +275,7 @@ export const inputHandlerFactory = () => {
         },
         tokenLocationClickHandler(routeId) {
             console.log('clicked token handler', routeId)
-            if (this.selectedAction !== 'placeNewToken') {
+            if (this.state.selectedAction !== 'placeNewToken') {
                 console.warn('Clicked on a token location without placeNewToken selected')
                 return
             }
@@ -282,8 +286,8 @@ export const inputHandlerFactory = () => {
         },
         routeNodeClickHandler(nodeId) {
             // I'm going to temporarily keep this here just in case we get issues in the future
-            console.log('inputHandlers.selectedAction:', inputHandlers.selectedAction)
-            switch (inputHandlers.selectedAction) {
+            console.log('inputHandlers.state.selectedAction:', inputHandlers.state.selectedAction)
+            switch (inputHandlers.state.selectedAction) {
                 case 'move':
                     this.nodeActions.move(nodeId)
                     break;
@@ -300,7 +304,7 @@ export const inputHandlerFactory = () => {
                     this.nodeActions.moveToken(nodeId)
                     break
                 default:
-                    if (inputHandlers.selectedAction) {
+                    if (inputHandlers.state.selectedAction) {
                         // we will need to monitor the fact we call clearAllActionSelection here - 
                         // there may be unforeseen consequences
                         console.error('We should not be hitting default with a selected action')
@@ -309,7 +313,7 @@ export const inputHandlerFactory = () => {
                         return
                     }
                     if (USE_DEFAULT_CLICK_ACTIONS) {
-                        inputHandlers.additionalInfo = 'square'
+                        inputHandlers.state.additionalInfo = 'square'
                         this.nodeActions.place(nodeId)
                     } else {
                         console.warn('Nothing selected and no default')
@@ -321,47 +325,47 @@ export const inputHandlerFactory = () => {
             selectPieceToBump(nodeId) {
                 // Need to call a game controller method here
                 // pass in the selected shape, other wise use default
-                if (!isShape(inputHandlers?.additionalInfo)) {
+                if (!isShape(inputHandlers?.state.additionalInfo)) {
                     if (USE_DEFAULT_CLICK_ACTIONS) {
-                        inputHandlers.additionalInfo = 'square'
+                        inputHandlers.state.additionalInfo = 'square'
                     } else {
                         console.warn('No shape selected')
                         return;
                     }
                 }
-                logicBundle.gameController.bumpPieceFromNode(nodeId, inputHandlers.additionalInfo);
+                logicBundle.gameController.bumpPieceFromNode(nodeId, inputHandlers.state.additionalInfo);
             },
             placeSelectedBumpPieceOnNode(nodeId) {
-                if (!isShape(inputHandlers?.additionalInfo)) {
+                if (!isShape(inputHandlers?.state.additionalInfo)) {
                     console.error('Trying to do place a bumped piece without a shape.')
                 }
-                logicBundle.gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.additionalInfo)
+                logicBundle.gameController.placeBumpedPieceOnNode(nodeId, inputHandlers.state.additionalInfo)
             },
             place(nodeId) {
-                if (!isShape(inputHandlers?.additionalInfo)) {
+                if (!isShape(inputHandlers?.state.additionalInfo)) {
                     if (USE_DEFAULT_CLICK_ACTIONS) {
-                        inputHandlers.additionalInfo = 'square'
+                        inputHandlers.state.additionalInfo = 'square'
                     } else {
                         console.warn('No shape selected')
                         return;
                     }
                 }
-                logicBundle.gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.additionalInfo);
+                logicBundle.gameController.placeWorkerOnNodeAction(nodeId, inputHandlers.state.additionalInfo);
             },
             move(nodeId) {
-                if (inputHandlers.additionalInfo === 'selectPieceToMove') {
+                if (inputHandlers.state.additionalInfo === 'selectPieceToMove') {
                     logicBundle.gameController.selectPieceToMove(nodeId)
-                } else if (inputHandlers.additionalInfo === 'selectLocationToMoveTo') {
+                } else if (inputHandlers.state.additionalInfo === 'selectLocationToMoveTo') {
                     logicBundle.gameController.movePieceToLocation(nodeId);
                 }
             },
             moveToken(nodeId) {
-                if (inputHandlers.additionalInfo === 'selectPiece') {
+                if (inputHandlers.state.additionalInfo === 'selectPiece') {
                     logicBundle.gameController.tokenActions.selectMoveThreePiece(nodeId)
-                } else if (inputHandlers.additionalInfo === 'selectLocation') {
+                } else if (inputHandlers.state.additionalInfo === 'selectLocation') {
                     logicBundle.gameController.tokenActions.selectMoveThreeLocation(nodeId)
                 } else {
-                    console.error(`Unknown additional info: ${inputHandlers.additionalInfo}`)
+                    console.error(`Unknown additional info: ${inputHandlers.state.additionalInfo}`)
                 }
                 console.log('move token action at', nodeId)
             }

@@ -23,9 +23,13 @@ Note that the above links use the test data that gets populated on the server in
         -  **HERE!** Let's add state for both inputHandlers and gameController i.e state should have stuff like `selectedAction` in the case of inputHandlers and `routeStorageObject` and others for gameController
             * Starting with inputHandlers. 
                 * Do we have any states besides `selectedAction`?
-                * ~~`selectedLocation`~~ & `additionalInfo`
+                * `selectedLocation` & `additionalInfo`
                 * SEEMS LIKE I BROKE THE CIRCLE PLACE SELECTION??
                     - the issue is `this`
+                    - now it looks like I broke the `move` action
+                    - Oh! I think that's because I'm not doing it in the game controller yet
+                    - ugh still broken, now the move action is duplicating pieces
+                    - or maybe not? was that user error?
                 1. First we need to initialize the `state` I think
 
         1. Style the buttons (maybe different fonts or italicize for actions/tokens)
